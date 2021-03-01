@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/monkey/token"
+import "github.com/flipez/monkey/token"
 
 type Node interface {
 	TokenLiteral() string
