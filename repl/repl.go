@@ -13,6 +13,8 @@ import (
 const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
+	io.WriteString(out, ROCKET)
+
 	scanner := bufio.NewScanner((in))
 
 	for {
@@ -39,6 +41,15 @@ func Start(in io.Reader, out io.Writer) {
 		}
 	}
 }
+
+const ROCKET = `
+   /\
+  (  ) . Welcome
+  (  ) .    to
+ /|/\|\ .    🚀🇱🅰🆖
+/_||||_\
+
+`
 
 const MONKEY_FACE = `            __,__
    .--.  .-"     "-.  .--.
