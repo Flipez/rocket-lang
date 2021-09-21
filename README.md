@@ -1,0 +1,1 @@
+[![Test](https://github.com/Flipez/rocket-lang/actions/workflows/go-test.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/go-test.yml)
