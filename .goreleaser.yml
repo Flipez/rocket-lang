@@ -43,7 +43,6 @@ brews:
     tap:
       owner: flipez
       name: homebrew-tap
-      token: "{{ secrets.GH_PAT }}"
 
     # Git author used to commit to the repository.
     # Defaults are shown.
