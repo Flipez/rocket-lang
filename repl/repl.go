@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/flipez/monkey/evaluator"
-	"github.com/flipez/monkey/lexer"
-	"github.com/flipez/monkey/object"
-	"github.com/flipez/monkey/parser"
+	"github.com/flipez/rocket-lang/evaluator"
+	"github.com/flipez/rocket-lang/lexer"
+	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/parser"
 )
 
 const PROMPT = ">> "

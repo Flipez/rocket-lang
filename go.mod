@@ -1,3 +1,3 @@
-module github.com/flipez/monkey
+module github.com/flipez/rocket-lang
 
 go 1.17

@@ -2,7 +2,7 @@ package evaluator
 
 import (
 	"fmt"
-	"github.com/flipez/monkey/object"
+	"github.com/flipez/rocket-lang/object"
 )
 
 var builtins = map[string]*object.Builtin{

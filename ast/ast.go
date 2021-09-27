@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/flipez/monkey/token"
+	"github.com/flipez/rocket-lang/token"
 )
 
 func (p *Program) String() string {

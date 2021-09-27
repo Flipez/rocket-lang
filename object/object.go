@@ -6,7 +6,7 @@ import (
 	"hash/fnv"
 	"strings"
 
-	"github.com/flipez/monkey/ast"
+	"github.com/flipez/rocket-lang/ast"
 )
 
 type ObjectType string

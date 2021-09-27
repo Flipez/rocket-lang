@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/flipez/monkey/ast"
-	"github.com/flipez/monkey/lexer"
-	"github.com/flipez/monkey/token"
+	"github.com/flipez/rocket-lang/ast"
+	"github.com/flipez/rocket-lang/lexer"
+	"github.com/flipez/rocket-lang/token"
 )
 
 const (

@@ -3,7 +3,7 @@ package ast
 import (
 	"testing"
 
-	"github.com/flipez/monkey/token"
+	"github.com/flipez/rocket-lang/token"
 )
 
 func TestString(t *testing.T) {

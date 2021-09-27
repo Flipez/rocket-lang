@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"github.com/flipez/monkey/ast"
-	"github.com/flipez/monkey/object"
+	"github.com/flipez/rocket-lang/ast"
+	"github.com/flipez/rocket-lang/object"
 
 	"fmt"
 )

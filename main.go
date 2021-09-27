@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/flipez/monkey/repl"
+	"github.com/flipez/rocket-lang/repl"
 )
 
 func main() {
