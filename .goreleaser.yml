@@ -43,8 +43,7 @@ brews:
     tap:
       owner: flipez
       name: homebrew-tap
-      # Optionally a token can be provided, if it differs from the token provided to GoReleaser
-      token: "{{ .Env.GITHUB_TOKEN }}"
+      token: "{{ .Env.GH_PAT }}"
 
     # Git author used to commit to the repository.
     # Defaults are shown.
