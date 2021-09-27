@@ -13,8 +13,11 @@ import (
 
 const PROMPT = ">> "
 
+var buildVersion = "v0.9.0"
+var buildDate = "2021-09-27"
+
 func Start(in io.Reader, out io.Writer) {
-	io.WriteString(out, ROCKET)
+	io.WriteString(out, fmt.Sprintf(ROCKET, buildVersion, buildDate))
 
 	scanner := bufio.NewScanner((in))
 	env := object.NewEnvironment()
@@ -46,29 +49,15 @@ func Start(in io.Reader, out io.Writer) {
 
 const ROCKET = `
    /\
-  (  ) . Welcome
-  (  ) .    to
- /|/\|\ .    🚀🇱🅰🆖
-/_||||_\
-
-`
-
-const MONKEY_FACE = `            __,__
-   .--.  .-"     "-.  .--.
-  / .. \/  .-. .-.  \/ .. \
- | |  '|  /   Y   \  |'  | |
- | \   \  \ 0 | 0 /  /   / |
-  \ '- ,\.-"""""""-./, -' /
-   ''-' /_   ^ ^   _\ '-''
-       |  \._   _./  |
-       \   \ '~' /   /
-        '._ '-=-' _.'
-           '-----'
+  (  )     ___         _       _   _
+  (  )    | _ \___  __| |_____| |_| |   __ _ _ _  __ _
+ /|/\|\   |   / _ \/ _| / / -_)  _| |__/ _  | ' \/ _  |
+/_||||_\  |_|_\___/\__|_\_\___|\__|____\__,_|_||_\__, |
+                %10s | %-15s      |___/
 `
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, MONKEY_FACE)
-	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
+	io.WriteString(out, "🔥 Great, you broke it!\n")
 	io.WriteString(out, " parser errors:\n")
 	for _, msg := range errors {
 		io.WriteString(out, "\t"+msg+"\n")
