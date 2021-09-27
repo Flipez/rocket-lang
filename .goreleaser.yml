@@ -1,0 +1,68 @@
+build:
+  binary: rocket-lang
+  main: main.go
+  ldflags:
+    - >
+      -s -w
+      -X github.com/flipez/rocket-lang/repl.buildVersion={{.Version}}
+      -X github.com/flipez/rocket-lang/repl.buildDate={{.Date}}
+  goos:
+    - linux
+    - darwin
+  goarch:
+    - amd64
+  env:
+    - CGO_ENABLED=0
+
+archives:
+  - name_template: "{{.Binary}}_{{.Os}}_{{.Arch}}"
+
+release:
+  draft: true
+
+snapshot:
+  name_template: "{{.Tag}}"
+
+checksum:
+  name_template: "checksums.txt"
+
+nfpms:
+  - vendor: Changelogger
+    homepage: https://github.com/flipez/rocket-lang
+    maintainer: Flipez <code@brauser.io>
+    description: Implementation of the monkey lang
+    license: MIT
+    formats:
+      - deb
+    file_name_template: "{{.ProjectName}}_{{.Os}}_{{.Arch}}"
+
+# .goreleaser.yml
+brews:
+  -
+    name: rocket-lang
+    tap:
+      owner: flipez
+      name: homebrew-tap
+      # Optionally a token can be provided, if it differs from the token provided to GoReleaser
+      token: "{{ .Env.GITHUB_TOKEN }}"
+
+    # Git author used to commit to the repository.
+    # Defaults are shown.
+    commit_author:
+      name: Flipez
+      email: code@brauser.io
+
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+
+    folder: Formula
+
+    homepage: "https://auch.cool/"
+    license: "MIT"
+
+    # Setting this will prevent goreleaser to actually try to commit the updated
+    # formula - instead, the formula file will be stored on the dist folder only,
+    # leaving the responsibility of publishing it to the user.
+    # If set to auto, the release will not be uploaded to the homebrew tap
+    # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
+    # Default is false.
+    skip_upload: true
