@@ -1,10 +1,12 @@
 package repl
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
 	"io"
+	"strings"
 
+	"github.com/abiosoft/ishell/v2"
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
@@ -17,34 +19,31 @@ var buildVersion = "v0.9.0"
 var buildDate = "2021-09-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
-	io.WriteString(out, fmt.Sprintf(ROCKET, buildVersion, buildDate))
+	shell := ishell.New()
+	shell.SetHomeHistoryPath(".rocket_history")
+	shell.SetOut(out)
 
-	scanner := bufio.NewScanner((in))
 	env := object.NewEnvironment()
 
-	for {
-		fmt.Printf(PROMPT)
-		scanned := scanner.Scan()
-		if !scanned {
-			return
-		}
+	shell.Println(fmt.Sprintf(ROCKET, buildVersion, buildDate))
+	shell.NotFound(func(ctx *ishell.Context) {
 
-		line := scanner.Text()
-		l := lexer.New(line)
+		l := lexer.New(strings.Join(ctx.RawArgs, " "))
 		p := parser.New(l)
 
 		program := p.ParseProgram()
 		if len(p.Errors()) > 0 {
-			printParserErrors(out, p.Errors())
-			continue
+			printParserErrors(ctx, p.Errors())
+			return
 		}
 
 		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
-			io.WriteString(out, "\n")
+			ctx.Println(evaluated.Inspect())
 		}
-	}
+	})
+
+	shell.Run()
 }
 
 const ROCKET = `
@@ -56,10 +55,10 @@ const ROCKET = `
               %10s | %-15s   |___/
 `
 
-func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, "🔥 Great, you broke it!\n")
-	io.WriteString(out, " parser errors:\n")
+func printParserErrors(ctx *ishell.Context, errors []string) {
+	ctx.Println("🔥 Great, you broke it!")
+	ctx.Println(" parser errors:")
 	for _, msg := range errors {
-		io.WriteString(out, "\t"+msg+"\n")
+		ctx.Printf("\t %s\n", msg)
 	}
 }
