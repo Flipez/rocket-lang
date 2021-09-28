@@ -14,7 +14,7 @@ import (
 const PROMPT = ">> "
 
 var buildVersion = "v0.9.0"
-var buildDate = "2021-09-27"
+var buildDate = "2021-09-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
 	io.WriteString(out, fmt.Sprintf(ROCKET, buildVersion, buildDate))
@@ -53,7 +53,7 @@ const ROCKET = `
   (  )    | _ \___  __| |_____| |_| |   __ _ _ _  __ _
  /|/\|\   |   / _ \/ _| / / -_)  _| |__/ _  | ' \/ _  |
 /_||||_\  |_|_\___/\__|_\_\___|\__|____\__,_|_||_\__, |
-                %10s | %-15s      |___/
+              %10s | %-15s   |___/
 `
 
 func printParserErrors(out io.Writer, errors []string) {
