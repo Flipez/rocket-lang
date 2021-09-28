@@ -174,9 +174,23 @@ func evalIndexExpression(left, index object.Object) object.Object {
 		return evalArrayIndexExpression(left, index)
 	case left.Type() == object.HASH_OBJ:
 		return evalHashIndexExpression(left, index)
+	case left.Type() == object.STRING_OBJ:
+		return evalStringIndexExpression(left, index)
 	default:
 		return newError("index operator not supported: %s", left.Type())
 	}
+}
+
+func evalStringIndexExpression(left, index object.Object) object.Object {
+	stringObject := left.(*object.String)
+	idx := index.(*object.Integer).Value
+	max := int64(len(stringObject.Value) - 1)
+
+	if idx < 0 || idx > max {
+		return NULL
+	}
+
+	return &object.String{Value: string(stringObject.Value[idx])}
 }
 
 func evalHashIndexExpression(hash, index object.Object) object.Object {
