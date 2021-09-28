@@ -66,3 +66,31 @@ func LookupIdent(ident string) TokenType {
 
 	return IDENT
 }
+
+var emojis = map[string]TokenType{
+	"👍": TRUE,
+	"👎": FALSE,
+	"➕": PLUS,
+}
+
+func LookupEmoji(ident string) TokenType {
+	if tok, ok := emojis[ident]; ok {
+		return tok
+	}
+
+	return IDENT
+}
+
+var emojiLiterals = map[string]string{
+	"👍": "true",
+	"👎": "false",
+	"➕": "+",
+}
+
+func LookupLiteral(ident string) string {
+	if lit, ok := emojiLiterals[ident]; ok {
+		return lit
+	}
+
+	return IDENT
+}

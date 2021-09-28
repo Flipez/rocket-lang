@@ -94,6 +94,18 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
 			return tok
+		} else if i := isEmoji(l.ch); i > 0 {
+			out := make([]byte, i)
+
+			for i := 0; i < len(out); i++ {
+				out[i] = l.ch
+				l.readChar()
+			}
+
+			tok.Literal = token.LookupLiteral(string(out))
+			tok.Type = token.LookupEmoji(string(out))
+
+			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
@@ -136,6 +148,17 @@ func (l *Lexer) skipWhitespace() {
 
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isEmoji(ch byte) int {
+	switch int(ch) {
+	case 240:
+		return 4
+	case 226:
+		return 3
+	}
+
+	return -1
 }
 
 func (l *Lexer) readNumber() string {
