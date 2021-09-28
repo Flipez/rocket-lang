@@ -1,8 +1,8 @@
 [![goreleaser](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml)
 
-# General
+# 🚀🇱🅰🆖
 
-RocketLang as of version 0.9.5 is the _full_ (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/)
+RocketLang as of version 0.9.5 is the _full_ (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and is then being extended with various useful and not so useful features.
 
 ## Installation
 
