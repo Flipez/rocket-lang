@@ -64,6 +64,18 @@ hello("dear, future Reader!");
 
 ```
 
+### Builtin Functions
+|Function|Argument(s)|Return Value(s)|Description|
+|--|--|--|--|
+|`len()`|`array`|`int`|Returns the size of the provided `array`.|
+|`first()`|`array`|`any`, `null`|Returns the first object from `array` or `null` if `array` is empty|
+|`last()`|`array`|`any`, `null`|Returns the last object from `array` or `null` if `array` is empty|
+|`push()`|`array`;`any`|`array`|Returns new `array` advanced by one with given object as last element of given `array`|
+|`pop()`|`array`|`array`|Returns the the given `array` as element one without the last object, returns the last object as second element|
+|`puts()`|`string`|`null`|Prints the given `string` to stdout|
+|`exit()`|`int`|-|Terminates program with exit code `int`|
+|`raise()`|`int`; `string`|-|Prints `string` and terminates programm with exit code `int`|
+
 ### Data Types
 #### Strings
 ```js
