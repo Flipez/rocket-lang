@@ -1,8 +1,8 @@
+# 🚀🇱🅰🆖
+
 [![goreleaser Status](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml)
 [![Test Status](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Flipez/rocket-lang/branch/master/graph/badge.svg)](https://codecov.io/gh/Flipez/rocket-lang)
-
-# 🚀🇱🅰🆖
 
 RocketLang as of version 0.9.5 is the _full_ (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and is then being extended with various useful and not so useful features.
 
