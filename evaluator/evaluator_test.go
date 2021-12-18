@@ -514,3 +514,52 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 
 	return true
 }
+
+func TestStringMethods(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`"string".find("s")`, 0},
+		{`"string".find("string")`, 0},
+		{`"string".find("g")`, 5},
+		{`"string".find("tr")`, 1},
+		{`"string".find("ng")`, 4},
+		{`"string".find("x")`, -1},
+		{`"ab".reverse()`, "ba"},
+		{`"abc".toupper()`, "ABC"},
+		{`"a b c".toupper()`, "A B C"},
+		{`"a%b!c".toupper()`, "A%B!C"},
+		{`"ABC".tolower()`, "abc"},
+		{`"A B C".tolower()`, "a b c"},
+		{`"A%B!C".tolower()`, "a%b!c"},
+		{`"     ".strip()`, ""},
+		{`"
+                       string".strip()`, "string"},
+		{`"abc".replace("a", "A")`, "Abc"},
+		{`"These are the days of summer".count("e")`, 5},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			testStringObject(t, evaluated, expected)
+		}
+	}
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("obj is not String. got=%T(%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%s, want=%s",
+			result.Value, expected)
+		return false
+	}
+	return true
+}

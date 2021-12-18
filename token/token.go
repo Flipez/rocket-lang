@@ -47,6 +47,8 @@ const (
 
 	EQ     = "=="
 	NOT_EQ = "!="
+
+	PERIOD = "."
 )
 
 var keywords = map[string]TokenType{
