@@ -2,7 +2,6 @@ package object
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -29,10 +28,6 @@ const (
 	HASH_OBJ         = "HASH"
 	FILE_OBJ         = "FILE"
 )
-
-func (i *Integer) HashKey() HashKey {
-	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
-}
 
 type BuiltinFunction func(args ...Object) Object
 
@@ -77,14 +72,6 @@ type Error struct {
 func (e *Error) Type() ObjectType                                                   { return ERROR_OBJ }
 func (e *Error) Inspect() string                                                    { return "ERROR: " + e.Message }
 func (e *Error) InvokeMethod(method string, env Environment, args ...Object) Object { return nil }
-
-type Integer struct {
-	Value int64
-}
-
-func (i *Integer) Inspect() string                                                    { return fmt.Sprintf("%d", i.Value) }
-func (i *Integer) Type() ObjectType                                                   { return INTEGER_OBJ }
-func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object { return nil }
 
 type Null struct{}
 
