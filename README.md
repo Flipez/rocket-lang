@@ -75,6 +75,7 @@ hello("dear, future Reader!");
 |`puts()`|`string`|`null`|Prints the given `string` to stdout|
 |`exit()`|`int`|-|Terminates program with exit code `int`|
 |`raise()`|`int`; `string`|-|Prints `string` and terminates programm with exit code `int`|
+|`open()`|`string`; `string`| `file`| Returns a `file` object for the given path.
 
 ### Data Types
 #### Strings
