@@ -30,7 +30,7 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 		// Note that this coerces into a string :)
 		arg := args[0].Inspect()
 		return &Integer{Value: int64(strings.Index(s.Value, arg))}
-	case "len":
+	case "size":
 		return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
 	case "plz_i":
 		i, err := strconv.ParseInt(s.Value, 10, 64)
@@ -39,7 +39,7 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 		}
 		return &Integer{Value: i}
 	case "methods":
-		names := []string{"count", "find", "len", "methods", "replace", "reverse", "split", "toupper", "tolower", "type"}
+		names := []string{"count", "find", "size", "methods", "replace", "reverse", "split", "toupper", "tolower", "type"}
 
 		result := make([]Object, len(names), len(names))
 		for i, txt := range names {
