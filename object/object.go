@@ -68,18 +68,6 @@ type HashKey struct {
 	Value uint64
 }
 
-func (b *Boolean) HashKey() HashKey {
-	var value uint64
-
-	if b.Value {
-		value = 1
-	} else {
-		value = 0
-	}
-
-	return HashKey{Type: b.Type(), Value: value}
-}
-
 func (i *Integer) HashKey() HashKey {
 	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
 }
@@ -135,16 +123,6 @@ type Integer struct {
 func (i *Integer) Inspect() string                                                    { return fmt.Sprintf("%d", i.Value) }
 func (i *Integer) Type() ObjectType                                                   { return INTEGER_OBJ }
 func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object { return nil }
-
-type Boolean struct {
-	Value bool
-}
-
-func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
-func (b *Boolean) Inspect() string  { return fmt.Sprintf("%t", b.Value) }
-func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return nil
-}
 
 type Null struct{}
 
