@@ -23,6 +23,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test test1".split()`, `[test, test1]`},
 		{`"test test1".split(",")`, `[test test1]`},
 		{`"test test1".split(",", "x")`, `To many arguments: want=1, got=2`},
+		{`"test".split(1)`, `Wrong argument type on position 0: got=INTEGER, want=STRING`},
 		{`"test ".strip()`, "test"},
 		{`" test ".strip()`, "test"},
 		{`"test".strip()`, "test"},
