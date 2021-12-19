@@ -46,9 +46,24 @@ var stringObjectMethods = map[string]ObjectMethod{
 		},
 	},
 	"plz_i": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
+		argsOptional: true,
+		argPattern: [][]string{
+			[]string{INTEGER_OBJ},
+		},
+		method: func(o Object, args []Object) Object {
 			s := o.(*String)
-			i, _ := strconv.ParseInt(s.Value, 10, 64)
+			value := s.Value
+			base := 10
+
+			if len(args) > 0 {
+				base = int(args[0].(*Integer).Value)
+			} else if strings.HasPrefix(value, "0x") {
+				base = 8
+			}
+			if base == 8 {
+				value = strings.TrimPrefix(value, "0x")
+			}
+			i, _ := strconv.ParseInt(value, base, 64)
 			return &Integer{Value: i}
 		},
 	},
