@@ -37,6 +37,88 @@ var stringObjectMethods = map[string]ObjectMethod{
 			return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
 		},
 	},
+	"type": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			return &String{Value: STRING_OBJ}
+		},
+	},
+	"plz_i": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			i, _ := strconv.ParseInt(s.Value, 10, 64)
+			return &Integer{Value: i}
+		},
+	},
+	"replace": ObjectMethod{
+		argPattern: [][]string{
+			[]string{STRING_OBJ},
+			[]string{STRING_OBJ},
+		},
+		method: func(s *String, args []Object) Object {
+			oldS := args[0].Inspect()
+			newS := args[1].Inspect()
+			return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
+		},
+	},
+	"reverse": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			out := make([]rune, utf8.RuneCountInString(s.Value))
+			i := len(out)
+			for _, c := range s.Value {
+				i--
+				out[i] = c
+			}
+			return &String{Value: string(out)}
+		},
+	},
+	"split": ObjectMethod{
+		argsOptional: true,
+		argPattern: [][]string{
+			[]string{STRING_OBJ},
+		},
+		method: func(s *String, args []Object) Object {
+			sep := " "
+
+			if len(args) > 0 {
+				sep = args[0].(*String).Value
+			}
+
+			fields := strings.Split(s.Value, sep)
+
+			l := len(fields)
+			result := make([]Object, l, l)
+			for i, txt := range fields {
+				result[i] = &String{Value: txt}
+			}
+			return &Array{Elements: result}
+		},
+	},
+	"strip": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			return &String{Value: strings.TrimSpace(s.Value)}
+		},
+	},
+	"downcase": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			return &String{Value: strings.ToLower(s.Value)}
+		},
+	},
+	"downcase!": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			s.Value = strings.ToLower(s.Value)
+			return &Null{}
+		},
+	},
+	"upcase": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			return &String{Value: strings.ToUpper(s.Value)}
+		},
+	},
+	"upcase!": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			s.Value = strings.ToUpper(s.Value)
+			return &Null{}
+		},
+	},
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
@@ -51,51 +133,6 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 			i++
 		}
 		return &Array{Elements: result}
-	case "plz_i":
-		i, err := strconv.ParseInt(s.Value, 10, 64)
-		if err != nil {
-			i = 0
-		}
-		return &Integer{Value: i}
-	case "replace":
-		if len(args) < 2 {
-			return &Error{Message: "Missing arguments to replace()!"}
-		}
-
-		oldS := args[0].Inspect()
-		newS := args[1].Inspect()
-		return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
-	case "reverse":
-		out := make([]rune, utf8.RuneCountInString(s.Value))
-		i := len(out)
-		for _, c := range s.Value {
-			i--
-			out[i] = c
-		}
-		return &String{Value: string(out)}
-	case "split":
-		sep := " "
-
-		if len(args) >= 1 {
-			sep = args[0].(*String).Value
-		}
-
-		fields := strings.Split(s.Value, sep)
-
-		l := len(fields)
-		result := make([]Object, l, l)
-		for i, txt := range fields {
-			result[i] = &String{Value: txt}
-		}
-		return &Array{Elements: result}
-	case "strip":
-		return &String{Value: strings.TrimSpace(s.Value)}
-	case "tolower":
-		return &String{Value: strings.ToLower(s.Value)}
-	case "toupper":
-		return &String{Value: strings.ToUpper(s.Value)}
-	case "type":
-		return &String{Value: "string"}
 	default:
 		if objMethod, ok := stringObjectMethods[method]; ok {
 			return objMethod.Call(s, args)

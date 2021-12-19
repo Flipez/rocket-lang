@@ -91,30 +91,33 @@ func (rv *ReturnValue) InvokeMethod(method string, env Environment, args ...Obje
 }
 
 type ObjectMethod struct {
+	argsOptional   bool
 	argOverloading bool
 	argPattern     [][]string
 	method         func(*String, []Object) Object
 }
 
 func (om *ObjectMethod) validateArgs(args []Object) error {
-	if len(args) < len(om.argPattern) {
-		return fmt.Errorf("ZU WENIG INFOS")
+	if (len(args) < len(om.argPattern)) && !om.argsOptional {
+		return fmt.Errorf("To few arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
 
 	if len(args) > len(om.argPattern) && !om.argOverloading {
-		return fmt.Errorf("ZU VIELE INFOS")
+		return fmt.Errorf("To many arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
 
-	for idx, pattern := range om.argPattern {
-		var valid bool
-		for _, argType := range pattern {
-			if ObjectType(argType) == args[idx].Type() {
-				valid = true
-				break
+	if !om.argsOptional || (om.argsOptional && len(args) > 0) {
+		for idx, pattern := range om.argPattern {
+			var valid bool
+			for _, argType := range pattern {
+				if ObjectType(argType) == args[idx].Type() {
+					valid = true
+					break
+				}
 			}
-		}
-		if !valid {
-			return fmt.Errorf("FALSCHER TYPE AUF POSITION %d got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
+			if !valid {
+				return fmt.Errorf("Wrong argument type on position %d: got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
+			}
 		}
 	}
 
