@@ -112,6 +112,21 @@ var stringObjectMethods = map[string]ObjectMethod{
 			return &Array{Elements: result}
 		},
 	},
+	"lines": ObjectMethod{
+		method: func(o Object, args []Object) Object {
+			s := o.(*String)
+			sep := "\n"
+
+			fields := strings.Split(s.Value, sep)
+
+			l := len(fields)
+			result := make([]Object, l, l)
+			for i, txt := range fields {
+				result[i] = &String{Value: txt}
+			}
+			return &Array{Elements: result}
+		},
+	},
 	"strip": ObjectMethod{
 		method: func(o Object, _ []Object) Object {
 			s := o.(*String)

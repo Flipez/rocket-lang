@@ -55,6 +55,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`let a = "tESt"; a.downcase!(); a`, "test"},
 		{`let a = "test"; a.reverse!(); a`, "tset"},
 		{`let a = " test "; a.strip!(); a`, "test"},
+		{`("test".wat().lines().size() == "test".methods().size() + 1).plz_s()`, "true"},
 	}
 
 	testInput(t, tests)
