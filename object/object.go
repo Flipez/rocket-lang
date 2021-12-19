@@ -94,7 +94,7 @@ type ObjectMethod struct {
 	argsOptional   bool
 	argOverloading bool
 	argPattern     [][]string
-	method         func(*String, []Object) Object
+	method         func(Object, []Object) Object
 }
 
 func (om *ObjectMethod) validateArgs(args []Object) error {
@@ -142,7 +142,7 @@ func (om *ObjectMethod) validateArgs(args []Object) error {
 	return nil
 }
 
-func (om *ObjectMethod) Usage(name string) Object {
+func (om *ObjectMethod) Usage(name string) string {
 	var args string
 
 	if len(om.argPattern) > 0 {
@@ -157,12 +157,35 @@ func (om *ObjectMethod) Usage(name string) Object {
 		}
 	}
 
-	return &String{Value: fmt.Sprintf("%s(%s)", name, args)}
+	return fmt.Sprintf("%s(%s)", name, args)
 }
 
-func (om *ObjectMethod) Call(s *String, args []Object) Object {
+func (om *ObjectMethod) Call(o Object, args []Object) Object {
 	if err := om.validateArgs(args); err != nil {
 		return &Error{Message: err.Error()}
 	}
-	return om.method(s, args)
+	return om.method(o, args)
+}
+
+func listObjectMethods(objectMethods map[string]ObjectMethod) *Array {
+	result := make([]Object, len(objectMethods), len(objectMethods))
+	var i int
+	for name := range objectMethods {
+		result[i] = &String{Value: name}
+		i++
+	}
+	return &Array{Elements: result}
+}
+
+func listObjectUsage(parent Object, objectMethods map[string]ObjectMethod) *String {
+	result := make([]string, len(objectMethods), len(objectMethods))
+	var i int
+	for name := range objectMethods {
+		objectMethod, ok := objectMethods[name]
+		if ok {
+			result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))
+		}
+		i++
+	}
+	return &String{Value: fmt.Sprintf("%s supports the following methods:\n%s", parent.Type(), strings.Join(result, "\n"))}
 }

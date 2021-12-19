@@ -16,7 +16,8 @@ var stringObjectMethods = map[string]ObjectMethod{
 		argPattern: [][]string{
 			[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
 		},
-		method: func(s *String, args []Object) Object {
+		method: func(o Object, args []Object) Object {
+			s := o.(*String)
 			arg := args[0].Inspect()
 			return &Integer{Value: int64(strings.Count(s.Value, arg))}
 		},
@@ -26,24 +27,27 @@ var stringObjectMethods = map[string]ObjectMethod{
 		argPattern: [][]string{
 			[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
 		},
-		method: func(s *String, args []Object) Object {
+		method: func(o Object, args []Object) Object {
+			s := o.(*String)
 			arg := args[0].Inspect()
 			return &Integer{Value: int64(strings.Index(s.Value, arg))}
 		},
 	},
 
 	"size": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
 		},
 	},
 	"type": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
 			return &String{Value: STRING_OBJ}
 		},
 	},
 	"plz_i": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			i, _ := strconv.ParseInt(s.Value, 10, 64)
 			return &Integer{Value: i}
 		},
@@ -53,14 +57,16 @@ var stringObjectMethods = map[string]ObjectMethod{
 			[]string{STRING_OBJ},
 			[]string{STRING_OBJ},
 		},
-		method: func(s *String, args []Object) Object {
+		method: func(o Object, args []Object) Object {
+			s := o.(*String)
 			oldS := args[0].Inspect()
 			newS := args[1].Inspect()
 			return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
 		},
 	},
 	"reverse": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			out := make([]rune, utf8.RuneCountInString(s.Value))
 			i := len(out)
 			for _, c := range s.Value {
@@ -71,7 +77,8 @@ var stringObjectMethods = map[string]ObjectMethod{
 		},
 	},
 	"reverse!": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			out := make([]rune, utf8.RuneCountInString(s.Value))
 			i := len(out)
 			for _, c := range s.Value {
@@ -87,7 +94,8 @@ var stringObjectMethods = map[string]ObjectMethod{
 		argPattern: [][]string{
 			[]string{STRING_OBJ},
 		},
-		method: func(s *String, args []Object) Object {
+		method: func(o Object, args []Object) Object {
+			s := o.(*String)
 			sep := " "
 
 			if len(args) > 0 {
@@ -105,34 +113,40 @@ var stringObjectMethods = map[string]ObjectMethod{
 		},
 	},
 	"strip": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			return &String{Value: strings.TrimSpace(s.Value)}
 		},
 	},
 	"strip!": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			s.Value = strings.TrimSpace(s.Value)
 			return &Null{}
 		},
 	},
 	"downcase": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			return &String{Value: strings.ToLower(s.Value)}
 		},
 	},
 	"downcase!": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			s.Value = strings.ToLower(s.Value)
 			return &Null{}
 		},
 	},
 	"upcase": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			return &String{Value: strings.ToUpper(s.Value)}
 		},
 	},
 	"upcase!": ObjectMethod{
-		method: func(s *String, _ []Object) Object {
+		method: func(o Object, _ []Object) Object {
+			s := o.(*String)
 			s.Value = strings.ToUpper(s.Value)
 			return &Null{}
 		},
@@ -144,13 +158,9 @@ func (s *String) Inspect() string  { return s.Value }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
 	switch method {
 	case "methods":
-		result := make([]Object, len(stringObjectMethods), len(stringObjectMethods))
-		var i int
-		for name := range stringObjectMethods {
-			result[i] = &String{Value: name}
-			i++
-		}
-		return &Array{Elements: result}
+		return listObjectMethods(stringObjectMethods)
+	case "wat":
+		return listObjectUsage(s, stringObjectMethods)
 	default:
 		if objMethod, ok := stringObjectMethods[method]; ok {
 			return objMethod.Call(s, args)
