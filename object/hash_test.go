@@ -8,7 +8,7 @@ import (
 
 func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`{1: 1, "a": 2}.keys()`, "[1, a]"},
+		{`{"a": 2}.keys()`, "[a]"},
 		{`{}.nope()`, "Failed to invoke method: nope"},
 	}
 
@@ -16,15 +16,18 @@ func TestHashObjectMethods(t *testing.T) {
 }
 
 func TestHashInspect(t *testing.T) {
-	hash1 := testEval(`{}`).(*object.Hash)
-	hash2 := testEval(`{"a": 1, 2: 3}`).(*object.Hash)
-
-	if hash1.Inspect() != "{}" {
-		t.Errorf("wrong string. expected=%q, got=%q", "{}", hash1.Inspect())
+	tests := []inputTestCase{
+		{"{}", "{}"},
+		{`{"a": 1, 2: 3}`, "{a: 1, 2: 3}"},
 	}
 
-	if hash2.Inspect() != "{a: 1, 2: 3}" {
-		t.Errorf("wrong string. expected=%q, got=%q", "{a: 1, 2: 3}", hash2.Inspect())
+	for _, tt := range tests {
+		hash := testEval(tt.input).(*object.Hash)
+		hashInspect := hash.Inspect()
+
+		if hash.Inspect() != tt.expected {
+			t.Errorf("wrong string. expected=%#v, got=%#v", tt.expected, hashInspect)
+		}
 	}
 }
 
