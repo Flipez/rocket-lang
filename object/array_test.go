@@ -12,7 +12,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].yeet()`, 3},
 		{`let a = []; a.yoink(1); a`, "[1]"},
 		{`[].nope()`, "Failed to invoke method: nope"},
-		{`("test".wat().lines().size() == "test".methods().size() + 1).plz_s()`, "true"},
+		{`([].wat().lines().size() == [].methods().size() + 1).plz_s()`, "true"},
 	}
 
 	testInput(t, tests)
