@@ -28,7 +28,7 @@ func (ao *Array) Inspect() string {
 var arrayObjectMethods = map[string]ObjectMethod{
 	"type": ObjectMethod{
 		method: func(o Object, _ []Object) Object {
-			return &String{Value: ARRAY_OBJ}
+			return &String{Value: string(o.Type())}
 		},
 	},
 	"size": ObjectMethod{
@@ -61,7 +61,7 @@ func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Ob
 	case "wat":
 		return listObjectUsage(ao, arrayObjectMethods)
 	default:
-		if objMethod, ok := stringObjectMethods[method]; ok {
+		if objMethod, ok := arrayObjectMethods[method]; ok {
 			return objMethod.Call(ao, args)
 		}
 	}

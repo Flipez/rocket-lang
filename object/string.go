@@ -42,7 +42,7 @@ var stringObjectMethods = map[string]ObjectMethod{
 	},
 	"type": ObjectMethod{
 		method: func(o Object, _ []Object) Object {
-			return &String{Value: STRING_OBJ}
+			return &String{Value: string(o.Type())}
 		},
 	},
 	"plz_i": ObjectMethod{
