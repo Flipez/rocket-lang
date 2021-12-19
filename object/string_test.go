@@ -49,6 +49,10 @@ func TestStringObjectMethods(t *testing.T) {
                        string".strip()`, "string"},
 		{`"abc".replace("a", "A")`, "Abc"},
 		{`"These are the days of summer".count("e")`, 5},
+		{`let a = "test"; a.upcase!(); a`, "TEST"},
+		{`let a = "tESt"; a.downcase!(); a`, "test"},
+		{`let a = "test"; a.reverse!(); a`, "tset"},
+		{`let a = " test "; a.strip!(); a`, "test"},
 	}
 
 	testInput(t, tests)
