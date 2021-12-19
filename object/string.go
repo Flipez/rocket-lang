@@ -70,6 +70,18 @@ var stringObjectMethods = map[string]ObjectMethod{
 			return &String{Value: string(out)}
 		},
 	},
+	"reverse!": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			out := make([]rune, utf8.RuneCountInString(s.Value))
+			i := len(out)
+			for _, c := range s.Value {
+				i--
+				out[i] = c
+			}
+			s.Value = string(out)
+			return &Null{}
+		},
+	},
 	"split": ObjectMethod{
 		argsOptional: true,
 		argPattern: [][]string{
@@ -95,6 +107,12 @@ var stringObjectMethods = map[string]ObjectMethod{
 	"strip": ObjectMethod{
 		method: func(s *String, _ []Object) Object {
 			return &String{Value: strings.TrimSpace(s.Value)}
+		},
+	},
+	"strip!": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			s.Value = strings.TrimSpace(s.Value)
+			return &Null{}
 		},
 	},
 	"downcase": ObjectMethod{
