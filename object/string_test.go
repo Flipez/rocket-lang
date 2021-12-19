@@ -20,6 +20,8 @@ func TestObjectMethods(t *testing.T) {
 		{`"test".replace("e")`, "Missing arguments to replace()!"},
 		{`"test".reverse()`, "tset"},
 		{`"test test1".split()`, `[test, test1]`},
+		{`"test test1".split(",")`, `[test test1]`},
+		{`"test test1".split(",", "x")`, `[test test1]`},
 		{`"test ".strip()`, "test"},
 		{`" test ".strip()`, "test"},
 		{`"test".strip()`, "test"},
@@ -27,6 +29,7 @@ func TestObjectMethods(t *testing.T) {
 		{`"tESt".tolower()`, "test"},
 		{`"test".type()`, "string"},
 		{`"test".nope()`, "Failed to invoke method: nope"},
+		{`"test".methods()`, `[count, find, size, methods, replace, reverse, split, toupper, tolower, type]`},
 	}
 
 	testInput(t, tests)
