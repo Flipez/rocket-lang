@@ -9,17 +9,22 @@ import (
 func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`{1: 1, "a": 2}.keys()`, "[1, a]"},
-		{`[].nope()`, "Failed to invoke method: nope"},
+		{`{}.nope()`, "Failed to invoke method: nope"},
 	}
 
 	testInput(t, tests)
 }
 
 func TestHashInspect(t *testing.T) {
-	hash1 := &object.Hash{Pairs: make(map[object.HashKey]object.HashPair)}
+	hash1 := testEval(`{}`).(*object.Hash)
+	hash2 := testEval(`{"a": 1, 2: 3}`).(*object.Hash)
 
 	if hash1.Inspect() != "{}" {
-		t.Errorf("hash.Inspect() returns wrong string")
+		t.Errorf("wrong string. expected=%q, got=%q", "{}", hash1.Inspect())
+	}
+
+	if hash2.Inspect() != "{a: 1, 2: 3}" {
+		t.Errorf("wrong string. expected=%q, got=%q", "{a: 1, 2: 3}", hash2.Inspect())
 	}
 }
 
