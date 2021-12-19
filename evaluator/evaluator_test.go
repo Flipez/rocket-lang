@@ -605,6 +605,8 @@ func TestObjectMethods(t *testing.T) {
 	}{
 		{`"test".count("e")`, 1},
 		{`"test".count()`, "Missing argument to count()!"},
+		{`"test".find("e")`, 1},
+		{`"test".find()`, "Missing argument to find()!"},
 	}
 
 	for _, tt := range tests {
