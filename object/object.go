@@ -2,6 +2,7 @@ package object
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -87,4 +88,81 @@ func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
 func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
 func (rv *ReturnValue) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return nil
+}
+
+type ObjectMethod struct {
+	argsOptional   bool
+	argOverloading bool
+	argPattern     [][]string
+	method         func(*String, []Object) Object
+}
+
+func (om *ObjectMethod) validateArgs(args []Object) error {
+	if (len(args) < len(om.argPattern)) && !om.argsOptional {
+		return fmt.Errorf("To few arguments: want=%d, got=%d", len(om.argPattern), len(args))
+	}
+
+	if len(args) > len(om.argPattern) && !om.argOverloading {
+		return fmt.Errorf("To many arguments: want=%d, got=%d", len(om.argPattern), len(args))
+	}
+
+	if !om.argsOptional || (om.argsOptional && len(args) > 0) {
+		for idx, pattern := range om.argPattern {
+			var valid bool
+			for _, argType := range pattern {
+				if ObjectType(argType) == args[idx].Type() {
+					valid = true
+					break
+				}
+			}
+			if !valid {
+				return fmt.Errorf("Wrong argument type on position %d: got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
+			}
+		}
+	}
+
+	/* not needed for now, as there is no string method with flexible argument count
+	if om.argOverloading {
+		lastPattern := om.argPattern[len(om.argPattern)-1]
+		for idx, arg := range args[len(om.argPattern)-1:] {
+			var valid bool
+			for _, argType := range lastPattern {
+				if argType == args.Type() {
+					valid = true
+					break
+				}
+			}
+			if !valid {
+				return fmt.Errorf("FALSCHER TYPE AUF POSITION %d got=%s, want=%s", idx, arg.Type(), strings.Join(lastPattern, "|"))
+			}
+		}
+	}
+	*/
+
+	return nil
+}
+
+func (om *ObjectMethod) Usage(name string) Object {
+	var args string
+
+	if len(om.argPattern) > 0 {
+		types := make([]string, len(om.argPattern))
+		for idx, pattern := range om.argPattern {
+			types[idx] = strings.Join(pattern, "|")
+		}
+		args = strings.Join(types, ", ")
+
+		if om.argOverloading {
+			args += "..."
+		}
+	}
+
+	return &String{Value: fmt.Sprintf("%s(%s)", name, args)}
+}
+
+func (om *ObjectMethod) Call(s *String, args []Object) Object {
+	if err := om.validateArgs(args); err != nil {
+		return &Error{Message: err.Error()}
+	}
+	return om.method(s, args)
 }
