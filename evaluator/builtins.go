@@ -6,6 +6,50 @@ import (
 	"os"
 )
 
+var array_pop = &object.Builtin{
+	Fn: func(args ...object.Object) object.Object {
+		if len(args) != 1 {
+			return newError("wrong number of arguments. got=%d, want=1", len(args))
+		}
+		if args[0].Type() != object.ARRAY_OBJ {
+			return newError("argument to `pop` must be ARRAY, got=%s", args[0].Type())
+		}
+
+		arr := args[0].(*object.Array)
+		length := len(arr.Elements)
+
+		newElements := make([]object.Object, length-1, length-1)
+		copy(newElements, arr.Elements[:(length-1)])
+
+		returnArray := make([]object.Object, 2)
+
+		returnArray[0] = &object.Array{Elements: newElements}
+		returnArray[1] = arr.Elements[length-1]
+
+		return &object.Array{Elements: returnArray}
+	},
+}
+
+var array_push = &object.Builtin{
+	Fn: func(args ...object.Object) object.Object {
+		if len(args) != 2 {
+			return newError("wrong number of arguments. got=%d, want=2", len(args))
+		}
+		if args[0].Type() != object.ARRAY_OBJ {
+			return newError("argument to `push` must be ARRAY, got=%s", args[0].Type())
+		}
+
+		arr := args[0].(*object.Array)
+		length := len(arr.Elements)
+
+		newElements := make([]object.Object, length+1, length+1)
+		copy(newElements, arr.Elements)
+		newElements[length] = args[1]
+
+		return &object.Array{Elements: newElements}
+	},
+}
+
 var builtins = map[string]*object.Builtin{
 	"len": &object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
@@ -64,7 +108,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got=%d, want=1", len(args))
 			}
 			if args[0].Type() != object.ARRAY_OBJ {
-				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
+				return newError("argument to `rest` must be ARRAY, got=%s", args[0].Type())
 			}
 
 			arr := args[0].(*object.Array)
@@ -78,48 +122,10 @@ var builtins = map[string]*object.Builtin{
 			return NULL
 		},
 	},
-	"push": &object.Builtin{
-		Fn: func(args ...object.Object) object.Object {
-			if len(args) != 2 {
-				return newError("wrong number of arguments. got=%d, want=2", len(args))
-			}
-			if args[0].Type() != object.ARRAY_OBJ {
-				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
-			}
-
-			arr := args[0].(*object.Array)
-			length := len(arr.Elements)
-
-			newElements := make([]object.Object, length+1, length+1)
-			copy(newElements, arr.Elements)
-			newElements[length] = args[1]
-
-			return &object.Array{Elements: newElements}
-		},
-	},
-	"pop": &object.Builtin{
-		Fn: func(args ...object.Object) object.Object {
-			if len(args) != 1 {
-				return newError("wrong number of arguments. got=%d, want=1", len(args))
-			}
-			if args[0].Type() != object.ARRAY_OBJ {
-				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
-			}
-
-			arr := args[0].(*object.Array)
-			length := len(arr.Elements)
-
-			newElements := make([]object.Object, length-1, length-1)
-			copy(newElements, arr.Elements[:(length-1)])
-
-			returnArray := make([]object.Object, 2)
-
-			returnArray[0] = &object.Array{Elements: newElements}
-			returnArray[1] = arr.Elements[length-1]
-
-			return &object.Array{Elements: returnArray}
-		},
-	},
+	"push":  array_push,
+	"yoink": array_push,
+	"pop":   array_pop,
+	"yeet":  array_pop,
 	"puts": &object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
 			for _, arg := range args {
@@ -159,6 +165,36 @@ var builtins = map[string]*object.Builtin{
 			os.Exit(int(args[0].(*object.Integer).Value))
 
 			return NULL
+		},
+	},
+	"open": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			path := ""
+			mode := "r"
+
+			if len(args) < 1 {
+				return newError("wrong number of arguments. got=%d, want=1", len(args))
+			}
+
+			switch args[0].(type) {
+			case *object.String:
+				path = args[0].(*object.String).Value
+			default:
+				return newError("argument to `file` not supported, got=%s", args[0].Type())
+			}
+
+			if len(args) > 1 {
+				switch args[1].(type) {
+				case *object.String:
+					mode = args[1].(*object.String).Value
+				default:
+					return newError("argument mode to `file` not supported, got=%s", args[1].Type())
+				}
+			}
+
+			file := &object.File{Filename: path}
+			file.Open(mode)
+			return (file)
 		},
 	},
 }

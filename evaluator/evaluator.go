@@ -102,6 +102,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalIndexExpression(left, index)
 
+	case *ast.ObjectCallExpression:
+		res := evalObjectCallExpression(node, env)
+		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
 	}
@@ -429,4 +432,18 @@ func isError(obj object.Object) bool {
 		return obj.Type() == object.ERROR_OBJ
 	}
 	return false
+}
+
+func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
+
+	obj := Eval(call.Object, env)
+	if method, ok := call.Call.(*ast.CallExpression); ok {
+		args := evalExpressions(call.Call.(*ast.CallExpression).Arguments, env)
+		ret := obj.InvokeMethod(method.Function.String(), *env, args...)
+		if ret != nil {
+			return ret
+		}
+	}
+
+	return newError("Failed to invoke method: %s", call.Call.(*ast.CallExpression).Function.String())
 }
