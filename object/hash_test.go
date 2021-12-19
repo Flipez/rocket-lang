@@ -18,7 +18,8 @@ func TestHashObjectMethods(t *testing.T) {
 func TestHashInspect(t *testing.T) {
 	tests := []inputTestCase{
 		{"{}", "{}"},
-		{`{"a": 1, 2: 3}`, "{a: 1, 2: 3}"},
+		{`{"a": 1}`, "{a: 1}"},
+		{`{true: "a"}`, "{true: a}"},
 	}
 
 	for _, tt := range tests {
