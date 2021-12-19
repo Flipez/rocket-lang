@@ -7,7 +7,8 @@ import (
 )
 
 type Hash struct {
-	Pairs map[HashKey]HashPair
+	Pairs  map[HashKey]HashPair
+	offset int
 }
 
 type HashPair struct {
@@ -63,4 +64,24 @@ func init() {
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookop(h, method, args)
 
+}
+
+func (h *Hash) Reset() {
+	h.offset = 0
+}
+
+func (h *Hash) Next() (Object, Object, bool) {
+	if h.offset < len(h.Pairs) {
+		idx := 0
+
+		for _, pair := range h.Pairs {
+			if h.offset == idx {
+				h.offset++
+				return pair.Key, pair.Value, true
+			}
+			idx++
+		}
+	}
+
+	return nil, &Integer{Value: 0}, false
 }

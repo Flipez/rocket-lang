@@ -218,3 +218,8 @@ func objectMethodLookop(o Object, method string, args []Object) Object {
 
 	return nil
 }
+
+type Iterable interface {
+	Reset()
+	Next() (Object, Object, bool)
+}

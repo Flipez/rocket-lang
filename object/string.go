@@ -8,7 +8,8 @@ import (
 )
 
 type String struct {
-	Value string
+	Value  string
+	offset int
 }
 
 func init() {
@@ -189,4 +190,21 @@ func (s *String) HashKey() HashKey {
 	h.Write([]byte(s.Value))
 
 	return HashKey{Type: s.Type(), Value: h.Sum64()}
+}
+
+func (s *String) Reset() {
+	s.offset = 0
+}
+
+func (s *String) Next() (Object, Object, bool) {
+	if s.offset < utf8.RuneCountInString(s.Value) {
+		s.offset++
+
+		chars := []rune(s.Value)
+		val := &String{Value: string(chars[s.offset-1])}
+
+		return val, &Integer{Value: int64(s.offset - 1)}, true
+	}
+
+	return nil, &Integer{Value: 0}, false
 }

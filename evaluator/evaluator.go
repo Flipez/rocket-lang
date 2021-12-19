@@ -24,6 +24,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return Eval(node.Expression, env)
 	case *ast.BlockStatement:
 		return evalBlockStatement(node, env)
+	case *ast.ForeachStatement:
+		return evalForeachExpression(node, env)
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
 		if isError(val) {
@@ -446,4 +448,35 @@ func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Enviro
 	}
 
 	return newError("Failed to invoke method: %s", call.Call.(*ast.CallExpression).Function.String())
+}
+
+func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) object.Object {
+	val := Eval(fle.Value, env)
+
+	helper, ok := val.(object.Iterable)
+	if !ok {
+		return newError("%s object doesn't implement the Iterable interface", val.Type())
+	}
+
+	child := object.NewEnclosedEnvironment(env)
+
+	helper.Reset()
+
+	ret, idx, ok := helper.Next()
+
+	for ok {
+
+		child.Set(fle.Ident, ret)
+
+		idxName := fle.Index
+		if idxName != "" {
+			child.Set(fle.Index, idx)
+		}
+
+		Eval(fle.Body, child)
+
+		ret, idx, ok = helper.Next()
+	}
+
+	return &object.Null{}
 }
