@@ -22,6 +22,7 @@ func Start(in io.Reader, out io.Writer) {
 	shell := ishell.New()
 	shell.SetHomeHistoryPath(".rocket_history")
 	shell.SetOut(out)
+	shell.SetPrompt("🚀 >")
 
 	env := object.NewEnvironment()
 
