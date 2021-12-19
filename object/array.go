@@ -26,6 +26,8 @@ func (ao *Array) Inspect() string {
 }
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
 	switch method {
+	case "type":
+		return &String{Value: ARRAY_OBJ}
 	case "size":
 		return &Integer{Value: int64(len(ao.Elements))}
 	case "yeet":
