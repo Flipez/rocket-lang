@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestObjectMethods(t *testing.T) {
+func TestStringObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`"test".count("e")`, 1},
 		{`"test".count()`, "Missing argument to count()!"},
