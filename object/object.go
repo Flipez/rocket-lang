@@ -200,11 +200,6 @@ func init() {
 				return &String{Value: string(o.Type())}
 			},
 		},
-		"inspect": ObjectMethod{
-			method: func(o Object, _ []Object) Object {
-				return &String{Value: o.Inspect()}
-			},
-		},
 	}
 }
 
