@@ -50,7 +50,7 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 		if len(args) < 2 {
 			return &Error{Message: "Missing arguments to replace()!"}
 		}
-		// Note that this coerces into strings :)
+
 		oldS := args[0].Inspect()
 		newS := args[1].Inspect()
 		return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
