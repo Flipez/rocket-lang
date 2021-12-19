@@ -24,11 +24,49 @@ func (ao *Array) Inspect() string {
 
 	return out.String()
 }
-func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "size":
-		return &Integer{Value: int64(len(ao.Elements))}
-	}
 
-	return nil
+func init() {
+	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
+		"size": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				return &Integer{Value: int64(len(ao.Elements))}
+			},
+		},
+		"yeet": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
+
+				newElements := make([]Object, length-1, length-1)
+				copy(newElements, ao.Elements[:(length-1)])
+
+				returnElement := ao.Elements[length-1]
+
+				ao.Elements = newElements
+
+				return returnElement
+			},
+		},
+		"yoink": ObjectMethod{
+			argPattern: [][]string{
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
+
+				newElements := make([]Object, length+1, length+1)
+				copy(newElements, ao.Elements)
+				newElements[length] = args[0]
+
+				ao.Elements = newElements
+				return &Null{}
+			},
+		},
+	}
+}
+
+func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
+	return objectMethodLookop(ao, method, args)
 }

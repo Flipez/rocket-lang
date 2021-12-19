@@ -10,6 +10,8 @@ func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`{"a": 2}.keys()`, "[a]"},
 		{`{}.nope()`, "Failed to invoke method: nope"},
+		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
+		{`{}.type()`, "HASH"},
 	}
 
 	testInput(t, tests)

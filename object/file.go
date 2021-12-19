@@ -59,61 +59,83 @@ func (f *File) Open(mode string) error {
 	return nil
 }
 
-func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "close":
-		f.Handle.Close()
-		return &Boolean{Value: true}
-	case "lines":
-		if f.Reader == nil {
-			return (&Null{})
-		}
+func init() {
+	objectMethods[FILE_OBJ] = map[string]ObjectMethod{
+		"close": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				f := o.(*File)
+				f.Handle.Close()
+				return &Boolean{Value: true}
+			},
+		},
+		"lines": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				f := o.(*File)
+				if f.Reader == nil {
+					return (&Null{})
+				}
 
-		var lines []string
-		for {
-			line, err := f.Reader.ReadString('\n')
-			if err != nil {
-				break
-			}
-			lines = append(lines, line)
-		}
+				var lines []string
+				for {
+					line, err := f.Reader.ReadString('\n')
+					if err != nil {
+						break
+					}
+					lines = append(lines, line)
+				}
 
-		l := len(lines)
-		result := make([]Object, l)
-		for i, txt := range lines {
-			result[i] = &String{Value: txt}
-		}
-		return &Array{Elements: result}
-	case "read":
-		if f.Reader == nil {
-			return (&String{Value: ""})
-		}
+				l := len(lines)
+				result := make([]Object, l)
+				for i, txt := range lines {
+					result[i] = &String{Value: txt}
+				}
+				return &Array{Elements: result}
+			},
+		},
+		"read": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				f := o.(*File)
+				if f.Reader == nil {
+					return (&String{Value: ""})
+				}
 
-		line, err := f.Reader.ReadString('\n')
-		if err != nil {
-			return (&String{Value: ""})
-		}
-		return &String{Value: line}
-	case "rewind":
-		f.Handle.Seek(0, 0)
-		return &Boolean{Value: true}
-	case "write":
-		if len(args) < 1 {
-			return &Error{Message: "Missing argument to write()!"}
-		}
+				line, err := f.Reader.ReadString('\n')
+				if err != nil {
+					return (&String{Value: ""})
+				}
+				return &String{Value: line}
+			},
+		},
+		"rewind": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				f := o.(*File)
+				f.Handle.Seek(0, 0)
+				return &Boolean{Value: true}
+			},
+		},
+		"write": ObjectMethod{
+			argPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				f := o.(*File)
 
-		if f.Writer == nil {
-			return (&Null{})
-		}
+				if f.Writer == nil {
+					return (&Null{})
+				}
 
-		txt := args[0].Inspect()
-		_, err := f.Writer.Write([]byte(txt))
-		if err == nil {
-			f.Writer.Flush()
-			return &Boolean{Value: true}
-		}
+				_, err := f.Writer.Write([]byte(args[0].(*String).Value))
+				if err == nil {
+					f.Writer.Flush()
+					return &Boolean{Value: true}
+				}
 
-		return &Boolean{Value: false}
+				return &Boolean{Value: false}
+			},
+		},
 	}
-	return nil
+}
+
+func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
+	return objectMethodLookop(f, method, args)
 }

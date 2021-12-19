@@ -39,19 +39,28 @@ func (h *Hash) Inspect() string {
 
 	return out.String()
 }
-func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "keys":
-		keys := make([]Object, len(h.Pairs))
 
-		i := 0
-		for _, k := range h.Pairs {
-			keys[i] = k.Key
-			i++
-		}
+func init() {
+	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
+		"keys": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				h := o.(*Hash)
 
-		return &Array{Elements: keys}
+				keys := make([]Object, len(h.Pairs))
+
+				i := 0
+				for _, k := range h.Pairs {
+					keys[i] = k.Key
+					i++
+				}
+
+				return &Array{Elements: keys}
+			},
+		},
 	}
+}
 
-	return nil
+func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
+	return objectMethodLookop(h, method, args)
+
 }

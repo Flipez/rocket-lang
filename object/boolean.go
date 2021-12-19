@@ -22,11 +22,19 @@ func (b *Boolean) HashKey() HashKey {
 
 	return HashKey{Type: b.Type(), Value: value}
 }
-func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "plz_s":
-		return &String{Value: strconv.FormatBool(b.Value)}
-	}
 
-	return nil
+func init() {
+	objectMethods[BOOLEAN_OBJ] = map[string]ObjectMethod{
+		"plz_s": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				b := o.(*Boolean)
+				return &String{Value: strconv.FormatBool(b.Value)}
+			},
+		},
+	}
+}
+
+func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
+	return objectMethodLookop(b, method, args)
+
 }
