@@ -10,6 +10,7 @@ func TestBooleanObjectMethods(t *testing.T) {
 		{`true.plz_s()`, "true"},
 		{`false.plz_s()`, "false"},
 		{`false.nope()`, "Failed to invoke method: nope"},
+		{`(true.wat().lines().size() == true.methods().size() + 1).plz_s()`, "true"},
 	}
 
 	testInput(t, tests)
