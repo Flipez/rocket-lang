@@ -35,17 +35,6 @@ func init() {
 }
 
 func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
-	if oms, ok := objectMethods[b.Type()]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(b, args)
-		}
-	}
+	return objectMethodLookop(b, method, args)
 
-	if oms, ok := objectMethods["*"]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(b, args)
-		}
-	}
-
-	return nil
 }

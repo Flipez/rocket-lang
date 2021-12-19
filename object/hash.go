@@ -61,17 +61,6 @@ func init() {
 }
 
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
-	if oms, ok := objectMethods[h.Type()]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(h, args)
-		}
-	}
+	return objectMethodLookop(h, method, args)
 
-	if oms, ok := objectMethods["*"]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(h, args)
-		}
-	}
-
-	return nil
 }

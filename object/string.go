@@ -181,19 +181,7 @@ func init() {
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return s.Value }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
-	if oms, ok := objectMethods[s.Type()]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(s, args)
-		}
-	}
-
-	if oms, ok := objectMethods["*"]; ok {
-		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(s, args)
-		}
-	}
-
-	return nil
+	return objectMethodLookop(s, method, args)
 }
 
 func (s *String) HashKey() HashKey {
