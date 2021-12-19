@@ -46,6 +46,20 @@ func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	return true
 }
 
+func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
+	result, ok := obj.(*object.Boolean)
+	if !ok {
+		t.Errorf("object is not Boolean. got=%T (%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%T, want=%t", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
 type inputTestCase struct {
 	input    string
 	expected interface{}
@@ -78,6 +92,8 @@ func testInput(t *testing.T, tests []inputTestCase) {
 			if errObj.Message != expected {
 				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
 			}
+		case bool:
+			testBooleanObject(t, evaluated, expected)
 		}
 	}
 }
