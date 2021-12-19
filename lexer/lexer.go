@@ -196,7 +196,7 @@ func isOperator(ch byte) bool {
 }
 
 func isComparison(ch byte) bool {
-	return ch == '=' || ch == '!' || ch == '>' || ch == '<'
+	return ch == '=' || ch == '>' || ch == '<'
 }
 
 func isCompound(ch byte) bool {

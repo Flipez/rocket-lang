@@ -1,8 +1,8 @@
 package object_test
 
 import (
-	"testing"
 	"github.com/flipez/rocket-lang/object"
+	"testing"
 )
 
 func TestStringObjectMethods(t *testing.T) {
@@ -26,11 +26,29 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test ".strip()`, "test"},
 		{`" test ".strip()`, "test"},
 		{`"test".strip()`, "test"},
-		{`"test".toupper()`, "TEST"},
-		{`"tESt".tolower()`, "test"},
+		{`"test".upcase()`, "TEST"},
+		{`"tESt".downcase()`, "test"},
 		{`"test".type()`, "string"},
 		{`"test".nope()`, "Failed to invoke method: nope"},
 		{`"test".methods()`, `[count, find, size, methods, replace, reverse, split, toupper, tolower, type]`},
+		{`"string".find("s")`, 0},
+		{`"string".find("string")`, 0},
+		{`"string".find("g")`, 5},
+		{`"string".find("tr")`, 1},
+		{`"string".find("ng")`, 4},
+		{`"string".find("x")`, -1},
+		{`"ab".reverse()`, "ba"},
+		{`"abc".upcase()`, "ABC"},
+		{`"a b c".upcase()`, "A B C"},
+		{`"a%b!c".upcase()`, "A%B!C"},
+		{`"ABC".downcase()`, "abc"},
+		{`"A B C".downcase()`, "a b c"},
+		{`"A%B!C".downcase()`, "a%b!c"},
+		{`"     ".strip()`, ""},
+		{`"
+                       string".strip()`, "string"},
+		{`"abc".replace("a", "A")`, "Abc"},
+		{`"These are the days of summer".count("e")`, 5},
 	}
 
 	testInput(t, tests)

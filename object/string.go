@@ -62,6 +62,15 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 			out[i] = c
 		}
 		return &String{Value: string(out)}
+	case "reverse!":
+		out := make([]rune, utf8.RuneCountInString(s.Value))
+		i := len(out)
+		for _, c := range s.Value {
+			i--
+			out[i] = c
+		}
+		s.Value = string(out)
+		return &Null{}
 	case "split":
 		sep := " "
 
@@ -79,10 +88,19 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 		return &Array{Elements: result}
 	case "strip":
 		return &String{Value: strings.TrimSpace(s.Value)}
-	case "tolower":
+	case "strip!":
+		s.Value = strings.TrimSpace(s.Value)
+		return &Null{}
+	case "downcase":
 		return &String{Value: strings.ToLower(s.Value)}
-	case "toupper":
+	case "downcase!":
+		s.Value = strings.ToLower(s.Value)
+		return &Null{}
+	case "upcase":
 		return &String{Value: strings.ToUpper(s.Value)}
+	case "upcase!":
+		s.Value = strings.ToUpper(s.Value)
+		return &Null{}
 	case "type":
 		return &String{Value: "string"}
 	}
