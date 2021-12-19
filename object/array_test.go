@@ -9,6 +9,7 @@ import (
 func TestArrayObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1,2,3].size()`, 3},
+		{`[1,2,3].yeet()`, 3},
 		{`[].nope()`, "Failed to invoke method: nope"},
 	}
 
