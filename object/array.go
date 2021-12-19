@@ -25,59 +25,57 @@ func (ao *Array) Inspect() string {
 	return out.String()
 }
 
-var arrayObjectMethods = map[string]ObjectMethod{
-	"type": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
-			return &String{Value: string(o.Type())}
+func init() {
+	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
+		"size": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				return &Integer{Value: int64(len(ao.Elements))}
+			},
 		},
-	},
-	"size": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
-			ao := o.(*Array)
-			return &Integer{Value: int64(len(ao.Elements))}
+		"yeet": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
+
+				newElements := make([]Object, length-1, length-1)
+				copy(newElements, ao.Elements[:(length-1)])
+
+				returnElement := ao.Elements[length-1]
+
+				ao.Elements = newElements
+
+				return returnElement
+			},
 		},
-	},
-	"yeet": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
-			ao := o.(*Array)
-			length := len(ao.Elements)
+		"yoink": ObjectMethod{
+			argPattern: [][]string{
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
 
-			newElements := make([]Object, length-1, length-1)
-			copy(newElements, ao.Elements[:(length-1)])
+				newElements := make([]Object, length+1, length+1)
+				copy(newElements, ao.Elements)
+				newElements[length] = args[0]
 
-			returnElement := ao.Elements[length-1]
-
-			ao.Elements = newElements
-
-			return returnElement
+				ao.Elements = newElements
+				return &Null{}
+			},
 		},
-	},
-	"yoink": ObjectMethod{
-		argPattern: [][]string{
-			[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
-		},
-		method: func(o Object, args []Object) Object {
-			ao := o.(*Array)
-			length := len(ao.Elements)
-
-			newElements := make([]Object, length+1, length+1)
-			copy(newElements, ao.Elements)
-			newElements[length] = args[0]
-
-			ao.Elements = newElements
-			return &Null{}
-		},
-	},
+	}
 }
 
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "methods":
-		return listObjectMethods(arrayObjectMethods)
-	case "wat":
-		return listObjectUsage(ao, arrayObjectMethods)
-	default:
-		if objMethod, ok := arrayObjectMethods[method]; ok {
+	if oms, ok := objectMethods[ao.Type()]; ok {
+		if objMethod, ok := oms[method]; ok {
+			return objMethod.Call(ao, args)
+		}
+	}
+
+	if oms, ok := objectMethods["*"]; ok {
+		if objMethod, ok := oms[method]; ok {
 			return objMethod.Call(ao, args)
 		}
 	}

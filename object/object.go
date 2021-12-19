@@ -167,25 +167,43 @@ func (om *ObjectMethod) Call(o Object, args []Object) Object {
 	return om.method(o, args)
 }
 
-func listObjectMethods(objectMethods map[string]ObjectMethod) *Array {
-	result := make([]Object, len(objectMethods), len(objectMethods))
-	var i int
-	for name := range objectMethods {
-		result[i] = &String{Value: name}
-		i++
-	}
-	return &Array{Elements: result}
-}
+var objectMethods = make(map[ObjectType]map[string]ObjectMethod)
 
-func listObjectUsage(parent Object, objectMethods map[string]ObjectMethod) *String {
-	result := make([]string, len(objectMethods), len(objectMethods))
-	var i int
-	for name := range objectMethods {
-		objectMethod, ok := objectMethods[name]
-		if ok {
-			result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))
-		}
-		i++
+func init() {
+	objectMethods["*"] = map[string]ObjectMethod{
+		"methods": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				oms := objectMethods[o.Type()]
+				result := make([]Object, len(oms), len(oms))
+				var i int
+				for name := range oms {
+					result[i] = &String{Value: name}
+					i++
+				}
+				return &Array{Elements: result}
+			},
+		},
+		"wat": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				oms := objectMethods[o.Type()]
+				result := make([]string, len(oms), len(oms))
+				var i int
+				for name, objectMethod := range oms {
+					result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))
+					i++
+				}
+				return &String{Value: fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n"))}
+			},
+		},
+		"type": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				return &String{Value: string(o.Type())}
+			},
+		},
+		"inspect": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				return &String{Value: o.Inspect()}
+			},
+		},
 	}
-	return &String{Value: fmt.Sprintf("%s supports the following methods:\n%s", parent.Type(), strings.Join(result, "\n"))}
 }

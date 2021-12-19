@@ -40,37 +40,35 @@ func (h *Hash) Inspect() string {
 	return out.String()
 }
 
-var hashObjectMethods = map[string]ObjectMethod{
-	"type": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
-			return &String{Value: string(o.Type())}
+func init() {
+	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
+		"keys": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				h := o.(*Hash)
+
+				keys := make([]Object, len(h.Pairs))
+
+				i := 0
+				for _, k := range h.Pairs {
+					keys[i] = k.Key
+					i++
+				}
+
+				return &Array{Elements: keys}
+			},
 		},
-	},
-	"keys": ObjectMethod{
-		method: func(o Object, _ []Object) Object {
-			h := o.(*Hash)
-
-			keys := make([]Object, len(h.Pairs))
-
-			i := 0
-			for _, k := range h.Pairs {
-				keys[i] = k.Key
-				i++
-			}
-
-			return &Array{Elements: keys}
-		},
-	},
+	}
 }
 
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
-	switch method {
-	case "methods":
-		return listObjectMethods(hashObjectMethods)
-	case "wat":
-		return listObjectUsage(h, hashObjectMethods)
-	default:
-		if objMethod, ok := hashObjectMethods[method]; ok {
+	if oms, ok := objectMethods[h.Type()]; ok {
+		if objMethod, ok := oms[method]; ok {
+			return objMethod.Call(h, args)
+		}
+	}
+
+	if oms, ok := objectMethods["*"]; ok {
+		if objMethod, ok := oms[method]; ok {
 			return objMethod.Call(h, args)
 		}
 	}
