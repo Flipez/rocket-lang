@@ -9,6 +9,7 @@ func TestBooleanObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`true.plz_s()`, "true"},
 		{`false.plz_s()`, "false"},
+		{`false.type()`, "BOOLEAN"},
 		{`false.nope()`, "Failed to invoke method: nope"},
 		{`(true.wat().lines().size() == true.methods().size() + 1).plz_s()`, "true"},
 	}

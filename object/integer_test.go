@@ -9,6 +9,7 @@ func TestIntegerObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`2.plz_s()`, "2"},
 		{`10.plz_s(2)`, "1010"},
+		{`10.type()`, "INTEGER"},
 		{`2.nope()`, "Failed to invoke method: nope"},
 		{`(2.wat().lines().size() == 2.methods().size() + 1).plz_s()`, "true"},
 	}
