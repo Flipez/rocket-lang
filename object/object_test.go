@@ -97,3 +97,73 @@ func testInput(t *testing.T, tests []inputTestCase) {
 		}
 	}
 }
+
+func TestReturnValue(t *testing.T) {
+	rv := &object.ReturnValue{Value: &object.String{Value: "a"}}
+
+	if rv.Type() != object.RETURN_VALUE_OBJ {
+		t.Errorf("returnValue.Type() returns wrong type")
+	}
+	if rv.Inspect() != "a" {
+		t.Errorf("returnValue.Inspect() returns wrong type")
+	}
+}
+
+func TestNullType(t *testing.T) {
+	n := &object.Null{}
+
+	if n.Type() != object.NULL_OBJ {
+		t.Errorf("null.Type() returns wrong type")
+	}
+	if n.Inspect() != "null" {
+		t.Errorf("null.Inspect() returns wrong type")
+	}
+}
+func TestNullObjectMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`[1][1].nope()`, "Failed to invoke method: nope"},
+	}
+
+	testInput(t, tests)
+}
+
+func TestErrorType(t *testing.T) {
+	err := &object.Error{Message: "test"}
+
+	if err.Type() != object.ERROR_OBJ {
+		t.Errorf("error.Type() returns wrong type")
+	}
+	if err.Inspect() != "ERROR: test" {
+		t.Errorf("error.Inspect() returns wrong type")
+	}
+}
+func TestErrorObjectMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`[1][1].nope().nope()`, "Failed to invoke method: nope"},
+	}
+
+	testInput(t, tests)
+}
+
+func TestFunctionObjectMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`fn(){}.nope()`, "Failed to invoke method: nope"},
+	}
+
+	testInput(t, tests)
+}
+func TestFunctionType(t *testing.T) {
+	tests := []inputTestCase{
+		{"fn(){}", "fn() {\n\n}"},
+		{"fn(a){puts(a)}", "fn(a) {\nputs(a)\n}"},
+	}
+
+	for _, tt := range tests {
+		fn := testEval(tt.input).(*object.Function)
+		fnInspect := fn.Inspect()
+
+		if fnInspect != tt.expected {
+			t.Errorf("wrong string. expected=%#v, got=%#v", tt.expected, fnInspect)
+		}
+	}
+}
