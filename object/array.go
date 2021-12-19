@@ -52,6 +52,22 @@ var arrayObjectMethods = map[string]ObjectMethod{
 			return returnElement
 		},
 	},
+	"yoink": ObjectMethod{
+		argPattern: [][]string{
+			[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+		},
+		method: func(o Object, args []Object) Object {
+			ao := o.(*Array)
+			length := len(ao.Elements)
+
+			newElements := make([]Object, length+1, length+1)
+			copy(newElements, ao.Elements)
+			newElements[length] = args[0]
+
+			ao.Elements = newElements
+			return &Null{}
+		},
+	},
 }
 
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
