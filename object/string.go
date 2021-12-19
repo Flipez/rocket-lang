@@ -11,41 +11,52 @@ type String struct {
 	Value string
 }
 
+var stringObjectMethods = map[string]ObjectMethod{
+	"count": ObjectMethod{
+		argPattern: [][]string{
+			[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
+		},
+		method: func(s *String, args []Object) Object {
+			arg := args[0].Inspect()
+			return &Integer{Value: int64(strings.Count(s.Value, arg))}
+		},
+	},
+
+	"find": ObjectMethod{
+		argPattern: [][]string{
+			[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
+		},
+		method: func(s *String, args []Object) Object {
+			arg := args[0].Inspect()
+			return &Integer{Value: int64(strings.Index(s.Value, arg))}
+		},
+	},
+
+	"size": ObjectMethod{
+		method: func(s *String, _ []Object) Object {
+			return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
+		},
+	},
+}
+
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return s.Value }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
 	switch method {
-	case "count":
-		if len(args) < 1 {
-			return &Error{Message: "Missing argument to count()!"}
+	case "methods":
+		result := make([]Object, len(stringObjectMethods), len(stringObjectMethods))
+		var i int
+		for name := range stringObjectMethods {
+			result[i] = &String{Value: name}
+			i++
 		}
-		// Note that this coerces into a string :)
-		arg := args[0].Inspect()
-		return &Integer{Value: int64(strings.Count(s.Value, arg))}
-	case "find":
-		if len(args) < 1 {
-			return &Error{Message: "Missing argument to find()!"}
-		}
-
-		// Note that this coerces into a string :)
-		arg := args[0].Inspect()
-		return &Integer{Value: int64(strings.Index(s.Value, arg))}
-	case "size":
-		return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
+		return &Array{Elements: result}
 	case "plz_i":
 		i, err := strconv.ParseInt(s.Value, 10, 64)
 		if err != nil {
 			i = 0
 		}
 		return &Integer{Value: i}
-	case "methods":
-		names := []string{"count", "find", "size", "methods", "replace", "reverse", "split", "toupper", "tolower", "type"}
-
-		result := make([]Object, len(names), len(names))
-		for i, txt := range names {
-			result[i] = &String{Value: txt}
-		}
-		return &Array{Elements: result}
 	case "replace":
 		if len(args) < 2 {
 			return &Error{Message: "Missing arguments to replace()!"}
@@ -85,6 +96,10 @@ func (s *String) InvokeMethod(method string, env Environment, args ...Object) Ob
 		return &String{Value: strings.ToUpper(s.Value)}
 	case "type":
 		return &String{Value: "string"}
+	default:
+		if objMethod, ok := stringObjectMethods[method]; ok {
+			return objMethod.Call(s, args)
+		}
 	}
 
 	return nil
