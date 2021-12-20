@@ -29,7 +29,7 @@ var builtins = map[string]*object.Builtin{
 				fmt.Println(arg.Inspect())
 			}
 
-			return NULL
+			return nil
 		},
 	},
 	"exit": &object.Builtin{
@@ -43,7 +43,7 @@ var builtins = map[string]*object.Builtin{
 
 			os.Exit(int(args[0].(*object.Integer).Value))
 
-			return NULL
+			return nil
 		},
 	},
 	"raise": &object.Builtin{
@@ -61,7 +61,7 @@ var builtins = map[string]*object.Builtin{
 			fmt.Printf("🔥 RocketLang raised an error: %s\n", args[1].Inspect())
 			os.Exit(int(args[0].(*object.Integer).Value))
 
-			return NULL
+			return nil
 		},
 	},
 	"open": &object.Builtin{
