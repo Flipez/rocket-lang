@@ -350,6 +350,8 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		return evalIntegerInfixExpression(operator, left, right)
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
+	case left.Type() == object.ARRAY_OBJ && right.Type() == object.ARRAY_OBJ:
+		return evalArrayInfixExpression(operator, left, right)
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -362,6 +364,22 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 	switch operator {
 	case "+":
 		return &object.String{Value: leftVal + rightVal}
+	default:
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+	}
+}
+
+func evalArrayInfixExpression(operator string, left, right object.Object) object.Object {
+	leftArray := left.(*object.Array)
+	rightArray := right.(*object.Array)
+
+	switch operator {
+	case "+":
+		length := len(leftArray.Elements) + len(rightArray.Elements)
+		elements := make([]object.Object, length, length)
+		copy(elements, leftArray.Elements)
+		copy(elements[len(leftArray.Elements):], rightArray.Elements)
+		return &object.Array{Elements: elements}
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
