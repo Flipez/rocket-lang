@@ -7,6 +7,7 @@ import (
 
 type Array struct {
 	Elements []Object
+	offset   int
 }
 
 func (ao *Array) Type() ObjectType { return ARRAY_OBJ }
@@ -69,4 +70,18 @@ func init() {
 
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookop(ao, method, args)
+}
+
+func (ao *Array) Reset() {
+	ao.offset = 0
+}
+func (ao *Array) Next() (Object, Object, bool) {
+	if ao.offset < len(ao.Elements) {
+		ao.offset++
+
+		element := ao.Elements[ao.offset-1]
+		return element, &Integer{Value: int64(ao.offset - 1)}, true
+	}
+
+	return nil, &Integer{Value: 0}, false
 }

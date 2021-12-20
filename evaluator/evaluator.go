@@ -24,6 +24,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return Eval(node.Expression, env)
 	case *ast.BlockStatement:
 		return evalBlockStatement(node, env)
+	case *ast.ForeachStatement:
+		return evalForeachExpression(node, env)
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
 		if isError(val) {
@@ -107,6 +109,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+	case *ast.AssignStatement:
+		return evalAssignStatement(node, env)
 	}
 
 	return nil
@@ -446,4 +450,61 @@ func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Enviro
 	}
 
 	return newError("Failed to invoke method: %s", call.Call.(*ast.CallExpression).Function.String())
+}
+
+func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) object.Object {
+	val := Eval(fle.Value, env)
+
+	helper, ok := val.(object.Iterable)
+	if !ok {
+		return newError("%s object doesn't implement the Iterable interface", val.Type())
+	}
+
+	var permit []string
+	permit = append(permit, fle.Ident)
+	if fle.Index != "" {
+		permit = append(permit, fle.Index)
+	}
+
+	//
+	// This will allow writing EVERYTHING to the parent scope,
+	// except the two variables named in the permit-array
+	child := object.NewTemporaryScope(env, permit)
+
+	helper.Reset()
+
+	ret, idx, ok := helper.Next()
+
+	for ok {
+
+		child.Set(fle.Ident, ret)
+
+		idxName := fle.Index
+		if idxName != "" {
+			child.Set(fle.Index, idx)
+		}
+
+		rt := Eval(fle.Body, child)
+
+		//
+		// If we got an error/return then we handle it.
+		//
+		if !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+			return rt
+		}
+
+		ret, idx, ok = helper.Next()
+	}
+
+	return &object.Null{}
+}
+
+func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val object.Object) {
+	evaluated := Eval(a.Value, env)
+	if isError(evaluated) {
+		return evaluated
+	}
+
+	env.Set(a.Name.String(), evaluated)
+	return evaluated
 }

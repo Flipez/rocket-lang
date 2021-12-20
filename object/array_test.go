@@ -14,6 +14,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`let a = []; a.yoink(1); a`, "[1]"},
 		{`[].nope()`, "Failed to invoke method: nope"},
 		{`([].wat().lines().size() == [].methods().size() + 1).plz_s()`, "true"},
+		{`let a = ["a", "b"]; let b = []; foreach i, item in a { b.yoink(item) }; b.size()`, 2},
 	}
 
 	testInput(t, tests)
