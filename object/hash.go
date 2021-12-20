@@ -29,9 +29,12 @@ func (h *Hash) Type() ObjectType { return HASH_OBJ }
 func (h *Hash) Inspect() string {
 	var out bytes.Buffer
 
-	pairs := []string{}
+	length := len(h.Pairs)
+	pairs := make([]string, length, length)
+	var index int
 	for _, pair := range h.Pairs {
-		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
+		pairs[index] = fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect())
+		index++
 	}
 
 	out.WriteString("{")
