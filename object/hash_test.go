@@ -13,6 +13,9 @@ func TestHashObjectMethods(t *testing.T) {
 		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
 		{`{}.type()`, "HASH"},
 		{`let a = {"a": "b", "b":"a"};let b = []; foreach key, value in a { b.yoink(key) }; b.size()`, 2},
+		{`{"a": 1, "b": 2}["a"]`, 1},
+		{`{"a": 1, "b": 2}.keys().size()`, 2},
+		{`{"a": 1, "b": 2}.values().size()`, 2},
 	}
 
 	testInput(t, tests)
