@@ -8,6 +8,7 @@ import (
 
 func TestArrayObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
+		{`[1,2,3][0]`, 1},
 		{`[1,2,3].size()`, 3},
 		{`[1,2,3].yeet()`, 3},
 		{`[1,2,3].type()`, "ARRAY"},
@@ -15,6 +16,11 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[].nope()`, "Failed to invoke method: nope"},
 		{`([].wat().lines().size() == [].methods().size() + 1).plz_s()`, "true"},
 		{`let a = ["a", "b"]; let b = []; foreach i, item in a { b.yoink(item) }; b.size()`, 2},
+		{`[1,2,3].index(4)`, -1},
+		{`[1,2,3].index(3)`, 2},
+		{`[1,2,3].index(true)`, -1},
+		{`[1,2,3].index()`, "To few arguments: want=1, got=0"},
+		{`let a = []; let b = []; foreach i in a { b.yoink(a[i]) }; a.size()==b.size()`, true},
 	}
 
 	testInput(t, tests)
