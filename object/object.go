@@ -223,3 +223,71 @@ type Iterable interface {
 	Reset()
 	Next() (Object, Object, bool)
 }
+
+func CompareObjects(ao, bo Object) bool {
+	switch ao.Type() {
+	case INTEGER_OBJ:
+		if b, ok := bo.(*Integer); ok {
+			return ao.(*Integer).Value == b.Value
+		}
+		return false
+	case BOOLEAN_OBJ:
+		if b, ok := bo.(*Boolean); ok {
+			return ao.(*Boolean).Value == b.Value
+		}
+		return false
+	case ERROR_OBJ:
+		if b, ok := bo.(*Error); ok {
+			return ao.(*Error).Message == b.Message
+		}
+		return false
+	case STRING_OBJ:
+		if b, ok := bo.(*String); ok {
+			return ao.(*String).Value == b.Value
+		}
+		return false
+	case ARRAY_OBJ:
+		if b, ok := bo.(*Array); ok {
+			a, _ := ao.(*Array)
+
+			if len(a.Elements) != len(b.Elements) {
+				return false
+			}
+
+			for idx, element := range a.Elements {
+				if !CompareObjects(element, b.Elements[idx]) {
+					return false
+				}
+			}
+
+			return true
+		}
+		return false
+	case HASH_OBJ:
+		if b, ok := bo.(*Hash); ok {
+			a, _ := ao.(*Hash)
+
+			if len(a.Pairs) != len(b.Pairs) {
+				return false
+			}
+
+			for aKey, aPair := range a.Pairs {
+				bPair, ok := b.Pairs[aKey]
+				if !ok {
+					return false
+				}
+				if !CompareObjects(aPair.Key, bPair.Key) {
+					return false
+				}
+				if !CompareObjects(aPair.Value, bPair.Value) {
+					return false
+				}
+			}
+
+			return true
+		}
+		return false
+	}
+
+	return false
+}
