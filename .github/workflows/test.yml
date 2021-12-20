@@ -16,9 +16,7 @@ jobs:
         with:
           go-version: 1.17
       - name: Test
-        run: go test `go list ./... | grep -v examples` -coverprofile=profile.out -covermode=atomic
-      - name: Merge Test
-        run: ./merge_coverage.sh
+        run: ./coverage.sh
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
