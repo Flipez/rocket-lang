@@ -12,6 +12,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{}.nope()`, "Failed to invoke method: nope"},
 		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
 		{`{}.type()`, "HASH"},
+		{`let a = {"a": "b", "b":"a"};let b = []; foreach key, value in a { b.yoink(key) }; b.size()`, 2},
 	}
 
 	testInput(t, tests)
