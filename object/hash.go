@@ -22,10 +22,6 @@ type HashKey struct {
 	Value uint64
 }
 
-type Hashable interface {
-	HashKey() HashKey
-}
-
 func (h *Hash) Type() ObjectType { return HASH_OBJ }
 func (h *Hash) Inspect() string {
 	var out bytes.Buffer

@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("obj is not String. got=%T(%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%s, want=%s",
+			result.Value, expected)
+		return false
+	}
+	return true
+}
+
 func TestStringObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`"test".count("e")`, 1},
