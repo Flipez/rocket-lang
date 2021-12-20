@@ -40,7 +40,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			ctx.Println(evaluated.Inspect())
+			ctx.Println("=> " + evaluated.Inspect())
 		}
 	})
 

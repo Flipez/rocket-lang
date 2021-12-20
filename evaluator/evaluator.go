@@ -501,14 +501,14 @@ func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) o
 		//
 		// If we got an error/return then we handle it.
 		//
-		if !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+		if rt != nil && !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
 			return rt
 		}
 
 		ret, idx, ok = helper.Next()
 	}
 
-	return &object.Null{}
+	return val
 }
 
 func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val object.Object) {
