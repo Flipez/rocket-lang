@@ -2,6 +2,7 @@ package object
 
 import (
 	"bytes"
+	"hash/fnv"
 	"strings"
 )
 
@@ -25,6 +26,13 @@ func (ao *Array) Inspect() string {
 	out.WriteString("]")
 
 	return out.String()
+}
+
+func (ao *Array) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(ao.Inspect()))
+
+	return HashKey{Type: ao.Type(), Value: h.Sum64()}
 }
 
 func init() {

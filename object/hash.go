@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"strings"
 )
 
@@ -42,6 +43,13 @@ func (h *Hash) Inspect() string {
 	out.WriteString("}")
 
 	return out.String()
+}
+
+func (h *Hash) HashKey() HashKey {
+	ha := fnv.New64a()
+	ha.Write([]byte(h.Inspect()))
+
+	return HashKey{Type: h.Type(), Value: ha.Sum64()}
 }
 
 func init() {
