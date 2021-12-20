@@ -1,8 +1,7 @@
 ---
-title: Introduction
+title: Home
 type: docs
 ---
-
 # Welcome to the Home of 🚀🇱🅰🆖
 
 {{< columns >}}
