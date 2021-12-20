@@ -203,7 +203,7 @@ func init() {
 	}
 }
 
-func objectMethodLookop(o Object, method string, args []Object) Object {
+func objectMethodLookup(o Object, method string, args []Object) Object {
 	if oms, ok := objectMethods[o.Type()]; ok {
 		if objMethod, ok := oms[method]; ok {
 			return objMethod.Call(o, args)

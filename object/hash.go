@@ -62,7 +62,7 @@ func init() {
 }
 
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookop(h, method, args)
+	return objectMethodLookup(h, method, args)
 
 }
 

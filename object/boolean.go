@@ -35,6 +35,6 @@ func init() {
 }
 
 func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookop(b, method, args)
+	return objectMethodLookup(b, method, args)
 
 }

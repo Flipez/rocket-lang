@@ -182,7 +182,7 @@ func init() {
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return s.Value }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookop(s, method, args)
+	return objectMethodLookup(s, method, args)
 }
 
 func (s *String) HashKey() HashKey {

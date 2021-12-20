@@ -137,5 +137,5 @@ func init() {
 }
 
 func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookop(f, method, args)
+	return objectMethodLookup(f, method, args)
 }
