@@ -2,6 +2,7 @@ package object
 
 import (
 	"bytes"
+	"fmt"
 	"hash/fnv"
 	"strings"
 )
@@ -41,6 +42,66 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
 				return &Integer{Value: int64(len(ao.Elements))}
+			},
+		},
+		"uniq": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+
+				items := make(map[HashKey]Object)
+				for _, element := range ao.Elements {
+					helper, ok := element.(Hashable)
+					if !ok {
+						return &Error{Message: fmt.Sprintf("failed because element %s is not hashable", element.Type())}
+					}
+					items[helper.HashKey()] = element
+				}
+
+				length := len(items)
+				newElements := make([]Object, length, length)
+				var idx int
+				for _, item := range items {
+					newElements[idx] = item
+					idx++
+				}
+
+				return &Array{Elements: newElements}
+			},
+		},
+		"index": ObjectMethod{
+			argPattern: [][]string{
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FILE_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				ao := o.(*Array)
+
+				index := -1
+				for idx, element := range ao.Elements {
+					if CompareObjects(element, args[0]) {
+						index = idx
+						break
+					}
+				}
+
+				return &Integer{Value: int64(index)}
+			},
+		},
+		"first": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				if len(ao.Elements) == 0 {
+					return new(Null)
+				}
+				return ao.Elements[0]
+			},
+		},
+		"last": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				ao := o.(*Array)
+				if len(ao.Elements) == 0 {
+					return new(Null)
+				}
+				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
 		"yeet": ObjectMethod{
