@@ -109,6 +109,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+	case *ast.AssignStatement:
+		return evalAssignStatement(node, env)
 	}
 
 	return nil
@@ -458,7 +460,16 @@ func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) o
 		return newError("%s object doesn't implement the Iterable interface", val.Type())
 	}
 
-	child := object.NewEnclosedEnvironment(env)
+	var permit []string
+	permit = append(permit, fle.Ident)
+	if fle.Index != "" {
+		permit = append(permit, fle.Index)
+	}
+
+	//
+	// This will allow writing EVERYTHING to the parent scope,
+	// except the two variables named in the permit-array
+	child := object.NewTemporaryScope(env, permit)
 
 	helper.Reset()
 
@@ -473,10 +484,27 @@ func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) o
 			child.Set(fle.Index, idx)
 		}
 
-		Eval(fle.Body, child)
+		rt := Eval(fle.Body, child)
+
+		//
+		// If we got an error/return then we handle it.
+		//
+		if !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+			return rt
+		}
 
 		ret, idx, ok = helper.Next()
 	}
 
 	return &object.Null{}
+}
+
+func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val object.Object) {
+	evaluated := Eval(a.Value, env)
+	if isError(evaluated) {
+		return evaluated
+	}
+
+	env.Set(a.Name.String(), evaluated)
+	return evaluated
 }
