@@ -69,6 +69,21 @@ func init() {
 				return &Array{Elements: keys}
 			},
 		},
+		"values": ObjectMethod{
+			method: func(o Object, _ []Object) Object {
+				h := o.(*Hash)
+
+				values := make([]Object, len(h.Pairs))
+
+				i := 0
+				for _, k := range h.Pairs {
+					values[i] = k.Value
+					i++
+				}
+
+				return &Array{Elements: values}
+			},
+		},
 	}
 }
 
