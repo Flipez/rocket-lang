@@ -1,6 +1,6 @@
 # String
 
 ## Literal Specific Methods
-{{ range $method, $object := . }}
-### {{ $object.argPattern }}
+{{ range $method, $object := .Methods }}
+### {{ $object.Usage $method }}
 {{ end }}
