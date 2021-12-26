@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/flipez/rocket-lang/object"
-	"html/template"
 	"os"
+	"text/template"
 )
 
 func main() {
@@ -19,8 +19,13 @@ func main() {
 
 	paths := []string{"docs/templates/literal.md"}
 
+	f, err := os.Create("docs/content/docs/specification/literals/string.md")
+	if err != nil {
+		panic(err)
+	}
+
 	t := template.Must(template.New("literal.md").ParseFiles(paths...))
-	err := t.Execute(os.Stdout, tempData)
+	err = t.Execute(f, tempData)
 	if err != nil {
 		panic(err)
 	}

@@ -40,10 +40,13 @@ type ObjectMethod struct {
 	argsOptional   bool
 	argOverloading bool
 	argPattern     [][]string
+	returnPattern  [][]string
+	description    string
+	example        string
 	method         func(Object, []Object) Object
 }
 
-func (om *ObjectMethod) validateArgs(args []Object) error {
+func (om ObjectMethod) validateArgs(args []Object) error {
 	if (len(args) < len(om.argPattern)) && !om.argsOptional {
 		return fmt.Errorf("To few arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
@@ -88,7 +91,23 @@ func (om *ObjectMethod) validateArgs(args []Object) error {
 	return nil
 }
 
-func (om *ObjectMethod) Usage(name string) string {
+func (om ObjectMethod) ReturnPattern() string {
+	types := make([]string, len(om.returnPattern))
+	for idx, pattern := range om.returnPattern {
+		types[idx] = strings.Join(pattern, "|")
+	}
+	return strings.Join(types, ", ")
+}
+
+func (om ObjectMethod) Description() string {
+	return om.description
+}
+
+func (om ObjectMethod) Example() string {
+	return om.example
+}
+
+func (om ObjectMethod) Usage(name string) string {
 	var args string
 
 	if len(om.argPattern) > 0 {
@@ -106,7 +125,7 @@ func (om *ObjectMethod) Usage(name string) string {
 	return fmt.Sprintf("%s(%s)", name, args)
 }
 
-func (om *ObjectMethod) Call(o Object, args []Object) Object {
+func (om ObjectMethod) Call(o Object, args []Object) Object {
 	if err := om.validateArgs(args); err != nil {
 		return &Error{Message: err.Error()}
 	}
@@ -116,7 +135,7 @@ func (om *ObjectMethod) Call(o Object, args []Object) Object {
 var objectMethods = make(map[ObjectType]map[string]ObjectMethod)
 
 func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
-	return (objectMethods)
+	return objectMethods
 }
 
 func init() {

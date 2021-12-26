@@ -18,6 +18,9 @@ func init() {
 			argPattern: [][]string{
 				[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
 			},
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				arg := args[0].Inspect()
@@ -28,6 +31,9 @@ func init() {
 			argPattern: [][]string{
 				[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
 			},
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				arg := args[0].Inspect()
@@ -35,6 +41,9 @@ func init() {
 			},
 		},
 		"size": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
@@ -43,6 +52,9 @@ func init() {
 		"plz_i": ObjectMethod{
 			argsOptional: true,
 			argPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
+			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
 			method: func(o Object, args []Object) Object {
@@ -67,6 +79,9 @@ func init() {
 				[]string{STRING_OBJ},
 				[]string{STRING_OBJ},
 			},
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				oldS := args[0].Inspect()
@@ -75,6 +90,9 @@ func init() {
 			},
 		},
 		"reverse": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				out := make([]rune, utf8.RuneCountInString(s.Value))
@@ -87,6 +105,9 @@ func init() {
 			},
 		},
 		"reverse!": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{NULL_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				out := make([]rune, utf8.RuneCountInString(s.Value))
@@ -103,6 +124,9 @@ func init() {
 			argsOptional: true,
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
+			},
+			returnPattern: [][]string{
+				[]string{ARRAY_OBJ},
 			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
@@ -123,6 +147,9 @@ func init() {
 			},
 		},
 		"lines": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{ARRAY_OBJ},
+			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				sep := "\n"
@@ -138,12 +165,18 @@ func init() {
 			},
 		},
 		"strip": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				return &String{Value: strings.TrimSpace(s.Value)}
 			},
 		},
 		"strip!": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{NULL_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.TrimSpace(s.Value)
@@ -151,12 +184,29 @@ func init() {
 			},
 		},
 		"downcase": ObjectMethod{
+			description: "Returns the string with all uppercase letters replaced with lowercase counterparts.",
+			example: `🚀 > "TeST".downcase()
+=> test`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				return &String{Value: strings.ToLower(s.Value)}
 			},
 		},
 		"downcase!": ObjectMethod{
+			description: "Replaces all upcase characters with lowercase counterparts.",
+			example: `
+🚀 > a = "TeST"
+=> TeST
+🚀 > a.downcase!()
+=> null
+🚀 > a
+=> test`,
+			returnPattern: [][]string{
+				[]string{NULL_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.ToLower(s.Value)
@@ -164,12 +214,29 @@ func init() {
 			},
 		},
 		"upcase": ObjectMethod{
+			description: "Returns the string with all lowercase letters replaced with uppercase counterparts.",
+			example: `🚀 > "test".upcase()
+=> TEST`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				return &String{Value: strings.ToUpper(s.Value)}
 			},
 		},
 		"upcase!": ObjectMethod{
+			description: "Replaces all lowercase characters with upcase counterparts.",
+			example: `
+🚀 > a = "test"
+=> test
+🚀 > a.upcase!()
+=> null
+🚀 > a
+=> TEST`,
+			returnPattern: [][]string{
+				[]string{NULL_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.ToUpper(s.Value)
