@@ -115,6 +115,10 @@ func (om *ObjectMethod) Call(o Object, args []Object) Object {
 
 var objectMethods = make(map[ObjectType]map[string]ObjectMethod)
 
+func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
+	return (objectMethods)
+}
+
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"methods": ObjectMethod{
