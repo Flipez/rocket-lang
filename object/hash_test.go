@@ -8,7 +8,7 @@ import (
 
 func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`{"a": 2}.keys()`, "[a]"},
+		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "Failed to invoke method: nope"},
 		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
 		{`{}.type()`, "HASH"},
@@ -24,8 +24,8 @@ func TestHashObjectMethods(t *testing.T) {
 func TestHashInspect(t *testing.T) {
 	tests := []inputTestCase{
 		{"{}", "{}"},
-		{`{"a": 1}`, "{a: 1}"},
-		{`{true: "a"}`, "{true: a}"},
+		{`{"a": 1}`, `{"a": 1}`},
+		{`{true: "a"}`, `{true: "a"}`},
 	}
 
 	for _, tt := range tests {
