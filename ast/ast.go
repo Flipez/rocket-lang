@@ -334,3 +334,61 @@ func (ce *CallExpression) String() string {
 
 	return out.String()
 }
+
+type ObjectCallExpression struct {
+	Token  token.Token
+	Object Expression
+	Call   Expression
+}
+
+func (oce *ObjectCallExpression) expressionNode() {}
+
+func (oce *ObjectCallExpression) TokenLiteral() string {
+	return oce.Token.Literal
+}
+
+func (oce *ObjectCallExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString(oce.Object.String())
+	out.WriteString(".")
+	out.WriteString(oce.Call.String())
+
+	return out.String()
+}
+
+type ForeachStatement struct {
+	Token token.Token
+	Index string
+	Ident string
+	Value Expression
+	Body  *BlockStatement
+}
+
+func (fes *ForeachStatement) expressionNode()      {}
+func (fes *ForeachStatement) TokenLiteral() string { return fes.Token.Literal }
+func (fes *ForeachStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString("foreach ")
+	out.WriteString(fes.Ident)
+	out.WriteString(" ")
+	out.WriteString(fes.Value.String())
+	out.WriteString(fes.Body.String())
+	return out.String()
+}
+
+type AssignStatement struct {
+	Token token.Token
+	Name  *Identifier
+	Value Expression
+}
+
+func (as *AssignStatement) expressionNode()      {}
+func (as *AssignStatement) statementNode()       {}
+func (as *AssignStatement) TokenLiteral() string { return as.Token.Literal }
+func (as *AssignStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString(as.Name.String())
+	out.WriteString(" = ")
+	out.WriteString(as.Value.String())
+	return out.String()
+}

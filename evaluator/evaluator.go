@@ -24,6 +24,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return Eval(node.Expression, env)
 	case *ast.BlockStatement:
 		return evalBlockStatement(node, env)
+	case *ast.ForeachStatement:
+		return evalForeachExpression(node, env)
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue, env)
 		if isError(val) {
@@ -102,8 +104,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalIndexExpression(left, index)
 
+	case *ast.ObjectCallExpression:
+		res := evalObjectCallExpression(node, env)
+		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+	case *ast.AssignStatement:
+		return evalAssignStatement(node, env)
 	}
 
 	return nil
@@ -326,10 +333,6 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 		return nativeBoolToBooleanObject(leftVal < rightVal)
 	case ">":
 		return nativeBoolToBooleanObject(leftVal > rightVal)
-	case "==":
-		return nativeBoolToBooleanObject(leftVal == rightVal)
-	case "!=":
-		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -337,16 +340,18 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
 	switch {
+	case operator == "==":
+		return nativeBoolToBooleanObject(object.CompareObjects(left, right))
+	case operator == "!=":
+		return nativeBoolToBooleanObject(!object.CompareObjects(left, right))
+	case left.Type() != right.Type():
+		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
-	case left.Type() != right.Type():
-		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
-	case operator == "==":
-		return nativeBoolToBooleanObject(left == right)
-	case operator == "!=":
-		return nativeBoolToBooleanObject(left != right)
+	case left.Type() == object.ARRAY_OBJ && right.Type() == object.ARRAY_OBJ:
+		return evalArrayInfixExpression(operator, left, right)
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -359,8 +364,22 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 	switch operator {
 	case "+":
 		return &object.String{Value: leftVal + rightVal}
-	case "==":
-		return nativeBoolToBooleanObject(leftVal == rightVal)
+	default:
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+	}
+}
+
+func evalArrayInfixExpression(operator string, left, right object.Object) object.Object {
+	leftArray := left.(*object.Array)
+	rightArray := right.(*object.Array)
+
+	switch operator {
+	case "+":
+		length := len(leftArray.Elements) + len(rightArray.Elements)
+		elements := make([]object.Object, length, length)
+		copy(elements, leftArray.Elements)
+		copy(elements[len(leftArray.Elements):], rightArray.Elements)
+		return &object.Array{Elements: elements}
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -429,4 +448,75 @@ func isError(obj object.Object) bool {
 		return obj.Type() == object.ERROR_OBJ
 	}
 	return false
+}
+
+func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
+
+	obj := Eval(call.Object, env)
+	if method, ok := call.Call.(*ast.CallExpression); ok {
+		args := evalExpressions(call.Call.(*ast.CallExpression).Arguments, env)
+		ret := obj.InvokeMethod(method.Function.String(), *env, args...)
+		if ret != nil {
+			return ret
+		}
+	}
+
+	return newError("Failed to invoke method: %s", call.Call.(*ast.CallExpression).Function.String())
+}
+
+func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) object.Object {
+	val := Eval(fle.Value, env)
+
+	helper, ok := val.(object.Iterable)
+	if !ok {
+		return newError("%s object doesn't implement the Iterable interface", val.Type())
+	}
+
+	var permit []string
+	permit = append(permit, fle.Ident)
+	if fle.Index != "" {
+		permit = append(permit, fle.Index)
+	}
+
+	//
+	// This will allow writing EVERYTHING to the parent scope,
+	// except the two variables named in the permit-array
+	child := object.NewTemporaryScope(env, permit)
+
+	helper.Reset()
+
+	ret, idx, ok := helper.Next()
+
+	for ok {
+
+		child.Set(fle.Ident, ret)
+
+		idxName := fle.Index
+		if idxName != "" {
+			child.Set(fle.Index, idx)
+		}
+
+		rt := Eval(fle.Body, child)
+
+		//
+		// If we got an error/return then we handle it.
+		//
+		if rt != nil && !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+			return rt
+		}
+
+		ret, idx, ok = helper.Next()
+	}
+
+	return val
+}
+
+func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val object.Object) {
+	evaluated := Eval(a.Value, env)
+	if isError(evaluated) {
+		return evaluated
+	}
+
+	env.Set(a.Name.String(), evaluated)
+	return evaluated
 }

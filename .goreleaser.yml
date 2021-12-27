@@ -34,7 +34,7 @@ nfpms:
     license: MIT
     formats:
       - deb
-    file_name_template: "{{.ProjectName}}_{{.Os}}_{{.Arch}}"
+    file_name_template: "{{.ProjectName}}_{{.Os}}_{{.Arch}}_{{ .Tag }}"
 
 # .goreleaser.yml
 brews:

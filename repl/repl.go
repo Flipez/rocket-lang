@@ -15,13 +15,14 @@ import (
 
 const PROMPT = ">> "
 
-var buildVersion = "v0.9.0"
-var buildDate = "2021-09-27T21:13:44Z"
+var buildVersion = "v0.10.0"
+var buildDate = "2021-12-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
 	shell := ishell.New()
 	shell.SetHomeHistoryPath(".rocket_history")
 	shell.SetOut(out)
+	shell.SetPrompt("🚀 > ")
 
 	env := object.NewEnvironment()
 
@@ -39,7 +40,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			ctx.Println(evaluated.Inspect())
+			ctx.Println("=> " + evaluated.Inspect())
 		}
 	})
 

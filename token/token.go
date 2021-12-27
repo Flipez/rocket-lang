@@ -47,16 +47,23 @@ const (
 
 	EQ     = "=="
 	NOT_EQ = "!="
+
+	PERIOD = "."
+
+	FOREACH = "FOREACH"
+	IN      = "IN"
 )
 
 var keywords = map[string]TokenType{
-	"fn":     FUNCTION,
-	"let":    LET,
-	"true":   TRUE,
-	"false":  FALSE,
-	"if":     IF,
-	"else":   ELSE,
-	"return": RETURN,
+	"fn":      FUNCTION,
+	"let":     LET,
+	"true":    TRUE,
+	"false":   FALSE,
+	"if":      IF,
+	"else":    ELSE,
+	"return":  RETURN,
+	"foreach": FOREACH,
+	"in":      IN,
 }
 
 func LookupIdent(ident string) TokenType {

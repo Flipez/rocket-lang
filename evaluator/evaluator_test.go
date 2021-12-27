@@ -284,8 +284,18 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("")`, 0},
 		{`len("four")`, 4},
 		{`len("hello world")`, 11},
+		{`len([1,2,3])`, 3},
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`puts("test")`, nil},
+		{`raise("Error")`, "wrong number of arguments. got=1, want=2"},
+		{`raise("Error", 1)`, "first argument to `raise` must be INTEGER, got=STRING"},
+		{`raise(1, 1)`, "second argument to `raise` must be STRING, got=INTEGER"},
+		{`exit()`, "wrong number of arguments. got=0, want=1"},
+		{`exit("Error")`, "argument to `exit` must be INTEGER, got=STRING"},
+		{`open()`, "wrong number of arguments. got=0, want=1"},
+		{`open(1)`, "argument to `file` not supported, got=INTEGER"},
+		{`open("main.go", 1)`, "argument mode to `file` not supported, got=INTEGER"},
 	}
 
 	for _, tt := range tests {
@@ -512,5 +522,19 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 		return false
 	}
 
+	return true
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("obj is not String. got=%T(%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%s, want=%s",
+			result.Value, expected)
+		return false
+	}
 	return true
 }

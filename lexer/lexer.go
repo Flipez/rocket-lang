@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/flipez/rocket-lang/token"
+import (
+	"strings"
+
+	"github.com/flipez/rocket-lang/token"
+)
 
 type Lexer struct {
 	input        string
@@ -70,6 +74,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.SEMICOLON, l.ch)
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
+	case '.':
+		tok = newToken(token.PERIOD, l.ch)
 	case ':':
 		tok = newToken(token.COLON, l.ch)
 	case '{':
@@ -136,13 +142,82 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 }
 
 func (l *Lexer) readIdentifier() string {
-	position := l.position
+	id := ""
 
-	for isLetter(l.ch) {
+	position := l.position
+	rposition := l.readPosition
+
+	for isIdentifier(l.ch) {
+		id += string(l.ch)
 		l.readChar()
 	}
 
-	return l.input[position:l.position]
+	if strings.Contains(id, ".") {
+
+		if !strings.HasPrefix(id, "directory.") &&
+			!strings.HasPrefix(id, "file.") &&
+			!strings.HasPrefix(id, "math.") &&
+			!strings.HasPrefix(id, "os.") &&
+			!strings.HasPrefix(id, "string.") {
+
+			//
+			// OK first of all we truncate our identifier
+			// at the position before the "."
+			//
+			offset := strings.Index(id, ".")
+			id = id[:offset]
+
+			//
+			// Now we have to move backwards - as a quickie
+			// We'll reset our position and move forwards
+			// the length of the bits we went too-far.
+			l.position = position
+			l.readPosition = rposition
+			for offset > 0 {
+				l.readChar()
+				offset--
+			}
+		}
+	}
+
+	return id
+}
+
+func isIdentifier(ch byte) bool {
+	return !isDigit(ch) && !isWhitespace(ch) && !isBrace(ch) && !isOperator(ch) && !isComparison(ch) && !isCompound(ch) && !isBrace(ch) && !isParen(ch) && !isBracket(ch) && !isEmpty(ch)
+}
+
+func isWhitespace(ch byte) bool {
+	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
+}
+
+func isOperator(ch byte) bool {
+	return ch == '+' || ch == '%' || ch == '-' || ch == '/' || ch == '*'
+}
+
+func isComparison(ch byte) bool {
+	return ch == '=' || ch == '>' || ch == '<'
+}
+
+func isCompound(ch byte) bool {
+	return ch == ',' || ch == ':' || ch == '"' || ch == ';'
+}
+
+func isBrace(ch byte) bool {
+	return ch == '{' || ch == '}'
+}
+
+func isBracket(ch byte) bool {
+	return ch == '[' || ch == ']'
+}
+
+// is parenthesis
+func isParen(ch byte) bool {
+	return ch == '(' || ch == ')'
+}
+
+func isEmpty(ch byte) bool {
+	return ch == 0
 }
 
 func (l *Lexer) skipWhitespace() {
