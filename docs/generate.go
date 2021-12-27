@@ -7,14 +7,15 @@ import (
 )
 
 func main() {
+	default_methods := object.ListObjectMethods()["*"]
 	string_methods := object.ListObjectMethods()[object.STRING_OBJ]
-	//for method, usage := range string_methods {
-	//	fmt.Println(usage.Usage(method))
-	//}
+
 	tempData := struct {
-		Methods map[string]object.ObjectMethod
+		StringMethods  map[string]object.ObjectMethod
+		DefaultMethods map[string]object.ObjectMethod
 	}{
-		Methods: string_methods,
+		StringMethods:  string_methods,
+		DefaultMethods: default_methods,
 	}
 
 	paths := []string{"docs/templates/literal.md"}

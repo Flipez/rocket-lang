@@ -141,6 +141,12 @@ func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"methods": ObjectMethod{
+			description: "Returns an array of all supported methods names.",
+			example: `🚀 > "test".methods()
+=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]`,
+			returnPattern: [][]string{
+				[]string{ARRAY_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]Object, len(oms), len(oms))
@@ -153,6 +159,13 @@ func init() {
 			},
 		},
 		"wat": ObjectMethod{
+			description: "Returns the supported methods with usage information.",
+			example: `🚀 > true.wat()
+=> BOOLEAN supports the following methods:
+				plz_s()`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]string, len(oms), len(oms))
@@ -165,6 +178,12 @@ func init() {
 			},
 		},
 		"type": ObjectMethod{
+			description: "Returns the type of the object.",
+			example: `🚀 > "test".type()
+=> "STRING"`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				return &String{Value: string(o.Type())}
 			},
