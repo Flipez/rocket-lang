@@ -1,17 +1,40 @@
 # Null
 
-`NULL`represents the absence of a value and can be received when a method or a control flow do not return a value.
 
-At the moment `null`can not be created by the user as an object and only received.
+
+
+## Literal Specific Methods
+
+
+## Generic Literal Methods
+
+### methods()
+> Returns `ARRAY`
+
+Returns an array of all supported methods names.
 
 ```js
-🚀 > a = if (false) {}
-=> null
+🚀 > "test".methods()
+=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
 ```
 
-In a control flow it behances falsy.
+### type()
+> Returns `STRING`
+
+Returns the type of the object.
 
 ```js
-🚀 > if (a) { puts("true") } else { puts("false") }
-false
+🚀 > "test".type()
+=> "STRING"
+```
+
+### wat()
+> Returns `STRING`
+
+Returns the supported methods with usage information.
+
+```js
+🚀 > true.wat()
+=> BOOLEAN supports the following methods:
+				plz_s()
 ```

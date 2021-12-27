@@ -1,15 +1,24 @@
-# String
+# {{ .Title }}
 
+{{ .Description }}
+
+{{ if .Example }}
+```js
+{{ .Example }}
+```
+{{ end }}
 ## Literal Specific Methods
-{{ range $method, $object := .StringMethods }}
+{{ range $method, $object := .LiteralMethods }}
 ### {{ $object.Usage $method }}
 > Returns `{{ $object.ReturnPattern }}`
 
 {{ $object.Description }}
 
+{{ if $object.Example }}
 ```js
 {{ $object.Example }}
 ```
+{{ end }}
 {{ end }}
 
 ## Generic Literal Methods

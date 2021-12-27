@@ -62,6 +62,10 @@ func (f *File) Open(mode string) error {
 func init() {
 	objectMethods[FILE_OBJ] = map[string]ObjectMethod{
 		"close": ObjectMethod{
+			description: "Closes the file pointer. Returns always `true`.",
+			returnPattern: [][]string{
+				[]string{BOOLEAN_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
 				f.Handle.Close()
@@ -69,6 +73,10 @@ func init() {
 			},
 		},
 		"lines": ObjectMethod{
+			description: "If successfull, returns all lines of the file as array elements, otherwise `null`.",
+			returnPattern: [][]string{
+				[]string{ARRAY_OBJ, NULL_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
 				if f.Reader == nil {
@@ -93,6 +101,10 @@ func init() {
 			},
 		},
 		"read": ObjectMethod{
+			description: "Reads content of the file and returns it.",
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
 				if f.Reader == nil {
@@ -107,6 +119,10 @@ func init() {
 			},
 		},
 		"rewind": ObjectMethod{
+			description: "Resets the read pointer back to position `0`. Always returns `true`.",
+			returnPattern: [][]string{
+				[]string{BOOLEAN_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
 				f.Handle.Seek(0, 0)
@@ -114,6 +130,10 @@ func init() {
 			},
 		},
 		"write": ObjectMethod{
+			description: "Writes the given string to the file. Returns `true` on success, `false` on failure and `null` if pointer is invalid.",
+			returnPattern: [][]string{
+				[]string{BOOLEAN_OBJ, NULL_OBJ},
+			},
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
 			},

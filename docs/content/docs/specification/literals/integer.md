@@ -1,35 +1,63 @@
 # Integer
+
 An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
 
-To cast a negative integer a digit can be prefixed with a `-` eg. `-456`.
+To cast a negative integer a digit can be prefixed with a - eg. -456.
+
 
 ## Literal Specific Methods
-### .plz_s(_base=10_)
-Returns a string representation of the integer.
+
+### plz_s(INTEGER)
+> Returns `STRING`
+
+Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems
+
 
 ```js
 🚀 > a = 456
 => 456
 🚀 > a.plz_s()
 => "456"
-```
 
-This also works with negative integers:
-
-```js
-🚀 > a = -345
-=> -345
-🚀 > a.plz_s()
-=> "-345"
-```
-
-`.plz_s()` takes also an argument which represents the integer base to convert between different number systems:
-
-```js
 🚀 > 1234.plz_s(2)
-=> 10011010010
+=> "10011010010"
 🚀 > 1234.plz_s(8)
-=> 2322
+=> "2322"
 🚀 > 1234.plz_s(10)
-=> 1234
+=> "1234"
+```
+
+
+
+## Generic Literal Methods
+
+### methods()
+> Returns `ARRAY`
+
+Returns an array of all supported methods names.
+
+```js
+🚀 > "test".methods()
+=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
+```
+
+### type()
+> Returns `STRING`
+
+Returns the type of the object.
+
+```js
+🚀 > "test".type()
+=> "STRING"
+```
+
+### wat()
+> Returns `STRING`
+
+Returns the supported methods with usage information.
+
+```js
+🚀 > true.wat()
+=> BOOLEAN supports the following methods:
+				plz_s()
 ```
