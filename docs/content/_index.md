@@ -1,33 +1,54 @@
 ---
-title: Introduction
+title: Home
 type: docs
 ---
-
 # Welcome to the Home of 🚀🇱🅰🆖
 
 {{< columns >}}
 ## About
 
-Information about RocketLang
+RocketLang as of version 0.9.5 is the full (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and
+is then being extended with various useful and not so useful features.
 
 <--->
 
 ## Latest Version
 
-Information about latest versions.
+[![GitHub release](https://img.shields.io/github/release/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang/releases/)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang)
+
 {{< /columns >}}
-
-
 ## Quick Start
 
-Lorem **markdownum** emicat gestu. Cannis sol pressit ducta. **Est** Idaei,
-tremens ausim se tutaeque, illi ulnis hausit, sed, lumina cutem. Quae avis
-sequens!
+Get started with 🚀🇱🅰🆖 quickly with these examples:
 
-    var panel = ram_design;
-    if (backup + system) {
-        file.readPoint = network_native;
-        sidebar_engine_device(cell_tftp_raster,
-                dual_login_paper.adf_vci.application_reader_design(
-                graphicsNvramCdma, lpi_footer_snmp, integer_model));
-    }
+```js
+let input = open("examples/aoc/2021/day-1/input").lines()
+
+
+let a = []
+foreach i, number in input {
+  a.yoink(number.strip().plz_i())
+}
+input = a
+
+let increase = 0
+foreach i, number in input {
+  if (number > input[i-1]) {
+    increase = increase + 1
+  }
+}
+puts(increase + 1)
+
+increase = 0
+foreach i, number in input {
+  let sum = number + input[i+1] + input[i+2]
+  let sum_two = input[i+1] + input[i+2] + input[i+3]
+  
+  if (sum_two > sum) {
+    increase = increase + 1
+  }
+}
+puts(increase + 1)
+```

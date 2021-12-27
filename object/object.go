@@ -40,10 +40,13 @@ type ObjectMethod struct {
 	argsOptional   bool
 	argOverloading bool
 	argPattern     [][]string
+	returnPattern  [][]string
+	description    string
+	example        string
 	method         func(Object, []Object) Object
 }
 
-func (om *ObjectMethod) validateArgs(args []Object) error {
+func (om ObjectMethod) validateArgs(args []Object) error {
 	if (len(args) < len(om.argPattern)) && !om.argsOptional {
 		return fmt.Errorf("To few arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
@@ -88,7 +91,23 @@ func (om *ObjectMethod) validateArgs(args []Object) error {
 	return nil
 }
 
-func (om *ObjectMethod) Usage(name string) string {
+func (om ObjectMethod) ReturnPattern() string {
+	types := make([]string, len(om.returnPattern))
+	for idx, pattern := range om.returnPattern {
+		types[idx] = strings.Join(pattern, "|")
+	}
+	return strings.Join(types, ", ")
+}
+
+func (om ObjectMethod) Description() string {
+	return om.description
+}
+
+func (om ObjectMethod) Example() string {
+	return om.example
+}
+
+func (om ObjectMethod) Usage(name string) string {
 	var args string
 
 	if len(om.argPattern) > 0 {
@@ -106,7 +125,7 @@ func (om *ObjectMethod) Usage(name string) string {
 	return fmt.Sprintf("%s(%s)", name, args)
 }
 
-func (om *ObjectMethod) Call(o Object, args []Object) Object {
+func (om ObjectMethod) Call(o Object, args []Object) Object {
 	if err := om.validateArgs(args); err != nil {
 		return &Error{Message: err.Error()}
 	}
@@ -115,9 +134,19 @@ func (om *ObjectMethod) Call(o Object, args []Object) Object {
 
 var objectMethods = make(map[ObjectType]map[string]ObjectMethod)
 
+func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
+	return objectMethods
+}
+
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"methods": ObjectMethod{
+			description: "Returns an array of all supported methods names.",
+			example: `🚀 > "test".methods()
+=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]`,
+			returnPattern: [][]string{
+				[]string{ARRAY_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]Object, len(oms), len(oms))
@@ -130,6 +159,13 @@ func init() {
 			},
 		},
 		"wat": ObjectMethod{
+			description: "Returns the supported methods with usage information.",
+			example: `🚀 > true.wat()
+=> BOOLEAN supports the following methods:
+				plz_s()`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]string, len(oms), len(oms))
@@ -142,6 +178,12 @@ func init() {
 			},
 		},
 		"type": ObjectMethod{
+			description: "Returns the type of the object.",
+			example: `🚀 > "test".type()
+=> "STRING"`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			method: func(o Object, _ []Object) Object {
 				return &String{Value: string(o.Type())}
 			},

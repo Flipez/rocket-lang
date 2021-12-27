@@ -1,6 +1,6 @@
 # hugo server --minify --themesDir ... --baseURL=http://0.0.0.0:1313/theme/hugo-book/
 
-baseURL: https://rocket-lang.vercel.app/
+baseURL: /
 title: 🚀🇱🅰🆖
 theme: hugo-book
 

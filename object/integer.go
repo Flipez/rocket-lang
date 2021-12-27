@@ -18,6 +18,21 @@ func (i *Integer) HashKey() HashKey {
 func init() {
 	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
+			description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems",
+			example: `🚀 > a = 456
+=> 456
+🚀 > a.plz_s()
+=> "456"
+
+🚀 > 1234.plz_s(2)
+=> "10011010010"
+🚀 > 1234.plz_s(8)
+=> "2322"
+🚀 > 1234.plz_s(10)
+=> "1234"`,
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
 			argsOptional: true,
 			argPattern: [][]string{
 				[]string{INTEGER_OBJ},
