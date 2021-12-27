@@ -15,8 +15,8 @@ import (
 
 const PROMPT = ">> "
 
-var buildVersion = "v0.9.0"
-var buildDate = "2021-09-27T21:13:44Z"
+var buildVersion = "v0.10.0"
+var buildDate = "2021-12-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
 	shell := ishell.New()
