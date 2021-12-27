@@ -32,7 +32,7 @@ func init() {
 			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
-				arg := args[0].Inspect()
+				arg := args[0].(*String).Value
 				return &Integer{Value: int64(strings.Count(s.Value, arg))}
 			},
 		},
@@ -50,7 +50,7 @@ func init() {
 			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
-				arg := args[0].Inspect()
+				arg := args[0].(*String).Value
 				return &Integer{Value: int64(strings.Index(s.Value, arg))}
 			},
 		},
@@ -119,8 +119,8 @@ func init() {
 			},
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
-				oldS := args[0].Inspect()
-				newS := args[1].Inspect()
+				oldS := args[0].(*String).Value
+				newS := args[1].(*String).Value
 				return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
 			},
 		},
@@ -312,7 +312,7 @@ func init() {
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
-func (s *String) Inspect() string  { return s.Value }
+func (s *String) Inspect() string  { return `"` + s.Value + `"` }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(s, method, args)
 }
