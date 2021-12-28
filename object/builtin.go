@@ -1,8 +1,11 @@
 package object
 
 type Builtin struct {
-	Fn func(args ...Object) Object
+	Name string
+	Fn   BuiltinFunction
 }
+
+type BuiltinFunction func(args ...Object) Object
 
 func (b *Builtin) Type() ObjectType                                                   { return BUILTIN_OBJ }
 func (b *Builtin) Inspect() string                                                    { return "builtin function" }
