@@ -1,14 +1,12 @@
+import "helper.rl"
+
 let input = open("examples/aoc/2021/day-1/input").lines()
 
 // Part 1
 
 let increase = 0
 
-let a = []
-foreach i, number in input {
-  a.yoink(number.strip().plz_i())
-}
-input = a
+input = arrayInt(input)
 
 foreach i, number in input {
   if (number > input[i-1]) {
