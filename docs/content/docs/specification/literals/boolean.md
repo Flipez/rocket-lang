@@ -6,6 +6,14 @@ A Boolean can represent two values: `true` and `false` and can be used in contro
 ```js
 true // Is the representation for truthyness
 false // is it for a falsy value
+
+let a = true;
+let b = false;
+
+let is_true = a == a;
+let is_false = a == b;
+
+let is_true = a != b;
 ```
 
 ## Literal Specific Methods
