@@ -287,7 +287,8 @@ func (bs *BlockStatement) String() string {
 }
 
 type FunctionLiteral struct {
-	Token      token.Token // the fn token
+	Token      token.Token
+	Name       string
 	Parameters []*Identifier
 	Body       *BlockStatement
 }
@@ -313,7 +314,7 @@ func (fl *FunctionLiteral) String() string {
 
 type CallExpression struct {
 	Token     token.Token // The ( token
-	Function  Expression
+	Callable  Expression
 	Arguments []Expression
 }
 
@@ -327,7 +328,7 @@ func (ce *CallExpression) String() string {
 		args = append(args, a.String())
 	}
 
-	out.WriteString(ce.Function.String())
+	out.WriteString(ce.Callable.String())
 	out.WriteString("(")
 	out.WriteString(strings.Join(args, ", "))
 	out.WriteString(")")
