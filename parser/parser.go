@@ -74,6 +74,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
+	p.registerPrefix(token.IMPORT, p.parseImportExpression)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
@@ -529,6 +530,12 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 }
 
 func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
+	if obj.String() == "module" {
+		p.expectPeek(token.IDENT)
+		index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+		return &ast.IndexExpression{Left: obj, Index: index}
+	}
+
 	methodCall := &ast.ObjectCallExpression{Token: p.curToken, Object: obj}
 	p.nextToken()
 	name := p.parseIdentifier()
@@ -585,4 +592,30 @@ func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	p.nextToken()
 	stmt.Value = p.parseExpression(LOWEST)
 	return stmt
+}
+
+func (p *Parser) parseImportExpression() ast.Expression {
+	expression := &ast.ImportExpression{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+
+	expression.Name = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return expression
+}
+
+func (p *Parser) parseDotNotationExpression(expression ast.Expression) ast.Expression {
+	p.expectPeek(token.IDENT)
+
+	index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+
+	return &ast.IndexExpression{Left: expression, Index: index}
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
+	"github.com/flipez/rocket-lang/utilities"
 	"testing"
 )
 
@@ -492,6 +493,58 @@ func TestNamedFunctionStatements(t *testing.T) {
 
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestImportExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`module = import("../fixtures/module"); module.A`,
+			5,
+		},
+		{
+			`module = import("../fixtures/module"); module.Sum(2, 3)`,
+			5,
+		},
+		{
+			`module = import("../fixtures/module"); module.a`,
+			nil,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, ok := tt.expected.(int)
+
+		if ok {
+			testIntegerObject(t, evaluated, int64(number))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
+func TestImportSearchPaths(t *testing.T) {
+	utilities.AddPath("../stubs")
+
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`let module = import("../fixtures/module"); module.A`,
+			5,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, _ := tt.expected.(int)
+
+		testIntegerObject(t, evaluated, int64(number))
 	}
 }
 

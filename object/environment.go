@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func NewEnvironment() *Environment {
@@ -82,4 +83,18 @@ func NewTemporaryScope(outer *Environment, keys []string) *Environment {
 	env.outer = outer
 	env.permit = keys
 	return env
+}
+
+func (e *Environment) Exported() *Hash {
+	pairs := make(map[HashKey]HashPair)
+
+	for k, v := range e.store {
+		// Replace this with checking for "Import" token
+		if unicode.IsUpper(rune(k[0])) {
+			s := &String{Value: k}
+			pairs[s.HashKey()] = HashPair{Key: s, Value: v}
+		}
+	}
+
+	return &Hash{Pairs: pairs}
 }
