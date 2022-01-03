@@ -15,3 +15,17 @@ let fibonacci = fn(x) {
   }
 };
 ```
+
+> New in `0.11`:
+
+Functions can now also be created as named functions:
+
+```js
+🚀 > fn test() { puts("test")}
+=> fn() {
+puts(test)
+}
+
+🚀 > test()
+"test"
+```

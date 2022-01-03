@@ -480,6 +480,21 @@ func TestHashIndexExpressions(t *testing.T) {
 	}
 }
 
+func TestNamedFunctionStatements(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"fn five() { return 5 } five()", 5},
+		{"fn ten() { return 10 } ten()", 10},
+		{"fn fifteen() { return 15 } fifteen()", 15},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)

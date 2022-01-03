@@ -450,6 +450,12 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 func (p *Parser) parseFunctionLiteral() ast.Expression {
 	lit := &ast.FunctionLiteral{Token: p.curToken}
 
+	if !p.peekTokenIs(token.LPAREN) {
+		p.nextToken()
+
+		lit.Name = p.curToken.Literal
+	}
+
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
@@ -492,8 +498,8 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	return identifiers
 }
 
-func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
-	exp := &ast.CallExpression{Token: p.curToken, Function: function}
+func (p *Parser) parseCallExpression(callable ast.Expression) ast.Expression {
+	exp := &ast.CallExpression{Token: p.curToken, Callable: callable}
 	exp.Arguments = p.parseExpressionList(token.RPAREN)
 	return exp
 }
