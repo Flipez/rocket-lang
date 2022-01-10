@@ -34,6 +34,7 @@ const (
 	ARRAY_OBJ        = "ARRAY"
 	HASH_OBJ         = "HASH"
 	FILE_OBJ         = "FILE"
+	MODULE_OBJ       = "MODULE"
 )
 
 type ObjectMethod struct {

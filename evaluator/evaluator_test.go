@@ -4,6 +4,7 @@ import (
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
+	"github.com/flipez/rocket-lang/utilities"
 	"testing"
 )
 
@@ -495,6 +496,58 @@ func TestNamedFunctionStatements(t *testing.T) {
 	}
 }
 
+func TestImportExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`import("../fixtures/module"); module.A`,
+			5,
+		},
+		{
+			`import("../fixtures/module"); module.Sum(2, 3)`,
+			5,
+		},
+		{
+			`import("../fixtures/module"); module.a`,
+			nil,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, ok := tt.expected.(int)
+
+		if ok {
+			testIntegerObject(t, evaluated, int64(number))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
+func TestImportSearchPaths(t *testing.T) {
+	utilities.AddPath("../stubs")
+
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`import("../fixtures/module"); module.A`,
+			5,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, _ := tt.expected.(int)
+
+		testIntegerObject(t, evaluated, int64(number))
+	}
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
@@ -505,8 +558,9 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
+	program, _ := p.ParseProgram()
 	env := object.NewEnvironment()
 
 	return Eval(program, env)

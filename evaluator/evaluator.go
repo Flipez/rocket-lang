@@ -2,10 +2,15 @@ package evaluator
 
 import (
 	"github.com/flipez/rocket-lang/ast"
+	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/parser"
 	"github.com/flipez/rocket-lang/stdlib"
+	"github.com/flipez/rocket-lang/utilities"
 
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 )
 
 var (
@@ -54,6 +59,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return function
+	case *ast.ImportExpression:
+		return evalImportExpression(node, env)
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
 	case *ast.ArrayLiteral:
@@ -191,9 +198,38 @@ func evalIndexExpression(left, index object.Object) object.Object {
 		return evalHashIndexExpression(left, index)
 	case left.Type() == object.STRING_OBJ:
 		return evalStringIndexExpression(left, index)
+	case left.Type() == object.MODULE_OBJ:
+		return evalModuleIndexExpression(left, index)
 	default:
 		return newError("index operator not supported: %s", left.Type())
 	}
+}
+
+func evalModuleIndexExpression(module, index object.Object) object.Object {
+	moduleObject := module.(*object.Module)
+
+	return evalHashIndexExpression(moduleObject.Attributes, index)
+}
+
+func evalImportExpression(ie *ast.ImportExpression, env *object.Environment) object.Object {
+	name := Eval(ie.Name, env)
+
+	if isError(name) {
+		return name
+	}
+
+	if s, ok := name.(*object.String); ok {
+		attributes := EvalModule(s.Value)
+
+		if isError(attributes) {
+			return attributes
+		}
+
+		env.Set(filepath.Base(s.Value), &object.Module{Name: s.Value, Attributes: attributes})
+		return &object.Null{}
+	}
+
+	return newError("Import Error: invalid import path '%s'", name)
 }
 
 func evalStringIndexExpression(left, index object.Object) object.Object {
@@ -459,7 +495,6 @@ func isError(obj object.Object) bool {
 }
 
 func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
-
 	obj := Eval(call.Object, env)
 	if method, ok := call.Call.(*ast.CallExpression); ok {
 		args := evalExpressions(call.Call.(*ast.CallExpression).Arguments, env)
@@ -527,4 +562,33 @@ func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val o
 
 	env.Set(a.Name.String(), evaluated)
 	return evaluated
+}
+
+func EvalModule(name string) object.Object {
+	filename := utilities.FindModule(name)
+
+	if filename == "" {
+		return newError("Import Error: no module named '%s' found", name)
+	}
+
+	b, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		return newError("IO Error: error reading module '%s': %s", name, err)
+	}
+
+	l := lexer.New(string(b))
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
+
+	module, _ := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		return newError("Parse Error: %s", p.Errors())
+	}
+
+	env := object.NewEnvironment()
+	Eval(module, env)
+
+	return env.Exported()
 }

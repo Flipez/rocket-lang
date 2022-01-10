@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -52,12 +53,15 @@ type Parser struct {
 
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
+
+	imports map[string]struct{}
 }
 
-func New(l *lexer.Lexer) *Parser {
+func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p := &Parser{
-		l:      l,
-		errors: []string{},
+		l:       l,
+		errors:  []string{},
+		imports: imports,
 	}
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
@@ -74,6 +78,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
+	p.registerPrefix(token.IMPORT, p.parseImportExpression)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
@@ -116,7 +121,7 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) ParseProgram() *ast.Program {
+func (p *Parser) ParseProgram() (*ast.Program, map[string]struct{}) {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
@@ -124,11 +129,18 @@ func (p *Parser) ParseProgram() *ast.Program {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
+
+			if expStmt, ok := stmt.(*ast.ExpressionStatement); ok {
+				if importExpr, ok := expStmt.Expression.(*ast.ImportExpression); ok {
+					implicitVarName := filepath.Base(importExpr.Name.String())
+					p.imports[implicitVarName] = struct{}{}
+				}
+			}
 		}
 		p.nextToken()
 	}
 
-	return program
+	return program, p.imports
 }
 
 func (p *Parser) parseHashLiteral() ast.Expression {
@@ -529,6 +541,12 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 }
 
 func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
+	if _, ok := p.imports[obj.String()]; ok {
+		p.expectPeek(token.IDENT)
+		index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+		return &ast.IndexExpression{Left: obj, Index: index}
+	}
+
 	methodCall := &ast.ObjectCallExpression{Token: p.curToken, Object: obj}
 	p.nextToken()
 	name := p.parseIdentifier()
@@ -585,4 +603,30 @@ func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	p.nextToken()
 	stmt.Value = p.parseExpression(LOWEST)
 	return stmt
+}
+
+func (p *Parser) parseImportExpression() ast.Expression {
+	expression := &ast.ImportExpression{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+
+	expression.Name = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return expression
+}
+
+func (p *Parser) parseDotNotationExpression(expression ast.Expression) ast.Expression {
+	p.expectPeek(token.IDENT)
+
+	index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+
+	return &ast.IndexExpression{Left: expression, Index: index}
 }

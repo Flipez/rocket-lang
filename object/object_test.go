@@ -16,8 +16,9 @@ type inputTestCase struct {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
+	program, _ := p.ParseProgram()
 	env := object.NewEnvironment()
 
 	return evaluator.Eval(program, env)
