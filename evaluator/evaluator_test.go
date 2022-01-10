@@ -502,15 +502,15 @@ func TestImportExpression(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			`module = import("../fixtures/module"); module.A`,
+			`import("../fixtures/module"); module.A`,
 			5,
 		},
 		{
-			`module = import("../fixtures/module"); module.Sum(2, 3)`,
+			`import("../fixtures/module"); module.Sum(2, 3)`,
 			5,
 		},
 		{
-			`module = import("../fixtures/module"); module.a`,
+			`import("../fixtures/module"); module.a`,
 			nil,
 		},
 	}
@@ -535,7 +535,7 @@ func TestImportSearchPaths(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			`let module = import("../fixtures/module"); module.A`,
+			`import("../fixtures/module"); module.A`,
 			5,
 		},
 	}
@@ -558,8 +558,9 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
+	program, _ := p.ParseProgram()
 	env := object.NewEnvironment()
 
 	return Eval(program, env)

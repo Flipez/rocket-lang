@@ -10,6 +10,7 @@ import (
 
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 )
 
 var (
@@ -224,7 +225,8 @@ func evalImportExpression(ie *ast.ImportExpression, env *object.Environment) obj
 			return attributes
 		}
 
-		return &object.Module{Name: s.Value, Attributes: attributes}
+		env.Set(filepath.Base(s.Value), &object.Module{Name: s.Value, Attributes: attributes})
+		return &object.Null{}
 	}
 
 	return newError("Import Error: invalid import path '%s'", name)
@@ -563,7 +565,6 @@ func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val o
 }
 
 func EvalModule(name string) object.Object {
-	print("eval module")
 	filename := utilities.FindModule(name)
 
 	if filename == "" {
@@ -577,9 +578,10 @@ func EvalModule(name string) object.Object {
 	}
 
 	l := lexer.New(string(b))
-	p := parser.New(l)
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
 
-	module := p.ParseProgram()
+	module, _ := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
 		return newError("Parse Error: %s", p.Errors())

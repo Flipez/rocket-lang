@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -52,12 +53,15 @@ type Parser struct {
 
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
+
+	imports map[string]struct{}
 }
 
-func New(l *lexer.Lexer) *Parser {
+func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p := &Parser{
-		l:      l,
-		errors: []string{},
+		l:       l,
+		errors:  []string{},
+		imports: imports,
 	}
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
@@ -117,7 +121,7 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) ParseProgram() *ast.Program {
+func (p *Parser) ParseProgram() (*ast.Program, map[string]struct{}) {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
@@ -125,11 +129,18 @@ func (p *Parser) ParseProgram() *ast.Program {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
+
+			if expStmt, ok := stmt.(*ast.ExpressionStatement); ok {
+				if importExpr, ok := expStmt.Expression.(*ast.ImportExpression); ok {
+					implicitVarName := filepath.Base(importExpr.Name.String())
+					p.imports[implicitVarName] = struct{}{}
+				}
+			}
 		}
 		p.nextToken()
 	}
 
-	return program
+	return program, p.imports
 }
 
 func (p *Parser) parseHashLiteral() ast.Expression {
@@ -530,7 +541,7 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 }
 
 func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
-	if obj.String() == "module" {
+	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
 		index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
 		return &ast.IndexExpression{Left: obj, Index: index}

@@ -20,9 +20,9 @@ func main() {
 		if err == nil {
 			env := object.NewEnvironment()
 			l := lexer.New(string(file))
-			p := parser.New(l)
+			p := parser.New(l, make(map[string]struct{}))
 
-			program := p.ParseProgram()
+			program, _ := p.ParseProgram()
 			if len(p.Errors()) > 0 {
 				printParserErrors(p.Errors())
 				return
