@@ -2,9 +2,8 @@
 title: "Foreach"
 menu:
   docs:
-    parent: "literals"
+    parent: "controls"
 ---
-# Foreach
 For loops allow to iterate over different sets of data and perform actions based on them.
 
 ```js

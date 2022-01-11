@@ -1,9 +1,7 @@
 ---
-title: Home
+title: Welcome to the Home of 🚀🇱🅰🆖
 type: docs
 ---
-# Welcome to the Home of 🚀🇱🅰🆖
-
 ## About
 
 RocketLang as of version 0.9.5 is the full (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and

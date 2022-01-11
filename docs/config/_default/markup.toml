@@ -13,12 +13,12 @@ defaultMarkdownHandler = "goldmark"
     unsafe = true
 
 [highlight]
-  codeFences = false
+  codeFences = true
   guessSyntax = false
   hl_Lines = ""
   lineNoStart = 1
   lineNos = false
-  lineNumbersInTable = true
+  lineNumbersInTable = false
   noClasses = false
   style = "dracula"
   tabWidth = 4
@@ -26,4 +26,4 @@ defaultMarkdownHandler = "goldmark"
 [tableOfContents]
   endLevel = 3
   ordered = false
-  startLevel = 2
+  startLevel = 1

@@ -5,8 +5,6 @@ menu:
     parent: "specification"
 toc: true
 ---
-## Closures
-
 ```js
 let newGreeter = fn(greeting) {
   return fn(name) { puts(greeting + " " + name); }
