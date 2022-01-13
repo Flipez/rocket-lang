@@ -5,10 +5,10 @@ menu:
     parent: "specification"
 toc: true
 ---
-> Modules were introduced in `0.11`:
+{{< alert icon="👉" text="Modules were introduced in `0.11`" />}}
 
 Modules are seperate RocketLang files can be imported using the `import` statement.
-Functions and Variables starting with a uppercase name are then available in the imported module.
+Functions and <mark>variables starting with a uppercase</mark> name are then available in the imported module.
 
 For example take this module:
 
