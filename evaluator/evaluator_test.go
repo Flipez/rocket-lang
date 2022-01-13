@@ -282,12 +282,6 @@ func TestBuiltinFunctions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{`len("")`, 0},
-		{`len("four")`, 4},
-		{`len("hello world")`, 11},
-		{`len([1,2,3])`, 3},
-		{`len(1)`, "argument to `len` not supported, got INTEGER"},
-		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 		{`puts("test")`, nil},
 		{`raise("Error")`, "wrong number of arguments. got=1, want=2"},
 		{`raise("Error", 1)`, "first argument to `raise` must be INTEGER, got=STRING"},
