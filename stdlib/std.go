@@ -15,7 +15,6 @@ var (
 )
 
 func init() {
-	RegisterFunction("len", lenFunction)
 	RegisterFunction("puts", putsFunction)
 	RegisterFunction("exit", exitFunction)
 	RegisterFunction("raise", raiseFunction)

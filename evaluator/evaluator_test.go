@@ -4,6 +4,7 @@ import (
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
+	"github.com/flipez/rocket-lang/utilities"
 	"testing"
 )
 
@@ -281,12 +282,6 @@ func TestBuiltinFunctions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{`len("")`, 0},
-		{`len("four")`, 4},
-		{`len("hello world")`, 11},
-		{`len([1,2,3])`, 3},
-		{`len(1)`, "argument to `len` not supported, got INTEGER"},
-		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 		{`puts("test")`, nil},
 		{`raise("Error")`, "wrong number of arguments. got=1, want=2"},
 		{`raise("Error", 1)`, "first argument to `raise` must be INTEGER, got=STRING"},
@@ -480,6 +475,73 @@ func TestHashIndexExpressions(t *testing.T) {
 	}
 }
 
+func TestNamedFunctionStatements(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"fn five() { return 5 } five()", 5},
+		{"fn ten() { return 10 } ten()", 10},
+		{"fn fifteen() { return 15 } fifteen()", 15},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestImportExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`import("../fixtures/module"); module.A`,
+			5,
+		},
+		{
+			`import("../fixtures/module"); module.Sum(2, 3)`,
+			5,
+		},
+		{
+			`import("../fixtures/module"); module.a`,
+			nil,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, ok := tt.expected.(int)
+
+		if ok {
+			testIntegerObject(t, evaluated, int64(number))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
+func TestImportSearchPaths(t *testing.T) {
+	utilities.AddPath("../stubs")
+
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`import("../fixtures/module"); module.A`,
+			5,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, _ := tt.expected.(int)
+
+		testIntegerObject(t, evaluated, int64(number))
+	}
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
@@ -490,8 +552,9 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
+	imports := make(map[string]struct{})
+	p := parser.New(l, imports)
+	program, _ := p.ParseProgram()
 	env := object.NewEnvironment()
 
 	return Eval(program, env)

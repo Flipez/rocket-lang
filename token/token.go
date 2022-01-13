@@ -52,6 +52,9 @@ const (
 
 	FOREACH = "FOREACH"
 	IN      = "IN"
+
+	EXPORT = "EXPORT"
+	IMPORT = "IMPORT"
 )
 
 var keywords = map[string]TokenType{
@@ -64,6 +67,8 @@ var keywords = map[string]TokenType{
 	"return":  RETURN,
 	"foreach": FOREACH,
 	"in":      IN,
+	"export":  EXPORT,
+	"import":  IMPORT,
 }
 
 func LookupIdent(ident string) TokenType {

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/abiosoft/ishell/v2"
+	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
@@ -25,14 +26,17 @@ func Start(in io.Reader, out io.Writer) {
 	shell.SetPrompt("🚀 > ")
 
 	env := object.NewEnvironment()
+	imports := make(map[string]struct{})
 
 	shell.Println(fmt.Sprintf(ROCKET, buildVersion, buildDate))
 	shell.NotFound(func(ctx *ishell.Context) {
 
 		l := lexer.New(strings.Join(ctx.RawArgs, " "))
-		p := parser.New(l)
+		p := parser.New(l, imports)
 
-		program := p.ParseProgram()
+		var program *ast.Program
+
+		program, imports = p.ParseProgram()
 		if len(p.Errors()) > 0 {
 			printParserErrors(ctx, p.Errors())
 			return
