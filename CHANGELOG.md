@@ -1,13 +1,27 @@
 # Changelog
 
+## [v0.11.0](https://github.com/flipez/rocket-lang/tree/v0.11.0) (2022-01-13)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.10.0...v0.11.0)
+
+**Implemented enhancements:**
+
+- Document builtins [\#26](https://github.com/Flipez/rocket-lang/issues/26)
+- Allow to load code from other scripts [\#10](https://github.com/Flipez/rocket-lang/issues/10)
+- move builtins to stdlib layout [\#28](https://github.com/Flipez/rocket-lang/pull/28) ([Flipez](https://github.com/Flipez))
+
+**Merged pull requests:**
+
+- Release 0.11 [\#30](https://github.com/Flipez/rocket-lang/pull/30) ([Flipez](https://github.com/Flipez))
+
 ## [v0.10.0](https://github.com/flipez/rocket-lang/tree/v0.10.0) (2021-12-27)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.9.7...v0.10.0)
 
 **Implemented enhancements:**
 
-- Add support for loops [\#4](https://github.com/Flipez/rocket-lang/issues/4)
 - Avoid using append when creating arrays [\#1](https://github.com/Flipez/rocket-lang/issues/1)
+- Add support for loops [\#4](https://github.com/Flipez/rocket-lang/issues/4)
 
 **Fixed bugs:**
 
@@ -22,11 +36,11 @@
 
 - sourround strings in inspect with quotes [\#25](https://github.com/Flipez/rocket-lang/pull/25) ([Flipez](https://github.com/Flipez))
 - Docs [\#24](https://github.com/Flipez/rocket-lang/pull/24) ([Flipez](https://github.com/Flipez))
-- Omit null [\#23](https://github.com/Flipez/rocket-lang/pull/23) ([Flipez](https://github.com/Flipez))
 - cleanup objects [\#22](https://github.com/Flipez/rocket-lang/pull/22) ([Flipez](https://github.com/Flipez))
-- Remove builtins [\#21](https://github.com/Flipez/rocket-lang/pull/21) ([Flipez](https://github.com/Flipez))
 - Boost objects [\#20](https://github.com/Flipez/rocket-lang/pull/20) ([Flipez](https://github.com/Flipez))
 - Improve coverage [\#19](https://github.com/Flipez/rocket-lang/pull/19) ([Flipez](https://github.com/Flipez))
+- Omit null [\#23](https://github.com/Flipez/rocket-lang/pull/23) ([Flipez](https://github.com/Flipez))
+- Remove builtins [\#21](https://github.com/Flipez/rocket-lang/pull/21) ([Flipez](https://github.com/Flipez))
 - Foreach [\#18](https://github.com/Flipez/rocket-lang/pull/18) ([Flipez](https://github.com/Flipez))
 - Objectmethod arg validation [\#17](https://github.com/Flipez/rocket-lang/pull/17) ([MarkusFreitag](https://github.com/MarkusFreitag))
 - Rework methods [\#16](https://github.com/Flipez/rocket-lang/pull/16) ([Flipez](https://github.com/Flipez))
