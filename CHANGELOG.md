@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.11.1](https://github.com/flipez/rocket-lang/tree/v0.11.1) (2022-01-14)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.11.0...v0.11.1)
+
+**Fixed bugs:**
+
+- rewrite file.read\(\) and file.lines\(\) [\#34](https://github.com/Flipez/rocket-lang/pull/34) ([Flipez](https://github.com/Flipez))
+
 ## [v0.11.0](https://github.com/flipez/rocket-lang/tree/v0.11.0) (2022-01-13)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.10.0...v0.11.0)
