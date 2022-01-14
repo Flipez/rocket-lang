@@ -3,6 +3,7 @@ package object
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -77,26 +78,17 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ, NULL_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
-				f := o.(*File)
-				if f.Reader == nil {
-					return (&Null{})
+			method: func(o Object, oo []Object) Object {
+				file := readFile(o, oo)
+				fileString := file.(*String)
+				lines := strings.Split(fileString.Value, "\n")
+
+				result := make([]Object, len(lines))
+
+				for i, line := range lines {
+					result[i] = &String{Value: line}
 				}
 
-				var lines []string
-				for {
-					line, err := f.Reader.ReadString('\n')
-					if err != nil {
-						break
-					}
-					lines = append(lines, line)
-				}
-
-				l := len(lines)
-				result := make([]Object, l)
-				for i, txt := range lines {
-					result[i] = &String{Value: txt}
-				}
 				return &Array{Elements: result}
 			},
 		},
@@ -105,18 +97,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
-				f := o.(*File)
-				if f.Reader == nil {
-					return (&String{Value: ""})
-				}
-
-				line, err := f.Reader.ReadString('\n')
-				if err != nil {
-					return (&String{Value: ""})
-				}
-				return &String{Value: line}
-			},
+			method: readFile,
 		},
 		"rewind": ObjectMethod{
 			description: "Resets the read pointer back to position `0`. Always returns `true`.",
@@ -158,4 +139,17 @@ func init() {
 
 func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(f, method, args)
+}
+
+func readFile(o Object, _ []Object) Object {
+	f := o.(*File)
+	if f.Reader == nil {
+		return (&String{Value: ""})
+	}
+
+	file, err := ioutil.ReadAll(f.Reader)
+	if err != nil {
+		return (&String{Value: ""})
+	}
+	return &String{Value: string(file)}
 }
