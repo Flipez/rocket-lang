@@ -16,7 +16,7 @@ foreach i, number in input {
   }
 }
 
-puts(increase + 1)
+puts(increase)
 
 // Part 2
 
@@ -31,4 +31,4 @@ foreach i, number in input {
   }
 }
 
-puts(increase + 1)
+puts(increase)
