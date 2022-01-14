@@ -20,14 +20,14 @@ Closes the file pointer. Returns always `true`.
 ### lines()
 > Returns `ARRAY|ERROR`
 
-If successfull, returns all lines of the file as array elements, otherwise `null`.
+If successfull, returns all lines of the file as array elements, otherwise `null`. Resets the position to 0 after read.
 
 
 
 ### read()
 > Returns `STRING|ERROR`
 
-Reads content of the file and returns it.
+Reads content of the file and returns it. Resets the position to 0 after read.
 
 
 
