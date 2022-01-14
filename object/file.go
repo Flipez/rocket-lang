@@ -76,14 +76,14 @@ func init() {
 		"lines": ObjectMethod{
 			description: "If successfull, returns all lines of the file as array elements, otherwise `null`.",
 			returnPattern: [][]string{
-				[]string{ARRAY_OBJ, NULL_OBJ},
+				[]string{ARRAY_OBJ, ERROR_OBJ},
 			},
 			method: func(o Object, oo []Object) Object {
 				file := readFile(o, oo)
 				fileString := file.(*String)
 				lines := strings.Split(fileString.Value, "\n")
 
-				result := make([]Object, len(lines))
+				result := make([]Object, len(lines), len(lines))
 
 				for i, line := range lines {
 					result[i] = &String{Value: line}
@@ -95,7 +95,7 @@ func init() {
 		"read": ObjectMethod{
 			description: "Reads content of the file and returns it.",
 			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				[]string{STRING_OBJ, ERROR_OBJ},
 			},
 			method: readFile,
 		},
@@ -149,7 +149,9 @@ func readFile(o Object, _ []Object) Object {
 
 	file, err := ioutil.ReadAll(f.Reader)
 	if err != nil {
-		return (&String{Value: ""})
+		return (&Error{Message: err.Error()})
 	}
+
+	f.Handle.Seek(0, 0)
 	return &String{Value: string(file)}
 }
