@@ -292,7 +292,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`open(1)`, "argument to `file` not supported, got=INTEGER"},
 		{`open("fixtures/module.rl", 1)`, "argument mode to `file` not supported, got=INTEGER"},
 		{`open("fixtures/module.rl", "r", 1)`, "argument perm to `file` not supported, got=INTEGER"},
-		{`open("fixtures/module.rl", "nope", "0644").read(1)`, "Invalid file handle."},
+		{`open("fixtures/module.rl", "nope", "0644").read(1)`, "Failed to invoke method: read"},
 	}
 
 	for _, tt := range tests {

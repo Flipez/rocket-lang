@@ -39,6 +39,9 @@ func openFunction(args ...object.Object) object.Object {
 	}
 
 	file := &object.File{Filename: path}
-	file.Open(mode, perm)
+	err := file.Open(mode, perm)
+	if err != nil {
+		return newError(err.Error())
+	}
 	return (file)
 }
