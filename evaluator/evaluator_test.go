@@ -291,6 +291,8 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`open()`, "wrong number of arguments. got=0, want=1"},
 		{`open(1)`, "argument to `file` not supported, got=INTEGER"},
 		{`open("main.go", 1)`, "argument mode to `file` not supported, got=INTEGER"},
+		{`open("main.go", "r", 1)`, "argument perm to `file` not supported, got=INTEGER"},
+		{`open("main.go", "nope", "0644").read()`, "Invalid file handle."},
 	}
 
 	for _, tt := range tests {
