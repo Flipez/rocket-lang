@@ -154,6 +154,11 @@ func init() {
 			},
 			method: func(o Object, args []Object) Object {
 				f := o.(*File)
+
+				if f.Handle == nil {
+					return &Error{Message: "Invalid file handle."}
+				}
+
 				seekAmount := args[0].(*Integer).Value
 				seekRelative := args[1].(*Integer).Value
 				newOffset, err := f.Handle.Seek(seekAmount, int(seekRelative))
@@ -167,9 +172,9 @@ func init() {
 			},
 		},
 		"write": ObjectMethod{
-			description: "Writes the given string to the file. Returns `true` on success, `false` on failure and `null` if pointer is invalid.",
+			description: "Writes the given string to the file. Returns `true` on success.",
 			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ, NULL_OBJ},
+				[]string{BOOLEAN_OBJ, ERROR_OBJ},
 			},
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
@@ -182,14 +187,14 @@ func init() {
 					return &Error{Message: "Invalid file handle."}
 				}
 
-				_, err := f.Handle.Write(content)
-				if err == nil {
-					return &Boolean{Value: true}
+				bytesWritten, err := f.Handle.Write(content)
+				f.Position += int64(bytesWritten)
+
+				if err != nil {
+					return &Error{Message: err.Error()}
 				}
 
-				f.Position += int64(len(content))
-
-				return &Boolean{Value: false}
+				return &Boolean{Value: true}
 			},
 		},
 	}

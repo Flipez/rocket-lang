@@ -53,9 +53,9 @@ Seek sets the offset for the next Read or Write on file to offset, interpreted a
 
 
 ### write(STRING)
-> Returns `BOOLEAN|NULL`
+> Returns `BOOLEAN|ERROR`
 
-Writes the given string to the file. Returns `true` on success, `false` on failure and `null` if pointer is invalid.
+Writes the given string to the file. Returns `true` on success.
 
 
 
