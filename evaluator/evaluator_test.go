@@ -290,7 +290,9 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`exit("Error")`, "argument to `exit` must be INTEGER, got=STRING"},
 		{`open()`, "wrong number of arguments. got=0, want=1"},
 		{`open(1)`, "argument to `file` not supported, got=INTEGER"},
-		{`open("main.go", 1)`, "argument mode to `file` not supported, got=INTEGER"},
+		{`open("fixtures/module.rl", 1)`, "argument mode to `file` not supported, got=INTEGER"},
+		{`open("fixtures/module.rl", "r", 1)`, "argument perm to `file` not supported, got=INTEGER"},
+		{`open("fixtures/module.rl", "nope", "0644").read(1)`, "Failed to invoke method: read"},
 	}
 
 	for _, tt := range tests {

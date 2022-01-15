@@ -1,61 +1,68 @@
 package object
 
 import (
-	"bufio"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 )
 
 type File struct {
 	Filename string
-	Reader   *bufio.Reader
-	Writer   *bufio.Writer
+	Position int64
 	Handle   *os.File
 }
 
 func (f *File) Type() ObjectType { return FILE_OBJ }
 func (f *File) Inspect() string  { return fmt.Sprintf("<file:%s>", f.Filename) }
-func (f *File) Open(mode string) error {
+func (f *File) Open(mode string, perm string) error {
 	if f.Filename == "!STDIN!" {
-		f.Reader = bufio.NewReader(os.Stdin)
+		f.Handle = os.Stdin
 		return nil
 	}
 	if f.Filename == "!STDOUT!" {
-		f.Writer = bufio.NewWriter(os.Stdout)
+		f.Handle = os.Stdout
 		return nil
 	}
 	if f.Filename == "!STDERR!" {
-		f.Writer = bufio.NewWriter(os.Stderr)
+		f.Handle = os.Stderr
 		return nil
 	}
 
 	md := os.O_RDONLY
 
-	if mode == "w" {
+	switch mode {
+	case "r":
+	case "w":
 		md = os.O_WRONLY
-
-		os.Remove(f.Filename)
-	} else {
-		if strings.Contains(mode, "w") && strings.Contains(mode, "a") {
-			md = os.O_WRONLY
-			md |= os.O_APPEND
-		}
+	case "wa":
+		md = os.O_WRONLY | os.O_APPEND
+	case "rw":
+		md = os.O_RDWR
+	case "rwa":
+		md = os.O_RDWR | os.O_APPEND
+	default:
+		return fmt.Errorf("invalid file mode, got `%s`", mode)
 	}
 
-	file, err := os.OpenFile(f.Filename, os.O_CREATE|md, 0644)
+	if md != os.O_RDONLY {
+		md = md | os.O_CREATE
+	}
+
+	filePerm, err := strconv.ParseUint(perm, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(f.Filename, md, fs.FileMode(filePerm))
 	if err != nil {
 		return err
 	}
 
 	f.Handle = file
-
-	if md == os.O_RDONLY {
-		f.Reader = bufio.NewReader(file)
-	} else {
-		f.Writer = bufio.NewWriter(file)
-	}
+	f.Position = 0
 
 	return nil
 }
@@ -70,6 +77,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
 				f.Handle.Close()
+				f.Position = -1
 				return &Boolean{Value: true}
 			},
 		},
@@ -92,46 +100,101 @@ func init() {
 				return &Array{Elements: result}
 			},
 		},
-		"read": ObjectMethod{
+		"content": ObjectMethod{
 			description: "Reads content of the file and returns it. Resets the position to 0 after read.",
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ERROR_OBJ},
 			},
 			method: readFile,
 		},
-		"rewind": ObjectMethod{
-			description: "Resets the read pointer back to position `0`. Always returns `true`.",
+		"position": ObjectMethod{
+			description: "Returns the position of the current file handle. -1 if the file is closed.",
 			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ},
+				[]string{INTEGER_OBJ},
 			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
-				f.Handle.Seek(0, 0)
-				return &Boolean{Value: true}
+				return &Integer{Value: f.Position}
+			},
+		},
+		"read": ObjectMethod{
+			description: "Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.",
+			argPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
+			returnPattern: [][]string{
+				[]string{STRING_OBJ, ERROR_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				f := o.(*File)
+				bytesAmount := args[0].(*Integer).Value
+				if f.Handle == nil {
+					return &Error{Message: "Invalid file handle."}
+				}
+
+				buffer := make([]byte, bytesAmount)
+				bytesRealRead, err := f.Handle.Read(buffer)
+				f.Position += int64(bytesRealRead)
+
+				if err != nil {
+					return &Error{Message: err.Error()}
+				}
+
+				return &String{Value: string(buffer)}
+			},
+		},
+		"seek": ObjectMethod{
+			description: "Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.",
+			argPattern: [][]string{
+				[]string{INTEGER_OBJ},
+				[]string{INTEGER_OBJ},
+			},
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ, ERROR_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				f := o.(*File)
+
+				if f.Handle == nil {
+					return &Error{Message: "Invalid file handle."}
+				}
+
+				seekAmount := args[0].(*Integer).Value
+				seekRelative := args[1].(*Integer).Value
+				newOffset, err := f.Handle.Seek(seekAmount, int(seekRelative))
+				f.Position = newOffset
+
+				if err != nil {
+					return &Error{Message: err.Error()}
+				}
+
+				return &Integer{Value: f.Position}
 			},
 		},
 		"write": ObjectMethod{
-			description: "Writes the given string to the file. Returns `true` on success, `false` on failure and `null` if pointer is invalid.",
+			description: "Writes the given string to the file. Returns `true` on success.",
 			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ, NULL_OBJ},
+				[]string{BOOLEAN_OBJ, ERROR_OBJ},
 			},
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
 			method: func(o Object, args []Object) Object {
 				f := o.(*File)
+				content := []byte(args[0].(*String).Value)
 
-				if f.Writer == nil {
-					return (&Null{})
+				if f.Handle == nil {
+					return &Error{Message: "Invalid file handle."}
 				}
 
-				_, err := f.Writer.Write([]byte(args[0].(*String).Value))
-				if err == nil {
-					f.Writer.Flush()
-					return &Boolean{Value: true}
+				bytesWritten, err := f.Handle.Write(content)
+				f.Position += int64(bytesWritten)
+
+				if err != nil {
+					return &Error{Message: err.Error()}
 				}
 
-				return &Boolean{Value: false}
+				return &Boolean{Value: true}
 			},
 		},
 	}
@@ -143,15 +206,17 @@ func (f *File) InvokeMethod(method string, env Environment, args ...Object) Obje
 
 func readFile(o Object, _ []Object) Object {
 	f := o.(*File)
-	if f.Reader == nil {
-		return (&String{Value: ""})
+	f.Handle.Seek(0, 0)
+	if f.Handle == nil {
+		return &Error{Message: "Invalid file handle."}
 	}
 
-	file, err := ioutil.ReadAll(f.Reader)
+	file, err := ioutil.ReadAll(f.Handle)
 	if err != nil {
-		return (&Error{Message: err.Error()})
+		return &Error{Message: err.Error()}
 	}
 
 	f.Handle.Seek(0, 0)
+	f.Position = 0
 	return &String{Value: string(file)}
 }

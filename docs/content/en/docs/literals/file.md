@@ -17,6 +17,13 @@ Closes the file pointer. Returns always `true`.
 
 
 
+### content()
+> Returns `STRING|ERROR`
+
+Reads content of the file and returns it. Resets the position to 0 after read.
+
+
+
 ### lines()
 > Returns `ARRAY|ERROR`
 
@@ -24,24 +31,31 @@ If successfull, returns all lines of the file as array elements, otherwise `null
 
 
 
-### read()
+### position()
+> Returns `INTEGER`
+
+Returns the position of the current file handle. -1 if the file is closed.
+
+
+
+### read(INTEGER)
 > Returns `STRING|ERROR`
 
-Reads content of the file and returns it. Resets the position to 0 after read.
+Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.
 
 
 
-### rewind()
-> Returns `BOOLEAN`
+### seek(INTEGER, INTEGER)
+> Returns `INTEGER|ERROR`
 
-Resets the read pointer back to position `0`. Always returns `true`.
+Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.
 
 
 
 ### write(STRING)
-> Returns `BOOLEAN|NULL`
+> Returns `BOOLEAN|ERROR`
 
-Writes the given string to the file. Returns `true` on success, `false` on failure and `null` if pointer is invalid.
+Writes the given string to the file. Returns `true` on success.
 
 
 
