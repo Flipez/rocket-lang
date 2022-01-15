@@ -39,16 +39,16 @@ Returns the position of the current file handle. -1 if the file is closed.
 
 
 ### read(INTEGER)
-> Returns `STRING`
+> Returns `STRING|ERROR`
 
-Reads the given amount of bytes from the file.
+Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.
 
 
 
 ### seek(INTEGER, INTEGER)
-> Returns `BOOLEAN`
+> Returns `INTEGER|ERROR`
 
-Seeks the file handle relative from the given position.
+Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.
 
 
 

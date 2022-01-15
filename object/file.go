@@ -2,7 +2,6 @@ package object
 
 import (
 	"fmt"
-	"io"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -119,12 +118,12 @@ func init() {
 			},
 		},
 		"read": ObjectMethod{
-			description: "Reads the given amount of bytes from the file.",
+			description: "Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.",
 			argPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				[]string{STRING_OBJ, ERROR_OBJ},
 			},
 			method: func(o Object, args []Object) Object {
 				f := o.(*File)
@@ -133,32 +132,38 @@ func init() {
 					return &Error{Message: "Invalid file handle."}
 				}
 
-				file, err := ioutil.ReadAll(io.LimitReader(f.Handle, bytesAmount))
+				buffer := make([]byte, bytesAmount)
+				bytesRealRead, err := f.Handle.Read(buffer)
+				f.Position += int64(bytesRealRead)
+
 				if err != nil {
 					return &Error{Message: err.Error()}
 				}
 
-				f.Position += bytesAmount
-
-				return &String{Value: string(file)}
+				return &String{Value: string(buffer)}
 			},
 		},
 		"seek": ObjectMethod{
-			description: "Seeks the file handle relative from the given position.",
+			description: "Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.",
 			argPattern: [][]string{
 				[]string{INTEGER_OBJ},
 				[]string{INTEGER_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ},
+				[]string{INTEGER_OBJ, ERROR_OBJ},
 			},
 			method: func(o Object, args []Object) Object {
 				f := o.(*File)
 				seekAmount := args[0].(*Integer).Value
 				seekRelative := args[1].(*Integer).Value
-				f.Handle.Seek(seekAmount, int(seekRelative))
-				f.Position = seekRelative + seekAmount
-				return &Boolean{Value: true}
+				newOffset, err := f.Handle.Seek(seekAmount, int(seekRelative))
+				f.Position = newOffset
+
+				if err != nil {
+					return &Error{Message: err.Error()}
+				}
+
+				return &Integer{Value: f.Position}
 			},
 		},
 		"write": ObjectMethod{
