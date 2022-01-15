@@ -13,6 +13,7 @@ const (
 
 	IDENT  = "IDENT" // add, foobar, x, y
 	INT    = "INT"   // 123456
+	FLOAT  = "FLOAT" // 123.456
 	STRING = "STRING"
 
 	ASSIGN   = "="

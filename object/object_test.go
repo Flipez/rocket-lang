@@ -31,6 +31,8 @@ func testInput(t *testing.T, tests []inputTestCase) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case float64:
+			testFloatObject(t, evaluated, float64(expected))
 		case string:
 			arrObj, ok := evaluated.(*object.Array)
 			if ok {
