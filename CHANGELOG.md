@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.12.0](https://github.com/flipez/rocket-lang/tree/v0.12.0) (2022-01-15)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.11.1...v0.12.0)
+
+**Implemented enhancements:**
+
+- Improve file handling [\#35](https://github.com/Flipez/rocket-lang/issues/35)
+- rewrite file handle, adjust file.seek\(\) [\#36](https://github.com/Flipez/rocket-lang/pull/36) ([Flipez](https://github.com/Flipez))
+
+**Fixed bugs:**
+
+- file.read\(\) and file.line\(\) return unexpected results [\#33](https://github.com/Flipez/rocket-lang/issues/33)
+
 ## [v0.11.1](https://github.com/flipez/rocket-lang/tree/v0.11.1) (2022-01-14)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.11.0...v0.11.1)
