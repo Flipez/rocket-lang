@@ -2,6 +2,7 @@ package object
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -97,12 +98,34 @@ func init() {
 				return &Array{Elements: result}
 			},
 		},
-		"read": ObjectMethod{
+		"content": ObjectMethod{
 			description: "Reads content of the file and returns it. Resets the position to 0 after read.",
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ERROR_OBJ},
 			},
 			method: readFile,
+		},
+		"read": ObjectMethod{
+			description: "Reads the given amount of bytes from the file.",
+			argPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
+			returnPattern: [][]string{
+				[]string{STRING_OBJ},
+			},
+			method: func(o Object, args []Object) Object {
+				f := o.(*File)
+				if f.Handle == nil {
+					return &Error{Message: "Invalid file handle."}
+				}
+
+				file, err := ioutil.ReadAll(io.LimitReader(f.Handle, args[0].(*Integer).Value))
+				if err != nil {
+					return &Error{Message: err.Error()}
+				}
+
+				return &String{Value: string(file)}
+			},
 		},
 		"seek": ObjectMethod{
 			description: "Seeks the file handle relative from the given position.",

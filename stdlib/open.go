@@ -30,9 +30,9 @@ func openFunction(args ...object.Object) object.Object {
 	}
 
 	if len(args) == 3 {
-		switch args[1].(type) {
+		switch args[2].(type) {
 		case *object.String:
-			perm = args[1].(*object.String).Value
+			perm = args[2].(*object.String).Value
 		default:
 			return newError("argument perm to `file` not supported, got=%s", args[2].Type())
 		}
