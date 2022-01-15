@@ -17,6 +17,13 @@ Closes the file pointer. Returns always `true`.
 
 
 
+### content()
+> Returns `STRING|ERROR`
+
+Reads content of the file and returns it. Resets the position to 0 after read.
+
+
+
 ### lines()
 > Returns `ARRAY|ERROR`
 
@@ -24,17 +31,24 @@ If successfull, returns all lines of the file as array elements, otherwise `null
 
 
 
-### read()
-> Returns `STRING|ERROR`
+### position()
+> Returns `INTEGER`
 
-Reads content of the file and returns it. Resets the position to 0 after read.
+Returns the position of the current file handle. -1 if the file is closed.
 
 
 
-### rewind()
+### read(INTEGER)
+> Returns `STRING`
+
+Reads the given amount of bytes from the file.
+
+
+
+### seek(INTEGER, INTEGER)
 > Returns `BOOLEAN`
 
-Resets the read pointer back to position `0`. Always returns `true`.
+Seeks the file handle relative from the given position.
 
 
 
