@@ -216,6 +216,11 @@ func CompareObjects(ao, bo Object) bool {
 			return ao.(*Integer).Value == b.Value
 		}
 		return false
+	case FLOAT_OBJ:
+		if b, ok := bo.(*Float); ok {
+			return ao.(*Float).Value == b.Value
+		}
+		return false
 	case BOOLEAN_OBJ:
 		if b, ok := bo.(*Boolean); ok {
 			return ao.(*Boolean).Value == b.Value
