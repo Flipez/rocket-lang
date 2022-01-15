@@ -463,7 +463,7 @@ func TestIfExpression(t *testing.T) {
 }
 
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := `fn (x, y) { x + y; }`
+	input := `def (x, y) { x + y; }`
 
 	program, p := createProgram(input)
 	checkParserErrors(t, p)
@@ -506,9 +506,9 @@ func TestFunctionParameterParsing(t *testing.T) {
 		input          string
 		expectedParams []string
 	}{
-		{input: "fn() {};", expectedParams: []string{}},
-		{input: "fn(x) {};", expectedParams: []string{"x"}},
-		{input: "fn(x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
+		{input: "def () {};", expectedParams: []string{}},
+		{input: "def (x) {};", expectedParams: []string{"x"}},
+		{input: "def (x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
 	}
 
 	for _, tt := range tests {
@@ -717,7 +717,7 @@ func TestParsingHashLiteralWithExpressions(t *testing.T) {
 }
 
 func TestNamedFunctionLiteralParsing(t *testing.T) {
-	input := `fn test(x, y) { x + y; }`
+	input := `def test(x, y) { x + y; }`
 
 	program, p := createProgram(input)
 

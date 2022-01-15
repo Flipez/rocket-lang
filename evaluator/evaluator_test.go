@@ -161,7 +161,7 @@ func TestErrorHandling(t *testing.T) {
 			`, "unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
-		{`{"name": "Monkey"}[fn(x) { x }];`, "unusable as hash key: FUNCTION"},
+		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
 	}
 
 	for _, tt := range tests {
@@ -196,26 +196,26 @@ func TestAssignStatements(t *testing.T) {
 }
 
 func TestFunctionObject(t *testing.T) {
-	input := "fn(x) { x + 2; };"
+	input := "def(x) { x + 2; };"
 
 	evaluated := testEval(input)
-	fn, ok := evaluated.(*object.Function)
+	def, ok := evaluated.(*object.Function)
 	if !ok {
 		t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
 	}
 
-	if len(fn.Parameters) != 1 {
-		t.Fatalf("function has wrong parameters. Parameters=%+v", fn.Parameters)
+	if len(def.Parameters) != 1 {
+		t.Fatalf("function has wrong parameters. Parameters=%+v", def.Parameters)
 	}
 
-	if fn.Parameters[0].String() != "x" {
-		t.Fatalf("parameter is not 'x'. got=%q", fn.Parameters[0])
+	if def.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", def.Parameters[0])
 	}
 
 	expectedBody := "(x + 2)"
 
-	if fn.Body.String() != expectedBody {
-		t.Fatalf("body is not %q. got=%q", expectedBody, fn.Body.String())
+	if def.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, def.Body.String())
 	}
 }
 
@@ -224,12 +224,12 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"identity = fn(x) { x; }; identity(5);", 5},
-		{"identity = fn(x) { return x; }; identity(5);", 5},
-		{"double = fn(x) { x * 2; }; double(5);", 10},
-		{"add = fn(x, y) { x + y; }; add(5, 5);", 10},
-		{"add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
-		{"fn(x) { x; }(5)", 5},
+		{"identity = def(x) { x; }; identity(5);", 5},
+		{"identity = def(x) { return x; }; identity(5);", 5},
+		{"double = def(x) { x * 2; }; double(5);", 10},
+		{"add = def(x, y) { x + y; }; add(5, 5);", 10},
+		{"add = def(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"def(x) { x; }(5)", 5},
 	}
 
 	for _, tt := range tests {
@@ -239,8 +239,8 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	newAdder = fn(x) {
-		fn(y) { x + y };
+	newAdder = def(x) {
+		def(y) { x + y };
 	};
 
 	addTwo = newAdder(2);
@@ -482,9 +482,9 @@ func TestNamedFunctionStatements(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"fn five() { return 5 } five()", 5},
-		{"fn ten() { return 10 } ten()", 10},
-		{"fn fifteen() { return 15 } fifteen()", 15},
+		{"def five() { return 5 } five()", 5},
+		{"def ten() { return 10 } ten()", 10},
+		{"def fifteen() { return 15 } fifteen()", 15},
 	}
 
 	for _, tt := range tests {

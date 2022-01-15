@@ -6,8 +6,8 @@ menu:
 toc: true
 ---
 ```js
-newGreeter = fn(greeting) {
-  return fn(name) { puts(greeting + " " + name); }
+newGreeter = def (greeting) {
+  return def (name) { puts(greeting + " " + name); }
 };
 
 hello = newGreeter("Hello");

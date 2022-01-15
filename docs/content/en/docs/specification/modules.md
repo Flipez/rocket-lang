@@ -17,7 +17,7 @@ For example take this module:
 a = 1
 A = 5
 
-Sum = fn(a, b) {
+Sum = def (a, b) {
     return a + b
 }
 
