@@ -16,3 +16,16 @@ With `if` and `else` keywords the flow of a program can be controlled.
 // which prints
 is a string
 ```
+
+{{< alert icon="👉" text="Since `0.13` curly braces are completely optional (closing brace needs to be replaced with `end`" />}}
+
+```js
+🚀 > if (a.type() == "STRING")
+  puts("is a string")
+else
+  puts("is not a string")
+end
+
+// which prints
+is a string
+```
