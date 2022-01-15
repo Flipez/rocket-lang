@@ -9,7 +9,7 @@ menu:
 
 
 ```js
-let people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
+people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
 ```
 
 ## Literal Specific Methods

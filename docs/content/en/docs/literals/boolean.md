@@ -12,13 +12,13 @@ A Boolean can represent two values: `true` and `false` and can be used in contro
 true // Is the representation for truthyness
 false // is it for a falsy value
 
-let a = true;
-let b = false;
+a = true;
+b = false;
 
-let is_true = a == a;
-let is_false = a == b;
+is_true = a == a;
+is_false = a == b;
 
-let is_true = a != b;
+is_true = a != b;
 ```
 
 ## Literal Specific Methods

@@ -27,12 +27,12 @@ func main() {
 
 	tempData := templateData{
 		Title: "String",
-		Example: `let a = "test_string;
+		Example: `a = "test_string;
 
-let b = "test" + "_string";
+b = "test" + "_string";
 
-let is_true = "test" == "test";
-let is_false = "test" == "string";`,
+is_true = "test" == "test";
+is_false = "test" == "string";`,
 		LiteralMethods: string_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/string.md", tempData)
@@ -45,7 +45,7 @@ let is_false = "test" == "string";`,
 
 	tempData = templateData{
 		Title:          "Hash",
-		Example:        `let people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];`,
+		Example:        `people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];`,
 		LiteralMethods: hash_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/hash.md", tempData)
@@ -56,13 +56,13 @@ let is_false = "test" == "string";`,
 		Example: `true // Is the representation for truthyness
 false // is it for a falsy value
 
-let a = true;
-let b = false;
+a = true;
+b = false;
 
-let is_true = a == a;
-let is_false = a == b;
+is_true = a == a;
+is_false = a == b;
 
-let is_true = a != b;`,
+is_true = a != b;`,
 		LiteralMethods: boolean_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/boolean.md", tempData)
@@ -81,12 +81,12 @@ let is_true = a != b;`,
 
 	tempData = templateData{
 		Title: "Integer",
-		Example: `let a = 1;
+		Example: `a = 1;
 
-let b = a + 2;
+b = a + 2;
 
-let is_true = 1 == 1;
-let is_false = 1 == 2;`,
+is_true = 1 == 1;
+is_false = 1 == 2;`,
 		Description: `An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
 
 To cast a negative integer a digit can be prefixed with a - eg. -456.`,

@@ -8,7 +8,7 @@ toc: true
 Implicit and explicit return statements are supported.
 
 ```js
-let fibonacci = fn(x) {
+fibonacci = fn(x) {
   if (x == 0) {
     0
   } else {
