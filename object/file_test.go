@@ -1,6 +1,7 @@
 package object_test
 
 import (
+	"os"
 	"testing"
 )
 
@@ -18,9 +19,13 @@ func TestFileObjectMethods(t *testing.T) {
 		{`a = open("../fixtures/module.rl"); a.read(1); a.content().size()`, 49},
 		{`a = open("../fixtures/module.rl"); a.lines().size()`, 7},
 		{`a = open("../fixtures/module.rl"); a.read(25); a.lines().size()`, 7},
+		{`a = open("../fixtures/nope"); a.content()`, "Invalid file handle."},
+		{`a = open("../fixtures/nope", "rw"); a.content()`, ""},
 		{`(open("").wat().lines().size() == open("").methods().size() + 1).plz_s()`, "true"},
 		{`open("").type()`, "FILE"},
 	}
 
 	testInput(t, tests)
+
+	os.Remove("../fixtures/nope")
 }
