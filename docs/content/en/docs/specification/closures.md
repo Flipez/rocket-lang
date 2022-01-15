@@ -6,11 +6,11 @@ menu:
 toc: true
 ---
 ```js
-let newGreeter = fn(greeting) {
+newGreeter = fn(greeting) {
   return fn(name) { puts(greeting + " " + name); }
 };
 
-let hello = newGreeter("Hello");
+hello = newGreeter("Hello");
 
 hello("dear, future Reader!");
 

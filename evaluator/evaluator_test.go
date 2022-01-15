@@ -179,15 +179,15 @@ func TestErrorHandling(t *testing.T) {
 	}
 }
 
-func TestLetStatements(t *testing.T) {
+func TestAssignStatements(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"let a = 5; a;", 5},
-		{"let a = 5 * 5; a;", 25},
-		{"let a = 5; let b = a; b;", 5},
-		{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+		{"a = 5; a;", 5},
+		{"a = 5 * 5; a;", 25},
+		{"a = 5; b = a; b;", 5},
+		{"a = 5; b = a; c = a + b + 5; c;", 15},
 	}
 
 	for _, tt := range tests {
@@ -224,11 +224,11 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identity = fn(x) { x; }; identity(5);", 5},
-		{"let identity = fn(x) { return x; }; identity(5);", 5},
-		{"let double = fn(x) { x * 2; }; double(5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"identity = fn(x) { x; }; identity(5);", 5},
+		{"identity = fn(x) { return x; }; identity(5);", 5},
+		{"double = fn(x) { x * 2; }; double(5);", 10},
+		{"add = fn(x, y) { x + y; }; add(5, 5);", 10},
+		{"add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"fn(x) { x; }(5)", 5},
 	}
 
@@ -239,11 +239,11 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	let newAdder = fn(x) {
+	newAdder = fn(x) {
 		fn(y) { x + y };
 	};
 
-	let addTwo = newAdder(2);
+	addTwo = newAdder(2);
 	addTwo(2);`
 
 	testIntegerObject(t, testEval(input), 4)
@@ -350,7 +350,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"let i = 0; [1][i]",
+			"i = 0; [1][i]",
 			1,
 		},
 		{
@@ -358,15 +358,15 @@ func TestArrayIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"let myArray = [1, 2, 3]; myArray[2];",
+			"myArray = [1, 2, 3]; myArray[2];",
 			3,
 		},
 		{
-			"let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
+			"myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
 			6,
 		},
 		{
-			"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]",
+			"myArray = [1, 2, 3]; i = myArray[0]; myArray[i]",
 			2,
 		},
 		{
@@ -391,7 +391,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 }
 
 func TestHashLiterals(t *testing.T) {
-	input := `let two = "two";
+	input := `two = "two";
 	{
 		"one": 10 - 9,
 		two: 1 + 1,
@@ -445,7 +445,7 @@ func TestHashIndexExpressions(t *testing.T) {
 			nil,
 		},
 		{
-			`let key = "foo"; {"foo": 5}[key]`,
+			`key = "foo"; {"foo": 5}[key]`,
 			5,
 		},
 		{

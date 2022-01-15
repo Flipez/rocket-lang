@@ -70,12 +70,12 @@ func TestStringObjectMethods(t *testing.T) {
                        string".strip()`, "string"},
 		{`"abc".replace("a", "A")`, "Abc"},
 		{`"These are the days of summer".count("e")`, 5},
-		{`let a = "test"; a.upcase!(); a`, "TEST"},
-		{`let a = "tESt"; a.downcase!(); a`, "test"},
-		{`let a = "test"; a.reverse!(); a`, "tset"},
-		{`let a = " test "; a.strip!(); a`, "test"},
+		{`a = "test"; a.upcase!(); a`, "TEST"},
+		{`a = "tESt"; a.downcase!(); a`, "test"},
+		{`a = "test"; a.reverse!(); a`, "tset"},
+		{`a = " test "; a.strip!(); a`, "test"},
 		{`("test".wat().lines().size() == "test".methods().size() + 1).plz_s()`, "true"},
-		{`let a = "test"; let b = []; foreach char in a { b.yoink(char) }; b.size()`, 4},
+		{`a = "test"; b = []; foreach char in a { b.yoink(char) }; b.size()`, 4},
 	}
 
 	testInput(t, tests)

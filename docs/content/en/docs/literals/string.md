@@ -9,12 +9,12 @@ menu:
 
 
 ```js
-let a = "test_string;
+a = "test_string;
 
-let b = "test" + "_string";
+b = "test" + "_string";
 
-let is_true = "test" == "test";
-let is_false = "test" == "string";
+is_true = "test" == "test";
+is_false = "test" == "string";
 ```
 
 ## Literal Specific Methods

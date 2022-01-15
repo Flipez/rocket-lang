@@ -11,12 +11,12 @@ To cast a negative integer a digit can be prefixed with a - eg. -456.
 
 
 ```js
-let a = 1;
+a = 1;
 
-let b = a + 2;
+b = a + 2;
 
-let is_true = 1 == 1;
-let is_false = 1 == 2;
+is_true = 1 == 1;
+is_false = 1 == 2;
 ```
 
 ## Literal Specific Methods

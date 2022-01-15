@@ -1,10 +1,10 @@
-let input = open("examples/aoc/2021/day-1/input").lines()
+input = open("examples/aoc/2021/day-1/input").lines()
 
 // Part 1
 
-let increase = 0
+increase = 0
 
-let a = []
+a = []
 foreach i, number in input {
   a.yoink(number.strip().plz_i())
 }
@@ -23,8 +23,8 @@ puts(increase)
 increase = 0
 
 foreach i, number in input {
-  let sum = number + input[i+1] + input[i+2]
-  let sum_two = input[i+1] + input[i+2] + input[i+3]
+  sum = number + input[i+1] + input[i+2]
+  sum_two = input[i+1] + input[i+2] + input[i+3]
   
   if (sum_two > sum) {
     increase = increase + 1
