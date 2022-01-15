@@ -125,25 +125,25 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	return nil
 }
 
-func applyFunction(fn object.Object, args []object.Object) object.Object {
-	switch fn := fn.(type) {
+func applyFunction(def object.Object, args []object.Object) object.Object {
+	switch def := def.(type) {
 	case *object.Function:
-		extendedEnv := extendFunctionEnv(fn, args)
-		evaluated := Eval(fn.Body, extendedEnv)
+		extendedEnv := extendFunctionEnv(def, args)
+		evaluated := Eval(def.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
-		return fn.Fn(args...)
+		return def.Fn(args...)
 
 	default:
-		return newError("not a function: %s", fn.Type())
+		return newError("not a function: %s", def.Type())
 	}
 }
 
-func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
-	env := object.NewEnclosedEnvironment(fn.Env)
+func extendFunctionEnv(def *object.Function, args []object.Object) *object.Environment {
+	env := object.NewEnclosedEnvironment(def.Env)
 
-	for paramIdx, param := range fn.Parameters {
+	for paramIdx, param := range def.Parameters {
 		env.Set(param.Value, args[paramIdx])
 	}
 
