@@ -11,9 +11,9 @@ foreach i, number in input {
 input = a
 
 foreach i, number in input {
-  if (number > input[i-1]) {
+  if (number > input[i-1])
     increase = increase + 1
-  }
+  end
 }
 
 puts(increase)
@@ -26,9 +26,9 @@ foreach i, number in input {
   sum = number + input[i+1] + input[i+2]
   sum_two = input[i+1] + input[i+2] + input[i+3]
   
-  if (sum_two > sum) {
+  if (sum_two > sum)
     increase = increase + 1
-  }
+  end
 }
 
 puts(increase)
