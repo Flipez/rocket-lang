@@ -68,8 +68,8 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.registerPrefix(token.INT, p.parseInteger)
 	p.registerPrefix(token.FLOAT, p.parseFloat)
-	p.registerPrefix(token.BANG, p.parsePrefixExpression)
-	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.BANG, p.parsePrefix)
+	p.registerPrefix(token.MINUS, p.parsePrefix)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
@@ -314,8 +314,8 @@ func (p *Parser) parseFloat() ast.Expression {
 	return lit
 }
 
-func (p *Parser) parsePrefixExpression() ast.Expression {
-	expression := &ast.PrefixExpression{
+func (p *Parser) parsePrefix() ast.Expression {
+	expression := &ast.Prefix{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
 	}

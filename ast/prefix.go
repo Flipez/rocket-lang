@@ -6,15 +6,15 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type PrefixExpression struct {
+type Prefix struct {
 	Token    token.Token
 	Operator string
 	Right    Expression
 }
 
-func (pe *PrefixExpression) expressionNode()      {}
-func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
-func (pe *PrefixExpression) String() string {
+func (pe *Prefix) expressionNode()      {}
+func (pe *Prefix) TokenLiteral() string { return pe.Token.Literal }
+func (pe *Prefix) String() string {
 	var out bytes.Buffer
 
 	out.WriteString("(")

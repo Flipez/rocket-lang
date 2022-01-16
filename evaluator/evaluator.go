@@ -71,7 +71,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
 
-	case *ast.PrefixExpression:
+	case *ast.Prefix:
 		right := Eval(node.Right, env)
 		if isError(right) {
 			return right
