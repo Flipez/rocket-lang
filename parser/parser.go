@@ -226,14 +226,14 @@ func (p *Parser) parseString() ast.Expression {
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.RETURN:
-		return p.parseReturnStatement()
+		return p.parseReturn()
 	default:
 		return p.parseExpressionStatement()
 	}
 }
 
-func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
-	stmt := &ast.ReturnStatement{Token: p.curToken}
+func (p *Parser) parseReturn() *ast.Return {
+	stmt := &ast.Return{Token: p.curToken}
 
 	p.nextToken()
 

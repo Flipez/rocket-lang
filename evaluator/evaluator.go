@@ -32,7 +32,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalBlock(node, env)
 	case *ast.Foreach:
 		return evalForeach(node, env)
-	case *ast.ReturnStatement:
+	case *ast.Return:
 		val := Eval(node.ReturnValue, env)
 		if isError(val) {
 			return val

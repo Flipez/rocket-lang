@@ -31,7 +31,7 @@ return 993322;
 	}
 
 	for _, stmt := range program.Statements {
-		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		returnStmt, ok := stmt.(*ast.Return)
 		if !ok {
 			t.Errorf("stmt not *ast.ReturnStatement. got=%T", stmt)
 			continue

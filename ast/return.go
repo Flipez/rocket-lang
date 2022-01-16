@@ -6,14 +6,14 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type ReturnStatement struct {
+type Return struct {
 	Token       token.Token
 	ReturnValue Expression
 }
 
-func (rs *ReturnStatement) statementNode()       {}
-func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
-func (rs *ReturnStatement) String() string {
+func (rs *Return) statementNode()       {}
+func (rs *Return) TokenLiteral() string { return rs.Token.Literal }
+func (rs *Return) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(rs.TokenLiteral() + " ")
