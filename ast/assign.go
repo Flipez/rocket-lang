@@ -12,8 +12,6 @@ type Assign struct {
 	Value Expression
 }
 
-func (as *Assign) expressionNode()      {}
-func (as *Assign) statementNode()       {}
 func (as *Assign) TokenLiteral() string { return as.Token.Literal }
 func (as *Assign) String() string {
 	var out bytes.Buffer

@@ -9,6 +9,5 @@ type Float struct {
 	Value float64
 }
 
-func (fl *Float) expressionNode()      {}
 func (fl *Float) TokenLiteral() string { return fl.Token.Literal }
 func (fl *Float) String() string       { return fl.Token.Literal }

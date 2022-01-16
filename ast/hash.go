@@ -12,7 +12,6 @@ type Hash struct {
 	Pairs map[Expression]Expression
 }
 
-func (hl *Hash) expressionNode()      {}
 func (hl *Hash) TokenLiteral() string { return hl.Token.Literal }
 func (hl *Hash) String() string {
 	var out bytes.Buffer

@@ -12,7 +12,6 @@ type ObjectCall struct {
 	Call   Expression
 }
 
-func (oce *ObjectCall) expressionNode()      {}
 func (oce *ObjectCall) TokenLiteral() string { return oce.Token.Literal }
 func (oce *ObjectCall) String() string {
 	var out bytes.Buffer

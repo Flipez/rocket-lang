@@ -9,6 +9,5 @@ type Integer struct {
 	Value int64
 }
 
-func (il *Integer) expressionNode()      {}
 func (il *Integer) TokenLiteral() string { return il.Token.Literal }
 func (il *Integer) String() string       { return il.Token.Literal }

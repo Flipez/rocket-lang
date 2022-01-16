@@ -12,7 +12,6 @@ type Index struct {
 	Index Expression
 }
 
-func (ie *Index) expressionNode()      {}
 func (ie *Index) TokenLiteral() string { return ie.Token.Literal }
 func (ie *Index) String() string {
 	var out bytes.Buffer

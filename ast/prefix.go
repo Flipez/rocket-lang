@@ -12,7 +12,6 @@ type Prefix struct {
 	Right    Expression
 }
 
-func (pe *Prefix) expressionNode()      {}
 func (pe *Prefix) TokenLiteral() string { return pe.Token.Literal }
 func (pe *Prefix) String() string {
 	var out bytes.Buffer

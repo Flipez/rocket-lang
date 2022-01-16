@@ -13,7 +13,6 @@ type Call struct {
 	Arguments []Expression
 }
 
-func (ce *Call) expressionNode()      {}
 func (ce *Call) TokenLiteral() string { return ce.Token.Literal }
 func (ce *Call) String() string {
 	var out bytes.Buffer

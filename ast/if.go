@@ -13,7 +13,6 @@ type If struct {
 	Alternative *Block
 }
 
-func (ie *If) expressionNode()      {}
 func (ie *If) TokenLiteral() string { return ie.Token.Literal }
 func (ie *If) String() string {
 	var out bytes.Buffer

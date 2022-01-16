@@ -11,7 +11,6 @@ type Block struct {
 	Statements []Statement
 }
 
-func (bs *Block) statementNode()       {}
 func (bs *Block) TokenLiteral() string { return bs.Token.Literal }
 func (bs *Block) String() string {
 	var out bytes.Buffer
