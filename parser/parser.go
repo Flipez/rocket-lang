@@ -145,7 +145,7 @@ func (p *Parser) ParseProgram() (*ast.Program, map[string]struct{}) {
 }
 
 func (p *Parser) parseHashLiteral() ast.Expression {
-	hash := &ast.HashLiteral{Token: p.curToken}
+	hash := &ast.Hash{Token: p.curToken}
 	hash.Pairs = make(map[ast.Expression]ast.Expression)
 
 	for !p.peekTokenIs(token.RBRACE) {

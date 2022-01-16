@@ -65,8 +65,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return elements[0]
 		}
 		return &object.Array{Elements: elements}
-	case *ast.HashLiteral:
-		return evalHashLiteral(node, env)
+	case *ast.Hash:
+		return evalHash(node, env)
 
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
@@ -160,7 +160,7 @@ func unwrapReturnValue(obj object.Object) object.Object {
 	return obj
 }
 
-func evalHashLiteral(node *ast.HashLiteral, env *object.Environment) object.Object {
+func evalHash(node *ast.Hash, env *object.Environment) object.Object {
 	pairs := make(map[object.HashKey]object.HashPair)
 
 	for keyNode, valueNode := range node.Pairs {

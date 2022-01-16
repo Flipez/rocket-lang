@@ -7,14 +7,14 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type HashLiteral struct {
+type Hash struct {
 	Token token.Token
 	Pairs map[Expression]Expression
 }
 
-func (hl *HashLiteral) expressionNode()      {}
-func (hl *HashLiteral) TokenLiteral() string { return hl.Token.Literal }
-func (hl *HashLiteral) String() string {
+func (hl *Hash) expressionNode()      {}
+func (hl *Hash) TokenLiteral() string { return hl.Token.Literal }
+func (hl *Hash) String() string {
 	var out bytes.Buffer
 
 	pairs := []string{}
