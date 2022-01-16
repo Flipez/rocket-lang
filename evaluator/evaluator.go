@@ -415,6 +415,7 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 			}
 		}
 
+		leftOrig, rightOrig := left, right
 		if left.Type() == object.INTEGER_OBJ {
 			left = left.(*object.Integer).ToFloat()
 		}
@@ -424,18 +425,12 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 
 		result := evalFloatInfixExpression(operator, left, right)
 
-		if object.IsNumber(result) {
+		if object.IsNumber(result) && leftOrig.Type() == object.INTEGER_OBJ && rightOrig.Type() == object.INTEGER_OBJ {
 			return result.(*object.Float).TryInteger()
 		}
 		return result
 	case left.Type() != right.Type():
 		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
-		/*
-			case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
-				return evalIntegerInfixExpression(operator, left, right)
-			case left.Type() == object.FLOAT_OBJ && right.Type() == object.FLOAT_OBJ:
-				return evalFloatInfixExpression(operator, left, right)
-		*/
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
 	case left.Type() == object.ARRAY_OBJ && right.Type() == object.ARRAY_OBJ:
