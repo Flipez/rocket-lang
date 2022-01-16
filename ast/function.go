@@ -7,16 +7,16 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type FunctionLiteral struct {
+type Function struct {
 	Token      token.Token
 	Name       string
 	Parameters []*Identifier
 	Body       *BlockStatement
 }
 
-func (fl *FunctionLiteral) expressionNode()      {}
-func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
-func (fl *FunctionLiteral) String() string {
+func (fl *Function) expressionNode()      {}
+func (fl *Function) TokenLiteral() string { return fl.Token.Literal }
+func (fl *Function) String() string {
 	var out bytes.Buffer
 
 	params := []string{}

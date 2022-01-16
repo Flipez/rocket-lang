@@ -44,7 +44,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.Integer{Value: node.Value}
 	case *ast.Float:
 		return &object.Float{Value: node.Value}
-	case *ast.FunctionLiteral:
+	case *ast.Function:
 		params := node.Parameters
 		body := node.Body
 		name := node.Name
