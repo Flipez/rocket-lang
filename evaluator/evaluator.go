@@ -104,7 +104,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return applyFunction(function, args)
 
-	case *ast.IndexExpression:
+	case *ast.Index:
 		left := Eval(node.Left, env)
 		if isError(left) {
 			return left

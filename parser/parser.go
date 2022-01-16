@@ -93,7 +93,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
-	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
+	p.registerInfix(token.LBRACKET, p.parseIndex)
 
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()
@@ -174,8 +174,8 @@ func (p *Parser) parseHashLiteral() ast.Expression {
 	return hash
 }
 
-func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
-	exp := &ast.IndexExpression{Token: p.curToken, Left: left}
+func (p *Parser) parseIndex(left ast.Expression) ast.Expression {
+	exp := &ast.Index{Token: p.curToken, Left: left}
 
 	p.nextToken()
 	exp.Index = p.parseExpression(LOWEST)
@@ -533,7 +533,7 @@ func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
 	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
 		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
-		return &ast.IndexExpression{Left: obj, Index: index}
+		return &ast.Index{Left: obj, Index: index}
 	}
 
 	methodCall := &ast.ObjectCallExpression{Token: p.curToken, Object: obj}
@@ -617,5 +617,5 @@ func (p *Parser) parseDotNotationExpression(expression ast.Expression) ast.Expre
 
 	index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 
-	return &ast.IndexExpression{Left: expression, Index: index}
+	return &ast.Index{Left: expression, Index: index}
 }
