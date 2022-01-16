@@ -11,7 +11,7 @@ type ForeachStatement struct {
 	Index string
 	Ident string
 	Value Expression
-	Body  *BlockStatement
+	Body  *Block
 }
 
 func (fes *ForeachStatement) expressionNode()      {}

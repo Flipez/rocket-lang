@@ -28,8 +28,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalProgram(node, env)
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
-	case *ast.BlockStatement:
-		return evalBlockStatement(node, env)
+	case *ast.Block:
+		return evalBlock(node, env)
 	case *ast.ForeachStatement:
 		return evalForeachExpression(node, env)
 	case *ast.ReturnStatement:
@@ -293,7 +293,7 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 	return newError("identifier not found: " + node.Value)
 }
 
-func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) object.Object {
+func evalBlock(block *ast.Block, env *object.Environment) object.Object {
 	var result object.Object
 
 	for _, statement := range block.Statements {

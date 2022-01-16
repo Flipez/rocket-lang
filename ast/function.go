@@ -11,7 +11,7 @@ type Function struct {
 	Token      token.Token
 	Name       string
 	Parameters []*Identifier
-	Body       *BlockStatement
+	Body       *Block
 }
 
 func (fl *Function) expressionNode()      {}

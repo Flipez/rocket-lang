@@ -9,8 +9,8 @@ import (
 type IfExpression struct {
 	Token       token.Token // the if token
 	Condition   Expression
-	Consequence *BlockStatement
-	Alternative *BlockStatement
+	Consequence *Block
+	Alternative *Block
 }
 
 func (ie *IfExpression) expressionNode()      {}

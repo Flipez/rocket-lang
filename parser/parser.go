@@ -414,7 +414,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if p.peekTokenIs(token.LBRACE) {
 		p.nextToken()
 	}
-	expression.Consequence = p.parseBlockStatement()
+	expression.Consequence = p.parseBlock()
 
 	if p.curTokenIs(token.RBRACE) {
 		p.nextToken()
@@ -425,13 +425,13 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		if p.peekTokenIs(token.LBRACE) {
 			p.nextToken()
 		}
-		expression.Alternative = p.parseBlockStatement()
+		expression.Alternative = p.parseBlock()
 	}
 	return expression
 }
 
-func (p *Parser) parseBlockStatement() *ast.BlockStatement {
-	block := &ast.BlockStatement{Token: p.curToken}
+func (p *Parser) parseBlock() *ast.Block {
+	block := &ast.Block{Token: p.curToken}
 	block.Statements = []ast.Statement{}
 
 	p.nextToken()
@@ -467,7 +467,7 @@ func (p *Parser) parseFunction() ast.Expression {
 		return nil
 	}
 
-	lit.Body = p.parseBlockStatement()
+	lit.Body = p.parseBlock()
 
 	return lit
 }
@@ -576,7 +576,7 @@ func (p *Parser) parseForEach() ast.Expression {
 	}
 
 	p.nextToken()
-	expression.Body = p.parseBlockStatement()
+	expression.Body = p.parseBlock()
 
 	return expression
 }
