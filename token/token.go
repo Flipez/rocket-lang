@@ -1,5 +1,9 @@
 package token
 
+import (
+	"fmt"
+)
+
 type TokenType string
 
 type Token struct {
@@ -106,4 +110,17 @@ func LookupLiteral(ident string) string {
 	}
 
 	return IDENT
+}
+
+func NewToken(tokenType TokenType, literal interface{}) Token {
+	byteLiteral, ok := literal.(byte)
+	if ok {
+		return Token{Type: tokenType, Literal: string(byteLiteral)}
+	}
+	stringLiteral, ok := literal.(string)
+	if ok {
+		return Token{Type: tokenType, Literal: stringLiteral}
+	}
+
+	return Token{Type: ILLEGAL, Literal: fmt.Sprintf("%v", literal)}
 }

@@ -40,56 +40,57 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.EQ, Literal: literal}
+			tok = token.NewToken(token.EQ, literal)
 		} else {
-			tok = newToken(token.ASSIGN, l.ch)
+			tok = token.NewToken(token.ASSIGN, l.ch)
 		}
-	case '+':
-		tok = newToken(token.PLUS, l.ch)
-	case '-':
-		tok = newToken(token.MINUS, l.ch)
+
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
 			literal := string(ch) + string(l.ch)
-			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+			tok = token.NewToken(token.NOT_EQ, literal)
 		} else {
-			tok = newToken(token.BANG, l.ch)
+			tok = token.NewToken(token.BANG, l.ch)
 		}
 	case '/':
 		if l.peekChar() == '/' {
 			l.skipComment()
 			tok = l.NextToken()
 		} else {
-			tok = newToken(token.SLASH, l.ch)
+			tok = token.NewToken(token.SLASH, l.ch)
 		}
+	case '+':
+		tok = token.NewToken(token.PLUS, l.ch)
+	case '-':
+		tok = token.NewToken(token.MINUS, l.ch)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		tok = token.NewToken(token.ASTERISK, l.ch)
 	case '<':
-		tok = newToken(token.LT, l.ch)
+		tok = token.NewToken(token.LT, l.ch)
 	case '>':
-		tok = newToken(token.GT, l.ch)
+		tok = token.NewToken(token.GT, l.ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		tok = token.NewToken(token.SEMICOLON, l.ch)
 	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		tok = token.NewToken(token.COMMA, l.ch)
 	case '.':
-		tok = newToken(token.PERIOD, l.ch)
+		tok = token.NewToken(token.PERIOD, l.ch)
 	case ':':
-		tok = newToken(token.COLON, l.ch)
+		tok = token.NewToken(token.COLON, l.ch)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tok = token.NewToken(token.LBRACE, l.ch)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tok = token.NewToken(token.RBRACE, l.ch)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch)
+		tok = token.NewToken(token.LPAREN, l.ch)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch)
+		tok = token.NewToken(token.RPAREN, l.ch)
 	case '[':
-		tok = newToken(token.LBRACKET, l.ch)
+		tok = token.NewToken(token.LBRACKET, l.ch)
 	case ']':
-		tok = newToken(token.RBRACKET, l.ch)
+		tok = token.NewToken(token.RBRACKET, l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -122,7 +123,7 @@ func (l *Lexer) NextToken() token.Token {
 
 			return tok
 		} else {
-			tok = newToken(token.ILLEGAL, l.ch)
+			tok = token.NewToken(token.ILLEGAL, l.ch)
 		}
 	}
 
@@ -141,10 +142,6 @@ func (l *Lexer) readString() string {
 	return l.input[position:l.position]
 }
 
-func newToken(tokenType token.TokenType, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
-}
-
 func (l *Lexer) readIdentifier() string {
 	id := ""
 
@@ -157,30 +154,14 @@ func (l *Lexer) readIdentifier() string {
 	}
 
 	if strings.Contains(id, ".") {
+		offset := strings.Index(id, ".")
+		id = id[:offset]
 
-		if !strings.HasPrefix(id, "directory.") &&
-			!strings.HasPrefix(id, "file.") &&
-			!strings.HasPrefix(id, "math.") &&
-			!strings.HasPrefix(id, "os.") &&
-			!strings.HasPrefix(id, "string.") {
-
-			//
-			// OK first of all we truncate our identifier
-			// at the position before the "."
-			//
-			offset := strings.Index(id, ".")
-			id = id[:offset]
-
-			//
-			// Now we have to move backwards - as a quickie
-			// We'll reset our position and move forwards
-			// the length of the bits we went too-far.
-			l.position = position
-			l.readPosition = rposition
-			for offset > 0 {
-				l.readChar()
-				offset--
-			}
+		l.position = position
+		l.readPosition = rposition
+		for offset > 0 {
+			l.readChar()
+			offset--
 		}
 	}
 
