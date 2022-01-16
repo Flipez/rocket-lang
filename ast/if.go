@@ -6,16 +6,16 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type IfExpression struct {
+type If struct {
 	Token       token.Token // the if token
 	Condition   Expression
 	Consequence *Block
 	Alternative *Block
 }
 
-func (ie *IfExpression) expressionNode()      {}
-func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
-func (ie *IfExpression) String() string {
+func (ie *If) expressionNode()      {}
+func (ie *If) TokenLiteral() string { return ie.Token.Literal }
+func (ie *If) String() string {
 	var out bytes.Buffer
 
 	out.WriteString("if ")

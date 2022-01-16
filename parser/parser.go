@@ -73,7 +73,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
-	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.IF, p.parseIf)
 	p.registerPrefix(token.FOREACH, p.parseForEach)
 	p.registerPrefix(token.FUNCTION, p.parseFunction)
 	p.registerPrefix(token.STRING, p.parseString)
@@ -398,8 +398,8 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 	return exp
 }
 
-func (p *Parser) parseIfExpression() ast.Expression {
-	expression := &ast.IfExpression{Token: p.curToken}
+func (p *Parser) parseIf() ast.Expression {
+	expression := &ast.If{Token: p.curToken}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}

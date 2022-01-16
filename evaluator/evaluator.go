@@ -89,8 +89,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalInfixExpression(node.Operator, left, right)
 
-	case *ast.IfExpression:
-		return evalIfExpression(node, env)
+	case *ast.If:
+		return evalIf(node, env)
 
 	case *ast.Call:
 		function := Eval(node.Callable, env)
@@ -327,7 +327,7 @@ func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 	return result
 }
 
-func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {
+func evalIf(ie *ast.If, env *object.Environment) object.Object {
 	condition := Eval(ie.Condition, env)
 
 	if isError(condition) {
