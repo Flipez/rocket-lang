@@ -6,16 +6,16 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type InfixExpression struct {
+type Infix struct {
 	Token    token.Token
 	Left     Expression
 	Operator string
 	Right    Expression
 }
 
-func (ie *InfixExpression) expressionNode()      {}
-func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
-func (ie *InfixExpression) String() string {
+func (ie *Infix) expressionNode()      {}
+func (ie *Infix) TokenLiteral() string { return ie.Token.Literal }
+func (ie *Infix) String() string {
 	var out bytes.Buffer
 
 	out.WriteString("(")

@@ -83,15 +83,15 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
-	p.registerInfix(token.PLUS, p.parseInfixExpression)
-	p.registerInfix(token.MINUS, p.parseInfixExpression)
-	p.registerInfix(token.SLASH, p.parseInfixExpression)
-	p.registerInfix(token.ASTERISK, p.parseInfixExpression)
-	p.registerInfix(token.EQ, p.parseInfixExpression)
-	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
+	p.registerInfix(token.PLUS, p.parseInfix)
+	p.registerInfix(token.MINUS, p.parseInfix)
+	p.registerInfix(token.SLASH, p.parseInfix)
+	p.registerInfix(token.ASTERISK, p.parseInfix)
+	p.registerInfix(token.EQ, p.parseInfix)
+	p.registerInfix(token.NOT_EQ, p.parseInfix)
 	p.registerInfix(token.PERIOD, p.parseMethodCall)
-	p.registerInfix(token.LT, p.parseInfixExpression)
-	p.registerInfix(token.GT, p.parseInfixExpression)
+	p.registerInfix(token.LT, p.parseInfix)
+	p.registerInfix(token.GT, p.parseInfix)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
 	p.registerInfix(token.LBRACKET, p.parseIndex)
 
@@ -368,8 +368,8 @@ func (p *Parser) curPrecedence() int {
 	return LOWEST
 }
 
-func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
-	expression := &ast.InfixExpression{
+func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
+	expression := &ast.Infix{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
 		Left:     left,

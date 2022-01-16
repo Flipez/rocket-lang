@@ -234,10 +234,10 @@ func testLiteralExpression(
 	return false
 }
 
-func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
+func testInfix(t *testing.T, exp ast.Expression, left interface{},
 	operator string, right interface{}) bool {
 
-	opExp, ok := exp.(*ast.InfixExpression)
+	opExp, ok := exp.(*ast.Infix)
 	if !ok {
 		t.Errorf("exp is not ast.OperatorExpression. got=%T(%s)", exp, exp)
 		return false
@@ -292,7 +292,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 		}
 
-		exp, ok := stmt.Expression.(*ast.InfixExpression)
+		exp, ok := stmt.Expression.(*ast.Infix)
 		if !ok {
 			t.Fatalf("exp is not ast.InfixExpression. got=%T", stmt.Expression)
 		}
@@ -440,7 +440,7 @@ func TestIfExpression(t *testing.T) {
 		t.Fatalf("stmt.Expression is not ast.IfExpression. got=%T", stmt.Expression)
 	}
 
-	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+	if !testInfix(t, exp.Condition, "x", "<", "y") {
 		return
 	}
 
@@ -498,7 +498,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 		t.Fatalf("function body stmt is not ast.ExpressionStatement, got=%T", function.Body.Statements[0])
 	}
 
-	testInfixExpression(t, bodyStmt.Expression, "x", "+", "y")
+	testInfix(t, bodyStmt.Expression, "x", "+", "y")
 }
 
 func TestFunctionParameterParsing(t *testing.T) {
@@ -557,8 +557,8 @@ func TestCallParsing(t *testing.T) {
 	}
 
 	testLiteralExpression(t, exp.Arguments[0], 1)
-	testInfixExpression(t, exp.Arguments[1], 2, "*", 3)
-	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
+	testInfix(t, exp.Arguments[1], 2, "*", 3)
+	testInfix(t, exp.Arguments[2], 4, "+", 5)
 }
 
 func TestStringLiteralExpression(t *testing.T) {
@@ -595,8 +595,8 @@ func TestParsingArray(t *testing.T) {
 	}
 
 	testIntegerLiteral(t, array.Elements[0], 1)
-	testInfixExpression(t, array.Elements[1], 2, "*", 2)
-	testInfixExpression(t, array.Elements[2], 3, "+", 3)
+	testInfix(t, array.Elements[1], 2, "*", 2)
+	testInfix(t, array.Elements[2], 3, "+", 3)
 }
 
 func TestParsingIndexExpressions(t *testing.T) {
@@ -615,7 +615,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 		return
 	}
 
-	if !testInfixExpression(t, indexExp.Index, 1, "+", 1) {
+	if !testInfix(t, indexExp.Index, 1, "+", 1) {
 		return
 	}
 }
@@ -689,13 +689,13 @@ func TestParsingHashLiteralWithExpressions(t *testing.T) {
 
 	tests := map[string]func(ast.Expression){
 		"one": func(e ast.Expression) {
-			testInfixExpression(t, e, 0, "+", 1)
+			testInfix(t, e, 0, "+", 1)
 		},
 		"two": func(e ast.Expression) {
-			testInfixExpression(t, e, 10, "-", 8)
+			testInfix(t, e, 10, "-", 8)
 		},
 		"three": func(e ast.Expression) {
-			testInfixExpression(t, e, 15, "/", 5)
+			testInfix(t, e, 15, "/", 5)
 		},
 	}
 
@@ -760,7 +760,7 @@ func TestNamedFunctionLiteralParsing(t *testing.T) {
 		t.Fatalf("function body statement is not ast.ExpressionStatement. got=%T", function.Body.Statements[0])
 	}
 
-	testInfixExpression(t, bodyStatement.Expression, "x", "+", "y")
+	testInfix(t, bodyStatement.Expression, "x", "+", "y")
 }
 
 func TestParsingImportExpressions(t *testing.T) {
