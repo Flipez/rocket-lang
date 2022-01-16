@@ -113,7 +113,7 @@ func evalArrayInfixExpression(operator string, left, right object.Object) object
 	switch operator {
 	case "+":
 		length := len(leftArray.Elements) + len(rightArray.Elements)
-		elements := make([]object.Object, length, length)
+		elements := make([]object.Object, length)
 		copy(elements, leftArray.Elements)
 		copy(elements[len(leftArray.Elements):], rightArray.Elements)
 		return &object.Array{Elements: elements}
