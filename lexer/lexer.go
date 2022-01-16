@@ -102,8 +102,12 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
-			tok.Type = token.INT
 			tok.Literal = l.readNumber()
+			if strings.Contains(tok.Literal, ".") {
+				tok.Type = token.FLOAT
+			} else {
+				tok.Type = token.INT
+			}
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -253,6 +257,14 @@ func (l *Lexer) readNumber() string {
 	for isDigit(l.ch) {
 		l.readChar()
 	}
+
+	if l.ch == '.' && isDigit(l.peekChar()) {
+		l.readChar()
+		for isDigit(l.ch) {
+			l.readChar()
+		}
+	}
+
 	return l.input[position:l.position]
 }
 

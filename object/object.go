@@ -24,6 +24,7 @@ type Hashable interface {
 
 const (
 	INTEGER_OBJ      = "INTEGER"
+	FLOAT_OBJ        = "FLOAT"
 	BOOLEAN_OBJ      = "BOOLEAN"
 	NULL_OBJ         = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
@@ -215,6 +216,11 @@ func CompareObjects(ao, bo Object) bool {
 			return ao.(*Integer).Value == b.Value
 		}
 		return false
+	case FLOAT_OBJ:
+		if b, ok := bo.(*Float); ok {
+			return ao.(*Float).Value == b.Value
+		}
+		return false
 	case BOOLEAN_OBJ:
 		if b, ok := bo.(*Boolean); ok {
 			return ao.(*Boolean).Value == b.Value
@@ -274,4 +280,8 @@ func CompareObjects(ao, bo Object) bool {
 	}
 
 	return false
+}
+
+func IsNumber(o Object) bool {
+	return o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ
 }

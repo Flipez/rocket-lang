@@ -21,6 +21,23 @@ is_false = 1 == 2;
 
 ## Literal Specific Methods
 
+### plz_f()
+> Returns `FLOAT`
+
+Converts the integer into a float.
+
+
+```js
+🚀 > a = 456
+=> 456
+🚀 > a.plz_f()
+=> 456.0
+
+🚀 > 1234.plz_f()
+=> 1234.0
+```
+
+
 ### plz_s(INTEGER)
 > Returns `STRING`
 

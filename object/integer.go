@@ -48,10 +48,30 @@ func init() {
 				return &String{Value: strconv.FormatInt(i.Value, base)}
 			},
 		},
+		"plz_f": ObjectMethod{
+			description: "Converts the integer into a float.",
+			example: `🚀 > a = 456
+=> 456
+🚀 > a.plz_f()
+=> 456.0
+
+🚀 > 1234.plz_f()
+=> 1234.0`,
+			returnPattern: [][]string{
+				[]string{FLOAT_OBJ},
+			},
+			method: func(o Object, _ []Object) Object {
+				i := o.(*Integer)
+				return &Float{Value: float64(i.Value)}
+			},
+		},
 	}
 }
 
 func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(i, method, args)
+}
 
+func (i *Integer) ToFloat() Object {
+	return &Float{Value: float64(i.Value)}
 }
