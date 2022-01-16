@@ -89,7 +89,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.ASTERISK, p.parseInfixExpression)
 	p.registerInfix(token.EQ, p.parseInfixExpression)
 	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
-	p.registerInfix(token.PERIOD, p.parseMethodCallExpression)
+	p.registerInfix(token.PERIOD, p.parseMethodCall)
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
@@ -529,14 +529,14 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 	return args
 }
 
-func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
+func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
 	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
 		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 		return &ast.Index{Left: obj, Index: index}
 	}
 
-	methodCall := &ast.ObjectCallExpression{Token: p.curToken, Object: obj}
+	methodCall := &ast.ObjectCall{Token: p.curToken, Object: obj}
 	p.nextToken()
 	name := p.parseIdentifier()
 	p.nextToken()

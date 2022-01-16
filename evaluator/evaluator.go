@@ -115,7 +115,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalIndexExpression(left, index)
 
-	case *ast.ObjectCallExpression:
+	case *ast.ObjectCall:
 		res := evalObjectCall(node, env)
 		return (res)
 	case *ast.Identifier:
@@ -538,7 +538,7 @@ func isError(obj object.Object) bool {
 	return false
 }
 
-func evalObjectCall(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
+func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object {
 	obj := Eval(call.Object, env)
 	if method, ok := call.Call.(*ast.Call); ok {
 		args := evalExpressions(call.Call.(*ast.Call).Arguments, env)
