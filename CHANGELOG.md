@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.13.0](https://github.com/flipez/rocket-lang/tree/v0.13.0) (2022-01-16)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.12.0...v0.13.0)
+
+**Implemented enhancements:**
+
+- Improve `if` Statement [\#41](https://github.com/Flipez/rocket-lang/issues/41)
+- Remove `let` as it is deprecated [\#38](https://github.com/Flipez/rocket-lang/issues/38)
+- implement type float [\#43](https://github.com/Flipez/rocket-lang/pull/43) ([Flipez](https://github.com/Flipez))
+- make curly braces optional [\#42](https://github.com/Flipez/rocket-lang/pull/42) ([Flipez](https://github.com/Flipez))
+- replace fn identifier with def [\#40](https://github.com/Flipez/rocket-lang/pull/40) ([Flipez](https://github.com/Flipez))
+- remove let [\#39](https://github.com/Flipez/rocket-lang/pull/39) ([Flipez](https://github.com/Flipez))
+
 ## [v0.12.0](https://github.com/flipez/rocket-lang/tree/v0.12.0) (2022-01-15)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.11.1...v0.12.0)
