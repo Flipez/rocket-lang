@@ -180,6 +180,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
+		{"🔥 != 👍", "identifier not found: IDENT"},
 	}
 
 	for _, tt := range tests {
