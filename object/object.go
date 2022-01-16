@@ -50,11 +50,11 @@ type ObjectMethod struct {
 
 func (om ObjectMethod) validateArgs(args []Object) error {
 	if (len(args) < len(om.argPattern)) && !om.argsOptional {
-		return fmt.Errorf("To few arguments: want=%d, got=%d", len(om.argPattern), len(args))
+		return fmt.Errorf("to few arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
 
 	if len(args) > len(om.argPattern) && !om.argOverloading {
-		return fmt.Errorf("To many arguments: want=%d, got=%d", len(om.argPattern), len(args))
+		return fmt.Errorf("to many arguments: want=%d, got=%d", len(om.argPattern), len(args))
 	}
 
 	if !om.argsOptional || (om.argsOptional && len(args) > 0) {
@@ -67,7 +67,7 @@ func (om ObjectMethod) validateArgs(args []Object) error {
 				}
 			}
 			if !valid {
-				return fmt.Errorf("Wrong argument type on position %d: got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
+				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
 			}
 		}
 	}
@@ -151,7 +151,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
-				result := make([]Object, len(oms), len(oms))
+				result := make([]Object, len(oms))
 				var i int
 				for name := range oms {
 					result[i] = &String{Value: name}
@@ -170,7 +170,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				oms := objectMethods[o.Type()]
-				result := make([]string, len(oms), len(oms))
+				result := make([]string, len(oms))
 				var i int
 				for name, objectMethod := range oms {
 					result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))

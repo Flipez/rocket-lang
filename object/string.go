@@ -190,7 +190,7 @@ func init() {
 				fields := strings.Split(s.Value, sep)
 
 				l := len(fields)
-				result := make([]Object, l, l)
+				result := make([]Object, l)
 				for i, txt := range fields {
 					result[i] = &String{Value: txt}
 				}
@@ -211,7 +211,7 @@ func init() {
 				fields := strings.Split(s.Value, sep)
 
 				l := len(fields)
-				result := make([]Object, l, l)
+				result := make([]Object, l)
 				for i, txt := range fields {
 					result[i] = &String{Value: txt}
 				}

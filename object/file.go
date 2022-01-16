@@ -91,7 +91,7 @@ func init() {
 				fileString := file.(*String)
 				lines := strings.Split(fileString.Value, "\n")
 
-				result := make([]Object, len(lines), len(lines))
+				result := make([]Object, len(lines))
 
 				for i, line := range lines {
 					result[i] = &String{Value: line}

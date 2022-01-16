@@ -27,7 +27,7 @@ func (h *Hash) Inspect() string {
 	var out bytes.Buffer
 
 	length := len(h.Pairs)
-	pairs := make([]string, length, length)
+	pairs := make([]string, length)
 	var index int
 	for _, pair := range h.Pairs {
 		pairs[index] = fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect())

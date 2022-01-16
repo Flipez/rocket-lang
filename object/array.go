@@ -17,7 +17,7 @@ func (ao *Array) Inspect() string {
 	var out bytes.Buffer
 
 	length := len(ao.Elements)
-	elements := make([]string, length, length)
+	elements := make([]string, length)
 	for index, element := range ao.Elements {
 		elements[index] = element.Inspect()
 	}
@@ -70,7 +70,7 @@ func init() {
 				}
 
 				length := len(items)
-				newElements := make([]Object, length, length)
+				newElements := make([]Object, length)
 				var idx int
 				for _, item := range items {
 					newElements[idx] = item
@@ -149,7 +149,7 @@ func init() {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
-				newElements := make([]Object, length-1, length-1)
+				newElements := make([]Object, length-1)
 				copy(newElements, ao.Elements[:(length-1)])
 
 				returnElement := ao.Elements[length-1]
@@ -177,7 +177,7 @@ func init() {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
-				newElements := make([]Object, length+1, length+1)
+				newElements := make([]Object, length+1)
 				copy(newElements, ao.Elements)
 				newElements[length] = args[0]
 
