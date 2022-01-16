@@ -528,7 +528,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 	}
 }
 
-func TestCallExpessionParsing(t *testing.T) {
+func TestCallParsing(t *testing.T) {
 	input := "add(1,2 * 3, 4 + 5)"
 
 	program, p := createProgram(input)
@@ -543,9 +543,9 @@ func TestCallExpessionParsing(t *testing.T) {
 		t.Fatalf("stmt.Expression is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
-	exp, ok := stmt.Expression.(*ast.CallExpression)
+	exp, ok := stmt.Expression.(*ast.Call)
 	if !ok {
-		t.Fatalf("stmt.Expression is not ast.CallExpression. got=%T", stmt.Expression)
+		t.Fatalf("stmt.Expression is not ast.Call. got=%T", stmt.Expression)
 	}
 
 	if !testIdentifier(t, exp.Callable, "add") {

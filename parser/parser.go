@@ -500,7 +500,7 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 }
 
 func (p *Parser) parseCallExpression(callable ast.Expression) ast.Expression {
-	exp := &ast.CallExpression{Token: p.curToken, Callable: callable}
+	exp := &ast.Call{Token: p.curToken, Callable: callable}
 	exp.Arguments = p.parseExpressionList(token.RPAREN)
 	return exp
 }

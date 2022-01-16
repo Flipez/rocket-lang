@@ -7,15 +7,15 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type CallExpression struct {
+type Call struct {
 	Token     token.Token // The ( token
 	Callable  Expression
 	Arguments []Expression
 }
 
-func (ce *CallExpression) expressionNode()      {}
-func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
-func (ce *CallExpression) String() string {
+func (ce *Call) expressionNode()      {}
+func (ce *Call) TokenLiteral() string { return ce.Token.Literal }
+func (ce *Call) String() string {
 	var out bytes.Buffer
 
 	args := []string{}

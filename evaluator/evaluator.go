@@ -92,7 +92,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 
-	case *ast.CallExpression:
+	case *ast.Call:
 		function := Eval(node.Callable, env)
 		if isError(function) {
 			return function
@@ -116,7 +116,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIndexExpression(left, index)
 
 	case *ast.ObjectCallExpression:
-		res := evalObjectCallExpression(node, env)
+		res := evalObjectCall(node, env)
 		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
@@ -538,17 +538,17 @@ func isError(obj object.Object) bool {
 	return false
 }
 
-func evalObjectCallExpression(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
+func evalObjectCall(call *ast.ObjectCallExpression, env *object.Environment) object.Object {
 	obj := Eval(call.Object, env)
-	if method, ok := call.Call.(*ast.CallExpression); ok {
-		args := evalExpressions(call.Call.(*ast.CallExpression).Arguments, env)
+	if method, ok := call.Call.(*ast.Call); ok {
+		args := evalExpressions(call.Call.(*ast.Call).Arguments, env)
 		ret := obj.InvokeMethod(method.Callable.String(), *env, args...)
 		if ret != nil {
 			return ret
 		}
 	}
 
-	return newError("Failed to invoke method: %s", call.Call.(*ast.CallExpression).Callable.String())
+	return newError("Failed to invoke method: %s", call.Call.(*ast.Call).Callable.String())
 }
 
 func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) object.Object {
