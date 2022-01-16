@@ -1,11 +1,12 @@
 package evaluator
 
 import (
+	"testing"
+
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
 	"github.com/flipez/rocket-lang/utilities"
-	"testing"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -47,6 +48,12 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"1 > 2", false},
 		{"1 < 1", false},
 		{"1 > 1", false},
+		{"1 <= 2", true},
+		{"2 <= 2", true},
+		{"3 <= 2", false},
+		{"2 >= 1", true},
+		{"2 >= 2", true},
+		{"2 >= 3", false},
 		{"1 == 1", true},
 		{"1 != 1", false},
 		{"1 == 2", false},
