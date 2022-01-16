@@ -7,16 +7,16 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type ImportExpression struct {
+type Import struct {
 	Token token.Token
 	Name  Expression
 }
 
-func (ie *ImportExpression) expressionNode() {}
+func (ie *Import) expressionNode() {}
 
-func (ie *ImportExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *Import) TokenLiteral() string { return ie.Token.Literal }
 
-func (ie *ImportExpression) String() string {
+func (ie *Import) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(ie.TokenLiteral())

@@ -79,7 +79,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.STRING, p.parseString)
 	p.registerPrefix(token.LBRACKET, p.parseArray)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
-	p.registerPrefix(token.IMPORT, p.parseImportExpression)
+	p.registerPrefix(token.IMPORT, p.parseImport)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
@@ -132,7 +132,7 @@ func (p *Parser) ParseProgram() (*ast.Program, map[string]struct{}) {
 			program.Statements = append(program.Statements, stmt)
 
 			if expStmt, ok := stmt.(*ast.ExpressionStatement); ok {
-				if importExpr, ok := expStmt.Expression.(*ast.ImportExpression); ok {
+				if importExpr, ok := expStmt.Expression.(*ast.Import); ok {
 					implicitVarName := filepath.Base(importExpr.Name.String())
 					p.imports[implicitVarName] = struct{}{}
 				}
@@ -594,8 +594,8 @@ func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	return stmt
 }
 
-func (p *Parser) parseImportExpression() ast.Expression {
-	expression := &ast.ImportExpression{Token: p.curToken}
+func (p *Parser) parseImport() ast.Expression {
+	expression := &ast.Import{Token: p.curToken}
 
 	if !p.expectPeek(token.LPAREN) {
 		return nil

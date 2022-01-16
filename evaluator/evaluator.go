@@ -55,8 +55,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return function
-	case *ast.ImportExpression:
-		return evalImportExpression(node, env)
+	case *ast.Import:
+		return evalImport(node, env)
 	case *ast.String:
 		return &object.String{Value: node.Value}
 	case *ast.Array:
@@ -207,7 +207,7 @@ func evalModuleIndexExpression(module, index object.Object) object.Object {
 	return evalHashIndexExpression(moduleObject.Attributes, index)
 }
 
-func evalImportExpression(ie *ast.ImportExpression, env *object.Environment) object.Object {
+func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 	name := Eval(ie.Name, env)
 
 	if isError(name) {
