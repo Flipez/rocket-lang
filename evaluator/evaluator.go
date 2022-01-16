@@ -57,7 +57,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return function
 	case *ast.ImportExpression:
 		return evalImportExpression(node, env)
-	case *ast.StringLiteral:
+	case *ast.String:
 		return &object.String{Value: node.Value}
 	case *ast.ArrayLiteral:
 		elements := evalExpressions(node.Elements, env)

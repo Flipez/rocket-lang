@@ -76,7 +76,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.IF, p.parseIfExpression)
 	p.registerPrefix(token.FOREACH, p.parseForEach)
 	p.registerPrefix(token.FUNCTION, p.parseFunction)
-	p.registerPrefix(token.STRING, p.parseStringLiteral)
+	p.registerPrefix(token.STRING, p.parseString)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
 	p.registerPrefix(token.IMPORT, p.parseImportExpression)
@@ -219,8 +219,8 @@ func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
 	return list
 }
 
-func (p *Parser) parseStringLiteral() ast.Expression {
-	return &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+func (p *Parser) parseString() ast.Expression {
+	return &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseStatement() ast.Statement {
@@ -532,7 +532,7 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
 	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
-		index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 		return &ast.IndexExpression{Left: obj, Index: index}
 	}
 
@@ -615,7 +615,7 @@ func (p *Parser) parseImportExpression() ast.Expression {
 func (p *Parser) parseDotNotationExpression(expression ast.Expression) ast.Expression {
 	p.expectPeek(token.IDENT)
 
-	index := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+	index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 
 	return &ast.IndexExpression{Left: expression, Index: index}
 }

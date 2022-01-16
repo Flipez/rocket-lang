@@ -568,7 +568,7 @@ func TestStringLiteralExpression(t *testing.T) {
 	checkParserErrors(t, p)
 
 	stmt := program.Statements[0].(*ast.ExpressionStatement)
-	literal, ok := stmt.Expression.(*ast.StringLiteral)
+	literal, ok := stmt.Expression.(*ast.String)
 	if !ok {
 		t.Fatalf("exp not *ast.StringLiteral. got=%T", stmt.Expression)
 	}
@@ -643,7 +643,7 @@ func TestParsingHashLiteralsStringKeys(t *testing.T) {
 	}
 
 	for key, value := range hash.Pairs {
-		literal, ok := key.(*ast.StringLiteral)
+		literal, ok := key.(*ast.String)
 		if !ok {
 			t.Errorf("key is not ast.StringLiteral. got=%T", key)
 		}
@@ -700,7 +700,7 @@ func TestParsingHashLiteralWithExpressions(t *testing.T) {
 	}
 
 	for key, value := range hash.Pairs {
-		literal, ok := key.(*ast.StringLiteral)
+		literal, ok := key.(*ast.String)
 		if !ok {
 			t.Errorf("key is not ast.StringLiteral. got=%T", key)
 			continue
