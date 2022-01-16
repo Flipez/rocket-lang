@@ -24,6 +24,7 @@ func main() {
 	error_methods := object.ListObjectMethods()[object.ERROR_OBJ]
 	file_methods := object.ListObjectMethods()[object.FILE_OBJ]
 	null_methods := object.ListObjectMethods()[object.NULL_OBJ]
+	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
 
 	tempData := templateData{
 		Title: "String",
@@ -93,6 +94,9 @@ To cast a negative integer a digit can be prefixed with a - eg. -456.`,
 		LiteralMethods: integer_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/integer.md", tempData)
+
+	tempData = templateData{Title: "Float", LiteralMethods: float_methods, DefaultMethods: default_methods}
+	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/float.md", tempData)
 
 }
 
