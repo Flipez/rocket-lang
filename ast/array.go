@@ -7,14 +7,14 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type ArrayLiteral struct {
+type Array struct {
 	Token    token.Token
 	Elements []Expression
 }
 
-func (al *ArrayLiteral) expressionNode()      {}
-func (al *ArrayLiteral) TokenLiteral() string { return al.Token.Literal }
-func (al *ArrayLiteral) String() string {
+func (al *Array) expressionNode()      {}
+func (al *Array) TokenLiteral() string { return al.Token.Literal }
+func (al *Array) String() string {
 	var out bytes.Buffer
 
 	elements := []string{}

@@ -578,14 +578,14 @@ func TestStringLiteralExpression(t *testing.T) {
 	}
 }
 
-func TestParsingArrayLiteral(t *testing.T) {
+func TestParsingArray(t *testing.T) {
 	input := "[1, 2 * 2, 3 + 3]"
 
 	program, p := createProgram(input)
 	checkParserErrors(t, p)
 
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
-	array, ok := stmt.Expression.(*ast.ArrayLiteral)
+	array, ok := stmt.Expression.(*ast.Array)
 	if !ok {
 		t.Fatalf("exp not ast.ArrayLiteral. got=%T", stmt.Expression)
 	}

@@ -77,7 +77,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.FOREACH, p.parseForEach)
 	p.registerPrefix(token.FUNCTION, p.parseFunction)
 	p.registerPrefix(token.STRING, p.parseString)
-	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
+	p.registerPrefix(token.LBRACKET, p.parseArray)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
 	p.registerPrefix(token.IMPORT, p.parseImportExpression)
 
@@ -187,8 +187,8 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 	return exp
 }
 
-func (p *Parser) parseArrayLiteral() ast.Expression {
-	array := &ast.ArrayLiteral{Token: p.curToken}
+func (p *Parser) parseArray() ast.Expression {
+	array := &ast.Array{Token: p.curToken}
 
 	array.Elements = p.parseExpressionList(token.RBRACKET)
 
