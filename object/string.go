@@ -12,6 +12,10 @@ type String struct {
 	offset int
 }
 
+func NewString(s string) *String {
+	return &String{Value: s}
+}
+
 func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
@@ -33,7 +37,7 @@ func init() {
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return &Integer{Value: int64(strings.Count(s.Value, arg))}
+				return NewInteger(int64(strings.Count(s.Value, arg)))
 			},
 		},
 		"find": ObjectMethod{
@@ -51,7 +55,7 @@ func init() {
 			method: func(o Object, args []Object) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return &Integer{Value: int64(strings.Index(s.Value, arg))}
+				return NewInteger(int64(strings.Index(s.Value, arg)))
 			},
 		},
 		"size": ObjectMethod{
@@ -63,7 +67,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
-				return &Integer{Value: int64(utf8.RuneCountInString(s.Value))}
+				return NewInteger(int64(utf8.RuneCountInString(s.Value)))
 			},
 		},
 		"plz_i": ObjectMethod{
@@ -103,7 +107,7 @@ func init() {
 					value = strings.TrimPrefix(value, "0x")
 				}
 				i, _ := strconv.ParseInt(value, base, 64)
-				return &Integer{Value: i}
+				return NewInteger(i)
 			},
 		},
 		"replace": ObjectMethod{
@@ -121,7 +125,7 @@ func init() {
 				s := o.(*String)
 				oldS := args[0].(*String).Value
 				newS := args[1].(*String).Value
-				return &String{Value: strings.Replace(s.Value, oldS, newS, -1)}
+				return NewString(strings.Replace(s.Value, oldS, newS, -1))
 			},
 		},
 		"reverse": ObjectMethod{
@@ -139,7 +143,7 @@ func init() {
 					i--
 					out[i] = c
 				}
-				return &String{Value: string(out)}
+				return NewString(string(out))
 			},
 		},
 		"reverse!": ObjectMethod{
@@ -162,7 +166,7 @@ func init() {
 					out[i] = c
 				}
 				s.Value = string(out)
-				return &Null{}
+				return NULL
 			},
 		},
 		"split": ObjectMethod{
@@ -192,9 +196,9 @@ func init() {
 				l := len(fields)
 				result := make([]Object, l, l)
 				for i, txt := range fields {
-					result[i] = &String{Value: txt}
+					result[i] = NewString(txt)
 				}
-				return &Array{Elements: result}
+				return NewArray(result)
 			},
 		},
 		"lines": ObjectMethod{
@@ -213,9 +217,9 @@ func init() {
 				l := len(fields)
 				result := make([]Object, l, l)
 				for i, txt := range fields {
-					result[i] = &String{Value: txt}
+					result[i] = NewString(txt)
 				}
-				return &Array{Elements: result}
+				return NewArray(result)
 			},
 		},
 		"strip": ObjectMethod{
@@ -227,7 +231,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
-				return &String{Value: strings.TrimSpace(s.Value)}
+				return NewString(strings.TrimSpace(s.Value))
 			},
 		},
 		"strip!": ObjectMethod{
@@ -245,7 +249,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.TrimSpace(s.Value)
-				return &Null{}
+				return NULL
 			},
 		},
 		"downcase": ObjectMethod{
@@ -257,7 +261,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
-				return &String{Value: strings.ToLower(s.Value)}
+				return NewString(strings.ToLower(s.Value))
 			},
 		},
 		"downcase!": ObjectMethod{
@@ -275,7 +279,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.ToLower(s.Value)
-				return &Null{}
+				return NULL
 			},
 		},
 		"upcase": ObjectMethod{
@@ -287,7 +291,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
-				return &String{Value: strings.ToUpper(s.Value)}
+				return NewString(strings.ToUpper(s.Value))
 			},
 		},
 		"upcase!": ObjectMethod{
@@ -305,7 +309,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				s := o.(*String)
 				s.Value = strings.ToUpper(s.Value)
-				return &Null{}
+				return NULL
 			},
 		},
 	}
@@ -333,10 +337,10 @@ func (s *String) Next() (Object, Object, bool) {
 		s.offset++
 
 		chars := []rune(s.Value)
-		val := &String{Value: string(chars[s.offset-1])}
+		val := NewString(string(chars[s.offset-1]))
 
-		return val, &Integer{Value: int64(s.offset - 1)}, true
+		return val, NewInteger(int64(s.offset - 1)), true
 	}
 
-	return nil, &Integer{Value: 0}, false
+	return nil, NewInteger(0), false
 }

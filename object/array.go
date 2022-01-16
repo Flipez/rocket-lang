@@ -2,7 +2,6 @@ package object
 
 import (
 	"bytes"
-	"fmt"
 	"hash/fnv"
 	"strings"
 )
@@ -10,6 +9,18 @@ import (
 type Array struct {
 	Elements []Object
 	offset   int
+}
+
+func NewArray(slice []Object) *Array {
+	return &Array{Elements: slice}
+}
+
+func NewArrayWithObjects(objs ...Object) *Array {
+	slice := make([]Object, len(objs), len(objs))
+	for idx, obj := range objs {
+		slice[idx] = obj
+	}
+	return NewArray(slice)
 }
 
 func (ao *Array) Type() ObjectType { return ARRAY_OBJ }
@@ -47,7 +58,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
-				return &Integer{Value: int64(len(ao.Elements))}
+				return NewInteger(int64(len(ao.Elements)))
 			},
 		},
 		"uniq": ObjectMethod{
@@ -64,7 +75,7 @@ func init() {
 				for _, element := range ao.Elements {
 					helper, ok := element.(Hashable)
 					if !ok {
-						return &Error{Message: fmt.Sprintf("failed because element %s is not hashable", element.Type())}
+						return NewErrorFormat("failed because element %s is not hashable", element.Type())
 					}
 					items[helper.HashKey()] = element
 				}
@@ -77,7 +88,7 @@ func init() {
 					idx++
 				}
 
-				return &Array{Elements: newElements}
+				return NewArray(newElements)
 			},
 		},
 		"index": ObjectMethod{
@@ -101,7 +112,7 @@ func init() {
 					}
 				}
 
-				return &Integer{Value: int64(index)}
+				return NewInteger(int64(index))
 			},
 		},
 		"first": ObjectMethod{
@@ -182,7 +193,7 @@ func init() {
 				newElements[length] = args[0]
 
 				ao.Elements = newElements
-				return &Null{}
+				return NULL
 			},
 		},
 	}
@@ -200,8 +211,8 @@ func (ao *Array) Next() (Object, Object, bool) {
 		ao.offset++
 
 		element := ao.Elements[ao.offset-1]
-		return element, &Integer{Value: int64(ao.offset - 1)}, true
+		return element, NewInteger(int64(ao.offset - 1)), true
 	}
 
-	return nil, &Integer{Value: 0}, false
+	return nil, NewInteger(0), false
 }

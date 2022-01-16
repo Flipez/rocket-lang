@@ -15,7 +15,7 @@ func evalIndex(left, index object.Object) object.Object {
 	case left.Type() == object.MODULE_OBJ:
 		return evalModuleIndexExpression(left, index)
 	default:
-		return newError("index operator not supported: %s", left.Type())
+		return object.NewErrorFormat("index operator not supported: %s", left.Type())
 	}
 }
 
@@ -31,22 +31,22 @@ func evalStringIndexExpression(left, index object.Object) object.Object {
 	max := int64(len(stringObject.Value) - 1)
 
 	if idx < 0 || idx > max {
-		return NULL
+		return object.NULL
 	}
 
-	return &object.String{Value: string(stringObject.Value[idx])}
+	return object.NewString(string(stringObject.Value[idx]))
 }
 
 func evalHashIndexExpression(hash, index object.Object) object.Object {
 	hashObject := hash.(*object.Hash)
 	key, ok := index.(object.Hashable)
 	if !ok {
-		return newError("unusable as hash key: %s", index.Type())
+		return object.NewErrorFormat("unusable as hash key: %s", index.Type())
 	}
 
 	pair, ok := hashObject.Pairs[key.HashKey()]
 	if !ok {
-		return NULL
+		return object.NULL
 	}
 
 	return pair.Value
@@ -58,7 +58,7 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	max := int64(len(arrayObject.Elements) - 1)
 
 	if idx < 0 || idx > max {
-		return NULL
+		return object.NULL
 	}
 
 	return arrayObject.Elements[idx]

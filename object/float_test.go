@@ -32,9 +32,9 @@ func TestFloatObjectMethods(t *testing.T) {
 }
 
 func TestFloatHashKey(t *testing.T) {
-	float1_1 := &object.Float{Value: 1.0}
-	float1_2 := &object.Float{Value: 1.0}
-	float2 := &object.Float{Value: 2.0}
+	float1_1 := object.NewFloat(1.0)
+	float1_2 := object.NewFloat(1.0)
+	float2 := object.NewFloat(2.0)
 
 	if float1_1.HashKey() != float1_2.HashKey() {
 		t.Errorf("float with same content have different hash keys")
@@ -46,7 +46,7 @@ func TestFloatHashKey(t *testing.T) {
 }
 
 func TestFloatInspect(t *testing.T) {
-	float1 := &object.Float{Value: 1.0}
+	float1 := object.NewFloat(1.0)
 
 	if float1.Inspect() != "1.0" {
 		t.Errorf("float inspect does not match value")

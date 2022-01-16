@@ -13,13 +13,13 @@ func EvalModule(name string) object.Object {
 	filename := utilities.FindModule(name)
 
 	if filename == "" {
-		return newError("Import Error: no module named '%s' found", name)
+		return object.NewErrorFormat("Import Error: no module named '%s' found", name)
 	}
 
 	b, err := ioutil.ReadFile(filename)
 
 	if err != nil {
-		return newError("IO Error: error reading module '%s': %s", name, err)
+		return object.NewErrorFormat("IO Error: error reading module '%s': %s", name, err)
 	}
 
 	l := lexer.New(string(b))
@@ -29,7 +29,7 @@ func EvalModule(name string) object.Object {
 	module, _ := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
-		return newError("Parse Error: %s", p.Errors())
+		return object.NewErrorFormat("Parse Error: %s", p.Errors())
 	}
 
 	env := object.NewEnvironment()

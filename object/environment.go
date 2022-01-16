@@ -91,10 +91,10 @@ func (e *Environment) Exported() *Hash {
 	for k, v := range e.store {
 		// Replace this with checking for "Import" token
 		if unicode.IsUpper(rune(k[0])) {
-			s := &String{Value: k}
+			s := NewString(k)
 			pairs[s.HashKey()] = HashPair{Key: s, Value: v}
 		}
 	}
 
-	return &Hash{Pairs: pairs}
+	return NewHash(pairs)
 }

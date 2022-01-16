@@ -7,7 +7,7 @@ import (
 )
 
 func TestReturnValue(t *testing.T) {
-	rv := &object.ReturnValue{Value: &object.String{Value: "a"}}
+	rv := object.NewReturnValue(object.NewString("a"))
 
 	if rv.Type() != object.RETURN_VALUE_OBJ {
 		t.Errorf("returnValue.Type() returns wrong type")

@@ -10,7 +10,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 
 	helper, ok := val.(object.Iterable)
 	if !ok {
-		return newError("%s object doesn't implement the Iterable interface", val.Type())
+		return object.NewErrorFormat("%s object doesn't implement the Iterable interface", val.Type())
 	}
 
 	var permit []string
@@ -42,7 +42,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 		//
 		// If we got an error/return then we handle it.
 		//
-		if rt != nil && !isError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+		if rt != nil && !object.IsError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
 			return rt
 		}
 

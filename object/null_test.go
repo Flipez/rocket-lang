@@ -7,12 +7,10 @@ import (
 )
 
 func TestNullType(t *testing.T) {
-	n := &object.Null{}
-
-	if n.Type() != object.NULL_OBJ {
+	if object.NULL.Type() != object.NULL_OBJ {
 		t.Errorf("null.Type() returns wrong type")
 	}
-	if n.Inspect() != "null" {
+	if object.NULL.Inspect() != "null" {
 		t.Errorf("null.Inspect() returns wrong type")
 	}
 }

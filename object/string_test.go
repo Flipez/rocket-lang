@@ -1,8 +1,9 @@
 package object_test
 
 import (
-	"github.com/flipez/rocket-lang/object"
 	"testing"
+
+	"github.com/flipez/rocket-lang/object"
 )
 
 func testStringObject(t *testing.T, obj object.Object, expected string) bool {
@@ -82,10 +83,10 @@ func TestStringObjectMethods(t *testing.T) {
 }
 
 func TestStringHashKey(t *testing.T) {
-	hello1 := &object.String{Value: "Hello World"}
-	hello2 := &object.String{Value: "Hello World"}
-	diff1 := &object.String{Value: "My name is johnny"}
-	diff2 := &object.String{Value: "My name is johnny"}
+	hello1 := object.NewString("Hello World")
+	hello2 := object.NewString("Hello World")
+	diff1 := object.NewString("My name is johnny")
+	diff2 := object.NewString("My name is johnny")
 
 	if hello1.HashKey() != hello2.HashKey() {
 		t.Errorf("strings with same content have different hash keys")
