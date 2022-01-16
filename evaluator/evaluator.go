@@ -40,7 +40,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.ReturnValue{Value: val}
 
 	// Expressions
-	case *ast.IntegerLiteral:
+	case *ast.Integer:
 		return &object.Integer{Value: node.Value}
 	case *ast.Float:
 		return &object.Float{Value: node.Value}
