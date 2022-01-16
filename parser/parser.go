@@ -582,7 +582,7 @@ func (p *Parser) parseForEach() ast.Expression {
 }
 
 func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
-	stmt := &ast.AssignStatement{Token: p.curToken}
+	stmt := &ast.Assign{Token: p.curToken}
 	if n, ok := name.(*ast.Identifier); ok {
 		stmt.Name = n
 	} else {

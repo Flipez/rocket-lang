@@ -6,16 +6,16 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type AssignStatement struct {
+type Assign struct {
 	Token token.Token
 	Name  *Identifier
 	Value Expression
 }
 
-func (as *AssignStatement) expressionNode()      {}
-func (as *AssignStatement) statementNode()       {}
-func (as *AssignStatement) TokenLiteral() string { return as.Token.Literal }
-func (as *AssignStatement) String() string {
+func (as *Assign) expressionNode()      {}
+func (as *Assign) statementNode()       {}
+func (as *Assign) TokenLiteral() string { return as.Token.Literal }
+func (as *Assign) String() string {
 	var out bytes.Buffer
 	out.WriteString(as.Name.String())
 	out.WriteString(" = ")

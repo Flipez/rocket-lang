@@ -120,8 +120,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return (res)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
-	case *ast.AssignStatement:
-		return evalAssignStatement(node, env)
+	case *ast.Assign:
+		return evalAssign(node, env)
 	}
 
 	return nil
@@ -598,7 +598,7 @@ func evalForeachExpression(fle *ast.ForeachStatement, env *object.Environment) o
 	return val
 }
 
-func evalAssignStatement(a *ast.AssignStatement, env *object.Environment) (val object.Object) {
+func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	evaluated := Eval(a.Value, env)
 	if isError(evaluated) {
 		return evaluated
