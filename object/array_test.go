@@ -19,7 +19,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].index(4)`, -1},
 		{`[1,2,3].index(3)`, 2},
 		{`[1,2,3].index(true)`, -1},
-		{`[1,2,3].index()`, "To few arguments: want=1, got=0"},
+		{`[1,2,3].index()`, "to few arguments: want=1, got=0"},
 		{`a = []; b = []; foreach i in a { b.yoink(a[i]) }; a.size()==b.size()`, true},
 		{`[1,1,2].uniq().size()`, 2},
 		{`[true,true,2].uniq().size()`, 2},
