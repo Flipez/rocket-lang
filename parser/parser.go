@@ -400,7 +400,6 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 
 func (p *Parser) parseIfExpression() ast.Expression {
 	expression := &ast.IfExpression{Token: p.curToken}
-
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
@@ -412,22 +411,22 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		return nil
 	}
 
-	if !p.expectPeek(token.LBRACE) {
-		return nil
+	if p.peekTokenIs(token.LBRACE) {
+		p.nextToken()
 	}
-
 	expression.Consequence = p.parseBlockStatement()
 
-	if p.peekTokenIs(token.ELSE) {
+	if p.curTokenIs(token.RBRACE) {
 		p.nextToken()
-
-		if !p.expectPeek(token.LBRACE) {
-			return nil
-		}
-
-		expression.Alternative = p.parseBlockStatement()
 	}
 
+	if p.curTokenIs(token.ELSE) {
+
+		if p.peekTokenIs(token.LBRACE) {
+			p.nextToken()
+		}
+		expression.Alternative = p.parseBlockStatement()
+	}
 	return expression
 }
 
@@ -437,7 +436,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 	p.nextToken()
 
-	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
+	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.END) && !p.curTokenIs(token.ELSE) {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			block.Statements = append(block.Statements, stmt)

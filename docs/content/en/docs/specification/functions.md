@@ -9,15 +9,15 @@ Implicit and explicit return statements are supported.
 
 ```js
 fibonacci = def (x) {
-  if (x == 0) {
+  if (x == 0)
     0
-  } else {
-    if (x == 1) {
+  else
+    if (x == 1)
       return 1;
-    } else {
+    else
       fibonacci(x - 1) + fibonacci(x - 2);
-    }
-  }
+    end
+  end
 };
 ```
 
