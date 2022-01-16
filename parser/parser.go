@@ -545,7 +545,7 @@ func (p *Parser) parseMethodCallExpression(obj ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseForEach() ast.Expression {
-	expression := &ast.ForeachStatement{Token: p.curToken}
+	expression := &ast.Foreach{Token: p.curToken}
 
 	p.nextToken()
 	expression.Ident = p.curToken.Literal
