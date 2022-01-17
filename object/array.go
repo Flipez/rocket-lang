@@ -123,7 +123,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return new(Null)
+					return NULL
 				}
 				return ao.Elements[0]
 			},
@@ -138,7 +138,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return new(Null)
+					return NULL
 				}
 				return ao.Elements[len(ao.Elements)-1]
 			},

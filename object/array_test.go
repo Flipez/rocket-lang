@@ -6,6 +6,27 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
+func TestNewArrayWithObjects(t *testing.T) {
+	arr := object.NewArrayWithObjects(object.NewString("a"))
+	if v := arr.Type(); v != object.ARRAY_OBJ {
+		t.Errorf("array.Type() return wrong type: %s", v)
+	}
+
+	if v := arr.Elements[0].Type(); v != object.STRING_OBJ {
+		t.Errorf("first array element should be a string object")
+	}
+}
+
+func TestArrayObject(t *testing.T) {
+	tests := []inputTestCase{
+		{"[1] == [1]", true},
+		{"[1] == [true]", false},
+		{"[1] == [true, 1]", false},
+	}
+
+	testInput(t, tests)
+}
+
 func TestArrayObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1,2,3][0]`, 1},
@@ -24,6 +45,11 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,1,2].uniq().size()`, 2},
 		{`[true,true,2].uniq().size()`, 2},
 		{`["test","test",2].uniq().size()`, 2},
+		{`["12".reverse!()].uniq()`, "failed because element NULL is not hashable"},
+		{"[].first()", "NULL"},
+		{"[1,2,3].first()", 1},
+		{"[].last()", "NULL"},
+		{"[1,2,3].last()", 3},
 	}
 
 	testInput(t, tests)

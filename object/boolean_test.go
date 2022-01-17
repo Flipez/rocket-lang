@@ -34,6 +34,8 @@ func TestBooleanObjectMethods(t *testing.T) {
 
 		// other
 		{"(true.wat().lines().size() == true.methods().size() + 1).plz_s()", "true"},
+		{"true == true", true},
+		{"true == false", false},
 	}
 
 	testInput(t, tests)

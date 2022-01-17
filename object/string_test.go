@@ -20,6 +20,13 @@ func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	return true
 }
 
+func TestStringObject(t *testing.T) {
+	tests := []inputTestCase{
+		{`"a" == "a"`, true},
+	}
+	testInput(t, tests)
+}
+
 func TestStringObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`"test".count("e")`, 1},
