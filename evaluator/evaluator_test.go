@@ -543,7 +543,10 @@ func TestImportExpression(t *testing.T) {
 }
 
 func TestImportSearchPaths(t *testing.T) {
-	utilities.AddPath("../stubs")
+	if err := utilities.AddPath("../stubs"); err != nil {
+		t.Errorf("error adding the stubs path: %s", err)
+		return
+	}
 
 	tests := []struct {
 		input    string

@@ -210,9 +210,11 @@ func (f *File) InvokeMethod(method string, env Environment, args ...Object) Obje
 
 func readFile(o Object, _ []Object) Object {
 	f := o.(*File)
-	f.Handle.Seek(0, 0)
 	if f.Handle == nil {
 		return NewError("Invalid file handle.")
+	}
+	if _, err := f.Handle.Seek(0, 0); err != nil {
+		return NewError(err)
 	}
 
 	file, err := ioutil.ReadAll(f.Handle)
@@ -220,7 +222,9 @@ func readFile(o Object, _ []Object) Object {
 		return NewError(err)
 	}
 
-	f.Handle.Seek(0, 0)
+	if _, err := f.Handle.Seek(0, 0); err != nil {
+		return NewError(err)
+	}
 	f.Position = 0
 	return NewString(string(file))
 }

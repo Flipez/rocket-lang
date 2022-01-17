@@ -21,7 +21,9 @@ func init() {
 		tokens := strings.Split(e, ":")
 
 		for _, token := range tokens {
-			AddPath(token)
+			if err := AddPath(token); err != nil {
+				log.Fatalf("error adding token: %s", err)
+			}
 		}
 	} else {
 		SearchPaths = append(SearchPaths, cwd)
