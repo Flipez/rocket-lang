@@ -12,6 +12,13 @@ type Hash struct {
 	offset int
 }
 
+func NewHash(pairs map[HashKey]HashPair) *Hash {
+	if pairs == nil {
+		pairs = make(map[HashKey]HashPair)
+	}
+	return &Hash{Pairs: pairs}
+}
+
 type HashPair struct {
 	Key   Object
 	Value Object
@@ -68,7 +75,7 @@ func init() {
 					i++
 				}
 
-				return &Array{Elements: keys}
+				return NewArray(keys)
 			},
 		},
 		"values": ObjectMethod{
@@ -89,7 +96,7 @@ func init() {
 					i++
 				}
 
-				return &Array{Elements: values}
+				return NewArray(values)
 			},
 		},
 	}
@@ -117,5 +124,5 @@ func (h *Hash) Next() (Object, Object, bool) {
 		}
 	}
 
-	return nil, &Integer{Value: 0}, false
+	return nil, NewInteger(0), false
 }

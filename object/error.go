@@ -1,7 +1,17 @@
 package object
 
+import "fmt"
+
 type Error struct {
 	Message string
+}
+
+func NewError(e interface{}) *Error {
+	return &Error{Message: fmt.Sprintf("%s", e)}
+}
+
+func NewErrorFormat(format string, a ...interface{}) *Error {
+	return &Error{Message: fmt.Sprintf(format, a...)}
 }
 
 func (e *Error) Type() ObjectType { return ERROR_OBJ }

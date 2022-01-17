@@ -10,16 +10,16 @@ func evalIntegerInfix(operator string, left, right object.Object) object.Object 
 
 	switch operator {
 	case "+":
-		return &object.Integer{Value: leftVal + rightVal}
+		return object.NewInteger(leftVal + rightVal)
 	case "-":
-		return &object.Integer{Value: leftVal - rightVal}
+		return object.NewInteger(leftVal - rightVal)
 	case "*":
-		return &object.Integer{Value: leftVal * rightVal}
+		return object.NewInteger(leftVal * rightVal)
 	case "/":
 		if rightVal == 0 {
-			return newError("devision by zero not allowed")
+			return object.NewErrorFormat("devision by zero not allowed")
 		}
-		return &object.Integer{Value: leftVal / rightVal}
+		return object.NewInteger(leftVal / rightVal)
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
 	case "<=":
@@ -29,7 +29,7 @@ func evalIntegerInfix(operator string, left, right object.Object) object.Object 
 	case ">=":
 		return nativeBoolToBooleanObject(leftVal >= rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -39,16 +39,16 @@ func evalFloatInfix(operator string, left, right object.Object) object.Object {
 
 	switch operator {
 	case "+":
-		return &object.Float{Value: leftVal + rightVal}
+		return object.NewFloat(leftVal + rightVal)
 	case "-":
-		return &object.Float{Value: leftVal - rightVal}
+		return object.NewFloat(leftVal - rightVal)
 	case "*":
-		return &object.Float{Value: leftVal * rightVal}
+		return object.NewFloat(leftVal * rightVal)
 	case "/":
 		if rightVal == 0 {
-			return newError("devision by zero not allowed")
+			return object.NewErrorFormat("devision by zero not allowed")
 		}
-		return &object.Float{Value: leftVal / rightVal}
+		return object.NewFloat(leftVal / rightVal)
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
 	case "<=":
@@ -58,7 +58,7 @@ func evalFloatInfix(operator string, left, right object.Object) object.Object {
 	case ">=":
 		return nativeBoolToBooleanObject(leftVal >= rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -92,13 +92,13 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		}
 		return result
 	case left.Type() != right.Type():
-		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("type mismatch: %s %s %s", left.Type(), operator, right.Type())
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
 	case left.Type() == object.ARRAY_OBJ && right.Type() == object.ARRAY_OBJ:
 		return evalArrayInfixExpression(operator, left, right)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -108,9 +108,9 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 
 	switch operator {
 	case "+":
-		return &object.String{Value: leftVal + rightVal}
+		return object.NewString(leftVal + rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -124,8 +124,8 @@ func evalArrayInfixExpression(operator string, left, right object.Object) object
 		elements := make([]object.Object, length)
 		copy(elements, leftArray.Elements)
 		copy(elements[len(leftArray.Elements):], rightArray.Elements)
-		return &object.Array{Elements: elements}
+		return object.NewArray(elements)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
 }

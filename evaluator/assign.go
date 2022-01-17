@@ -7,7 +7,7 @@ import (
 
 func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	evaluated := Eval(a.Value, env)
-	if isError(evaluated) {
+	if object.IsError(evaluated) {
 		return evaluated
 	}
 

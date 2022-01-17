@@ -39,7 +39,7 @@ func TestHashInspect(t *testing.T) {
 }
 
 func TestHashType(t *testing.T) {
-	hash1 := &object.Hash{Pairs: make(map[object.HashKey]object.HashPair)}
+	hash1 := object.NewHash(nil)
 
 	if hash1.Type() != object.HASH_OBJ {
 		t.Errorf("hash.Type() returns wrong type")

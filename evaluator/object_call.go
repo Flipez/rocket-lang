@@ -15,5 +15,5 @@ func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object
 		}
 	}
 
-	return newError("Failed to invoke method: %s", call.Call.(*ast.Call).Callable.String())
+	return object.NewErrorFormat("Failed to invoke method: %s", call.Call.(*ast.Call).Callable.String())
 }

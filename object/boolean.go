@@ -5,6 +5,11 @@ import (
 	"strconv"
 )
 
+var (
+	TRUE  = &Boolean{Value: true}
+	FALSE = &Boolean{Value: false}
+)
+
 type Boolean struct {
 	Value bool
 }
@@ -34,7 +39,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				b := o.(*Boolean)
-				return &String{Value: strconv.FormatBool(b.Value)}
+				return NewString(strconv.FormatBool(b.Value))
 			},
 		},
 	}

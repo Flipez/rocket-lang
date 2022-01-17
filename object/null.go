@@ -1,5 +1,7 @@
 package object
 
+var NULL = new(Null)
+
 type Null struct{}
 
 func (n *Null) Type() ObjectType                                                   { return NULL_OBJ }

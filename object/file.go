@@ -15,6 +15,10 @@ type File struct {
 	Handle   *os.File
 }
 
+func NewFile(name string) *File {
+	return &File{Filename: name}
+}
+
 func (f *File) Type() ObjectType { return FILE_OBJ }
 func (f *File) Inspect() string  { return fmt.Sprintf("<file:%s>", f.Filename) }
 func (f *File) Open(mode string, perm string) error {
@@ -78,7 +82,7 @@ func init() {
 				f := o.(*File)
 				f.Handle.Close()
 				f.Position = -1
-				return &Boolean{Value: true}
+				return TRUE
 			},
 		},
 		"lines": ObjectMethod{
@@ -94,10 +98,10 @@ func init() {
 				result := make([]Object, len(lines), len(lines))
 
 				for i, line := range lines {
-					result[i] = &String{Value: line}
+					result[i] = NewString(line)
 				}
 
-				return &Array{Elements: result}
+				return NewArray(result)
 			},
 		},
 		"content": ObjectMethod{
@@ -114,7 +118,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				f := o.(*File)
-				return &Integer{Value: f.Position}
+				return NewInteger(f.Position)
 			},
 		},
 		"read": ObjectMethod{
@@ -129,7 +133,7 @@ func init() {
 				f := o.(*File)
 				bytesAmount := args[0].(*Integer).Value
 				if f.Handle == nil {
-					return &Error{Message: "Invalid file handle."}
+					return NewError("Invalid file handle.")
 				}
 
 				buffer := make([]byte, bytesAmount)
@@ -137,10 +141,10 @@ func init() {
 				f.Position += int64(bytesRealRead)
 
 				if err != nil {
-					return &Error{Message: err.Error()}
+					return NewError(err)
 				}
 
-				return &String{Value: string(buffer)}
+				return NewString(string(buffer))
 			},
 		},
 		"seek": ObjectMethod{
@@ -156,7 +160,7 @@ func init() {
 				f := o.(*File)
 
 				if f.Handle == nil {
-					return &Error{Message: "Invalid file handle."}
+					return NewError("Invalid file handle.")
 				}
 
 				seekAmount := args[0].(*Integer).Value
@@ -165,10 +169,10 @@ func init() {
 				f.Position = newOffset
 
 				if err != nil {
-					return &Error{Message: err.Error()}
+					return NewError(err)
 				}
 
-				return &Integer{Value: f.Position}
+				return NewInteger(f.Position)
 			},
 		},
 		"write": ObjectMethod{
@@ -184,17 +188,17 @@ func init() {
 				content := []byte(args[0].(*String).Value)
 
 				if f.Handle == nil {
-					return &Error{Message: "Invalid file handle."}
+					return NewError("Invalid file handle.")
 				}
 
 				bytesWritten, err := f.Handle.Write(content)
 				f.Position += int64(bytesWritten)
 
 				if err != nil {
-					return &Error{Message: err.Error()}
+					return NewError(err)
 				}
 
-				return &Boolean{Value: true}
+				return TRUE
 			},
 		},
 	}
@@ -208,15 +212,15 @@ func readFile(o Object, _ []Object) Object {
 	f := o.(*File)
 	f.Handle.Seek(0, 0)
 	if f.Handle == nil {
-		return &Error{Message: "Invalid file handle."}
+		return NewError("Invalid file handle.")
 	}
 
 	file, err := ioutil.ReadAll(f.Handle)
 	if err != nil {
-		return &Error{Message: err.Error()}
+		return NewError(err)
 	}
 
 	f.Handle.Seek(0, 0)
 	f.Position = 0
-	return &String{Value: string(file)}
+	return NewString(string(file))
 }

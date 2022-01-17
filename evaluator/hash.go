@@ -10,17 +10,17 @@ func evalHash(node *ast.Hash, env *object.Environment) object.Object {
 
 	for keyNode, valueNode := range node.Pairs {
 		key := Eval(keyNode, env)
-		if isError(key) {
+		if object.IsError(key) {
 			return key
 		}
 
 		hashKey, ok := key.(object.Hashable)
 		if !ok {
-			return newError("unusable as hash key: %s", key.Type())
+			return object.NewErrorFormat("unusable as hash key: %s", key.Type())
 		}
 
 		value := Eval(valueNode, env)
-		if isError(value) {
+		if object.IsError(value) {
 			return value
 		}
 
@@ -28,5 +28,5 @@ func evalHash(node *ast.Hash, env *object.Environment) object.Object {
 		pairs[hashed] = object.HashPair{Key: key, Value: value}
 	}
 
-	return &object.Hash{Pairs: pairs}
+	return object.NewHash(pairs)
 }

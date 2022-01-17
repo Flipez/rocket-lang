@@ -8,10 +8,10 @@ import (
 
 func exitFunction(args ...object.Object) object.Object {
 	if len(args) != 1 {
-		return newError("wrong number of arguments. got=%d, want=1", len(args))
+		return object.NewErrorFormat("wrong number of arguments. got=%d, want=1", len(args))
 	}
 	if args[0].Type() != object.INTEGER_OBJ {
-		return newError("argument to `exit` must be INTEGER, got=%s", args[0].Type())
+		return object.NewErrorFormat("argument to `exit` must be INTEGER, got=%s", args[0].Type())
 	}
 
 	os.Exit(int(args[0].(*object.Integer).Value))

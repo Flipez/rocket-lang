@@ -10,6 +10,10 @@ type Float struct {
 	Value float64
 }
 
+func NewFloat(f float64) *Float {
+	return &Float{Value: f}
+}
+
 func (f *Float) Inspect() string  { return f.toString() }
 func (f *Float) Type() ObjectType { return FLOAT_OBJ }
 func (f *Float) HashKey() HashKey {
@@ -32,7 +36,7 @@ func init() {
 			},
 			method: func(o Object, args []Object) Object {
 				f := o.(*Float)
-				return &String{Value: f.toString()}
+				return NewString(f.toString())
 			},
 		},
 	}
@@ -44,7 +48,7 @@ func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Obj
 
 func (f *Float) TryInteger() Object {
 	if i := int64(f.Value); f.Value == float64(i) {
-		return &Integer{Value: i}
+		return NewInteger(i)
 	}
 	return f
 }
