@@ -30,7 +30,7 @@ func TestArrayObjectMethods(t *testing.T) {
 }
 
 func TestArrayInspect(t *testing.T) {
-	arr1 := &object.Array{Elements: []object.Object{}}
+	arr1 := object.NewArray(nil)
 
 	if arr1.Type() != object.ARRAY_OBJ {
 		t.Errorf("array.Type() returns wrong type")

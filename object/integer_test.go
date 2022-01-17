@@ -34,9 +34,9 @@ func TestIntegerObjectMethods(t *testing.T) {
 }
 
 func TestIntegerHashKey(t *testing.T) {
-	int1_1 := &object.Integer{Value: 1}
-	int1_2 := &object.Integer{Value: 1}
-	int2 := &object.Integer{Value: 2}
+	int1_1 := object.NewInteger(1)
+	int1_2 := object.NewInteger(1)
+	int2 := object.NewInteger(2)
 
 	if int1_1.HashKey() != int1_2.HashKey() {
 		t.Errorf("integer with same content have different hash keys")
@@ -48,7 +48,7 @@ func TestIntegerHashKey(t *testing.T) {
 }
 
 func TestIntegerInspect(t *testing.T) {
-	int1 := &object.Integer{Value: 1}
+	int1 := object.NewInteger(1)
 
 	if int1.Inspect() != "1" {
 		t.Errorf("integer inspect does not match value")

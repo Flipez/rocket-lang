@@ -427,12 +427,12 @@ func TestHashLiterals(t *testing.T) {
 	}
 
 	expected := map[object.HashKey]int64{
-		(&object.String{Value: "one"}).HashKey():   1,
-		(&object.String{Value: "two"}).HashKey():   2,
-		(&object.String{Value: "three"}).HashKey(): 3,
-		(&object.Integer{Value: 4}).HashKey():      4,
-		TRUE.HashKey():                             5,
-		FALSE.HashKey():                            6,
+		object.NewString("one").HashKey():   1,
+		object.NewString("two").HashKey():   2,
+		object.NewString("three").HashKey(): 3,
+		object.NewInteger(4).HashKey():      4,
+		object.TRUE.HashKey():               5,
+		object.FALSE.HashKey():              6,
 	}
 
 	if len(result.Pairs) != len(expected) {
@@ -564,8 +564,8 @@ func TestImportSearchPaths(t *testing.T) {
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
-	if obj != NULL {
-		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
+	if obj != object.NULL {
+		t.Errorf("object is not object.NULL. got=%T (%+v)", obj, obj)
 		return false
 	}
 	return true

@@ -9,6 +9,10 @@ type Integer struct {
 	Value int64
 }
 
+func NewInteger(i int64) *Integer {
+	return &Integer{Value: i}
+}
+
 func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
 func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
 func (i *Integer) HashKey() HashKey {
@@ -45,7 +49,7 @@ func init() {
 					base = int(args[0].(*Integer).Value)
 				}
 
-				return &String{Value: strconv.FormatInt(i.Value, base)}
+				return NewString(strconv.FormatInt(i.Value, base))
 			},
 		},
 		"plz_f": ObjectMethod{
@@ -62,7 +66,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object) Object {
 				i := o.(*Integer)
-				return &Float{Value: float64(i.Value)}
+				return NewFloat(float64(i.Value))
 			},
 		},
 	}
@@ -73,5 +77,5 @@ func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) O
 }
 
 func (i *Integer) ToFloat() Object {
-	return &Float{Value: float64(i.Value)}
+	return NewFloat(float64(i.Value))
 }

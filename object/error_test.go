@@ -7,7 +7,7 @@ import (
 )
 
 func TestErrorType(t *testing.T) {
-	err := &object.Error{Message: "test"}
+	err := object.NewError("test")
 
 	if err.Type() != object.ERROR_OBJ {
 		t.Errorf("error.Type() returns wrong type")

@@ -129,7 +129,7 @@ func (om ObjectMethod) Usage(name string) string {
 
 func (om ObjectMethod) Call(o Object, args []Object) Object {
 	if err := om.validateArgs(args); err != nil {
-		return &Error{Message: err.Error()}
+		return NewError(err)
 	}
 	return om.method(o, args)
 }
@@ -154,10 +154,10 @@ func init() {
 				result := make([]Object, len(oms))
 				var i int
 				for name := range oms {
-					result[i] = &String{Value: name}
+					result[i] = NewString(name)
 					i++
 				}
-				return &Array{Elements: result}
+				return NewArray(result)
 			},
 		},
 		"wat": ObjectMethod{
@@ -176,7 +176,7 @@ func init() {
 					result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))
 					i++
 				}
-				return &String{Value: fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n"))}
+				return NewString(fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n")))
 			},
 		},
 		"type": ObjectMethod{
@@ -187,7 +187,7 @@ func init() {
 				[]string{STRING_OBJ},
 			},
 			method: func(o Object, _ []Object) Object {
-				return &String{Value: string(o.Type())}
+				return NewString(string(o.Type()))
 			},
 		},
 	}
@@ -282,6 +282,27 @@ func CompareObjects(ao, bo Object) bool {
 	return false
 }
 
+func IsError(o Object) bool {
+	return o != nil && o.Type() == ERROR_OBJ
+}
+
 func IsNumber(o Object) bool {
-	return o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ
+	return o != nil && (o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ)
+}
+
+func IsTruthy(o Object) bool {
+	switch o {
+	case NULL:
+		return false
+	case TRUE:
+		return true
+	case FALSE:
+		return false
+	default:
+		return true
+	}
+}
+
+func IsFalsy(o Object) bool {
+	return !IsTruthy(o)
 }

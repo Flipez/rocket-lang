@@ -5,6 +5,13 @@ type Builtin struct {
 	Fn   BuiltinFunction
 }
 
+func NewBuiltin(name string, f BuiltinFunction) *Builtin {
+	return &Builtin{
+		Name: name,
+		Fn:   f,
+	}
+}
+
 type BuiltinFunction func(args ...Object) Object
 
 func (b *Builtin) Type() ObjectType                                                   { return BUILTIN_OBJ }

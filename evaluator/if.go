@@ -8,14 +8,14 @@ import (
 func evalIf(ie *ast.If, env *object.Environment) object.Object {
 	condition := Eval(ie.Condition, env)
 
-	if isError(condition) {
+	if object.IsError(condition) {
 		return condition
 	}
-	if isTruthy(condition) {
+	if object.IsTruthy(condition) {
 		return Eval(ie.Consequence, env)
 	} else if ie.Alternative != nil {
 		return Eval(ie.Alternative, env)
 	} else {
-		return NULL
+		return object.NULL
 	}
 }

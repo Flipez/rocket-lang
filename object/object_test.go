@@ -36,7 +36,7 @@ func testInput(t *testing.T, tests []inputTestCase) {
 		case string:
 			arrObj, ok := evaluated.(*object.Array)
 			if ok {
-				testStringObject(t, &object.String{Value: arrObj.Inspect()}, expected)
+				testStringObject(t, object.NewString(arrObj.Inspect()), expected)
 				continue
 			}
 			strObj, ok := evaluated.(*object.String)

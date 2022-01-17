@@ -1,8 +1,9 @@
 package object_test
 
 import (
-	"github.com/flipez/rocket-lang/object"
 	"testing"
+
+	"github.com/flipez/rocket-lang/object"
 )
 
 func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
@@ -21,20 +22,27 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 
 func TestBooleanObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`true.plz_s()`, "true"},
-		{`false.plz_s()`, "false"},
-		{`false.type()`, "BOOLEAN"},
-		{`false.nope()`, "Failed to invoke method: nope"},
-		{`(true.wat().lines().size() == true.methods().size() + 1).plz_s()`, "true"},
+		// true
+		{"true.plz_s()", "true"},
+		{"true.type()", "BOOLEAN"},
+		{"true.nope()", "Failed to invoke method: nope"},
+
+		// false
+		{"false.plz_s()", "false"},
+		{"false.type()", "BOOLEAN"},
+		{"false.nope()", "Failed to invoke method: nope"},
+
+		// other
+		{"(true.wat().lines().size() == true.methods().size() + 1).plz_s()", "true"},
 	}
 
 	testInput(t, tests)
 }
 
 func TestBooleanHashKey(t *testing.T) {
-	true1 := &object.Boolean{Value: true}
-	true2 := &object.Boolean{Value: true}
-	false1 := &object.Boolean{Value: false}
+	true1 := object.TRUE
+	true2 := object.TRUE
+	false1 := object.FALSE
 
 	if true1.HashKey() != true2.HashKey() {
 		t.Errorf("booleans with same content have different hash keys")
@@ -46,8 +54,8 @@ func TestBooleanHashKey(t *testing.T) {
 }
 
 func TestBooleanInspect(t *testing.T) {
-	true1 := &object.Boolean{Value: true}
-	false1 := &object.Boolean{Value: false}
+	true1 := object.TRUE
+	false1 := object.FALSE
 
 	if true1.Inspect() != "true" {
 		t.Errorf("boolean inspect does not match value")
