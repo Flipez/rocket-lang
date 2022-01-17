@@ -16,10 +16,8 @@ func NewArray(slice []Object) *Array {
 }
 
 func NewArrayWithObjects(objs ...Object) *Array {
-	slice := make([]Object, len(objs), len(objs))
-	for idx, obj := range objs {
-		slice[idx] = obj
-	}
+	slice := make([]Object, len(objs))
+	copy(slice, objs)
 	return NewArray(slice)
 }
 
