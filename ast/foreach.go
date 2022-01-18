@@ -14,7 +14,6 @@ type Foreach struct {
 	Body  *Block
 }
 
-func (fes *Foreach) expressionNode()      {}
 func (fes *Foreach) TokenLiteral() string { return fes.Token.Literal }
 func (fes *Foreach) String() string {
 	var out bytes.Buffer

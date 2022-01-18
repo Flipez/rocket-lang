@@ -12,7 +12,6 @@ type Array struct {
 	Elements []Expression
 }
 
-func (al *Array) expressionNode()      {}
 func (al *Array) TokenLiteral() string { return al.Token.Literal }
 func (al *Array) String() string {
 	var out bytes.Buffer

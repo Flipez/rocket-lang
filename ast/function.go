@@ -14,7 +14,6 @@ type Function struct {
 	Body       *Block
 }
 
-func (fl *Function) expressionNode()      {}
 func (fl *Function) TokenLiteral() string { return fl.Token.Literal }
 func (fl *Function) String() string {
 	var out bytes.Buffer

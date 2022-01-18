@@ -13,7 +13,6 @@ type Infix struct {
 	Right    Expression
 }
 
-func (ie *Infix) expressionNode()      {}
 func (ie *Infix) TokenLiteral() string { return ie.Token.Literal }
 func (ie *Infix) String() string {
 	var out bytes.Buffer

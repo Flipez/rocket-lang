@@ -1,6 +1,8 @@
 package object_test
 
 import (
+	"errors"
+
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
@@ -44,6 +46,10 @@ func testInput(t *testing.T, tests []inputTestCase) {
 				testStringObject(t, strObj, expected)
 				continue
 			}
+			_, ok = evaluated.(*object.Null)
+			if ok {
+				continue
+			}
 
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
@@ -56,5 +62,72 @@ func testInput(t *testing.T, tests []inputTestCase) {
 		case bool:
 			testBooleanObject(t, evaluated, expected)
 		}
+	}
+}
+
+func TestIsError(t *testing.T) {
+	trueErrors := []object.Object{
+		object.NewError(errors.New("test error")),
+		object.NewError("test error"),
+		object.NewErrorFormat("test %s", "error"),
+	}
+
+	for _, err := range trueErrors {
+		if !object.IsError(err) {
+			t.Errorf("'%s' should be an error", err.Inspect())
+		}
+	}
+
+	falseErrors := []object.Object{
+		nil,
+		object.NewString("a"),
+		object.NULL,
+	}
+	for _, err := range falseErrors {
+		if object.IsError(nil) {
+			t.Errorf("'%#v' is not an error", err)
+		}
+	}
+}
+
+func TestIsNumber(t *testing.T) {
+	if !object.IsNumber(object.NewInteger(1)) {
+		t.Error("INTEGER_OBJ should be a number")
+	}
+	if !object.IsNumber(object.NewFloat(1.1)) {
+		t.Error("FLOAT_OBJ should be a number")
+	}
+	if object.IsNumber(object.NULL) {
+		t.Error("NULL_OBJ is not a number")
+	}
+}
+
+func TestIsTruthy(t *testing.T) {
+	if !object.IsTruthy(object.TRUE) {
+		t.Error("BOOLEAN_OBJ=true should be truthy")
+	}
+	if !object.IsTruthy(object.NewString("")) {
+		t.Error("STRING_OBJ should be truthy")
+	}
+	if object.IsTruthy(object.NULL) {
+		t.Error("NULL_OBJ should not be truthy")
+	}
+	if object.IsTruthy(object.FALSE) {
+		t.Errorf("BOOLEAN_OBJ=false, should not be truthy")
+	}
+}
+
+func TestIsFalsy(t *testing.T) {
+	if object.IsFalsy(object.TRUE) {
+		t.Error("BOOLEAN_OBJ=true should not be falsy")
+	}
+	if object.IsFalsy(object.NewString("")) {
+		t.Error("STRING_OBJ should not be falsy")
+	}
+	if !object.IsFalsy(object.NULL) {
+		t.Error("NULL_OBJ should be falsy")
+	}
+	if !object.IsFalsy(object.FALSE) {
+		t.Errorf("BOOLEAN_OBJ=false, should be falsy")
 	}
 }

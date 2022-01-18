@@ -6,6 +6,18 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
+func TestHashObject(t *testing.T) {
+	tests := []inputTestCase{
+		{`{"a": 1} == {"a": 1}`, true},
+		{`{"a": 1} == {"a": 1, "b": 2}`, false},
+		{`{"a": 1} == {"b": 1}`, false},
+		{`{"a": 1} == {"a": "c"}`, false},
+		{`{{1: true}: "a"}.keys()`, `[{1: true}]`},
+	}
+
+	testInput(t, tests)
+}
+
 func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`{"a": 2}.keys()`, `["a"]`},

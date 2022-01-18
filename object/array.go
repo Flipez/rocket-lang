@@ -16,10 +16,8 @@ func NewArray(slice []Object) *Array {
 }
 
 func NewArrayWithObjects(objs ...Object) *Array {
-	slice := make([]Object, len(objs), len(objs))
-	for idx, obj := range objs {
-		slice[idx] = obj
-	}
+	slice := make([]Object, len(objs))
+	copy(slice, objs)
 	return NewArray(slice)
 }
 
@@ -28,7 +26,7 @@ func (ao *Array) Inspect() string {
 	var out bytes.Buffer
 
 	length := len(ao.Elements)
-	elements := make([]string, length, length)
+	elements := make([]string, length)
 	for index, element := range ao.Elements {
 		elements[index] = element.Inspect()
 	}
@@ -81,7 +79,7 @@ func init() {
 				}
 
 				length := len(items)
-				newElements := make([]Object, length, length)
+				newElements := make([]Object, length)
 				var idx int
 				for _, item := range items {
 					newElements[idx] = item
@@ -125,7 +123,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return new(Null)
+					return NULL
 				}
 				return ao.Elements[0]
 			},
@@ -140,7 +138,7 @@ func init() {
 			method: func(o Object, _ []Object) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return new(Null)
+					return NULL
 				}
 				return ao.Elements[len(ao.Elements)-1]
 			},
@@ -160,7 +158,7 @@ func init() {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
-				newElements := make([]Object, length-1, length-1)
+				newElements := make([]Object, length-1)
 				copy(newElements, ao.Elements[:(length-1)])
 
 				returnElement := ao.Elements[length-1]
@@ -188,7 +186,7 @@ func init() {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
-				newElements := make([]Object, length+1, length+1)
+				newElements := make([]Object, length+1)
 				copy(newElements, ao.Elements)
 				newElements[length] = args[0]
 

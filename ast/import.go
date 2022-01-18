@@ -12,10 +12,7 @@ type Import struct {
 	Name  Expression
 }
 
-func (ie *Import) expressionNode() {}
-
 func (ie *Import) TokenLiteral() string { return ie.Token.Literal }
-
 func (ie *Import) String() string {
 	var out bytes.Buffer
 

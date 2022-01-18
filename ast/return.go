@@ -11,7 +11,6 @@ type Return struct {
 	ReturnValue Expression
 }
 
-func (rs *Return) statementNode()       {}
 func (rs *Return) TokenLiteral() string { return rs.Token.Literal }
 func (rs *Return) String() string {
 	var out bytes.Buffer
