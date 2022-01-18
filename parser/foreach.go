@@ -18,7 +18,11 @@ func (p *Parser) parseForEach() ast.Expression {
 		p.nextToken()
 
 		if !p.peekTokenIs(token.IDENT) {
-			p.errors = append(p.errors, fmt.Sprintf("second argument to foreach must be ident, got %v", p.peekToken))
+			p.errors = append(p.errors, fmt.Sprintf(
+				"%d:%d: second argument to foreach must be ident, got %v",
+				p.peekToken.LineNumber,
+				p.peekToken.LinePosition,
+				p.peekToken))
 			return nil
 		}
 		p.nextToken()

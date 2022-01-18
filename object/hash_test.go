@@ -21,7 +21,7 @@ func TestHashObject(t *testing.T) {
 func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`{"a": 2}.keys()`, `["a"]`},
-		{`{}.nope()`, "Failed to invoke method: nope"},
+		{`{}.nope()`, "undefined method `.nope()` for HASH"},
 		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
 		{`{}.type()`, "HASH"},
 		{`a = {"a": "b", "b":"a"};b = []; foreach key, value in a { b.yoink(key) }; b.size()`, 2},

@@ -20,7 +20,7 @@ func TestFileObjectMethods(t *testing.T) {
 		{`open("../fixtures/module.rl").lines().size()`, 7},
 		{`a = open("../fixtures/module.rl"); a.read(25); a.lines().size()`, 7},
 		{`open("../fixtures/nope")`, "open ../fixtures/nope: no such file or directory"},
-		{`open("../fixtures/nope").content()`, "Failed to invoke method: content"},
+		{`open("../fixtures/nope").content()`, "undefined method `.content()` for ERROR"},
 		{`a = open("../fixtures/nope", "rw"); a.content()`, ""},
 		{`(open("../fixtures/module.rl").wat().lines().size() == open("../fixtures/module.rl").methods().size() + 1).plz_s()`, "true"},
 		{`open("").type()`, "ERROR"},

@@ -8,7 +8,7 @@ import (
 
 func TestFunctionObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`def(){}.nope()`, "Failed to invoke method: nope"},
+		{`def(){}.nope()`, "undefined method `.nope()` for FUNCTION"},
 	}
 
 	testInput(t, tests)

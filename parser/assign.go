@@ -11,7 +11,7 @@ func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	if n, ok := name.(*ast.Identifier); ok {
 		stmt.Name = n
 	} else {
-		msg := fmt.Sprintf("expected assign token to be IDENT, got %s instead", name.TokenLiteral())
+		msg := fmt.Sprintf("%d:%d: expected assign token to be IDENT, got %s instead", p.curToken.LineNumber, p.curToken.LinePosition, name.TokenLiteral())
 		p.errors = append(p.errors, msg)
 	}
 	p.nextToken()

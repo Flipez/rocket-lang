@@ -29,7 +29,7 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
-	l.positionInLine = +1
+	l.positionInLine += 1
 }
 
 func (l *Lexer) NextToken() token.Token {
@@ -256,13 +256,13 @@ func isEmpty(ch byte) bool {
 }
 
 func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+	for l.ch == ' ' || l.ch == '\t' || l.isNewline() || l.ch == '\r' {
 		l.readChar()
 	}
 }
 
 func (l *Lexer) skipComment() {
-	for l.ch != '\n' && l.ch != 0 {
+	for !l.isNewline() && l.ch != 0 {
 		l.readChar()
 	}
 	l.skipWhitespace()
