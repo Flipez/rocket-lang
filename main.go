@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,26 +14,45 @@ import (
 )
 
 func main() {
+	version := flag.Bool("version", false, "Prints the version and build date.")
+	exec := flag.String("exec", "", "Runs the given code.")
+
+	flag.Parse()
+
+	if *version {
+		print(repl.SplashScreen())
+		return
+	}
+
+	if len(*exec) > 0 {
+		runProgram(*exec)
+		return
+	}
+
 	if len(os.Args) == 1 {
 		repl.Start(os.Stdin, os.Stdout)
 	} else {
 		file, err := ioutil.ReadFile(os.Args[1])
 		if err == nil {
-			env := object.NewEnvironment()
-			l := lexer.New(string(file))
-			p := parser.New(l, make(map[string]struct{}))
-
-			program, _ := p.ParseProgram()
-			if len(p.Errors()) > 0 {
-				printParserErrors(p.Errors())
-				return
-			}
-
-			evaluated := evaluator.Eval(program, env)
-			if evaluated != nil {
-				fmt.Println(evaluated.Inspect())
-			}
+			runProgram(string(file))
 		}
+	}
+}
+
+func runProgram(input string) {
+	env := object.NewEnvironment()
+	l := lexer.New(input)
+	p := parser.New(l, make(map[string]struct{}))
+
+	program, _ := p.ParseProgram()
+	if len(p.Errors()) > 0 {
+		printParserErrors(p.Errors())
+		return
+	}
+
+	evaluated := evaluator.Eval(program, env)
+	if evaluated != nil {
+		fmt.Println(evaluated.Inspect())
 	}
 }
 
