@@ -3,6 +3,7 @@
 [![goreleaser Status](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml)
 [![Test Status](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Flipez/rocket-lang/branch/master/graph/badge.svg)](https://codecov.io/gh/Flipez/rocket-lang)
+[![Maintainability](https://api.codeclimate.com/v1/badges/800d0f48a5b283fc4627/maintainability)](https://codeclimate.com/github/Flipez/rocket-lang/maintainability)
 
 > Checkout the documentation at https://rocket-lang.org
 
