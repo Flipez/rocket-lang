@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.14.0](https://github.com/flipez/rocket-lang/tree/v0.14.0) (2022-01-18)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.13.0...v0.14.0)
+
+**Implemented enhancements:**
+
+- unify object creation with New methods [\#51](https://github.com/Flipez/rocket-lang/pull/51) ([MarkusFreitag](https://github.com/MarkusFreitag))
+- improve tests [\#49](https://github.com/Flipez/rocket-lang/pull/49) ([Flipez](https://github.com/Flipez))
+- implement LT\_EQ and GT\_EQ [\#48](https://github.com/Flipez/rocket-lang/pull/48) ([MarkusFreitag](https://github.com/MarkusFreitag))
+- clean up lexer [\#47](https://github.com/Flipez/rocket-lang/pull/47) ([Flipez](https://github.com/Flipez))
+- Restructure Code [\#45](https://github.com/Flipez/rocket-lang/pull/45) ([Flipez](https://github.com/Flipez))
+
 ## [v0.13.0](https://github.com/flipez/rocket-lang/tree/v0.13.0) (2022-01-16)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.12.0...v0.13.0)
