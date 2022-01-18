@@ -7,8 +7,10 @@ import (
 type TokenType string
 
 type Token struct {
-	Type    TokenType
-	Literal string
+	Type         TokenType
+	Literal      string
+	LineNumber   int
+	LinePosition int
 }
 
 const (
@@ -114,14 +116,14 @@ func LookupLiteral(ident string) string {
 	return IDENT
 }
 
-func NewToken(tokenType TokenType, literal interface{}) Token {
+func NewToken(tokenType TokenType, literal interface{}, line int, position int) Token {
 	byteLiteral, ok := literal.(byte)
 	if ok {
-		return Token{Type: tokenType, Literal: string(byteLiteral)}
+		return Token{Type: tokenType, Literal: string(byteLiteral), LineNumber: line, LinePosition: position}
 	}
 	stringLiteral, ok := literal.(string)
 	if ok {
-		return Token{Type: tokenType, Literal: stringLiteral}
+		return Token{Type: tokenType, Literal: stringLiteral, LineNumber: line, LinePosition: position}
 	}
 
 	return Token{Type: ILLEGAL, Literal: fmt.Sprintf("%v", literal)}
