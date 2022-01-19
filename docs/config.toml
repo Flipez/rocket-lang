@@ -8,6 +8,9 @@ enableGitInfo = true
 
 # Needed for mermaid/katex shortcodes
 [markup]
+  [markup.highlight]
+    style = 'dracula'
+
 [markup.goldmark.renderer]
   unsafe = true
 
@@ -41,7 +44,7 @@ enableGitInfo = true
   BookRepo = 'https://github.com/flipez/rocket-lang'
 
   # BookCommitPath = 'commit'
-  BookEditPath = 'edit/master/docs/'
+  BookEditPath = 'edit/master/docs'
   BookDateFormat = 'January 2, 2006'
   BookSearch = true
   BookComments = false
