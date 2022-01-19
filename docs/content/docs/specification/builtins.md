@@ -45,7 +45,7 @@ Prints the string representation of the given object to STDOUT.
 Opens a file pointer to the file at the path of argument one with the mode of (optional) argument two and a file permission as optional argument three.
 
 ```js
-🚀 > open("main.go", "ro", "0644")
+🚀 > open("main.go", "r", "0644")
 => <file:main.go>
 ```
 
