@@ -5,6 +5,7 @@ menu:
     parent: "specification"
 toc: true
 ---
+# Closures
 ```js
 newGreeter = def (greeting) {
   return def (name) { puts(greeting + " " + name); }

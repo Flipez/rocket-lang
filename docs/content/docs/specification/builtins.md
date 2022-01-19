@@ -5,7 +5,8 @@ menu:
     parent: "specification"
 toc: true
 ---
-### exit(INTEGER)
+# Builtin Functions
+## exit(INTEGER)
 
 Terminates the program with the given exit code.
 
@@ -14,7 +15,7 @@ Terminates the program with the given exit code.
 exit status 1
 ```
 
-### raise(INTEGER, STRING)
+## raise(INTEGER, STRING)
 
 Terminates the program with the given exit code and prints the error message.
 
@@ -24,7 +25,7 @@ Terminates the program with the given exit code and prints the error message.
 exit status 1
 ```
 
-### puts(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FILE)
+## puts(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FILE)
 
 Prints the string representation of the given object to STDOUT.
 
@@ -39,7 +40,7 @@ Prints the string representation of the given object to STDOUT.
 ["test", true, 3]
 ```
 
-### open(STRING, STRING, STRING)
+## open(STRING, STRING, STRING)
 > Returns FILE
 
 Opens a file pointer to the file at the path of argument one with the mode of (optional) argument two and a file permission as optional argument three.

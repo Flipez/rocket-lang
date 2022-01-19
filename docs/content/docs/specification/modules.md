@@ -5,6 +5,7 @@ menu:
     parent: "specification"
 toc: true
 ---
+# Modules
 > 👉 Modules were introduced in `0.11`
 
 Modules are seperate RocketLang files can be imported using the `import` statement.

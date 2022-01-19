@@ -4,6 +4,7 @@ menu:
   docs:
     parent: "controls"
 ---
+# Foreach
 For loops allow to iterate over different sets of data and perform actions based on them.
 
 ```js

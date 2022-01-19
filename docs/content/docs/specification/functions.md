@@ -1,10 +1,11 @@
 ---
-title: "Function"
+title: "Functions"
 menu:
   docs:
     parent: "specification"
 toc: true
 ---
+# Functions
 Implicit and explicit return statements are supported.
 
 ```js

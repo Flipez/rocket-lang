@@ -4,6 +4,7 @@ menu:
   docs:
     parent: "controls"
 ---
+# If
 With `if` and `else` keywords the flow of a program can be controlled.
 
 ```js
