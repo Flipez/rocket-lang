@@ -4,6 +4,7 @@ menu:
   docs:
     parent: "literals"
 ---
+# Boolean
 
 A Boolean can represent two values: `true` and `false` and can be used in control flows.
 

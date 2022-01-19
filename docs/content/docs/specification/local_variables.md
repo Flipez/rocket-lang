@@ -5,6 +5,7 @@ menu:
     parent: "specification"
 toc: true
 ---
+# Local Variables
 Variables represent the object as a memorable name.
 
 ```js

@@ -4,6 +4,7 @@ menu:
   docs:
     parent: "literals"
 ---
+# Integer
 
 An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
 
