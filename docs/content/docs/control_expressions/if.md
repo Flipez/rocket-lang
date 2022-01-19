@@ -17,7 +17,7 @@ With `if` and `else` keywords the flow of a program can be controlled.
 is a string
 ```
 
-{{< alert icon="👉" text="Since `0.13` curly braces are completely optional (closing brace needs to be replaced with `end`" />}}
+> 👉 Since `0.13` curly braces are completely optional (closing brace needs to be replaced with `end`)
 
 ```js
 🚀 > if (a.type() == "STRING")
