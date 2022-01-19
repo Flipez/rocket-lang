@@ -71,7 +71,11 @@ is_true = a != b;`,
 	tempData = templateData{Title: "Error", LiteralMethods: error_methods, DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/error.md", tempData)
 
-	tempData = templateData{Title: "File", LiteralMethods: file_methods, DefaultMethods: default_methods}
+	tempData = templateData{
+		Title:          "File",
+		Example:        `input = open("examples/aoc/2021/day-1/input").lines()`,
+		LiteralMethods: file_methods,
+		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/file.md", tempData)
 
 	tempData = templateData{

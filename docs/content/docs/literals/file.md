@@ -8,6 +8,10 @@ menu:
 
 
 
+```js
+input = open("examples/aoc/2021/day-1/input").lines()
+```
+
 ## Literal Specific Methods
 
 ### close()
