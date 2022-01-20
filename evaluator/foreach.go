@@ -42,7 +42,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 		//
 		// If we got an error/return then we handle it.
 		//
-		if rt != nil && !object.IsError(rt) && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
+		if rt != nil && (rt.Type() == object.RETURN_VALUE_OBJ || rt.Type() == object.ERROR_OBJ) {
 			return rt
 		}
 
