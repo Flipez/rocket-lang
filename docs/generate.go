@@ -36,20 +36,20 @@ is_true = "test" == "test";
 is_false = "test" == "string";`,
 		LiteralMethods: string_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/string.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/string.md", tempData)
 
 	tempData = templateData{
 		Title:          "Array",
 		LiteralMethods: array_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/array.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/array.md", tempData)
 
 	tempData = templateData{
 		Title:          "Hash",
 		Example:        `people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];`,
 		LiteralMethods: hash_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/hash.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/hash.md", tempData)
 
 	tempData = templateData{
 		Title:       "Boolean",
@@ -66,19 +66,23 @@ is_false = a == b;
 is_true = a != b;`,
 		LiteralMethods: boolean_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/boolean.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/boolean.md", tempData)
 
 	tempData = templateData{Title: "Error", LiteralMethods: error_methods, DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/error.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/error.md", tempData)
 
-	tempData = templateData{Title: "File", LiteralMethods: file_methods, DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/file.md", tempData)
+	tempData = templateData{
+		Title:          "File",
+		Example:        `input = open("examples/aoc/2021/day-1/input").lines()`,
+		LiteralMethods: file_methods,
+		DefaultMethods: default_methods}
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/file.md", tempData)
 
 	tempData = templateData{
 		Title:          "Null",
 		LiteralMethods: null_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/null.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/null.md", tempData)
 
 	tempData = templateData{
 		Title: "Integer",
@@ -93,10 +97,10 @@ is_false = 1 == 2;`,
 To cast a negative integer a digit can be prefixed with a - eg. -456.`,
 		LiteralMethods: integer_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/integer.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/integer.md", tempData)
 
 	tempData = templateData{Title: "Float", LiteralMethods: float_methods, DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/en/docs/literals/float.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/float.md", tempData)
 
 }
 

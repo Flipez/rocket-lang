@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.14.2](https://github.com/flipez/rocket-lang/tree/v0.14.2) (2022-01-20)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.14.1...v0.14.2)
+
+**Fixed bugs:**
+
+- Bug: open\(\) with two arguments does not work [\#54](https://github.com/Flipez/rocket-lang/issues/54)
+- Bug: Comments are broken [\#53](https://github.com/Flipez/rocket-lang/issues/53)
+- fix comments [\#61](https://github.com/Flipez/rocket-lang/pull/61) ([Flipez](https://github.com/Flipez))
+
+**Merged pull requests:**
+
+- Improve docs [\#60](https://github.com/Flipez/rocket-lang/pull/60) ([Flipez](https://github.com/Flipez))
+- Improve docs [\#59](https://github.com/Flipez/rocket-lang/pull/59) ([Flipez](https://github.com/Flipez))
+- Improve docs [\#58](https://github.com/Flipez/rocket-lang/pull/58) ([Flipez](https://github.com/Flipez))
+
+## [v0.14.1](https://github.com/flipez/rocket-lang/tree/v0.14.1) (2022-01-18)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.14.0...v0.14.1)
+
 ## [v0.14.0](https://github.com/flipez/rocket-lang/tree/v0.14.0) (2022-01-18)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.13.0...v0.14.0)
