@@ -39,6 +39,13 @@ Converts the integer into a float.
 ```
 
 
+### plz_i()
+> Returns `INTEGER`
+
+Returns self
+
+
+
 ### plz_s(INTEGER)
 > Returns `STRING`
 

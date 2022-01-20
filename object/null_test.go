@@ -17,6 +17,9 @@ func TestNullType(t *testing.T) {
 func TestNullObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1][1].nope()`, "undefined method `.nope()` for NULL"},
+		{`[1][1].plz_s()`, ""},
+		{`[1][1].plz_i()`, 0},
+		{`[1][1].plz_f()`, 0.0},
 	}
 
 	testInput(t, tests)
