@@ -52,6 +52,15 @@ func init() {
 				return NewString(strconv.FormatInt(i.Value, base))
 			},
 		},
+		"plz_i": ObjectMethod{
+			description: "Returns self",
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
+			method: func(o Object, _ []Object) Object {
+				return o
+			},
+		},
 		"plz_f": ObjectMethod{
 			description: "Converts the integer into a float.",
 			example: `🚀 > a = 456

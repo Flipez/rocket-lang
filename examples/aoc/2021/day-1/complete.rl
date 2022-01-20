@@ -11,8 +11,10 @@ foreach i, number in input {
 input = a
 
 foreach i, number in input {
-  if (number > input[i-1])
-    increase = increase + 1
+  if (input[i-1].type() != "NULL")
+    if (number > input[i-1])
+      increase = increase + 1
+    end
   end
 }
 
@@ -23,8 +25,8 @@ puts(increase)
 increase = 0
 
 foreach i, number in input {
-  sum = number + input[i+1] + input[i+2]
-  sum_two = input[i+1] + input[i+2] + input[i+3]
+  sum = number + input[i+1].plz_i() + input[i+2].plz_i()
+  sum_two = input[i+1].plz_i() + input[i+2].plz_i() + input[i+3].plz_i()
   
   if (sum_two > sum)
     increase = increase + 1

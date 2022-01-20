@@ -11,6 +11,13 @@ menu:
 
 ## Literal Specific Methods
 
+### plz_f()
+> Returns `FLOAT`
+
+Returns self
+
+
+
 ### plz_s()
 > Returns `STRING`
 
