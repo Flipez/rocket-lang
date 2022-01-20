@@ -11,6 +11,27 @@ menu:
 
 ## Literal Specific Methods
 
+### plz_f()
+> Returns `FLOAT`
+
+Returns zero float.
+
+
+
+### plz_i()
+> Returns `INTEGER`
+
+Returns zero integer.
+
+
+
+### plz_s()
+> Returns `STRING`
+
+Returns empty string.
+
+
+
 
 ## Generic Literal Methods
 

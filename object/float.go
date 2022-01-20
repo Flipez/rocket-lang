@@ -25,6 +25,15 @@ func (f *Float) HashKey() HashKey {
 
 func init() {
 	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{
+		"plz_f": ObjectMethod{
+			description: "Returns self",
+			returnPattern: [][]string{
+				[]string{FLOAT_OBJ},
+			},
+			method: func(o Object, _ []Object) Object {
+				return o
+			},
+		},
 		"plz_s": ObjectMethod{
 			description: "Returns a string representation of the float.",
 			example: `🚀 > a = 123.456
