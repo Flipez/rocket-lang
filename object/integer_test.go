@@ -27,7 +27,7 @@ func TestIntegerObjectMethods(t *testing.T) {
 		{`2.plz_f()`, 2.0},
 		{`2.plz_i()`, 2},
 		{`10.type()`, "INTEGER"},
-		{`2.nope()`, "Failed to invoke method: nope"},
+		{`2.nope()`, "undefined method `.nope()` for INTEGER"},
 		{`(2.wat().lines().size() == 2.methods().size() + 1).plz_s()`, "true"},
 	}
 

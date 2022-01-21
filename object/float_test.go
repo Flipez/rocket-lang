@@ -25,7 +25,7 @@ func TestFloatObjectMethods(t *testing.T) {
 		{`2.1.plz_s()`, "2.1"},
 		{`2.1.plz_f()`, 2.1},
 		{`10.0.type()`, "FLOAT"},
-		{`2.2.nope()`, "Failed to invoke method: nope"},
+		{`2.2.nope()`, "undefined method `.nope()` for FLOAT"},
 		{`(2.0.wat().lines().size() == 2.0.methods().size() + 1).plz_s()`, "true"},
 	}
 

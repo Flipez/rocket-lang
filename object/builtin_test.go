@@ -8,7 +8,7 @@ import (
 
 func TestBuiltinObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`puts.nope()`, "Failed to invoke method: nope"},
+		{`puts.nope()`, "undefined method `.nope()` for BUILTIN"},
 	}
 
 	testInput(t, tests)
