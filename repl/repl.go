@@ -28,7 +28,7 @@ func Start(in io.Reader, out io.Writer) {
 	env := object.NewEnvironment()
 	imports := make(map[string]struct{})
 
-	shell.Println(fmt.Sprintf(ROCKET, buildVersion, buildDate))
+	shell.Println(SplashScreen())
 	shell.NotFound(func(ctx *ishell.Context) {
 
 		l := lexer.New(strings.Join(ctx.RawArgs, " "))
@@ -59,6 +59,14 @@ const ROCKET = `
 /_||||_\  |_|_\___/\__|_\_\___|\__|____\__,_|_||_\__, |
               %10s | %-15s   |___/
 `
+
+func SplashScreen() string {
+	return fmt.Sprintf(ROCKET, buildVersion, buildDate)
+}
+
+func SplashVersion() string {
+	return fmt.Sprintf("rocket-lang version %s (%s)\n", buildVersion, buildDate)
+}
 
 func printParserErrors(ctx *ishell.Context, errors []string) {
 	ctx.Println("🔥 Great, you broke it!")

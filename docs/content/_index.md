@@ -6,22 +6,20 @@ bookToC: false
 
 {{< columns >}}
 
-## About
+# About
 
 RocketLang as of version 0.9.5 is the full (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and
 is then being extended with various useful and not so useful features.
 
 <--->
 
-## Latest Version
+# Latest Version
 
 [![GitHub release](https://img.shields.io/github/release/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang/releases/)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang)
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang)
 
 {{< /columns >}}
 
-## Quick Start
+# Quick Start
 ```js
 input = open("examples/aoc/2021/day-1/input").lines()
 
@@ -50,4 +48,16 @@ foreach i, number in input {
   end
 }
 puts(increase + 1)
+```
+
+# Help
+You can launch RocketLang with `-h` or `--help` to get an overview about the cli capabilities.
+
+```zsh
+$ rocket-lang -h
+Usage: rocket-lang [flags] [program file] [arguments]
+
+Available flags:
+  -e, --exec string   Runs the given code.
+  -v, --version       Prints the version and build date.
 ```
