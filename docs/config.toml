@@ -1,0 +1,54 @@
+baseURL = '/'
+title = '🚀🇱🅰🆖'
+theme = 'hugo-book'
+
+# Book configuration
+disablePathToLower = true
+enableGitInfo = true
+
+# Needed for mermaid/katex shortcodes
+[markup]
+  [markup.highlight]
+    style = 'dracula'
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.tableOfContents]
+  startLevel = 1
+
+[languages]
+[languages.en]
+  languageName = 'English'
+  contentDir = 'content'
+  weight = 1
+
+[menu]
+# [[menu.before]]
+[[menu.after]]
+  name = "Github"
+  url = "https://github.com/flipez/rocket-lang"
+  weight = 10
+
+
+
+[params]
+  custom_css = ["css/custom.css"]
+
+  BookTheme = 'dark'
+  BookToC = true
+  BookLogo = 'logo.png'
+
+  # BookMenuBundle = '/menu'
+  BookSection = 'docs'
+  BookRepo = 'https://github.com/flipez/rocket-lang'
+
+  # BookCommitPath = 'commit'
+  BookEditPath = 'edit/master/docs'
+  BookDateFormat = 'January 2, 2006'
+  BookSearch = true
+  BookComments = false
+
+  BookPortableLinks = true
+  BookServiceWorker = true
+  BookTranslatedOnly = false

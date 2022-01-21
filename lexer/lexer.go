@@ -57,7 +57,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '/':
 		if l.peekChar() == '/' {
 			l.skipComment()
-			tok = l.NextToken()
+			return l.NextToken()
 		} else {
 			tok = token.NewToken(token.SLASH, l.ch)
 		}
