@@ -54,7 +54,10 @@ puts(increase + 1)
 You can launch RocketLang with `-h` or `--help` to get an overview about the cli capabilities.
 
 ```zsh
-rocket-lang -h
+$ rocket-lang -h
+Usage: rocket-lang [flags] [program file] [arguments]
+
+Available flags:
   -e, --exec string   Runs the given code.
   -v, --version       Prints the version and build date.
 ```
