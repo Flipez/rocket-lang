@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.15.0](https://github.com/flipez/rocket-lang/tree/v0.15.0) (2022-01-21)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.14.2...v0.15.0)
+
+**Implemented enhancements:**
+
+- Feature Request: Add CLI args / methods [\#52](https://github.com/Flipez/rocket-lang/issues/52)
+- Foreach error abort [\#62](https://github.com/Flipez/rocket-lang/pull/62) ([Flipez](https://github.com/Flipez))
+- add cli flags [\#57](https://github.com/Flipez/rocket-lang/pull/57) ([Flipez](https://github.com/Flipez))
+- Improve Error Messages [\#56](https://github.com/Flipez/rocket-lang/pull/56) ([Flipez](https://github.com/Flipez))
+
+**Fixed bugs:**
+
+- Foreach should abort on error and return [\#50](https://github.com/Flipez/rocket-lang/issues/50)
+
+**Merged pull requests:**
+
+- examples: Update aoc/2015/day1 to 0.14.1 [\#55](https://github.com/Flipez/rocket-lang/pull/55) ([Kjarrigan](https://github.com/Kjarrigan))
+
 ## [v0.14.2](https://github.com/flipez/rocket-lang/tree/v0.14.2) (2022-01-20)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.14.1...v0.14.2)
