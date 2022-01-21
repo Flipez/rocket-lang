@@ -18,6 +18,12 @@ func main() {
 	version := flag.BoolP("version", "v", false, "Prints the version and build date.")
 	exec := flag.StringP("exec", "e", "", "Runs the given code.")
 
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: rocket-lang [flags] [program file] [arguments]\n\nAvailable flags:\n")
+
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 
 	if *version {
