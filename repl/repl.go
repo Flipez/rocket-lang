@@ -64,6 +64,10 @@ func SplashScreen() string {
 	return fmt.Sprintf(ROCKET, buildVersion, buildDate)
 }
 
+func SplashVersion() string {
+	return fmt.Sprintf("rocket-lang version %s (%s)\n", buildVersion, buildDate)
+}
+
 func printParserErrors(ctx *ishell.Context, errors []string) {
 	ctx.Println("🔥 Great, you broke it!")
 	ctx.Println(" parser errors:")

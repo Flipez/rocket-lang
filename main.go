@@ -1,10 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
@@ -14,13 +15,13 @@ import (
 )
 
 func main() {
-	version := flag.Bool("version", false, "Prints the version and build date.")
-	exec := flag.String("exec", "", "Runs the given code.")
+	version := flag.BoolP("version", "v", false, "Prints the version and build date.")
+	exec := flag.StringP("exec", "e", "", "Runs the given code.")
 
 	flag.Parse()
 
 	if *version {
-		print(repl.SplashScreen())
+		print(repl.SplashVersion())
 		return
 	}
 
