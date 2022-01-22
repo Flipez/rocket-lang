@@ -9,8 +9,12 @@ build:
   goos:
     - linux
     - darwin
+    - freebsd
+    - windows
   goarch:
     - amd64
+    - arm
+    - arm64
   env:
     - CGO_ENABLED=0
 
@@ -27,13 +31,15 @@ checksum:
   name_template: "checksums.txt"
 
 nfpms:
-  - vendor: Changelogger
-    homepage: https://github.com/flipez/rocket-lang
+  - vendor: Flipez
+    homepage: https://rocket-lang.org
     maintainer: Flipez <code@brauser.io>
     description: Implementation of the monkey lang
     license: MIT
     formats:
+      - apk
       - deb
+      - rpm
     file_name_template: "{{.ProjectName}}_{{.Os}}_{{.Arch}}_{{ .Tag }}"
 
 # .goreleaser.yml
