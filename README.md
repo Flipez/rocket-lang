@@ -4,6 +4,7 @@
 [![Test Status](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Flipez/rocket-lang/branch/master/graph/badge.svg)](https://codecov.io/gh/Flipez/rocket-lang)
 [![Maintainability](https://api.codeclimate.com/v1/badges/800d0f48a5b283fc4627/maintainability)](https://codeclimate.com/github/Flipez/rocket-lang/maintainability)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1615fca430c4489aaf292c0e9bb2e797)](https://www.codacy.com/gh/Flipez/rocket-lang/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Flipez/rocket-lang&amp;utm_campaign=Badge_Grade)
 
 > Checkout the documentation at https://rocket-lang.org
 
