@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"strings"
+
 	"github.com/flipez/rocket-lang/object"
 )
 
@@ -91,6 +93,18 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 			return result.(*object.Float).TryInteger()
 		}
 		return result
+	case ((left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ) || (right.Type() == object.STRING_OBJ && left.Type() == object.INTEGER_OBJ)) && operator == "*":
+		var stringObj string
+		var intObj int64
+		if left.Type() == object.STRING_OBJ {
+			stringObj = left.(*object.String).Value
+			intObj = right.(*object.Integer).Value
+		} else {
+			stringObj = right.(*object.String).Value
+			intObj = left.(*object.Integer).Value
+		}
+
+		return object.NewString(strings.Repeat(stringObj, int(intObj)))
 	case left.Type() != right.Type():
 		return object.NewErrorFormat("type mismatch: %s %s %s", left.Type(), operator, right.Type())
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
