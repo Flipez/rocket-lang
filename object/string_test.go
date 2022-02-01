@@ -84,6 +84,8 @@ func TestStringObjectMethods(t *testing.T) {
 		{`a = " test "; a.strip!(); a`, "test"},
 		{`("test".wat().lines().size() == "test".methods().size() + 1).plz_s()`, "true"},
 		{`a = "test"; b = []; foreach char in a { b.yoink(char) }; b.size()`, 4},
+		{`"test" * 2`, "testtest"},
+		{`2 * "test"`, "testtest"},
 	}
 
 	testInput(t, tests)
