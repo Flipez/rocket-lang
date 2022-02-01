@@ -28,7 +28,7 @@ input = a
 Count form zero to a given number (excluding):
 
 ```js
-> foreach i in 5 { puts(i) }
+🚀 > foreach i in 5 { puts(i) }
 0
 1
 2
@@ -40,7 +40,7 @@ Count form zero to a given number (excluding):
 Iterate over a string:
 
 ```js
->foreach i in "test" { puts(i) }
+🚀 > foreach i in "test" { puts(i) }
 "t"
 "e"
 "s"
