@@ -68,7 +68,11 @@ func TestIntegerIteratable(t *testing.T) {
 		}
 
 		if actual.Value != expected {
-			t.Errorf("integer next %d does not match value %d", actual.Value, expected)
+			t.Errorf(
+				"integer next %d does not match value %d",
+				actual.Value,
+				expected,
+			)
 		}
 	}
 
