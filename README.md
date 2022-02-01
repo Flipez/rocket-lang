@@ -1,5 +1,6 @@
 # 🚀🇱🅰🆖
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a674f4afb804c5586fb4489be73cba1)](https://app.codacy.com/gh/Flipez/rocket-lang?utm_source=github.com&utm_medium=referral&utm_content=Flipez/rocket-lang&utm_campaign=Badge_Grade_Settings)
 [![goreleaser Status](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/release.yml)
 [![Test Status](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml/badge.svg)](https://github.com/Flipez/rocket-lang/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Flipez/rocket-lang/branch/master/graph/badge.svg)](https://codecov.io/gh/Flipez/rocket-lang)
