@@ -23,3 +23,27 @@ foreach i, number in input {
 // assign temporary array to input array
 input = a
 ```
+
+
+Count form zero to a given number (excluding):
+
+```js
+> foreach i in 5 { puts(i) }
+0
+1
+2
+3
+4
+=> 5
+```
+
+Iterate over a string:
+
+```js
+>foreach i in "test" { puts(i) }
+"t"
+"e"
+"s"
+"t" 
+=> "test"
+```
