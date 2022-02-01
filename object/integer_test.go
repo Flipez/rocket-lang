@@ -55,3 +55,31 @@ func TestIntegerInspect(t *testing.T) {
 		t.Errorf("integer inspect does not match value")
 	}
 }
+
+func TestIntegerIteratable(t *testing.T) {
+	int1 := object.NewInteger(3)
+
+	for expected := int64(0); expected < 3; expected++ {
+		_, value, ok := int1.Next()
+		actual := value.(*object.Integer)
+
+		if !ok {
+			t.Errorf("integer iteration finished too early")
+		}
+
+		if actual.Value != expected {
+			t.Errorf("integer next %d does not match value %d", actual.Value, expected)
+		}
+	}
+
+	_, _, ok := int1.Next()
+	if ok {
+		t.Errorf("integer iteration didn't finish")
+	}
+
+	int1.Reset()
+	_, _, ok = int1.Next()
+	if !ok {
+		t.Errorf("integer iteration shouldn't finish after reset")
+	}
+}
