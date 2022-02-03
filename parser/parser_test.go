@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -789,5 +790,15 @@ func TestParsingImportExpressions(t *testing.T) {
 		if actual != tt.expected {
 			t.Errorf("expected=%q, got=%q", tt.expected, actual)
 		}
+	}
+}
+
+func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
+	l := lexer.New(`foreach i in -5 { puts(i)}`)
+	p := New(l, nil)
+	p.ParseProgram()
+
+	if !strings.Contains(p.Errors()[0], "expected positive value got (-5)") {
+		t.Errorf("expected error that iterating over a negative number fails")
 	}
 }

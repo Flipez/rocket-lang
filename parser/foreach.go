@@ -42,6 +42,16 @@ func (p *Parser) parseForEach() ast.Expression {
 		return nil
 	}
 
+	// don't allow negative iterable integer
+	if prefix, ok := expression.Value.(*ast.Prefix); ok && prefix.Operator == "-" {
+		p.errors = append(p.errors, fmt.Sprintf(
+			"%d:%d: expected positive value got %v",
+			p.peekToken.LineNumber,
+			p.peekToken.LinePosition,
+			prefix))
+		return nil
+	}
+
 	p.nextToken()
 	expression.Body = p.parseBlock()
 
