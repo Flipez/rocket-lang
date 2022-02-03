@@ -24,6 +24,7 @@ func TestFloatObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`2.1.plz_s()`, "2.1"},
 		{`2.1.plz_f()`, 2.1},
+		{`2.1.plz_i()`, 2},
 		{`10.0.type()`, "FLOAT"},
 		{`2.2.nope()`, "undefined method `.nope()` for FLOAT"},
 		{`(2.0.wat().lines().size() == 2.0.methods().size() + 1).plz_s()`, "true"},
