@@ -76,6 +76,11 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"👍 == 👎", false},
 		{"👍 != 👎", true},
 		{"👍 != 👍", false},
+		{"true ? true : false", true},
+		{"false ? true : false", false},
+		{"4 > 3 ? true : false", true},
+		{"3 > 4 ? false : true", true},
+		{"a = true ? (false ? 0 : true) : 0; a", true},
 	}
 
 	for _, tt := range tests {
@@ -184,6 +189,8 @@ func TestErrorHandling(t *testing.T) {
 		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
 		{"🔥 != 👍", "identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
+		{"5 % 0 ? true : false", "division by zero not allowed"},
+		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NULL"},
 	}
 
 	for _, tt := range tests {

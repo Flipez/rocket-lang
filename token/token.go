@@ -30,6 +30,8 @@ const (
 	SLASH    = "/"
 	PERCENT  = "%"
 
+	QUESTION = "?"
+
 	LT    = "<"
 	LT_EQ = "<="
 	GT    = ">"

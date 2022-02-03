@@ -78,6 +78,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.If:
 		return evalIf(node, env)
+	case *ast.Ternary:
+		return evalTernary(node, env)
 
 	case *ast.Call:
 		function := Eval(node.Callable, env)
