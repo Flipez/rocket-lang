@@ -30,6 +30,8 @@ func TestEvalIntegerExpression(t *testing.T) {
 		{"3 * (3 * 3) + 10", 37},
 		{"(5 + 10 * 2 + 15 / 3) * 2 + -10", 50},
 		{"5 ➕ 5 ➕ 5 ➕ 5 - 10", 10},
+		{"5 % 5", 0},
+		{"5 % 4", 1},
 	}
 
 	for _, tt := range tests {
@@ -181,6 +183,7 @@ func TestErrorHandling(t *testing.T) {
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
 		{"🔥 != 👍", "identifier not found: IDENT"},
+		{"5 % 0", "division by zero not allowed"},
 	}
 
 	for _, tt := range tests {
