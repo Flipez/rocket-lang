@@ -18,6 +18,20 @@ Returns self
 
 
 
+### plz_i()
+> Returns `INTEGER`
+
+Converts the float into an integer.
+
+
+```js
+🚀 > a = 123.456
+=> 123.456
+🚀 > a.plz_i()
+=> "123"
+```
+
+
 ### plz_s()
 > Returns `STRING`
 
