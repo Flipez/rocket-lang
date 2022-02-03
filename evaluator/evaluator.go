@@ -18,6 +18,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalBlock(node, env)
 	case *ast.Foreach:
 		return evalForeach(node, env)
+	case *ast.While:
+		return evalWhile(node, env)
 	case *ast.Return:
 		val := Eval(node.ReturnValue, env)
 		if object.IsError(val) {
