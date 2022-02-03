@@ -13,16 +13,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 		return object.NewErrorFormat("%s object doesn't implement the Iterable interface", val.Type())
 	}
 
-	var permit []string
-	permit = append(permit, fle.Ident)
-	if fle.Index != "" {
-		permit = append(permit, fle.Index)
-	}
-
-	//
-	// This will allow writing EVERYTHING to the parent scope,
-	// except the two variables named in the permit-array
-	child := object.NewTemporaryScope(env, permit)
+	child := object.NewEnclosedEnvironment(env)
 
 	helper.Reset()
 
