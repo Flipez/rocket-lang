@@ -22,6 +22,11 @@ func evalIntegerInfix(operator string, left, right object.Object) object.Object 
 			return object.NewErrorFormat("devision by zero not allowed")
 		}
 		return object.NewInteger(leftVal / rightVal)
+	case "%":
+		if rightVal == 0 {
+			return object.NewErrorFormat("devision by zero not allowed")
+		}
+		return object.NewInteger(leftVal % rightVal)
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
 	case "<=":

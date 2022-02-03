@@ -28,6 +28,7 @@ const (
 	BANG     = "!"
 	ASTERISK = "*"
 	SLASH    = "/"
+	PERCENT  = "%"
 
 	LT    = "<"
 	LT_EQ = "<="
