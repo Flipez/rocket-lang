@@ -19,12 +19,12 @@ func evalIntegerInfix(operator string, left, right object.Object) object.Object 
 		return object.NewInteger(leftVal * rightVal)
 	case "/":
 		if rightVal == 0 {
-			return object.NewErrorFormat("devision by zero not allowed")
+			return object.NewErrorFormat("division by zero not allowed")
 		}
 		return object.NewInteger(leftVal / rightVal)
 	case "%":
 		if rightVal == 0 {
-			return object.NewErrorFormat("devision by zero not allowed")
+			return object.NewErrorFormat("division by zero not allowed")
 		}
 		return object.NewInteger(leftVal % rightVal)
 	case "<":
@@ -53,7 +53,7 @@ func evalFloatInfix(operator string, left, right object.Object) object.Object {
 		return object.NewFloat(leftVal * rightVal)
 	case "/":
 		if rightVal == 0 {
-			return object.NewErrorFormat("devision by zero not allowed")
+			return object.NewErrorFormat("division by zero not allowed")
 		}
 		return object.NewFloat(leftVal / rightVal)
 	case "<":

@@ -219,10 +219,10 @@ func TestNumberObjects(t *testing.T) {
 		{"a = 2; a = a/1.0; a", 2.0},
 
 		// division by zero
-		{"1.0 / 0", "devision by zero not allowed"},
-		{"1.0 / 0.0", "devision by zero not allowed"},
-		{"1 / 0", "devision by zero not allowed"},
-		{"1 / 0.0", "devision by zero not allowed"},
+		{"1.0 / 0", "division by zero not allowed"},
+		{"1.0 / 0.0", "division by zero not allowed"},
+		{"1 / 0", "division by zero not allowed"},
+		{"1 / 0.0", "division by zero not allowed"},
 	}
 
 	testInput(t, tests)
