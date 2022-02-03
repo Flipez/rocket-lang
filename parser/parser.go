@@ -12,6 +12,7 @@ const (
 	_ int = iota
 	LOWEST
 	ASSIGN      //=
+	TERNARY     // ? :
 	EQUALS      //==
 	LESSGREATER // > or <
 	SUM         // +
@@ -35,6 +36,7 @@ var precedences = map[token.TokenType]int{
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
 	token.PERCENT:  MODULO,
+	token.QUESTION: TERNARY,
 	token.LPAREN:   CALL,
 	token.PERIOD:   CALL,
 	token.LBRACKET: INDEX,
@@ -99,6 +101,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.GT_EQ, p.parseInfix)
 	p.registerInfix(token.LPAREN, p.parseCall)
 	p.registerInfix(token.LBRACKET, p.parseIndex)
+	p.registerInfix(token.QUESTION, p.parseTernary)
 
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()

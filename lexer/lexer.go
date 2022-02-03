@@ -81,6 +81,9 @@ func (l *Lexer) NextToken() token.Token {
 	case '%':
 		tok.Type = token.PERCENT
 		tok.Literal = string(l.ch)
+	case '?':
+		tok.Type = token.QUESTION
+		tok.Literal = string(l.ch)
 	case '<':
 		if l.peekChar() == '=' {
 			ch := l.ch
