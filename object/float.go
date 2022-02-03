@@ -48,6 +48,20 @@ func init() {
 				return NewString(f.toString())
 			},
 		},
+		"plz_i": ObjectMethod{
+			description: "Converts the float into an integer.",
+			example: `🚀 > a = 123.456
+=> 123.456
+🚀 > a.plz_i()
+=> "123"`,
+			method: func(o Object, args []Object) Object {
+				f := o.(*Float)
+				return NewInteger(int64(f.Value))
+			},
+			returnPattern: [][]string{
+				[]string{INTEGER_OBJ},
+			},
+		},
 	}
 }
 
