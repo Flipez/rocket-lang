@@ -188,6 +188,8 @@ func TestErrorHandling(t *testing.T) {
 		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
 		{"🔥 != 👍", "identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
+		{"5 % 0 ? true : false", "division by zero not allowed"},
+		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NULL"},
 	}
 
 	for _, tt := range tests {

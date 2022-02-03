@@ -20,7 +20,7 @@ func (t *Ternary) String() string {
 
 	out.WriteString(t.Condition.String())
 	out.WriteString(" ? ")
-	out.WriteString(t.Condition.String())
+	out.WriteString(t.Consequence.String())
 
 	if t.Alternative != nil {
 		out.WriteString(" : ")
