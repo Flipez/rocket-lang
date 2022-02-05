@@ -17,16 +17,16 @@ func (ie *If) TokenLiteral() string { return ie.Token.Literal }
 func (ie *If) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("if ")
+	out.WriteString("if (")
 	out.WriteString(ie.Condition.String())
-	out.WriteString(" ")
+	out.WriteString(")\n  ")
 	out.WriteString(ie.Consequence.String())
 
 	if ie.Alternative != nil {
-		out.WriteString(" else ")
+		out.WriteString("\nelse\n  ")
 		out.WriteString(ie.Alternative.String())
 	}
-	out.WriteString(" end")
+	out.WriteString("\nend")
 
 	return out.String()
 }
