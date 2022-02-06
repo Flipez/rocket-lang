@@ -15,13 +15,12 @@ func (rs *Return) TokenLiteral() string { return rs.Token.Literal }
 func (rs *Return) String() string {
 	var out bytes.Buffer
 
-	out.WriteString(rs.TokenLiteral() + " ")
+	out.WriteString(rs.TokenLiteral())
 
 	if rs.ReturnValue != nil {
+		out.WriteString(" (")
 		out.WriteString(rs.ReturnValue.String())
+		out.WriteString(")")
 	}
-
-	out.WriteString(";")
-
 	return out.String()
 }

@@ -10,4 +10,4 @@ type Integer struct {
 }
 
 func (il *Integer) TokenLiteral() string { return il.Token.Literal }
-func (il *Integer) String() string       { return il.Token.Literal }
+func (il *Integer) String() string       { return il.TokenLiteral() }

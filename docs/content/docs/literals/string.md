@@ -10,7 +10,7 @@ menu:
 
 
 ```js
-a = "test_string;
+a = "test_string";
 
 b = "test" + "_string";
 

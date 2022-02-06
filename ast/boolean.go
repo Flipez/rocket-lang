@@ -10,4 +10,4 @@ type Boolean struct {
 }
 
 func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
-func (b *Boolean) String() string       { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.TokenLiteral() }
