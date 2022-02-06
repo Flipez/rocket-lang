@@ -10,4 +10,4 @@ type Float struct {
 }
 
 func (fl *Float) TokenLiteral() string { return fl.Token.Literal }
-func (fl *Float) String() string       { return fl.Token.Literal }
+func (fl *Float) String() string       { return fl.TokenLiteral() }

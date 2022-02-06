@@ -10,4 +10,4 @@ type String struct {
 }
 
 func (sl *String) TokenLiteral() string { return sl.Token.Literal }
-func (sl *String) String() string       { return sl.Token.Literal }
+func (sl *String) String() string       { return sl.TokenLiteral() }
