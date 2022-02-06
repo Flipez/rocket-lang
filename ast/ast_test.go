@@ -45,7 +45,9 @@ func TestString(t *testing.T) {
 		program, _ := p.ParseProgram()
 
 		if program.String() != tt.expected {
-			t.Errorf("program.String() wrong.\ngot=\t\t`%q`,\nexpected=\t`%q`", program.String(), tt.expected)
+			t.Errorf("program.String() wrong.\ngot=\t\t`%q`,\nexpected=\t`%q`",
+				program.String(),
+				tt.expected)
 		}
 	}
 }
