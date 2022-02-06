@@ -28,7 +28,7 @@ func main() {
 
 	tempData := templateData{
 		Title: "String",
-		Example: `a = "test_string;
+		Example: `a = "test_string";
 
 b = "test" + "_string";
 
