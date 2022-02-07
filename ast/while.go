@@ -14,5 +14,5 @@ type While struct {
 
 func (w *While) TokenLiteral() string { return w.Token.Literal }
 func (w *While) String() string {
-	return fmt.Sprintf("%s %s\n%s\nend", w.TokenLiteral(), w.Condition, w.Body)
+	return fmt.Sprintf("%s (%s)\n  %s\nend", w.TokenLiteral(), w.Condition, w.Body)
 }
