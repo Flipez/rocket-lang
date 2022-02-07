@@ -36,6 +36,18 @@ func TestString(t *testing.T) {
 			"if (true)\n  return (true)\nelse\n  puts(false)\nend",
 			"if (true)\n  return (true)\nelse\n  puts(false)\nend",
 		},
+		{
+			"while (true)\n  puts(true)\nend",
+			"while (true)\n  puts(true)\nend",
+		},
+		{
+			"while (true) {\n  puts(true)\n}",
+			"while (true)\n  puts(true)\nend",
+		},
+		{
+			"while {\n  puts(true)\n}",
+			"",
+		},
 	}
 
 	for _, tt := range tests {

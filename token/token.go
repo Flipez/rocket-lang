@@ -65,6 +65,8 @@ const (
 	FOREACH = "FOREACH"
 	IN      = "IN"
 
+	WHILE = "WHILE"
+
 	EXPORT = "EXPORT"
 	IMPORT = "IMPORT"
 )
@@ -79,6 +81,7 @@ var keywords = map[string]TokenType{
 	"return":  RETURN,
 	"foreach": FOREACH,
 	"in":      IN,
+	"while":   WHILE,
 	"export":  EXPORT,
 	"import":  IMPORT,
 }

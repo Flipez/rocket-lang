@@ -1,8 +1,6 @@
 package object
 
 import (
-	"fmt"
-	"os"
 	"strings"
 	"unicode"
 )
@@ -15,9 +13,6 @@ func NewEnvironment() *Environment {
 type Environment struct {
 	store map[string]Object
 	outer *Environment
-	// permit stores the names of variables we can set in this
-	// environment, if any
-	permit []string
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
@@ -29,20 +24,11 @@ func (e *Environment) Get(name string) (Object, bool) {
 }
 
 func (e *Environment) Set(name string, val Object) Object {
-	if len(e.permit) > 0 {
-		for _, v := range e.permit {
-			// we're permitted to store this variable
-			if v == name {
-				e.store[name] = val
-				return val
-			}
-		}
-		// ok we're not permitted, we must store in the parent
-		if e.outer != nil {
-			return e.outer.Set(name, val)
-		} else {
-			fmt.Printf("scoping weirdness; please report a bug\n")
-			os.Exit(5)
+	if e.outer != nil {
+		_, ok := e.outer.Get(name)
+		if ok {
+			e.outer.Set(name, val)
+			return val
 		}
 	}
 	e.store[name] = val
@@ -70,19 +56,6 @@ func (e *Environment) Names(prefix string) []string {
 		}
 	}
 	return ret
-}
-
-// NewTemporaryScope creates a temporary scope where some values
-// are ignored.
-//
-// This is used as a sneaky hack to allow `foreach` to access all
-// global values as if they were local, but prevent the index/value
-// keys from persisting.
-func NewTemporaryScope(outer *Environment, keys []string) *Environment {
-	env := NewEnvironment()
-	env.outer = outer
-	env.permit = keys
-	return env
 }
 
 func (e *Environment) Exported() *Hash {
