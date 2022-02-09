@@ -202,7 +202,10 @@ func TestErrorHandling(t *testing.T) {
 		{"import(true)", "Import Error: invalid import path '&{%!s(bool=true)}'"},
 		{"import(5%0)", "division by zero not allowed"},
 		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
-		{`import("../fixtures/parser_error")`, "Parse Error: [0:10: expected next token to be EOF, got EOF instead 0:10: expected next token to be EOF, got EOF instead]"},
+		{
+			`import("../fixtures/parser_error")`,
+			"Parse Error: [0:10: expected next token to be EOF, got EOF instead 0:10: expected next token to be EOF, got EOF instead]",
+		},
 		{"def test() { puts(true) }; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 	}
