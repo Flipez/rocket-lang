@@ -13,7 +13,13 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 	leftExp := prefix()
 
-	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+	if p.peekTokenIs(token.COLON) {
+		return leftExp
+	}
+
+	for !p.peekTokenIs(token.SEMICOLON) &&
+		!p.peekTokenIs(token.COLON) &&
+		precedence < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
 			return leftExp

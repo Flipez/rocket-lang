@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/flipez/rocket-lang/token"
 )
@@ -23,4 +24,24 @@ func (ie *Index) String() string {
 	out.WriteString("])")
 
 	return out.String()
+}
+
+type RangeIndex struct {
+	Token       token.Token
+	Left        Expression
+	FirstIndex  Expression
+	SecondIndex Expression
+}
+
+func (rie *RangeIndex) TokenLiteral() string { return rie.Token.Literal }
+func (rie *RangeIndex) String() string {
+	str := fmt.Sprintf("(%s[", rie.Left)
+	if rie.FirstIndex != nil {
+		str += rie.FirstIndex.String()
+	}
+	str += ":"
+	if rie.SecondIndex != nil {
+		str += rie.SecondIndex.String()
+	}
+	return str + "])"
 }

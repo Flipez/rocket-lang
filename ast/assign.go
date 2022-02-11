@@ -8,7 +8,7 @@ import (
 
 type Assign struct {
 	Token token.Token
-	Name  *Identifier
+	Name  Expression
 	Value Expression
 }
 

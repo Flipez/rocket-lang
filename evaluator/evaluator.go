@@ -106,6 +106,30 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalIndex(left, index)
 
+	case *ast.RangeIndex:
+		left := Eval(node.Left, env)
+		if object.IsError(left) {
+			return left
+		}
+
+		var firstIndex object.Object
+		if node.FirstIndex != nil {
+			firstIndex = Eval(node.FirstIndex, env)
+			if object.IsError(firstIndex) {
+				return firstIndex
+			}
+		}
+
+		var secondIndex object.Object
+		if node.SecondIndex != nil {
+			secondIndex = Eval(node.SecondIndex, env)
+			if object.IsError(secondIndex) {
+				return secondIndex
+			}
+		}
+
+		return evalRangeIndex(left, firstIndex, secondIndex)
+
 	case *ast.ObjectCall:
 		res := evalObjectCall(node, env)
 		return (res)
