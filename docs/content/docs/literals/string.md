@@ -16,6 +16,29 @@ b = "test" + "_string";
 
 is_true = "test" == "test";
 is_false = "test" == "string";
+
+s = "abcdef"
+puts(s[2])
+puts(s[-2])
+puts(s[:2])
+puts(s[:-2])
+puts(s[2:])
+puts(s[-2:])
+puts(s[1:-2])
+
+s[2] = "C"
+s[-2] = "E"
+puts(s)
+
+// should output
+"c"
+"e"
+"ab"
+"abcd"
+"cdef"
+"ef"
+"bcd"
+"abCdEf"
 ```
 
 ## Literal Specific Methods

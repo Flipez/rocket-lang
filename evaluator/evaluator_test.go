@@ -292,6 +292,60 @@ func TestStringLiteral(t *testing.T) {
 	}
 }
 
+func TestStringIndexExpressions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`"abc"[1]`,
+			"b",
+		},
+		{
+			`"abc"[-1]`,
+			"c",
+		},
+		{
+			`"abc"[4]`,
+			nil,
+		},
+		{
+			`"abc"[:2]`,
+			"ab",
+		},
+		{
+			`"abc"[:-2]`,
+			"a",
+		},
+		{
+			`"abc"[2:]`,
+			"c",
+		},
+		{
+			`"abc"[-2:]`,
+			"bc",
+		},
+		{
+			`s="abc";s[1]="B";s[1]`,
+			"B",
+		},
+		{
+			`s="abc";s[-2]="B";s[-2]`,
+			"B",
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		str, ok := tt.expected.(string)
+		if ok {
+			testStringObject(t, evaluated, str)
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
 func TestStringConcatenation(t *testing.T) {
 	input := `"Hello" + " " + "World!"`
 
@@ -404,7 +458,15 @@ func TestArrayIndexExpressions(t *testing.T) {
 		},
 		{
 			"[1, 2, 3][-1]",
-			nil,
+			3,
+		},
+		{
+			`a=[1,2,3];a[1]=5;a[1]`,
+			5,
+		},
+		{
+			`a=[1,2,3];a[-1]=5;a[-1]`,
+			5,
 		},
 	}
 
@@ -491,6 +553,10 @@ func TestHashIndexExpressions(t *testing.T) {
 		},
 		{
 			`{false: 5}[false]`,
+			5,
+		},
+		{
+			`h={"a": 1};h["a"]=5;h["a"]`,
 			5,
 		},
 	}
@@ -592,6 +658,20 @@ func testEval(input string) object.Object {
 	env := object.NewEnvironment()
 
 	return Eval(program, env)
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("object is not String. got=%T (%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%s, want=%s", result.Value, expected)
+		return false
+	}
+
+	return true
 }
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
