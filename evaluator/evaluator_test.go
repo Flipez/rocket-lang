@@ -314,42 +314,18 @@ func TestStringIndexExpressions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{
-			`"abc"[1]`,
-			"b",
-		},
-		{
-			`"abc"[-1]`,
-			"c",
-		},
-		{
-			`"abc"[4]`,
-			nil,
-		},
-		{
-			`"abc"[:2]`,
-			"ab",
-		},
-		{
-			`"abc"[:-2]`,
-			"a",
-		},
-		{
-			`"abc"[2:]`,
-			"c",
-		},
-		{
-			`"abc"[-2:]`,
-			"bc",
-		},
-		{
-			`s="abc";s[1]="B";s[1]`,
-			"B",
-		},
-		{
-			`s="abc";s[-2]="B";s[-2]`,
-			"B",
-		},
+		{`"abc"[1]`, "b"},
+		{`"abc"[-1]`, "c"},
+		{`"abc"[4]`, nil},
+		{`"abc"[:2]`, "ab"},
+		{`"abc"[:-2]`, "a"},
+		{`"abc"[2:]`, "c"},
+		{`"abc"[-2:]`, "bc"},
+		{`s="abc";s[1]="B";s[1]`, "B"},
+		{`s="abc";s[-2]="B";s[-2]`, "B"},
+		{`"test"[1]`, "e"},
+		{`"test"[-1]`, "t"},
+		{`"test"[7]`, nil},
 	}
 
 	for _, tt := range tests {
@@ -656,31 +632,6 @@ func TestImportSearchPaths(t *testing.T) {
 		number, _ := tt.expected.(int)
 
 		testIntegerObject(t, evaluated, int64(number))
-	}
-}
-
-func TestStringIndexExpressions(t *testing.T) {
-	tests := []struct {
-		input    string
-		expected interface{}
-	}{
-		{`"test"[1]`, "e"},
-		{`"test"[-1]`, nil},
-		{`"test"[7]`, nil},
-	}
-
-	for _, tt := range tests {
-		evaluated := testEval(tt.input)
-		_, ok := tt.expected.(string)
-
-		if ok {
-			str, _ := evaluated.(*object.String)
-			if str.Value != "e" {
-				t.Errorf("String has wrong value. got=%q", str.Value)
-			}
-		} else {
-			testNullObject(t, evaluated)
-		}
 	}
 }
 
