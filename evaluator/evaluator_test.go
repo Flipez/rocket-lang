@@ -56,6 +56,9 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"3 <= 2", false},
 		{"2 >= 1", true},
 		{"2 >= 2", true},
+		{"2.0 >= 3.0", false},
+		{"3.0 >= 2.0", true},
+		{"3.0 <= 3.0", true},
 		{"2 >= 3", false},
 		{"1 == 1", true},
 		{"1 != 1", false},
@@ -81,6 +84,7 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"4 > 3 ? true : false", true},
 		{"3 > 4 ? false : true", true},
 		{"a = true ? (false ? 0 : true) : 0; a", true},
+		{"[1] + [1] == [1, 1]", true},
 	}
 
 	for _, tt := range tests {
@@ -191,6 +195,19 @@ func TestErrorHandling(t *testing.T) {
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
 		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NULL"},
+		{"if (5 % 0)\n puts(true)\nend", "division by zero not allowed"},
+		{"a = {(5%0): true}", "division by zero not allowed"},
+		{"a = {true: (5%0)}", "division by zero not allowed"},
+		{"def test() { puts(true) }; a = {test: true}", "unusable as hash key: FUNCTION"},
+		{"import(true)", "Import Error: invalid import path '&{%!s(bool=true)}'"},
+		{"import(5%0)", "division by zero not allowed"},
+		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
+		{
+			`import("../fixtures/parser_error")`,
+			"Parse Error: [0:10: expected next token to be EOF, got EOF instead 0:10: expected next token to be EOF, got EOF instead]",
+		},
+		{"def test() { puts(true) }; test[1]", "index operator not supported: FUNCTION"},
+		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 	}
 
 	for _, tt := range tests {
@@ -297,42 +314,18 @@ func TestStringIndexExpressions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{
-			`"abc"[1]`,
-			"b",
-		},
-		{
-			`"abc"[-1]`,
-			"c",
-		},
-		{
-			`"abc"[4]`,
-			nil,
-		},
-		{
-			`"abc"[:2]`,
-			"ab",
-		},
-		{
-			`"abc"[:-2]`,
-			"a",
-		},
-		{
-			`"abc"[2:]`,
-			"c",
-		},
-		{
-			`"abc"[-2:]`,
-			"bc",
-		},
-		{
-			`s="abc";s[1]="B";s[1]`,
-			"B",
-		},
-		{
-			`s="abc";s[-2]="B";s[-2]`,
-			"B",
-		},
+		{`"abc"[1]`, "b"},
+		{`"abc"[-1]`, "c"},
+		{`"abc"[4]`, nil},
+		{`"abc"[:2]`, "ab"},
+		{`"abc"[:-2]`, "a"},
+		{`"abc"[2:]`, "c"},
+		{`"abc"[-2:]`, "bc"},
+		{`s="abc";s[1]="B";s[1]`, "B"},
+		{`s="abc";s[-2]="B";s[-2]`, "B"},
+		{`"test"[1]`, "e"},
+		{`"test"[-1]`, "t"},
+		{`"test"[7]`, nil},
 	}
 
 	for _, tt := range tests {
