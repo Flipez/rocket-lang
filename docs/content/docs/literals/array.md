@@ -9,6 +9,26 @@ menu:
 
 
 
+```js
+a = [1, 2, 3, 4, 5]
+puts(a[2])
+puts(a[-2])
+puts(a[:2])
+puts(a[:-2])
+puts(a[2:])
+puts(a[-2:])
+puts(a[1:-2])
+
+// should output
+[1, 2]
+[1, 2, 3]
+[3, 4, 5]
+[4, 5]
+[2, 3]
+[1, 2, 8, 9, 5]
+
+```
+
 ## Literal Specific Methods
 
 ### first()
