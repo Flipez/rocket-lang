@@ -205,7 +205,7 @@ func init() {
 }
 
 func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(f, method, args)
+	return objectMethodLookup(f, method, env, args)
 }
 
 func readFile(o Object, _ []Object) Object {

@@ -83,7 +83,7 @@ func init() {
 }
 
 func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(i, method, args)
+	return objectMethodLookup(i, method, env, args)
 }
 
 func (i *Integer) ToFloat() Object {

@@ -3,9 +3,13 @@ package object
 import (
 	"fmt"
 	"strings"
+
+	"github.com/flipez/rocket-lang/ast"
 )
 
 type ObjectType string
+
+var Evaluator func(node ast.Node, env *Environment) Object
 
 type Object interface {
 	Type() ObjectType
@@ -193,7 +197,7 @@ func init() {
 	}
 }
 
-func objectMethodLookup(o Object, method string, args []Object) Object {
+func objectMethodLookup(o Object, method string, env Environment, args []Object) Object {
 	if oms, ok := objectMethods[o.Type()]; ok {
 		if objMethod, ok := oms[method]; ok {
 			return objMethod.Call(o, args)
@@ -305,4 +309,8 @@ func IsTruthy(o Object) bool {
 
 func IsFalsy(o Object) bool {
 	return !IsTruthy(o)
+}
+
+func AddEvaluator(e func(node ast.Node, env *Environment) Object) {
+	Evaluator = e
 }

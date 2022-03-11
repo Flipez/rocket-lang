@@ -14,5 +14,5 @@ func NewModule(name string, attrs Object) *Module {
 func (m *Module) Type() ObjectType { return MODULE_OBJ }
 func (m *Module) Inspect() string  { return fmt.Sprintf("module(%s)", m.Name) }
 func (m *Module) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(m, method, args)
+	return objectMethodLookup(m, method, env, args)
 }

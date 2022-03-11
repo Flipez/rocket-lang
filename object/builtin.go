@@ -12,10 +12,10 @@ func NewBuiltin(name string, f BuiltinFunction) *Builtin {
 	}
 }
 
-type BuiltinFunction func(args ...Object) Object
+type BuiltinFunction func(env *Environment, args ...Object) Object
 
 func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (b *Builtin) Inspect() string  { return "builtin function" }
 func (b *Builtin) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(b, method, args)
+	return objectMethodLookup(b, method, env, args)
 }

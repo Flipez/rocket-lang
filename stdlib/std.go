@@ -11,6 +11,8 @@ func init() {
 	RegisterFunction("exit", exitFunction)
 	RegisterFunction("raise", raiseFunction)
 	RegisterFunction("open", openFunction)
+	RegisterFunction("http_listen", httpListenFunction)
+	RegisterFunction("http_handle", httpHandleFunction)
 }
 
 func RegisterFunction(name string, function object.BuiltinFunction) {

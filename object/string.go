@@ -318,7 +318,7 @@ func init() {
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return `"` + s.Value + `"` }
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(s, method, args)
+	return objectMethodLookup(s, method, env, args)
 }
 
 func (s *String) HashKey() HashKey {

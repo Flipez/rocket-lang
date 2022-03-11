@@ -66,7 +66,7 @@ func init() {
 }
 
 func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(f, method, args)
+	return objectMethodLookup(f, method, env, args)
 }
 
 func (f *Float) TryInteger() Object {

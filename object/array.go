@@ -198,7 +198,7 @@ func init() {
 }
 
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(ao, method, args)
+	return objectMethodLookup(ao, method, env, args)
 }
 
 func (ao *Array) Reset() {

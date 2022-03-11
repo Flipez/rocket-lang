@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func putsFunction(args ...object.Object) object.Object {
+func putsFunction(env *object.Environment, args ...object.Object) object.Object {
 	for _, arg := range args {
 		fmt.Println(arg.Inspect())
 	}
