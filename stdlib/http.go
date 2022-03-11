@@ -35,7 +35,7 @@ func httpListenFunction(env *object.Environment, args ...object.Object) object.O
 		server.SetKeepAlivesEnabled(false)
 
 		if err := server.Shutdown(ctx); err != nil {
-			fmt.Println("Error shutting down the net server: %v\n", err)
+			fmt.Printf("Error shutting down the net server: %v\n", err)
 		}
 
 		close(done)
