@@ -100,7 +100,7 @@ func httpHandleFunction(env *object.Environment, args ...object.Object) object.O
 
 		env.Set("request", httpRequest)
 		callback := args[1].(*object.Function)
-		object.Evaluator(callback.Body, env)
+		writer.Write([]byte(object.Evaluator(callback.Body, env).Inspect()))
 	})
 
 	return nil
