@@ -67,19 +67,38 @@ func httpHandleFunction(env *object.Environment, args ...object.Object) object.O
 		requestBodyBuf := new(bytes.Buffer)
 		requestBodyBuf.ReadFrom(request.Body)
 
-		// httpRequest := object.NewMap(map[string]interface{}{
-		// 	"method":        request.Method,
-		// 	"host":          request.Host,
-		// 	"contentLength": request.ContentLength,
-		// 	"protocol":      request.Proto,
-		// 	"protocolMajor": request.ProtoMajor,
-		// 	"protocolMinor": request.ProtoMinor,
-		// 	"body":          requestBodyBuf.String(),
-		// })
+		httpRequest := object.NewHash(map[object.HashKey]object.HashPair{
+			object.NewString("method").HashKey(): object.HashPair{
+				Key:   object.NewString("method"),
+				Value: object.NewString(request.Method),
+			},
+			object.NewString("host").HashKey(): object.HashPair{
+				Key:   object.NewString("host"),
+				Value: object.NewString(request.Host),
+			},
+			object.NewString("contentLength").HashKey(): object.HashPair{
+				Key:   object.NewString("contentLength"),
+				Value: object.NewInteger(request.ContentLength),
+			},
+			object.NewString("protocol").HashKey(): object.HashPair{
+				Key:   object.NewString("protocol"),
+				Value: object.NewString(request.Proto),
+			},
+			object.NewString("protocolMajor").HashKey(): object.HashPair{
+				Key:   object.NewString("protocolMajor"),
+				Value: object.NewInteger(int64(request.ProtoMajor)),
+			},
+			object.NewString("protocolMinor").HashKey(): object.HashPair{
+				Key:   object.NewString("protocolMinor"),
+				Value: object.NewInteger(int64(request.ProtoMinor)),
+			},
+			object.NewString("body").HashKey(): object.HashPair{
+				Key:   object.NewString("body"),
+				Value: object.NewString(requestBodyBuf.String()),
+			},
+		})
 
-		// callbackArgs := make([]object.Object, 0)
-		// callbackArgs = append(callbackArgs, httpRequest)
-
+		env.Set("request", httpRequest)
 		callback := args[1].(*object.Function)
 		object.Evaluator(callback.Body, env)
 	})
