@@ -14,6 +14,10 @@ import (
 func TestHTTPObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`HTTP.nope()`, "undefined method `.nope()` for HTTP"},
+		{`HTTP.handle(1, "test")`, "wrong argument type on position 0: got=INTEGER, want=STRING"},
+		{`HTTP.handle("/", "test")`, "wrong argument type on position 1: got=STRING, want=FUNCTION"},
+		{`HTTP.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
+		{`HTTP.listen(80)`, "listening on port 80: listen tcp :80: bind: permission denied"},
 	}
 
 	testInput(t, tests)

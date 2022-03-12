@@ -3,7 +3,6 @@ package object
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -29,9 +28,7 @@ func init() {
 				[]string{NULL_OBJ},
 			},
 			method: func(_ Object, args []Object, env Environment) Object {
-				if args[0].Type() != INTEGER_OBJ {
-					return nil
-				}
+				var return_error *Error
 
 				port := strconv.FormatInt(args[0].(*Integer).Value, 10)
 				server := &http.Server{
@@ -50,18 +47,22 @@ func init() {
 					server.SetKeepAlivesEnabled(false)
 
 					if err := server.Shutdown(ctx); err != nil {
-						fmt.Printf("Error shutting down the net server: %v\n", err)
+						return_error = NewErrorFormat("Error shutting down the net server: %v\n", err)
 					}
 
 					close(done)
 				}()
 
 				if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					fmt.Printf("Error listening on port %s: %v\n", port, err)
 					quit <- os.Interrupt
+					return_error = NewErrorFormat("listening on port %s: %v", port, err)
 				}
 
 				<-done
+
+				if return_error != nil {
+					return return_error
+				}
 
 				return NULL
 			},
@@ -75,14 +76,6 @@ func init() {
 				[]string{NULL_OBJ},
 			},
 			method: func(_ Object, args []Object, env Environment) Object {
-				if args[0].Type() != STRING_OBJ {
-					return nil
-				}
-
-				if args[1].Type() != FUNCTION_OBJ {
-					return nil
-				}
-
 				path := args[0].(*String).Value
 
 				http.HandleFunc(path, func(writer http.ResponseWriter, request *http.Request) {
