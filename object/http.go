@@ -28,7 +28,7 @@ func init() {
 				[]string{NULL_OBJ},
 			},
 			method: func(_ Object, args []Object, env Environment) Object {
-				var return_error *Error
+				var returnError *Error
 
 				port := strconv.FormatInt(args[0].(*Integer).Value, 10)
 				server := &http.Server{
@@ -47,7 +47,7 @@ func init() {
 					server.SetKeepAlivesEnabled(false)
 
 					if err := server.Shutdown(ctx); err != nil {
-						return_error = NewErrorFormat("Error shutting down the net server: %v\n", err)
+						returnError = NewErrorFormat("Error shutting down the net server: %v", err)
 					}
 
 					close(done)
@@ -55,13 +55,13 @@ func init() {
 
 				if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 					quit <- os.Interrupt
-					return_error = NewErrorFormat("listening on port %s: %v", port, err)
+					returnError = NewErrorFormat("listening on port %s: %v", port, err)
 				}
 
 				<-done
 
-				if return_error != nil {
-					return return_error
+				if returnError != nil {
+					return returnError
 				}
 
 				return NULL
