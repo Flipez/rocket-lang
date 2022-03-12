@@ -26,7 +26,7 @@ HTTP.listen(3000)
 ## Literal Specific Methods
 
 ### handle(STRING, FUNCTION)
-> Returns `NULL`
+> Returns `NULL|ERROR`
 
 Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
 Inside the function a variable called "request" will be populated which is a hash with information about the request.
@@ -46,6 +46,13 @@ Starts a blocking webserver on the given port.
 ```js
 🚀 > HTTP.listen(3000)
 ```
+
+
+### new()
+> Returns `HTTP`
+
+
+
 
 
 

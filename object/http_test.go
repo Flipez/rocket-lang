@@ -16,8 +16,10 @@ func TestHTTPObjectMethods(t *testing.T) {
 		{`HTTP.nope()`, "undefined method `.nope()` for HTTP"},
 		{`HTTP.handle(1, "test")`, "wrong argument type on position 0: got=INTEGER, want=STRING"},
 		{`HTTP.handle("/", "test")`, "wrong argument type on position 1: got=STRING, want=FUNCTION"},
-		{`HTTP.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
-		{`HTTP.listen(80)`, "listening on port 80: listen tcp :80: bind: permission denied"},
+		{`HTTP.listen(3000)`, "Invalid handler. Call only supported on instance."},
+		{`def test(){};HTTP.handle("/", test)`, "Invalid handler. Call only supported on instance."},
+		{`a = HTTP.new(); a.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
+		{`a = HTTP.new(); a.listen(80)`, "listening on port 80: listen tcp :80: bind: permission denied"},
 	}
 
 	testInput(t, tests)
@@ -39,7 +41,7 @@ func TestHTTPType(t *testing.T) {
 
 func TestHTTPServerMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`def test(){puts(request["body"]);return("test");};HTTP.handle("/", test);HTTP.listen(3000)`, ""},
+		{`def test(){puts(request["body"]);return("test");};a = HTTP.new(); a.handle("/", test);a.listen(3000)`, ""},
 	}
 
 	go testInput(t, tests)

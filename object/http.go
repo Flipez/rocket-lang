@@ -10,7 +10,10 @@ import (
 	"time"
 )
 
-type HTTP struct{}
+type HTTP struct {
+	mux             *http.ServeMux
+	registeredPaths []string
+}
 
 func (h *HTTP) Type() ObjectType { return HTTP_OBJ }
 func (h *HTTP) Inspect() string  { return "HTTP" }
@@ -20,6 +23,14 @@ func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Obje
 
 func init() {
 	objectMethods[HTTP_OBJ] = map[string]ObjectMethod{
+		"new": ObjectMethod{
+			returnPattern: [][]string{
+				[]string{HTTP_OBJ},
+			},
+			method: func(_ Object, _ []Object, _ Environment) Object {
+				return &HTTP{mux: http.NewServeMux()}
+			},
+		},
 		"listen": ObjectMethod{
 			description: "Starts a blocking webserver on the given port.",
 			example:     `🚀 > HTTP.listen(3000)`,
@@ -29,12 +40,17 @@ func init() {
 			returnPattern: [][]string{
 				[]string{NULL_OBJ, ERROR_OBJ},
 			},
-			method: func(_ Object, args []Object, env Environment) Object {
+			method: func(o Object, args []Object, env Environment) Object {
+				if o.(*HTTP).mux == nil {
+					return NewError("Invalid handler. Call only supported on instance.")
+				}
+
 				var returnError *Error
 
 				port := strconv.FormatInt(args[0].(*Integer).Value, 10)
 				server := &http.Server{
-					Addr: ":" + port,
+					Handler: o.(*HTTP).mux,
+					Addr:    ":" + port,
 				}
 
 				done := make(chan bool)
@@ -78,12 +94,22 @@ Inside the function a variable called "request" will be populated which is a has
 				[]string{FUNCTION_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NULL_OBJ, ERROR_OBJ},
 			},
-			method: func(_ Object, args []Object, env Environment) Object {
+			method: func(o Object, args []Object, env Environment) Object {
+				if o.(*HTTP).mux == nil {
+					return NewError("Invalid handler. Call only supported on instance.")
+				}
+
 				path := args[0].(*String).Value
 
-				http.HandleFunc(path, func(writer http.ResponseWriter, request *http.Request) {
+				for _, regPath := range o.(*HTTP).registeredPaths {
+					if path == regPath {
+						return NewErrorFormat("Already registered path `%s`", path)
+					}
+				}
+
+				o.(*HTTP).mux.HandleFunc(path, func(writer http.ResponseWriter, request *http.Request) {
 					requestBodyBuf := new(bytes.Buffer)
 					requestBodyBuf.ReadFrom(request.Body)
 
@@ -123,6 +149,7 @@ Inside the function a variable called "request" will be populated which is a has
 					writer.Write([]byte(Evaluator(callback.Body, &env).(*ReturnValue).Value.(*String).Value))
 				})
 
+				o.(*HTTP).registeredPaths = append(o.(*HTTP).registeredPaths, path)
 				return NULL
 			},
 		},
