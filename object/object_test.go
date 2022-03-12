@@ -21,6 +21,7 @@ func testEval(input string) object.Object {
 	imports := make(map[string]struct{})
 	p := parser.New(l, imports)
 	program, _ := p.ParseProgram()
+	object.AddEvaluator(evaluator.Eval)
 	env := object.NewEnvironment()
 
 	return evaluator.Eval(program, env)

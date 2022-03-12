@@ -122,7 +122,7 @@ func init() {
 
 					env.Set("request", httpRequest)
 					callback := args[1].(*Function)
-					writer.Write([]byte(Evaluator(callback.Body, &env).Inspect()))
+					writer.Write([]byte(Evaluator(callback.Body, &env).(*ReturnValue).Value.(*String).Value))
 				})
 
 				return NULL
