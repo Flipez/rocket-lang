@@ -34,7 +34,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 				return NewInteger(int64(strings.Count(s.Value, arg)))
@@ -52,7 +52,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 				return NewInteger(int64(strings.Index(s.Value, arg)))
@@ -65,7 +65,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				return NewInteger(int64(utf8.RuneCountInString(s.Value)))
 			},
@@ -93,7 +93,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				value := s.Value
 				base := 10
@@ -121,7 +121,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				oldS := args[0].(*String).Value
 				newS := args[1].(*String).Value
@@ -135,7 +135,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				out := make([]rune, utf8.RuneCountInString(s.Value))
 				i := len(out)
@@ -157,7 +157,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{NULL_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				out := make([]rune, utf8.RuneCountInString(s.Value))
 				i := len(out)
@@ -183,7 +183,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				sep := " "
 
@@ -208,7 +208,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				sep := "\n"
 
@@ -229,7 +229,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				return NewString(strings.TrimSpace(s.Value))
 			},
@@ -246,7 +246,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{NULL_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.TrimSpace(s.Value)
 				return NULL
@@ -259,7 +259,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				return NewString(strings.ToLower(s.Value))
 			},
@@ -276,7 +276,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{NULL_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.ToLower(s.Value)
 				return NULL
@@ -289,7 +289,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				return NewString(strings.ToUpper(s.Value))
 			},
@@ -306,7 +306,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{NULL_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.ToUpper(s.Value)
 				return NULL

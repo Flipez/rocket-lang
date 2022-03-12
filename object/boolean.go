@@ -37,7 +37,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				b := o.(*Boolean)
 				return NewString(strconv.FormatBool(b.Value))
 			},

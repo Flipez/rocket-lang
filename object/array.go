@@ -54,7 +54,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				return NewInteger(int64(len(ao.Elements)))
 			},
@@ -66,7 +66,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ, ERROR_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 
 				items := make(map[HashKey]Object)
@@ -99,7 +99,7 @@ func init() {
 			argPattern: [][]string{
 				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FILE_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 
 				index := -1
@@ -120,7 +120,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
 					return NULL
@@ -135,7 +135,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
 					return NULL
@@ -154,7 +154,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
@@ -182,7 +182,7 @@ func init() {
 			argPattern: [][]string{
 				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 

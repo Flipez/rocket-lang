@@ -16,7 +16,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewString("")
 			},
 		},
@@ -25,7 +25,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewInteger(0)
 			},
 		},
@@ -34,7 +34,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{FLOAT_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewFloat(0)
 			},
 		},

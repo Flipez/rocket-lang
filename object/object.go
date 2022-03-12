@@ -40,6 +40,7 @@ const (
 	HASH_OBJ         = "HASH"
 	FILE_OBJ         = "FILE"
 	MODULE_OBJ       = "MODULE"
+	HTTP_OBJ         = "HTTP"
 )
 
 type ObjectMethod struct {
@@ -49,7 +50,7 @@ type ObjectMethod struct {
 	returnPattern  [][]string
 	description    string
 	example        string
-	method         func(Object, []Object) Object
+	method         func(Object, []Object, Environment) Object
 }
 
 func (om ObjectMethod) validateArgs(args []Object) error {
@@ -131,11 +132,11 @@ func (om ObjectMethod) Usage(name string) string {
 	return fmt.Sprintf("%s(%s)", name, args)
 }
 
-func (om ObjectMethod) Call(o Object, args []Object) Object {
+func (om ObjectMethod) Call(o Object, args []Object, env Environment) Object {
 	if err := om.validateArgs(args); err != nil {
 		return NewError(err)
 	}
-	return om.method(o, args)
+	return om.method(o, args, env)
 }
 
 var objectMethods = make(map[ObjectType]map[string]ObjectMethod)
@@ -153,7 +154,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]Object, len(oms))
 				var i int
@@ -172,7 +173,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]string, len(oms))
 				var i int
@@ -190,7 +191,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				return NewString(string(o.Type()))
 			},
 		},
@@ -200,13 +201,13 @@ func init() {
 func objectMethodLookup(o Object, method string, env Environment, args []Object) Object {
 	if oms, ok := objectMethods[o.Type()]; ok {
 		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(o, args)
+			return objMethod.Call(o, args, env)
 		}
 	}
 
 	if oms, ok := objectMethods["*"]; ok {
 		if objMethod, ok := oms[method]; ok {
-			return objMethod.Call(o, args)
+			return objMethod.Call(o, args, env)
 		}
 	}
 
