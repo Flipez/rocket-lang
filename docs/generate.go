@@ -25,6 +25,7 @@ func main() {
 	file_methods := object.ListObjectMethods()[object.FILE_OBJ]
 	null_methods := object.ListObjectMethods()[object.NULL_OBJ]
 	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
+	http_methods := object.ListObjectMethods()[object.HTTP_OBJ]
 
 	tempData := templateData{
 		Title: "String",
@@ -162,6 +163,23 @@ To cast a negative integer a digit can be prefixed with a - eg. -456.`,
 
 	tempData = templateData{Title: "Float", LiteralMethods: float_methods, DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/float.md", tempData)
+
+	tempData = templateData{
+		Title: "HTTP",
+		Example: `def test() {
+  puts(request["body"])
+  return("test")
+}
+
+HTTP.handle("/", test)
+
+HTTP.listen(3000)
+
+// Example request hash:
+// {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}`,
+		LiteralMethods: http_methods,
+		DefaultMethods: default_methods}
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
 
 }
 

@@ -21,11 +21,13 @@ func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Obje
 func init() {
 	objectMethods[HTTP_OBJ] = map[string]ObjectMethod{
 		"listen": ObjectMethod{
+			description: "Starts a blocking webserver on the given port.",
+			example:     `🚀 > HTTP.listen(3000)`,
 			argPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NULL_OBJ, ERROR_OBJ},
 			},
 			method: func(_ Object, args []Object, env Environment) Object {
 				var returnError *Error
@@ -68,6 +70,9 @@ func init() {
 			},
 		},
 		"handle": ObjectMethod{
+			description: `Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
+Inside the function a variable called "request" will be populated which is a hash with information about the request.`,
+			example: `🚀 > HTTP.handle("/", callback_func)`,
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
 				[]string{FUNCTION_OBJ},
