@@ -42,7 +42,7 @@ func init() {
 			argPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				i := o.(*Integer)
 
 				base := 10
@@ -58,7 +58,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				return o
 			},
 		},
@@ -74,7 +74,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{FLOAT_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				i := o.(*Integer)
 				return NewFloat(float64(i.Value))
 			},
@@ -83,7 +83,7 @@ func init() {
 }
 
 func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(i, method, args)
+	return objectMethodLookup(i, method, env, args)
 }
 
 func (i *Integer) ToFloat() Object {

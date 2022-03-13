@@ -15,5 +15,9 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 		return builtin
 	}
 
+	if clazz, ok := stdlib.Clazzes[node.Value]; ok {
+		return clazz
+	}
+
 	return object.NewErrorFormat("identifier not found: " + node.Value)
 }

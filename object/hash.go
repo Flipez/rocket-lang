@@ -64,7 +64,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)
 
 				keys := make([]Object, len(h.Pairs))
@@ -85,7 +85,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)
 
 				values := make([]Object, len(h.Pairs))
@@ -103,7 +103,7 @@ func init() {
 }
 
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(h, method, args)
+	return objectMethodLookup(h, method, env, args)
 
 }
 

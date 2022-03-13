@@ -78,7 +78,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{BOOLEAN_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				f := o.(*File)
 				f.Handle.Close()
 				f.Position = -1
@@ -90,8 +90,8 @@ func init() {
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ, ERROR_OBJ},
 			},
-			method: func(o Object, oo []Object) Object {
-				file := readFile(o, oo)
+			method: func(o Object, oo []Object, env Environment) Object {
+				file := readFile(o, oo, env)
 				fileString := file.(*String)
 				lines := strings.Split(fileString.Value, "\n")
 
@@ -116,7 +116,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				f := o.(*File)
 				return NewInteger(f.Position)
 			},
@@ -129,7 +129,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ERROR_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)
 				bytesAmount := args[0].(*Integer).Value
 				if f.Handle == nil {
@@ -156,7 +156,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ, ERROR_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)
 
 				if f.Handle == nil {
@@ -183,7 +183,7 @@ func init() {
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)
 				content := []byte(args[0].(*String).Value)
 
@@ -205,10 +205,10 @@ func init() {
 }
 
 func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(f, method, args)
+	return objectMethodLookup(f, method, env, args)
 }
 
-func readFile(o Object, _ []Object) Object {
+func readFile(o Object, _ []Object, _ Environment) Object {
 	f := o.(*File)
 	if f.Handle == nil {
 		return NewError("Invalid file handle.")

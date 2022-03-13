@@ -34,6 +34,8 @@ func Start(in io.Reader, out io.Writer) {
 		l := lexer.New(strings.Join(ctx.RawArgs, " "))
 		p := parser.New(l, imports)
 
+		object.AddEvaluator(evaluator.Eval)
+
 		var program *ast.Program
 
 		program, imports = p.ParseProgram()

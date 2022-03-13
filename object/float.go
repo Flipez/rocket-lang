@@ -30,7 +30,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{FLOAT_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				return o
 			},
 		},
@@ -43,7 +43,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*Float)
 				return NewString(f.toString())
 			},
@@ -54,7 +54,7 @@ func init() {
 => 123.456
 🚀 > a.plz_i()
 => "123"`,
-			method: func(o Object, args []Object) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*Float)
 				return NewInteger(int64(f.Value))
 			},
@@ -66,7 +66,7 @@ func init() {
 }
 
 func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(f, method, args)
+	return objectMethodLookup(f, method, env, args)
 }
 
 func (f *Float) TryInteger() Object {

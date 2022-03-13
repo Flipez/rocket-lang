@@ -7,7 +7,7 @@ type Null struct{}
 func (n *Null) Type() ObjectType { return NULL_OBJ }
 func (n *Null) Inspect() string  { return "null" }
 func (n *Null) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(n, method, args)
+	return objectMethodLookup(n, method, env, args)
 }
 func init() {
 	objectMethods[NULL_OBJ] = map[string]ObjectMethod{
@@ -16,7 +16,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewString("")
 			},
 		},
@@ -25,7 +25,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{INTEGER_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewInteger(0)
 			},
 		},
@@ -34,7 +34,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{FLOAT_OBJ},
 			},
-			method: func(_ Object, _ []Object) Object {
+			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewFloat(0)
 			},
 		},

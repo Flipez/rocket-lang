@@ -51,6 +51,8 @@ func runProgram(input string) {
 	l := lexer.New(input)
 	p := parser.New(l, make(map[string]struct{}))
 
+	object.AddEvaluator(evaluator.Eval)
+
 	program, _ := p.ParseProgram()
 	if len(p.Errors()) > 0 {
 		printParserErrors(p.Errors())

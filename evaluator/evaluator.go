@@ -93,7 +93,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return args[0]
 		}
 
-		return applyFunction(function, args)
+		return applyFunction(function, args, env)
 
 	case *ast.Index:
 		left := Eval(node.Left, env)
@@ -142,7 +142,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	return nil
 }
 
-func applyFunction(def object.Object, args []object.Object) object.Object {
+func applyFunction(def object.Object, args []object.Object, env *object.Environment) object.Object {
 	switch def := def.(type) {
 	case *object.Function:
 		extendedEnv := extendFunctionEnv(def, args)
@@ -150,7 +150,7 @@ func applyFunction(def object.Object, args []object.Object) object.Object {
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
-		return def.Fn(args...)
+		return def.Fn(env, args...)
 
 	default:
 		return object.NewErrorFormat("not a function: %s", def.Type())

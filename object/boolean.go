@@ -37,7 +37,7 @@ func init() {
 			returnPattern: [][]string{
 				[]string{STRING_OBJ},
 			},
-			method: func(o Object, _ []Object) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				b := o.(*Boolean)
 				return NewString(strconv.FormatBool(b.Value))
 			},
@@ -46,6 +46,6 @@ func init() {
 }
 
 func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(b, method, args)
+	return objectMethodLookup(b, method, env, args)
 
 }

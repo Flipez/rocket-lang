@@ -40,5 +40,5 @@ func (f *Function) Inspect() string {
 	return out.String()
 }
 func (f *Function) InvokeMethod(method string, env Environment, args ...Object) Object {
-	return objectMethodLookup(f, method, args)
+	return objectMethodLookup(f, method, env, args)
 }
