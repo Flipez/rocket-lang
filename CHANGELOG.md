@@ -1,5 +1,38 @@
 # Changelog
 
+## [v0.16.0-alpha](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha) (2022-03-13)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.1...v0.16.0-alpha)
+
+**Implemented enhancements:**
+
+- Fix indexing [\#79](https://github.com/Flipez/rocket-lang/issues/79)
+- add networking [\#81](https://github.com/Flipez/rocket-lang/pull/81) ([Flipez](https://github.com/Flipez))
+- add ast tests [\#77](https://github.com/Flipez/rocket-lang/pull/77) ([Flipez](https://github.com/Flipez))
+- Implement while loop [\#75](https://github.com/Flipez/rocket-lang/pull/75) ([MarkusFreitag](https://github.com/MarkusFreitag))
+- add ternary [\#73](https://github.com/Flipez/rocket-lang/pull/73) ([Flipez](https://github.com/Flipez))
+- object/integer: satisfy iterable interface [\#66](https://github.com/Flipez/rocket-lang/pull/66) ([RaphaelPour](https://github.com/RaphaelPour))
+- Improve Infix operator [\#65](https://github.com/Flipez/rocket-lang/pull/65) ([Flipez](https://github.com/Flipez))
+
+**Fixed bugs:**
+
+- Fix indexable object types [\#80](https://github.com/Flipez/rocket-lang/pull/80) ([Flipez](https://github.com/Flipez))
+
+**Merged pull requests:**
+
+- add tests [\#78](https://github.com/Flipez/rocket-lang/pull/78) ([Flipez](https://github.com/Flipez))
+- add missing quotation mark in string documentation [\#76](https://github.com/Flipez/rocket-lang/pull/76) ([Tch1b0](https://github.com/Tch1b0))
+- float: adds plz\_i object function [\#72](https://github.com/Flipez/rocket-lang/pull/72) ([RaphaelPour](https://github.com/RaphaelPour))
+- add modulo [\#70](https://github.com/Flipez/rocket-lang/pull/70) ([Flipez](https://github.com/Flipez))
+
+## [v0.15.1](https://github.com/flipez/rocket-lang/tree/v0.15.1) (2022-01-22)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.0...v0.15.1)
+
+**Merged pull requests:**
+
+- build more packages [\#63](https://github.com/Flipez/rocket-lang/pull/63) ([Flipez](https://github.com/Flipez))
+
 ## [v0.15.0](https://github.com/flipez/rocket-lang/tree/v0.15.0) (2022-01-21)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.14.2...v0.15.0)
