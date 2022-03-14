@@ -50,6 +50,8 @@ func TestArrayObjectMethods(t *testing.T) {
 		{"[1,2,3].first()", 1},
 		{"[].last()", "NULL"},
 		{"[1,2,3].last()", 3},
+		{"[1,2,3].to_json()", "[1,2,3]"},
+		{`["test",true,3].to_json()`, `["test",true,3]`},
 	}
 
 	testInput(t, tests)

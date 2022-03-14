@@ -20,6 +20,7 @@ func TestHTTPObjectMethods(t *testing.T) {
 		{`def test(){};HTTP.handle("/", test)`, "Invalid handler. Call only supported on instance."},
 		{`a = HTTP.new(); a.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
 		{`a = HTTP.new(); a.listen(80)`, "listening on port 80: listen tcp :80: bind: permission denied"},
+		{"HTTP.new().to_json()", "HTTP is not serializable"},
 	}
 
 	testInput(t, tests)

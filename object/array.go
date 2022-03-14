@@ -2,6 +2,7 @@ package object
 
 import (
 	"bytes"
+	"encoding/json"
 	"hash/fnv"
 	"strings"
 )
@@ -213,4 +214,8 @@ func (ao *Array) Next() (Object, Object, bool) {
 	}
 
 	return nil, NewInteger(0), false
+}
+
+func (ao *Array) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ao.Elements)
 }

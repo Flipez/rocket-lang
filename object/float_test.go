@@ -28,6 +28,8 @@ func TestFloatObjectMethods(t *testing.T) {
 		{`10.0.type()`, "FLOAT"},
 		{`2.2.nope()`, "undefined method `.nope()` for FLOAT"},
 		{`(2.0.wat().lines().size() == 2.0.methods().size() + 1).plz_s()`, "true"},
+		{"1.1.to_json()", "1.1"},
+		{"3.123456.to_json()", "3.123456"},
 	}
 
 	testInput(t, tests)

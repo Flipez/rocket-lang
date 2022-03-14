@@ -1,6 +1,7 @@
 package object
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 )
@@ -101,4 +102,8 @@ func (i *Integer) Next() (Object, Object, bool) {
 		return index, index, true
 	}
 	return nil, NewInteger(0), false
+}
+
+func (i *Integer) MarshalJSON() ([]byte, error) {
+	return json.Marshal(i.Value)
 }

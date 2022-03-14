@@ -1,6 +1,7 @@
 package object
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 )
@@ -48,4 +49,8 @@ func init() {
 func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(b, method, env, args)
 
+}
+
+func (b *Boolean) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.Value)
 }
