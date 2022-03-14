@@ -2,6 +2,7 @@ package object
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"hash/fnv"
 	"strings"
@@ -125,4 +126,26 @@ func (h *Hash) Next() (Object, Object, bool) {
 	}
 
 	return nil, NewInteger(0), false
+}
+
+func (h *Hash) MarshalJSON() ([]byte, error) {
+	tempHash := make(map[string]Serializable)
+	for _, pair := range h.Pairs {
+		_, ok := pair.Key.(Serializable)
+		if !ok {
+			return nil, fmt.Errorf("unable to serialize key: %s", pair.Key.Inspect())
+		}
+		serializableValue, ok := pair.Value.(Serializable)
+		if !ok {
+			return nil, fmt.Errorf("unable to serialize value: %s", pair.Key.Inspect())
+		}
+
+		if str, ok := pair.Key.(*String); ok {
+			tempHash[str.Value] = serializableValue
+		} else {
+			tempHash[pair.Key.Inspect()] = serializableValue
+		}
+	}
+
+	return json.Marshal(tempHash)
 }

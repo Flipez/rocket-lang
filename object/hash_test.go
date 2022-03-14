@@ -28,6 +28,9 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},
+		{`{"a": "b"}.to_json()`, `{"a":"b"}`},
+		{`{1: "b"}.to_json()`, `{"1":"b"}`},
+		{`{true: "b"}.to_json()`, `{"true":"b"}`},
 	}
 
 	testInput(t, tests)

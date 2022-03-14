@@ -1,6 +1,7 @@
 package object
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -24,6 +25,10 @@ type Iterable interface {
 
 type Hashable interface {
 	HashKey() HashKey
+}
+
+type Serializable interface {
+	MarshalJSON() ([]byte, error)
 }
 
 const (
@@ -147,6 +152,23 @@ func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
 
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
+		"to_json": ObjectMethod{
+			description: "Returns the object as json notation.",
+			returnPattern: [][]string{
+				[]string{STRING_OBJ, ERROR_OBJ},
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				if serializeableObject, ok := o.(Serializable); ok {
+					j, err := json.Marshal(serializeableObject)
+					if err != nil {
+						return NewErrorFormat("Error while marshal value: %s", err.Error())
+					}
+					return NewString(string(j))
+				}
+
+				return NewErrorFormat("%s is not serializable", o.Type())
+			},
+		},
 		"methods": ObjectMethod{
 			description: "Returns an array of all supported methods names.",
 			example: `🚀 > "test".methods()

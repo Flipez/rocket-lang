@@ -29,6 +29,7 @@ func TestIntegerObjectMethods(t *testing.T) {
 		{`10.type()`, "INTEGER"},
 		{`2.nope()`, "undefined method `.nope()` for INTEGER"},
 		{`(2.wat().lines().size() == 2.methods().size() + 1).plz_s()`, "true"},
+		{"1.to_json()", "1"},
 	}
 
 	testInput(t, tests)

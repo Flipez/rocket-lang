@@ -86,6 +86,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`a = "test"; b = []; foreach char in a { b.yoink(char) }; b.size()`, 4},
 		{`"test" * 2`, "testtest"},
 		{`2 * "test"`, "testtest"},
+		{`"test".to_json()`, `"test"`},
 	}
 
 	testInput(t, tests)

@@ -1,6 +1,7 @@
 package object
 
 import (
+	"encoding/json"
 	"fmt"
 	"hash/fnv"
 	"strconv"
@@ -81,4 +82,8 @@ func (f *Float) toString() string {
 		return fmt.Sprintf("%.1f", f.Value)
 	}
 	return strconv.FormatFloat(f.Value, 'f', -1, 64)
+}
+
+func (f *Float) MarshalJSON() ([]byte, error) {
+	return json.Marshal(f.Value)
 }
