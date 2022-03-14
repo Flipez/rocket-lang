@@ -217,6 +217,5 @@ func (ao *Array) Next() (Object, Object, bool) {
 }
 
 func (ao *Array) MarshalJSON() ([]byte, error) {
-
 	return json.Marshal(ao.Elements)
 }
