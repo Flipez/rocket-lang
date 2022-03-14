@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.16.0-alpha.1](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.1) (2022-03-14)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha...v0.16.0-alpha.1)
+
+**Implemented enhancements:**
+
+- add .to\_json\(\) [\#82](https://github.com/Flipez/rocket-lang/pull/82) ([Flipez](https://github.com/Flipez))
+
 ## [v0.16.0-alpha](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha) (2022-03-13)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.1...v0.16.0-alpha)
