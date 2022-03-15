@@ -56,6 +56,16 @@ func (h *Hash) HashKey() HashKey {
 	return HashKey{Type: h.Type(), Value: ha.Sum64()}
 }
 
+func (h *Hash) Get(name string) (Object, bool) {
+	pair, ok := h.Pairs[NewString(name).HashKey()]
+
+	if ok {
+		return pair.Value, ok
+	}
+
+	return nil, ok
+}
+
 func init() {
 	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
 		"keys": ObjectMethod{

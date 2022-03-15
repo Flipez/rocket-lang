@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -144,9 +145,77 @@ Inside the function a variable called "request" will be populated which is a has
 						},
 					})
 
+					httpResponse := NewHash(map[HashKey]HashPair{
+						NewString("status").HashKey(): HashPair{
+							Key:   NewString("status"),
+							Value: NewInteger(200),
+						},
+						NewString("body").HashKey(): HashPair{
+							Key:   NewString("body"),
+							Value: NewString(""),
+						},
+						NewString("headers").HashKey(): HashPair{
+							Key: NewString("headers"),
+							Value: NewHash(map[HashKey]HashPair{
+								NewString("Content-Type").HashKey(): HashPair{
+									Key:   NewString("Content-Type"),
+									Value: NewString("text/plain"),
+								},
+							}),
+						},
+					})
+
 					env.Set("request", httpRequest)
+					env.Set("response", httpResponse)
 					callback := args[1].(*Function)
-					writer.Write([]byte(Evaluator(callback.Body, &env).(*ReturnValue).Value.(*String).Value))
+					Evaluator(callback.Body, &env)
+					userReponse, ok := env.Get("response")
+					if !ok {
+						fmt.Println("unable to extract reponse variable.")
+						return
+					}
+
+					if userReponse.Type() != HASH_OBJ {
+						fmt.Println("ERROR: response is not a HASH")
+						return
+					}
+
+					if userHeaders, ok := userReponse.(*Hash).Get("headers"); ok {
+						if userHeaders.Type() != HASH_OBJ {
+							fmt.Println("ERROR: response headers is not a HASH")
+							return
+						}
+
+						for _, pair := range userHeaders.(*Hash).Pairs {
+							writer.Header().Set(pair.Key.(*String).Value, pair.Value.(*String).Value)
+						}
+					}
+
+					userBody, bodyOk := userReponse.(*Hash).Get("body")
+					if bodyOk {
+						if userBody.Type() != STRING_OBJ {
+							fmt.Println("Error: body is not STRING")
+							return
+						}
+
+						if writer.Header().Get("Content-Length") == "" {
+							writer.Header().Set("Content-Length", fmt.Sprint(len(userBody.(*String).Value)))
+						}
+					}
+
+					if userStatus, ok := userReponse.(*Hash).Get("status"); ok {
+						if userStatus.Type() != INTEGER_OBJ {
+							fmt.Println("Error: body is not INTEGER")
+							return
+						}
+
+						writer.WriteHeader(int(userStatus.(*Integer).Value))
+
+					}
+
+					if bodyOk {
+						writer.Write([]byte(userBody.(*String).Value))
+					}
 				})
 
 				o.(*HTTP).registeredPaths = append(o.(*HTTP).registeredPaths, path)
