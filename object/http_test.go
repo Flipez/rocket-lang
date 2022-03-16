@@ -42,7 +42,7 @@ func TestHTTPType(t *testing.T) {
 
 func TestHTTPServerMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`def test(){puts(request["body"]);return("test");};a = HTTP.new(); a.handle("/", test);a.listen(3000)`, ""},
+		{`def test(){puts(request["body"]);response["body"] = "test";};a = HTTP.new(); a.handle("/", test);a.listen(3000)`, ""},
 	}
 
 	go testInput(t, tests)
