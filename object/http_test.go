@@ -41,30 +41,41 @@ func TestHTTPType(t *testing.T) {
 }
 
 func TestHTTPServerMethods(t *testing.T) {
-	tests := []inputTestCase{
-		{`def test(){puts(request["body"]);response["body"] = "test";};a = HTTP.new(); a.handle("/", test);a.listen(3000)`, ""},
-	}
+	httpServer := `def test(){response["body"] = "test"};
+def test_a(){response = "test"};
+a = HTTP.new();
+a.handle("/", test);
+a.handle("/test2", test_a);
+a.listen(3000)`
 
-	go testInput(t, tests)
+	go testEval(httpServer)
 	time.Sleep(100 * time.Millisecond) // workaround to give testIntput time to evaluate the input and start the http handle
 
-	client := &http.Client{}
-	var data = strings.NewReader("servus")
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3000", data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
+	tests := []inputTestCase{
+		{"/", "test"},
+		{"/test2", ""},
 	}
 
-	if string(body) != "test" {
-		t.Errorf("wrong string. expected=%#v, got=%#v", "test", string(body))
+	client := &http.Client{}
+
+	for _, tt := range tests {
+		var data = strings.NewReader("servus")
+		req, err := http.NewRequest("POST", "http://127.0.0.1:3000"+tt.input, data)
+		if err != nil {
+			log.Fatal(err)
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if string(body) != tt.expected {
+			t.Errorf("wrong string. expected=%#v, got=%#v", tt.expected, string(body))
+		}
 	}
 }

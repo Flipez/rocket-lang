@@ -14,12 +14,19 @@ import (
 type HTTP struct {
 	mux             *http.ServeMux
 	registeredPaths []string
+	quitChannel     chan (os.Signal)
+	raisedError     *Error
 }
 
 func (h *HTTP) Type() ObjectType { return HTTP_OBJ }
 func (h *HTTP) Inspect() string  { return "HTTP" }
 func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(h, method, env, args)
+}
+
+func (h *HTTP) raiseErrorAndInterrupt(error string) {
+	h.raisedError = NewError(error)
+	h.quitChannel <- os.Interrupt
 }
 
 func init() {
@@ -55,11 +62,11 @@ func init() {
 				}
 
 				done := make(chan bool)
-				quit := make(chan os.Signal, 1)
-				signal.Notify(quit, os.Interrupt)
+				o.(*HTTP).quitChannel = make(chan os.Signal, 1)
+				signal.Notify(o.(*HTTP).quitChannel, os.Interrupt)
 
 				go func() {
-					<-quit
+					<-o.(*HTTP).quitChannel
 					ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 					defer cancel()
 
@@ -73,7 +80,7 @@ func init() {
 				}()
 
 				if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					quit <- os.Interrupt
+					o.(*HTTP).quitChannel <- os.Interrupt
 					returnError = NewErrorFormat("listening on port %s: %v", port, err)
 				}
 
@@ -81,6 +88,10 @@ func init() {
 
 				if returnError != nil {
 					return returnError
+				}
+
+				if o.(*HTTP).raisedError != nil {
+					return o.(*HTTP).raisedError
 				}
 
 				return NULL
@@ -171,18 +182,18 @@ Inside the function a variable called "request" will be populated which is a has
 					Evaluator(callback.Body, &env)
 					userReponse, ok := env.Get("response")
 					if !ok {
-						fmt.Println("unable to extract reponse variable.")
+						o.(*HTTP).raiseErrorAndInterrupt("unable to extract response variable.")
 						return
 					}
 
 					if userReponse.Type() != HASH_OBJ {
-						fmt.Println("ERROR: response is not a HASH")
+						o.(*HTTP).raiseErrorAndInterrupt("response is not a HASH")
 						return
 					}
 
 					if userHeaders, ok := userReponse.(*Hash).Get("headers"); ok {
 						if userHeaders.Type() != HASH_OBJ {
-							fmt.Println("ERROR: response headers is not a HASH")
+							o.(*HTTP).raiseErrorAndInterrupt("response headers is not a HASH")
 							return
 						}
 
@@ -194,7 +205,7 @@ Inside the function a variable called "request" will be populated which is a has
 					userBody, bodyOk := userReponse.(*Hash).Get("body")
 					if bodyOk {
 						if userBody.Type() != STRING_OBJ {
-							fmt.Println("Error: body is not STRING")
+							o.(*HTTP).raiseErrorAndInterrupt("body is not STRING")
 							return
 						}
 
@@ -205,7 +216,7 @@ Inside the function a variable called "request" will be populated which is a has
 
 					if userStatus, ok := userReponse.(*Hash).Get("status"); ok {
 						if userStatus.Type() != INTEGER_OBJ {
-							fmt.Println("Error: body is not INTEGER")
+							o.(*HTTP).raiseErrorAndInterrupt("status is not INTEGER")
 							return
 						}
 
