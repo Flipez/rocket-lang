@@ -5,6 +5,7 @@
 [![codecov](https://codecov.io/gh/Flipez/rocket-lang/branch/master/graph/badge.svg)](https://codecov.io/gh/Flipez/rocket-lang)
 [![Maintainability](https://api.codeclimate.com/v1/badges/800d0f48a5b283fc4627/maintainability)](https://codeclimate.com/github/Flipez/rocket-lang/maintainability)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1615fca430c4489aaf292c0e9bb2e797)](https://www.codacy.com/gh/Flipez/rocket-lang/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Flipez/rocket-lang&amp;utm_campaign=Badge_Grade)
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/Flipez.rocket-lang-support?label=vscode%20extension%20version)
 
 > Checkout the documentation at https://rocket-lang.org
 
@@ -24,6 +25,8 @@ Install RocketLang using
 brew install flipez/homebrew-tap/rocket-lang
 ```
 or download from [releases](https://github.com/Flipez/rocket-lang/releases).
+
+There is also a [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=Flipez.rocket-lang-support) available. Just search for `rocket-lang` in the extension menu.
 
 ## How To?
 
