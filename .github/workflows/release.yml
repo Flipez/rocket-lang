@@ -27,3 +27,4 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
