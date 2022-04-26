@@ -31,6 +31,13 @@ HTTP.listen(3000)
 Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
 Inside the function a variable called "request" will be populated which is a hash with information about the request.
 
+Also a variable called "response" will be created which will be returned automatically as a response to the client.
+The response can be adjusted to the needs. It is a HASH supports the following content:
+
+- "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
+- "body" needs to be a STRING. Default ""
+- "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}
+
 
 ```js
 🚀 > HTTP.handle("/", callback_func)
@@ -66,6 +73,18 @@ Returns an array of all supported methods names.
 ```js
 🚀 > "test".methods()
 => [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
+```
+
+### to_json()
+> Returns `STRING|ERROR`
+
+Returns the object as json notation.
+
+```js
+🚀 > a = {"test": 1234}
+=> {"test": 1234}
+🚀 > a.to_json()
+=> "{"test":1234}"
 ```
 
 ### type()

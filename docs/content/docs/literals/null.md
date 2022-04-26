@@ -45,6 +45,18 @@ Returns an array of all supported methods names.
 => [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
 ```
 
+### to_json()
+> Returns `STRING|ERROR`
+
+Returns the object as json notation.
+
+```js
+🚀 > a = {"test": 1234}
+=> {"test": 1234}
+🚀 > a.to_json()
+=> "{"test":1234}"
+```
+
 ### type()
 > Returns `STRING`
 

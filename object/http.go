@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,12 +14,19 @@ import (
 type HTTP struct {
 	mux             *http.ServeMux
 	registeredPaths []string
+	quitChannel     chan (os.Signal)
+	raisedError     *Error
 }
 
 func (h *HTTP) Type() ObjectType { return HTTP_OBJ }
 func (h *HTTP) Inspect() string  { return "HTTP" }
 func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(h, method, env, args)
+}
+
+func (h *HTTP) raiseErrorAndInterrupt(error string) {
+	h.raisedError = NewError(error)
+	h.quitChannel <- os.Interrupt
 }
 
 func init() {
@@ -54,11 +62,11 @@ func init() {
 				}
 
 				done := make(chan bool)
-				quit := make(chan os.Signal, 1)
-				signal.Notify(quit, os.Interrupt)
+				o.(*HTTP).quitChannel = make(chan os.Signal, 1)
+				signal.Notify(o.(*HTTP).quitChannel, os.Interrupt)
 
 				go func() {
-					<-quit
+					<-o.(*HTTP).quitChannel
 					ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 					defer cancel()
 
@@ -72,7 +80,7 @@ func init() {
 				}()
 
 				if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					quit <- os.Interrupt
+					o.(*HTTP).quitChannel <- os.Interrupt
 					returnError = NewErrorFormat("listening on port %s: %v", port, err)
 				}
 
@@ -82,12 +90,23 @@ func init() {
 					return returnError
 				}
 
+				if o.(*HTTP).raisedError != nil {
+					return o.(*HTTP).raisedError
+				}
+
 				return NULL
 			},
 		},
 		"handle": ObjectMethod{
 			description: `Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
-Inside the function a variable called "request" will be populated which is a hash with information about the request.`,
+Inside the function a variable called "request" will be populated which is a hash with information about the request.
+
+Also a variable called "response" will be created which will be returned automatically as a response to the client.
+The response can be adjusted to the needs. It is a HASH supports the following content:
+
+- "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
+- "body" needs to be a STRING. Default ""
+- "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}`,
 			example: `🚀 > HTTP.handle("/", callback_func)`,
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
@@ -144,9 +163,77 @@ Inside the function a variable called "request" will be populated which is a has
 						},
 					})
 
+					httpResponse := NewHash(map[HashKey]HashPair{
+						NewString("status").HashKey(): HashPair{
+							Key:   NewString("status"),
+							Value: NewInteger(200),
+						},
+						NewString("body").HashKey(): HashPair{
+							Key:   NewString("body"),
+							Value: NewString(""),
+						},
+						NewString("headers").HashKey(): HashPair{
+							Key: NewString("headers"),
+							Value: NewHash(map[HashKey]HashPair{
+								NewString("Content-Type").HashKey(): HashPair{
+									Key:   NewString("Content-Type"),
+									Value: NewString("text/plain"),
+								},
+							}),
+						},
+					})
+
 					env.Set("request", httpRequest)
+					env.Set("response", httpResponse)
 					callback := args[1].(*Function)
-					writer.Write([]byte(Evaluator(callback.Body, &env).(*ReturnValue).Value.(*String).Value))
+					Evaluator(callback.Body, &env)
+					userReponse, ok := env.Get("response")
+					if !ok {
+						o.(*HTTP).raiseErrorAndInterrupt("unable to extract response variable.")
+						return
+					}
+
+					if userReponse.Type() != HASH_OBJ {
+						o.(*HTTP).raiseErrorAndInterrupt("response is not a HASH")
+						return
+					}
+
+					if userHeaders, ok := userReponse.(*Hash).Get("headers"); ok {
+						if userHeaders.Type() != HASH_OBJ {
+							o.(*HTTP).raiseErrorAndInterrupt("response headers is not a HASH")
+							return
+						}
+
+						for _, pair := range userHeaders.(*Hash).Pairs {
+							writer.Header().Set(pair.Key.(*String).Value, pair.Value.(*String).Value)
+						}
+					}
+
+					userBody, bodyOk := userReponse.(*Hash).Get("body")
+					if bodyOk {
+						if userBody.Type() != STRING_OBJ {
+							o.(*HTTP).raiseErrorAndInterrupt("body is not STRING")
+							return
+						}
+
+						if writer.Header().Get("Content-Length") == "" {
+							writer.Header().Set("Content-Length", fmt.Sprint(len(userBody.(*String).Value)))
+						}
+					}
+
+					if userStatus, ok := userReponse.(*Hash).Get("status"); ok {
+						if userStatus.Type() != INTEGER_OBJ {
+							o.(*HTTP).raiseErrorAndInterrupt("status is not INTEGER")
+							return
+						}
+
+						writer.WriteHeader(int(userStatus.(*Integer).Value))
+
+					}
+
+					if bodyOk {
+						writer.Write([]byte(userBody.(*String).Value))
+					}
 				})
 
 				o.(*HTTP).registeredPaths = append(o.(*HTTP).registeredPaths, path)
