@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.16.0-alpha.2](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.2) (2022-04-26)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha.1...v0.16.0-alpha.2)
+
+**Implemented enhancements:**
+
+- add basic http response [\#84](https://github.com/Flipez/rocket-lang/pull/84) ([Flipez](https://github.com/Flipez))
+
+**Merged pull requests:**
+
+- Apt repo [\#87](https://github.com/Flipez/rocket-lang/pull/87) ([Flipez](https://github.com/Flipez))
+
 ## [v0.16.0-alpha.1](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.1) (2022-03-14)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha...v0.16.0-alpha.1)
