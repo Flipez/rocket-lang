@@ -154,6 +154,10 @@ func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"to_json": ObjectMethod{
 			description: "Returns the object as json notation.",
+			example: `🚀 > a = {"test": 1234}
+=> {"test": 1234}
+🚀 > a.to_json()
+=> "{"test":1234}"`,
 			returnPattern: [][]string{
 				[]string{STRING_OBJ, ERROR_OBJ},
 			},

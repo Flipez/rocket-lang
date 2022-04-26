@@ -81,7 +81,10 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 ```js
-
+🚀 > a = {"test": 1234}
+=> {"test": 1234}
+🚀 > a.to_json()
+=> "{"test":1234}"
 ```
 
 ### type()
