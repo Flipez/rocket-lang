@@ -176,9 +176,9 @@ func init() {
 			},
 		},
 		"write": ObjectMethod{
-			description: "Writes the given string to the file. Returns `true` on success.",
+			description: "Writes the given string to the file. Returns number of written bytes on success.",
 			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ, ERROR_OBJ},
+				[]string{INTEGER_OBJ, ERROR_OBJ},
 			},
 			argPattern: [][]string{
 				[]string{STRING_OBJ},
@@ -198,7 +198,7 @@ func init() {
 					return NewError(err)
 				}
 
-				return TRUE
+				return NewInteger(int64(bytesWritten))
 			},
 		},
 	}
