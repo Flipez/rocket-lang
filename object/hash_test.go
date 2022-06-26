@@ -24,7 +24,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{}.nope()`, "undefined method `.nope()` for HASH"},
 		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
 		{`{}.type()`, "HASH"},
-		{`a = {"a": "b", "b":"a"};b = []; foreach key, value in a { b.yoink(key) }; b.size()`, 2},
+		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.yoink(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},

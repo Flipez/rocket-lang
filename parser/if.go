@@ -18,20 +18,10 @@ func (p *Parser) parseIf() ast.Expression {
 		return nil
 	}
 
-	if p.peekTokenIs(token.LBRACE) {
-		p.nextToken()
-	}
 	expression.Consequence = p.parseBlock()
-
-	if p.curTokenIs(token.RBRACE) {
-		p.nextToken()
-	}
 
 	if p.curTokenIs(token.ELSE) {
 
-		if p.peekTokenIs(token.LBRACE) {
-			p.nextToken()
-		}
 		expression.Alternative = p.parseBlock()
 	}
 	return expression

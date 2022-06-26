@@ -52,7 +52,6 @@ func (p *Parser) parseForEach() ast.Expression {
 		return nil
 	}
 
-	p.nextToken()
 	expression.Body = p.parseBlock()
 
 	return expression

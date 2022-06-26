@@ -8,15 +8,15 @@ import (
 
 func TestFunctionObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`def(){}.nope()`, "undefined method `.nope()` for FUNCTION"},
+		{"def()\n\nend.nope()", "undefined method `.nope()` for FUNCTION"},
 	}
 
 	testInput(t, tests)
 }
 func TestFunctionType(t *testing.T) {
 	tests := []inputTestCase{
-		{"def(){}", "def () {\n\n}"},
-		{"def(a){puts(a)}", "def (a) {\nputs(a)\n}"},
+		{"def()\n\nend", "def () \n\nend"},
+		{"def(a)\nputs(a)\nend", "def (a) \nputs(a)\nend"},
 	}
 
 	for _, tt := range tests {

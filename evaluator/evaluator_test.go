@@ -117,17 +117,13 @@ func TestIfElseExpressions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{"if (true) { 10 }", 10},
-		{"if (false) { 10 }", nil},
-		{"if (true)\n 10 end", 10},
-		{"if (false) \n 10 end", nil},
-		{"if (1) { 10 }", 10},
-		{"if (1) \n 10 end", 10},
-		{"if (1 < 2) { 10 }", 10},
-		{"if (1 > 2) { 10 }", nil},
-		{"if (1 > 2) { 10 } else { 20 }", 20},
-		{"if (1 < 2) { 10 } else { 20 }", 10},
-		{"if (1 < 2) \n 10 \n else \n 20 end", 10},
+		{"if (true) \n 10 \nend", 10},
+		{"if (false) \n 10 \nend", nil},
+		{"if (1) \n 10 \nend", 10},
+		{"if (1 < 2) \n 10 \nend", 10},
+		{"if (1 > 2) \n 10 \nend", nil},
+		{"if (1 > 2) \n 10 \n else \n 20 \nend", 20},
+		{"if (1 < 2) \n 10 \n else \n 20 \nend", 10},
 	}
 
 	for _, tt := range tests {
@@ -151,12 +147,12 @@ func TestReturnStatements(t *testing.T) {
 		{"return 2 * 5; 9;", 10},
 		{"9; return 2 * 5; 9;", 10},
 		{`
-		  if (10 > 1) {
-				if (10 > 1) {
+		  if (10 > 1)
+				if (10 > 1)
 					return 10;
-				}
+				end
 				return 1;
-			}
+			end
 		`, 10},
 	}
 
@@ -176,17 +172,16 @@ func TestErrorHandling(t *testing.T) {
 		{"-true", "unknown operator: -BOOLEAN"},
 		{"true + false", "unknown operator: BOOLEAN + BOOLEAN"},
 		{"5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN"},
-		{"if (10 > 1) { true + false }", "unknown operator: BOOLEAN + BOOLEAN"},
+		{"if (10 > 1) \n true + false \n", "unknown operator: BOOLEAN + BOOLEAN"},
 		{"foobar", "identifier not found: foobar"},
 		{
 			`
-			if (10 > 1) {
-				if (10 > 1) {
+			if (10 > 1)
+				if (10 > 1)
 					return true + false
-				}
-
+        end
 				return 1
-			}
+			end
 			`, "unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
@@ -198,15 +193,15 @@ func TestErrorHandling(t *testing.T) {
 		{"if (5 % 0)\n puts(true)\nend", "division by zero not allowed"},
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
-		{"def test() { puts(true) }; a = {test: true}", "unusable as hash key: FUNCTION"},
+		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
 		{"import(true)", "Import Error: invalid import path '&{%!s(bool=true)}'"},
 		{"import(5%0)", "division by zero not allowed"},
 		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
 		{
 			`import("../fixtures/parser_error")`,
-			"Parse Error: [0:10: expected next token to be EOF, got EOF instead 0:10: expected next token to be EOF, got EOF instead]",
+			"Parse Error: [0:10: expected next token to be EOF, got EOF instead]",
 		},
-		{"def test() { puts(true) }; test[1]", "index operator not supported: FUNCTION"},
+		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 	}
 
@@ -242,7 +237,7 @@ func TestAssignStatements(t *testing.T) {
 }
 
 func TestFunctionObject(t *testing.T) {
-	input := "def(x) { x + 2; };"
+	input := "def(x) \n x + 2; \nend;"
 
 	evaluated := testEval(input)
 	def, ok := evaluated.(*object.Function)
@@ -270,12 +265,12 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"identity = def(x) { x; }; identity(5);", 5},
-		{"identity = def(x) { return x; }; identity(5);", 5},
-		{"double = def(x) { x * 2; }; double(5);", 10},
-		{"add = def(x, y) { x + y; }; add(5, 5);", 10},
-		{"add = def(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
-		{"def(x) { x; }(5)", 5},
+		{"identity = def(x) \n x; \nend; identity(5);", 5},
+		{"identity = def(x) \n return x; \nend; identity(5);", 5},
+		{"double = def(x) \n x * 2; \nend; double(5);", 10},
+		{"add = def(x, y) \n x + y; \nend; add(5, 5);", 10},
+		{"add = def(x, y) \n x + y; \nend; add(5 + 5, add(5, 5));", 20},
+		{"def(x) \n x; \nend(5)", 5},
 	}
 
 	for _, tt := range tests {
@@ -285,9 +280,11 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	newAdder = def(x) {
-		def(y) { x + y };
-	};
+	newAdder = def(x)
+		def(y)
+		  x + y
+		end
+	end;
 
 	addTwo = newAdder(2);
 	addTwo(2);`
@@ -570,9 +567,9 @@ func TestNamedFunctionStatements(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"def five() { return 5 } five()", 5},
-		{"def ten() { return 10 } ten()", 10},
-		{"def fifteen() { return 15 } fifteen()", 15},
+		{"def five() \n return 5 \nend five()", 5},
+		{"def ten() \n return 10 \nend ten()", 10},
+		{"def fifteen() \n return 15 \nend fifteen()", 15},
 	}
 
 	for _, tt := range tests {

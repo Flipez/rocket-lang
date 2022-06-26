@@ -29,8 +29,8 @@ func TestString(t *testing.T) {
 			`true ? puts(true) : puts(false)`,
 		},
 		{
-			"foreach i, e in [1, 2, 3] {\n  puts(i)\n}",
-			"foreach i, e in [1, 2, 3] {\n  puts(i)\n}",
+			"foreach i, e in [1, 2, 3] \n  puts(i)\nend",
+			"foreach i, e in [1, 2, 3] \n  puts(i)\nend",
 		},
 		{
 			"if (true)\n  return (true)\nelse\n  puts(false)\nend",
@@ -41,12 +41,12 @@ func TestString(t *testing.T) {
 			"while (true)\n  puts(true)\nend",
 		},
 		{
-			"while (true) {\n  puts(true)\n}",
+			"while (true)\n  puts(true)\nend",
 			"while (true)\n  puts(true)\nend",
 		},
 		{
-			"while {\n  puts(true)\n}",
-			"",
+			"while\n  puts(true)\n",
+			"puts(true)",
 		},
 	}
 

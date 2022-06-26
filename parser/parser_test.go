@@ -424,7 +424,7 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 }
 
 func TestIfExpression(t *testing.T) {
-	input := `if (x < y) { x }`
+	input := "if (x < y) \n x \nend"
 
 	program, p := createProgram(input)
 	checkParserErrors(t, p)
@@ -466,7 +466,7 @@ func TestIfExpression(t *testing.T) {
 }
 
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := `def (x, y) { x + y; }`
+	input := "def (x, y) \n x + y; \nend"
 
 	program, p := createProgram(input)
 	checkParserErrors(t, p)
@@ -720,7 +720,7 @@ func TestParsingHashLiteralWithExpressions(t *testing.T) {
 }
 
 func TestNamedFunctionLiteralParsing(t *testing.T) {
-	input := `def test(x, y) { x + y; }`
+	input := "def test(x, y) \n x + y; \nend"
 
 	program, p := createProgram(input)
 

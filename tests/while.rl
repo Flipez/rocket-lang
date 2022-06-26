@@ -5,7 +5,7 @@ while (a != 3)
 end
 
 
-def test_one() {
+def test_one()
   a = 0
   while (a != 3)
     puts(a)
@@ -14,15 +14,15 @@ def test_one() {
     end
     a = a + 1
   end
-}
+end
 
-def test_two() {
+def test_two()
   a = 0
   while (a != 3)
     puts(a)
     a = a % 0
   end
-}
+end
 
 test_one()
 test_two()
