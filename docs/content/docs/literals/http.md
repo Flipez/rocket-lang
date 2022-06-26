@@ -10,10 +10,10 @@ menu:
 
 
 ```js
-def test() {
+def test()
   puts(request["body"])
   return("test")
-}
+end
 
 HTTP.handle("/", test)
 

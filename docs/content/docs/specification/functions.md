@@ -9,7 +9,7 @@ toc: true
 Implicit and explicit return statements are supported.
 
 ```js
-fibonacci = def (x) {
+fibonacci = def (x)
   if (x == 0)
     0
   else
@@ -19,7 +19,7 @@ fibonacci = def (x) {
       fibonacci(x - 1) + fibonacci(x - 2);
     end
   end
-};
+end
 ```
 
 > New in `0.11`:
@@ -27,10 +27,13 @@ fibonacci = def (x) {
 Functions can now also be created as named functions:
 
 ```js
-🚀 > def test() { puts("test")}
-=> def () {
-puts(test)
-}
+🚀 > def test()
+  puts("test")
+end
+
+=> def ()
+  puts(test)
+end
 
 🚀 > test()
 "test"

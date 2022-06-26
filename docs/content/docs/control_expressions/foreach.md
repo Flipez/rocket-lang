@@ -15,10 +15,10 @@ input = open("examples/aoc/2021/day-1/input").lines()
 // define temporary array
 a = []
 
-foreach i, number in input {
+foreach i, number in input
   // read each line into temporary array and cast it into an integer
   a.yoink(number.strip().plz_i())
-}
+end
 
 // assign temporary array to input array
 input = a
@@ -28,7 +28,10 @@ input = a
 Count form zero to a given number (excluding):
 
 ```js
-🚀 > foreach i in 5 { puts(i) }
+🚀 > foreach i in 5
+  puts(i)
+end
+
 0
 1
 2
@@ -40,7 +43,10 @@ Count form zero to a given number (excluding):
 Iterate over a string:
 
 ```js
-🚀 > foreach i in "test" { puts(i) }
+🚀 > foreach i in "test" 
+  puts(i)
+end
+
 "t"
 "e"
 "s"

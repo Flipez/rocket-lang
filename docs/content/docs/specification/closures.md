@@ -7,9 +7,9 @@ toc: true
 ---
 # Closures
 ```js
-newGreeter = def (greeting) {
+newGreeter = def (greeting)
   return def (name) { puts(greeting + " " + name); }
-};
+end
 
 hello = newGreeter("Hello");
 
