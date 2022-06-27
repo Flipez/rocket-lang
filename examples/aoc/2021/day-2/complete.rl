@@ -4,7 +4,7 @@ depth = 0
 hor = 0
 aim = 0
 
-foreach i, line in input {
+foreach i, line in input
   command = line.split(" ")[0]
   value = line.strip().split(" ")[1].plz_i()
   if (command == "forward")
@@ -19,6 +19,6 @@ foreach i, line in input {
   if (command == "up")
     aim = aim - value
   end
-}
+end
 
 puts(hor * depth)

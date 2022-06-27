@@ -33,9 +33,9 @@ func (f *Function) Inspect() string {
 	out.WriteString("def ")
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
-	out.WriteString(") {\n")
+	out.WriteString(") \n")
 	out.WriteString(f.Body.String())
-	out.WriteString("\n}")
+	out.WriteString("\nend")
 
 	return out.String()
 }

@@ -19,14 +19,7 @@ func (p *Parser) parseWhile() ast.Expression {
 		return nil
 	}
 
-	if p.peekTokenIs(token.LBRACE) {
-		p.nextToken()
-	}
 	expression.Body = p.parseBlock()
-
-	if p.curTokenIs(token.RBRACE) {
-		p.nextToken()
-	}
 
 	return expression
 }

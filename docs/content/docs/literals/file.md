@@ -58,9 +58,9 @@ Seek sets the offset for the next Read or Write on file to offset, interpreted a
 
 
 ### write(STRING)
-> Returns `BOOLEAN|ERROR`
+> Returns `INTEGER|ERROR`
 
-Writes the given string to the file. Returns `true` on success.
+Writes the given string to the file. Returns number of written bytes on success.
 
 
 

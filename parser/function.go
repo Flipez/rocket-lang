@@ -20,10 +20,6 @@ func (p *Parser) parseFunction() ast.Expression {
 
 	lit.Parameters = p.parseFunctionParameters()
 
-	if !p.expectPeek(token.LBRACE) {
-		return nil
-	}
-
 	lit.Body = p.parseBlock()
 
 	return lit

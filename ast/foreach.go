@@ -23,8 +23,8 @@ func (fes *Foreach) String() string {
 	out.WriteString(fes.Ident)
 	out.WriteString(" in ")
 	out.WriteString(fes.Value.String())
-	out.WriteString(" {\n  ")
+	out.WriteString(" \n  ")
 	out.WriteString(fes.Body.String())
-	out.WriteString("\n}")
+	out.WriteString("\nend")
 	return out.String()
 }

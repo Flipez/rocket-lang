@@ -166,10 +166,10 @@ To cast a negative integer a digit can be prefixed with a - eg. -456.`,
 
 	tempData = templateData{
 		Title: "HTTP",
-		Example: `def test() {
+		Example: `def test()
   puts(request["body"])
   return("test")
-}
+end
 
 HTTP.handle("/", test)
 

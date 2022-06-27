@@ -2,12 +2,12 @@
 "// Last Updated: 2022.01.18"
 "// RocketLang Version: 0.14.1"
 "// ------------------------------------"
-part_one = def (input) {  
+part_one = def (input) 
   "// There is a foreach loop now but I wanted to stick as close to the original version as possible"
   calc(input, input.size(), 0)
-}
+end
 
-calc = def (input, idx, floor) {
+calc = def (input, idx, floor)
   char_to_value = {
     "(": 1,
     ")": -1
@@ -24,7 +24,7 @@ calc = def (input, idx, floor) {
   end
   
   calc(input, new_idx, floor + delta)
-}
+end
 
 "// Test some inputs to check that our code is correct..."
 if (part_one("(())") != 0)
