@@ -203,6 +203,8 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
+		{"break(1.nope())", "undefined method `.nope()` for INTEGER"},
+		{"next(1.nope())", "undefined method `.nope()` for INTEGER"},
 	}
 
 	for _, tt := range tests {

@@ -53,3 +53,30 @@ end
 "t" 
 => "test"
 ```
+
+It is possible to use `next()` or `break()` inside a loop. Both must take one argument.
+
+```js
+foreach i in 5
+  if (i == 2)
+    next("next")
+  end
+  puts(i)
+end
+
+foreach i in 5
+  if (i == 2)
+    break("break")
+  end
+  puts(i)
+end
+
+// Returns
+0
+1
+3
+4
+0
+1
+"break"
+```
