@@ -1,53 +1,15 @@
 # Changelog
 
-## [v0.17.0](https://github.com/flipez/rocket-lang/tree/v0.17.0) (2022-07-02)
+## [v0.16.0](https://github.com/flipez/rocket-lang/tree/v0.16.0) (2022-07-02)
 
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha.3...v0.17.0)
-
-**Merged pull requests:**
-
-- Add support for `next()` and `break()` [\#90](https://github.com/Flipez/rocket-lang/pull/90) ([Flipez](https://github.com/Flipez))
-
-## [v0.16.0-alpha.3](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.3) (2022-06-27)
-
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha.2...v0.16.0-alpha.3)
-
-**Implemented enhancements:**
-
-- Improve file.write\(\) [\#37](https://github.com/Flipez/rocket-lang/issues/37)
-
-**Merged pull requests:**
-
-- Remove support for curly braces in foreach, while, if and function [\#89](https://github.com/Flipez/rocket-lang/pull/89) ([Flipez](https://github.com/Flipez))
-- Return bytesWritten instead of True on successfull file.write\(\) [\#88](https://github.com/Flipez/rocket-lang/pull/88) ([Flipez](https://github.com/Flipez))
-
-## [v0.16.0-alpha.2](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.2) (2022-04-26)
-
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha.1...v0.16.0-alpha.2)
-
-**Implemented enhancements:**
-
-- add basic http response [\#84](https://github.com/Flipez/rocket-lang/pull/84) ([Flipez](https://github.com/Flipez))
-
-**Merged pull requests:**
-
-- Apt repo [\#87](https://github.com/Flipez/rocket-lang/pull/87) ([Flipez](https://github.com/Flipez))
-
-## [v0.16.0-alpha.1](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha.1) (2022-03-14)
-
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0-alpha...v0.16.0-alpha.1)
-
-**Implemented enhancements:**
-
-- add .to\_json\(\) [\#82](https://github.com/Flipez/rocket-lang/pull/82) ([Flipez](https://github.com/Flipez))
-
-## [v0.16.0-alpha](https://github.com/flipez/rocket-lang/tree/v0.16.0-alpha) (2022-03-13)
-
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.1...v0.16.0-alpha)
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.1...v0.16.0)
 
 **Implemented enhancements:**
 
 - Fix indexing [\#79](https://github.com/Flipez/rocket-lang/issues/79)
+- Improve file.write\(\) [\#37](https://github.com/Flipez/rocket-lang/issues/37)
+- add basic http response [\#84](https://github.com/Flipez/rocket-lang/pull/84) ([Flipez](https://github.com/Flipez))
+- add .to\_json\(\) [\#82](https://github.com/Flipez/rocket-lang/pull/82) ([Flipez](https://github.com/Flipez))
 - add networking [\#81](https://github.com/Flipez/rocket-lang/pull/81) ([Flipez](https://github.com/Flipez))
 - add ast tests [\#77](https://github.com/Flipez/rocket-lang/pull/77) ([Flipez](https://github.com/Flipez))
 - Implement while loop [\#75](https://github.com/Flipez/rocket-lang/pull/75) ([MarkusFreitag](https://github.com/MarkusFreitag))
@@ -61,6 +23,10 @@
 
 **Merged pull requests:**
 
+- Add support for `next()` and `break()` [\#90](https://github.com/Flipez/rocket-lang/pull/90) ([Flipez](https://github.com/Flipez))
+- Remove support for curly braces in foreach, while, if and function [\#89](https://github.com/Flipez/rocket-lang/pull/89) ([Flipez](https://github.com/Flipez))
+- Return bytesWritten instead of True on successfull file.write\(\) [\#88](https://github.com/Flipez/rocket-lang/pull/88) ([Flipez](https://github.com/Flipez))
+- Apt repo [\#87](https://github.com/Flipez/rocket-lang/pull/87) ([Flipez](https://github.com/Flipez))
 - add tests [\#78](https://github.com/Flipez/rocket-lang/pull/78) ([Flipez](https://github.com/Flipez))
 - add missing quotation mark in string documentation [\#76](https://github.com/Flipez/rocket-lang/pull/76) ([Tch1b0](https://github.com/Tch1b0))
 - float: adds plz\_i object function [\#72](https://github.com/Flipez/rocket-lang/pull/72) ([RaphaelPour](https://github.com/RaphaelPour))
