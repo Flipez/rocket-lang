@@ -37,6 +37,10 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 			return rt
 		}
 
+		if rt != nil && rt.Type() == object.BREAK_VALUE_OBJ {
+			return rt.(*object.BreakValue).Value
+		}
+
 		ret, idx, ok = helper.Next()
 	}
 

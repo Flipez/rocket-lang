@@ -56,6 +56,8 @@ const (
 	ELSE     = "ELSE"
 	END      = "END"
 	RETURN   = "RETURN"
+	BREAK    = "BREAK"
+	NEXT     = "NEXT"
 
 	EQ     = "=="
 	NOT_EQ = "!="
@@ -79,6 +81,8 @@ var keywords = map[string]TokenType{
 	"end":     END,
 	"else":    ELSE,
 	"return":  RETURN,
+	"break":   BREAK,
+	"next":    NEXT,
 	"foreach": FOREACH,
 	"in":      IN,
 	"while":   WHILE,

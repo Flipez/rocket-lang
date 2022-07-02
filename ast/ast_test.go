@@ -48,6 +48,22 @@ func TestString(t *testing.T) {
 			"while\n  puts(true)\n",
 			"puts(true)",
 		},
+		{
+			"next();",
+			"next",
+		},
+		{
+			"next(true);",
+			"next(true)",
+		},
+		{
+			"break();",
+			"break",
+		},
+		{
+			"break(true);",
+			"break(true)",
+		},
 	}
 
 	for _, tt := range tests {
