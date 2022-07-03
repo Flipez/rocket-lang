@@ -11,7 +11,7 @@ end
 input = a
 
 foreach i, number in input
-  if (input[i-1].type() != "NIL")
+  if (input[i-1] != nil)
     if (number > input[i-1])
       increase = increase + 1
     end

@@ -19,7 +19,7 @@ calc = def (input, idx, floor)
   
   new_idx = idx - 1
   delta = char_to_value[input[new_idx]]
-  if (delta.type() == "NIL")
+  if (delta == nil)
     raise(1, new_idx.plz_s())
   end
   
