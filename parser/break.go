@@ -8,12 +8,20 @@ import (
 func (p *Parser) parseBreak() *ast.Break {
 	stmt := &ast.Break{Token: p.curToken}
 
-	p.nextToken()
-
-	stmt.BreakValue = p.parseExpression(LOWEST)
-
-	if p.peekTokenIs(token.SEMICOLON) {
+	if p.peekTokenIs(token.LPAREN) {
 		p.nextToken()
+		if p.peekTokenIs(token.RPAREN) {
+			stmt.BreakValue = p.createNil()
+			p.nextToken()
+		} else {
+			stmt.BreakValue = p.parseExpression(LOWEST)
+		}
+
+		if p.peekTokenIs(token.SEMICOLON) {
+			p.nextToken()
+		}
+	} else {
+		stmt.BreakValue = p.createNil()
 	}
 
 	return stmt

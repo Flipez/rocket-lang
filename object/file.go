@@ -86,7 +86,7 @@ func init() {
 			},
 		},
 		"lines": ObjectMethod{
-			description: "If successfull, returns all lines of the file as array elements, otherwise `null`. Resets the position to 0 after read.",
+			description: "If successfull, returns all lines of the file as array elements, otherwise `nil`. Resets the position to 0 after read.",
 			returnPattern: [][]string{
 				[]string{ARRAY_OBJ, ERROR_OBJ},
 			},

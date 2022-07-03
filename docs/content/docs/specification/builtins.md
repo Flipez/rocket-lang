@@ -25,7 +25,7 @@ Terminates the program with the given exit code and prints the error message.
 exit status 1
 ```
 
-## puts(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FILE)
+## puts(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
 
 Prints the string representation of the given object to STDOUT.
 

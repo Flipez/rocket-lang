@@ -22,7 +22,7 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		}
 
 		env.Set(filepath.Base(s.Value), object.NewModule(s.Value, attributes))
-		return object.NULL
+		return object.NIL
 	}
 
 	return object.NewErrorFormat("Import Error: invalid import path '%s'", name)

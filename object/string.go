@@ -152,11 +152,11 @@ func init() {
 			example: `🚀 > a = "stressed"
 => "stressed"
 🚀 > a.reverse!()
-=> null
+=> nil
 🚀 > a
 => "desserts"`,
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NIL_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -167,7 +167,7 @@ func init() {
 					out[i] = c
 				}
 				s.Value = string(out)
-				return NULL
+				return NIL
 			},
 		},
 		"split": ObjectMethod{
@@ -241,16 +241,16 @@ func init() {
 🚀 > a = " test "
 => " test "
 🚀 > a.strip!()
-=> null
+=> nil
 🚀 > a
 => "test"`,
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NIL_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.TrimSpace(s.Value)
-				return NULL
+				return NIL
 			},
 		},
 		"downcase": ObjectMethod{
@@ -271,16 +271,16 @@ func init() {
 🚀 > a = "TeST"
 => TeST
 🚀 > a.downcase!()
-=> null
+=> nil
 🚀 > a
 => test`,
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NIL_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.ToLower(s.Value)
-				return NULL
+				return NIL
 			},
 		},
 		"upcase": ObjectMethod{
@@ -301,16 +301,16 @@ func init() {
 🚀 > a = "test"
 => test
 🚀 > a.upcase!()
-=> null
+=> nil
 🚀 > a
 => TEST`,
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NIL_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 				s.Value = strings.ToUpper(s.Value)
-				return NULL
+				return NIL
 			},
 		},
 	}

@@ -98,7 +98,7 @@ func init() {
 				[]string{INTEGER_OBJ},
 			},
 			argPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FILE_OBJ},
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -119,12 +119,12 @@ func init() {
 			example: `🚀 > ["a", "b", 1, 2].first()
 => "a"`,
 			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return NULL
+					return NIL
 				}
 				return ao.Elements[0]
 			},
@@ -134,12 +134,12 @@ func init() {
 			example: `🚀 > ["a", "b", 1, 2].last()
 => 2`,
 			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				if len(ao.Elements) == 0 {
-					return NULL
+					return NIL
 				}
 				return ao.Elements[len(ao.Elements)-1]
 			},
@@ -153,7 +153,7 @@ func init() {
 🚀 > a
 => [1, 2]`,
 			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -174,14 +174,14 @@ func init() {
 			example: `🚀 > a = [1,2,3]
 => [1, 2, 3]
 🚀 > a.yoink("a")
-=> null
+=> nil
 🚀 > a
 => [1, 2, 3, "a"]`,
 			returnPattern: [][]string{
-				[]string{NULL_OBJ},
+				[]string{NIL_OBJ},
 			},
 			argPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NULL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -192,7 +192,7 @@ func init() {
 				newElements[length] = args[0]
 
 				ao.Elements = newElements
-				return NULL
+				return NIL
 			},
 		},
 	}

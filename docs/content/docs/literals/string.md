@@ -74,7 +74,7 @@ Returns the string with all uppercase letters replaced with lowercase counterpar
 
 
 ### downcase!()
-> Returns `NULL`
+> Returns `NIL`
 
 Replaces all upcase characters with lowercase counterparts.
 
@@ -84,7 +84,7 @@ Replaces all upcase characters with lowercase counterparts.
 🚀 > a = "TeST"
 => TeST
 🚀 > a.downcase!()
-=> null
+=> nil
 🚀 > a
 => test
 ```
@@ -165,7 +165,7 @@ Returns a copy of the string with all characters reversed.
 
 
 ### reverse!()
-> Returns `NULL`
+> Returns `NIL`
 
 Replaces all the characters in a string in reverse order.
 
@@ -174,7 +174,7 @@ Replaces all the characters in a string in reverse order.
 🚀 > a = "stressed"
 => "stressed"
 🚀 > a.reverse!()
-=> null
+=> nil
 🚀 > a
 => "desserts"
 ```
@@ -220,7 +220,7 @@ Returns a copy of the string with all leading and trailing whitespaces removed.
 
 
 ### strip!()
-> Returns `NULL`
+> Returns `NIL`
 
 Removes all leading and trailing whitespaces in the string.
 
@@ -230,7 +230,7 @@ Removes all leading and trailing whitespaces in the string.
 🚀 > a = " test "
 => " test "
 🚀 > a.strip!()
-=> null
+=> nil
 🚀 > a
 => "test"
 ```
@@ -249,7 +249,7 @@ Returns the string with all lowercase letters replaced with uppercase counterpar
 
 
 ### upcase!()
-> Returns `NULL`
+> Returns `NIL`
 
 Replaces all lowercase characters with upcase counterparts.
 
@@ -259,7 +259,7 @@ Replaces all lowercase characters with upcase counterparts.
 🚀 > a = "test"
 => test
 🚀 > a.upcase!()
-=> null
+=> nil
 🚀 > a
 => TEST
 ```

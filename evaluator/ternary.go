@@ -17,6 +17,6 @@ func evalTernary(t *ast.Ternary, env *object.Environment) object.Object {
 	} else if t.Alternative != nil {
 		return Eval(t.Alternative, env)
 	} else {
-		return object.NULL
+		return object.NIL
 	}
 }

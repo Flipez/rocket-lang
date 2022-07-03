@@ -11,5 +11,5 @@ func putsFunction(env *object.Environment, args ...object.Object) object.Object 
 		fmt.Println(arg.Inspect())
 	}
 
-	return nil
+	return object.NIL
 }

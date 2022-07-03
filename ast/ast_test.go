@@ -50,7 +50,7 @@ func TestString(t *testing.T) {
 		},
 		{
 			"next();",
-			"next",
+			"next(nil)",
 		},
 		{
 			"next(true);",
@@ -58,11 +58,19 @@ func TestString(t *testing.T) {
 		},
 		{
 			"break();",
-			"break",
+			"break(nil)",
 		},
 		{
 			"break(true);",
 			"break(true)",
+		},
+		{
+			"next;",
+			"next(nil)",
+		},
+		{
+			"break;",
+			"break(nil)",
 		},
 	}
 

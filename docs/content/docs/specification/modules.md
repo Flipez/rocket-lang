@@ -34,9 +34,9 @@ You can use it like so:
 
 ```js
 🚀 > import("fixtures/module")
-=> null
+=> nil
 🚀 > module.a
-=> null
+=> nil
 🚀 > module.A
 => 5
 🚀 > module.Sum(module.A, 2)

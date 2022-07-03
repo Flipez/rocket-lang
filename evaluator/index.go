@@ -53,7 +53,7 @@ func evalStringIndexExpression(left, index object.Object) object.Object {
 	idx := transformIndex(index.(*object.Integer).Value, max)
 
 	if idx > max {
-		return object.NULL
+		return object.NIL
 	}
 
 	return object.NewString(string(obj.Value[idx]))
@@ -86,7 +86,7 @@ func evalStringRangeIndexExpression(left, firstIndex, secondIndex object.Object)
 		}
 	}
 
-	return object.NULL
+	return object.NIL
 }
 
 func evalHashIndexExpression(hash, index object.Object) object.Object {
@@ -98,7 +98,7 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 
 	pair, ok := hashObject.Pairs[key.HashKey()]
 	if !ok {
-		return object.NULL
+		return object.NIL
 	}
 
 	return pair.Value
@@ -110,7 +110,7 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	idx := transformIndex(index.(*object.Integer).Value, max)
 
 	if idx > max {
-		return object.NULL
+		return object.NIL
 	}
 
 	return obj.Elements[idx]
@@ -143,7 +143,7 @@ func evalArrayRangeIndexExpression(left, firstIndex, secondIndex object.Object) 
 		}
 	}
 
-	return object.NULL
+	return object.NIL
 }
 
 func transformIndex(idx, max int64) int64 {

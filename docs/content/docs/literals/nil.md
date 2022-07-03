@@ -1,12 +1,13 @@
 ---
-title: "Null"
+title: "Nil"
 menu:
   docs:
     parent: "literals"
 ---
-# Null
+# Nil
 
-
+Nil is the representation of "nothing".
+	It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.
 
 
 ## Literal Specific Methods
