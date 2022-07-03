@@ -205,6 +205,7 @@ func TestErrorHandling(t *testing.T) {
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 		{"break(1.nope())", "undefined method `.nope()` for INTEGER"},
 		{"next(1.nope())", "undefined method `.nope()` for INTEGER"},
+		{"nil.nope()", "undefined method `.nope()` for NULL"},
 	}
 
 	for _, tt := range tests {
