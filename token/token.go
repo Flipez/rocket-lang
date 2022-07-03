@@ -71,6 +71,8 @@ const (
 
 	EXPORT = "EXPORT"
 	IMPORT = "IMPORT"
+
+	NIL = "NIL"
 )
 
 var keywords = map[string]TokenType{
@@ -88,6 +90,7 @@ var keywords = map[string]TokenType{
 	"while":   WHILE,
 	"export":  EXPORT,
 	"import":  IMPORT,
+	"nil":     NIL,
 }
 
 func LookupIdent(ident string) TokenType {

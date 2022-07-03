@@ -71,6 +71,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
+	case *ast.Nil:
+		return &object.Null{}
 
 	case *ast.Prefix:
 		right := Eval(node.Right, env)
