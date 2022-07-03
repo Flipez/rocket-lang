@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.17.0](https://github.com/flipez/rocket-lang/tree/v0.17.0) (2022-07-03)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0...v0.17.0)
+
+**Merged pull requests:**
+
+- Add nil and replace null with it [\#91](https://github.com/Flipez/rocket-lang/pull/91) ([Flipez](https://github.com/Flipez))
+
 ## [v0.16.0](https://github.com/flipez/rocket-lang/tree/v0.16.0) (2022-07-02)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.15.1...v0.16.0)
