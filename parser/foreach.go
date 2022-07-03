@@ -33,6 +33,11 @@ func (p *Parser) parseForEach() ast.Expression {
 	}
 
 	if !p.expectPeek(token.IN) {
+		p.errors = append(p.errors, fmt.Sprintf(
+			"%d:%d: expected `in` after foreach arguments, got %v",
+			p.peekToken.LineNumber,
+			p.peekToken.LinePosition,
+			p.peekToken))
 		return nil
 	}
 	p.nextToken()
