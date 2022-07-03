@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased](https://github.com/flipez/rocket-lang/tree/HEAD)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.17.1...HEAD)
+
+**Implemented enhancements:**
+
+- Parser: add more errors for bad syntax [\#68](https://github.com/Flipez/rocket-lang/issues/68)
+
+## [v0.17.1](https://github.com/flipez/rocket-lang/tree/v0.17.1) (2022-07-03)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.17.0...v0.17.1)
+
+**Closed issues:**
+
+- Add support for `mosel`-loop [\#85](https://github.com/Flipez/rocket-lang/issues/85)
+- Collect Emoji Syntax Ideas [\#9](https://github.com/Flipez/rocket-lang/issues/9)
+
+**Merged pull requests:**
+
+- Foreach improvements [\#92](https://github.com/Flipez/rocket-lang/pull/92) ([Flipez](https://github.com/Flipez))
+
 ## [v0.17.0](https://github.com/flipez/rocket-lang/tree/v0.17.0) (2022-07-03)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.16.0...v0.17.0)
