@@ -141,7 +141,9 @@ is_true = a != b;`,
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/file.md", tempData)
 
 	tempData = templateData{
-		Title:          "Nil",
+		Title: "Nil",
+		Description: `Nil is the representation of "nothing".
+	It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.`,
 		LiteralMethods: nil_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/nil.md", tempData)

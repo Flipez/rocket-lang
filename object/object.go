@@ -244,6 +244,8 @@ func objectMethodLookup(o Object, method string, env Environment, args []Object)
 
 func CompareObjects(ao, bo Object) bool {
 	switch ao.Type() {
+	case NIL_OBJ:
+		return bo.Type() == NIL_OBJ
 	case INTEGER_OBJ:
 		if b, ok := bo.(*Integer); ok {
 			return ao.(*Integer).Value == b.Value
