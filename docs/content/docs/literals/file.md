@@ -32,7 +32,7 @@ Reads content of the file and returns it. Resets the position to 0 after read.
 ### lines()
 > Returns `ARRAY|ERROR`
 
-If successfull, returns all lines of the file as array elements, otherwise `null`. Resets the position to 0 after read.
+If successfull, returns all lines of the file as array elements, otherwise `nil`. Resets the position to 0 after read.
 
 
 

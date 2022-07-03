@@ -35,7 +35,7 @@ const (
 	INTEGER_OBJ      = "INTEGER"
 	FLOAT_OBJ        = "FLOAT"
 	BOOLEAN_OBJ      = "BOOLEAN"
-	NULL_OBJ         = "NULL"
+	NIL_OBJ          = "NIL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	BREAK_VALUE_OBJ  = "BREAK_VALUE"
 	NEXT_VALUE_OBJ   = "NEXT_VALUE"
@@ -325,7 +325,7 @@ func IsNumber(o Object) bool {
 
 func IsTruthy(o Object) bool {
 	switch o {
-	case NULL:
+	case NIL:
 		return false
 	case TRUE:
 		return true

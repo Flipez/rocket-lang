@@ -32,7 +32,7 @@ puts(a[1:-2])
 ## Literal Specific Methods
 
 ### first()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FUNCTION|FILE`
+> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
 
 Returns the first element of the array. Shorthand for `array[0]`
 
@@ -43,7 +43,7 @@ Returns the first element of the array. Shorthand for `array[0]`
 ```
 
 
-### index(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FILE)
+### index(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
 > Returns `INTEGER`
 
 Returns the index of the given element in the array if found. Otherwise return `-1`.
@@ -56,7 +56,7 @@ Returns the index of the given element in the array if found. Otherwise return `
 
 
 ### last()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FUNCTION|FILE`
+> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
 
 Returns the last element of the array.
 
@@ -92,7 +92,7 @@ Returns a copy of the array with deduplicated elements. Raises an error if a ele
 
 
 ### yeet()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FUNCTION|FILE`
+> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
 
 Removes the last element of the array and returns it.
 
@@ -107,8 +107,8 @@ Removes the last element of the array and returns it.
 ```
 
 
-### yoink(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NULL|FUNCTION|FILE)
-> Returns `NULL`
+### yoink(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
+> Returns `NIL`
 
 Adds the given object as last element to the array.
 
@@ -117,7 +117,7 @@ Adds the given object as last element to the array.
 🚀 > a = [1,2,3]
 => [1, 2, 3]
 🚀 > a.yoink("a")
-=> null
+=> nil
 🚀 > a
 => [1, 2, 3, "a"]
 ```

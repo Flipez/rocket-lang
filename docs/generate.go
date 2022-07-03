@@ -23,7 +23,7 @@ func main() {
 	boolean_methods := object.ListObjectMethods()[object.BOOLEAN_OBJ]
 	error_methods := object.ListObjectMethods()[object.ERROR_OBJ]
 	file_methods := object.ListObjectMethods()[object.FILE_OBJ]
-	null_methods := object.ListObjectMethods()[object.NULL_OBJ]
+	nil_methods := object.ListObjectMethods()[object.NIL_OBJ]
 	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
 	http_methods := object.ListObjectMethods()[object.HTTP_OBJ]
 
@@ -141,10 +141,10 @@ is_true = a != b;`,
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/file.md", tempData)
 
 	tempData = templateData{
-		Title:          "Null",
-		LiteralMethods: null_methods,
+		Title:          "Nil",
+		LiteralMethods: nil_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/null.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/nil.md", tempData)
 
 	tempData = templateData{
 		Title: "Integer",

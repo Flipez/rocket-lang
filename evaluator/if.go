@@ -16,6 +16,6 @@ func evalIf(ie *ast.If, env *object.Environment) object.Object {
 	} else if ie.Alternative != nil {
 		return Eval(ie.Alternative, env)
 	} else {
-		return object.NULL
+		return object.NIL
 	}
 }

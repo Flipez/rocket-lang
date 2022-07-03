@@ -24,11 +24,11 @@ func TestEvalIndex(t *testing.T) {
 			index:    object.NewInteger(-2),
 			expected: object.NewString("d"),
 		},
-		// "abcde"[10] => NULL
+		// "abcde"[10] => NIL
 		{
 			left:     object.NewString("abcde"),
 			index:    object.NewInteger(10),
-			expected: object.NULL,
+			expected: object.NIL,
 		},
 
 		// {"a": 1}["a"] => 1
@@ -42,7 +42,7 @@ func TestEvalIndex(t *testing.T) {
 			index:    object.NewString("a"),
 			expected: object.NewInteger(1),
 		},
-		// {"a": 1}["b"] => NULL
+		// {"a": 1}["b"] => NIL
 		{
 			left: object.NewHash(map[object.HashKey]object.HashPair{
 				object.NewString("a").HashKey(): object.HashPair{
@@ -51,9 +51,9 @@ func TestEvalIndex(t *testing.T) {
 				},
 			}),
 			index:    object.NewString("b"),
-			expected: object.NULL,
+			expected: object.NIL,
 		},
-		// {"a": 1}[NULL] => ERROR: unusable as hash key: NULL
+		// {"a": 1}[NIL] => ERROR: unusable as hash key: NIL
 		{
 			left: object.NewHash(map[object.HashKey]object.HashPair{
 				object.NewString("a").HashKey(): object.HashPair{
@@ -61,8 +61,8 @@ func TestEvalIndex(t *testing.T) {
 					Value: object.NewInteger(1),
 				},
 			}),
-			index:    object.NULL,
-			expected: object.NewErrorFormat("unusable as hash key: NULL"),
+			index:    object.NIL,
+			expected: object.NewErrorFormat("unusable as hash key: NIL"),
 		},
 
 		// ["a","b","c","d","e"][2] => "c"
@@ -160,12 +160,12 @@ func TestEvalRangeIndex(t *testing.T) {
 			secondIndex: object.NewInteger(-1),
 			expected:    object.NewString("d"),
 		},
-		// "abcde"[-2:-3] => NULL
+		// "abcde"[-2:-3] => NIL
 		{
 			left:        object.NewString("abcde"),
 			firstIndex:  object.NewInteger(-2),
 			secondIndex: object.NewInteger(-3),
-			expected:    object.NULL,
+			expected:    object.NIL,
 		},
 
 		// ["a","b","c","d","e"][:] => ["a", "b", "c", "d", "e"]
@@ -260,7 +260,7 @@ func TestEvalRangeIndex(t *testing.T) {
 				object.NewString("d"),
 			),
 		},
-		// ["a","b","c","d","e"][-2:-3] => NULL
+		// ["a","b","c","d","e"][-2:-3] => NIL
 		{
 			left: object.NewArrayWithObjects(
 				object.NewString("a"), object.NewString("b"), object.NewString("c"),
@@ -268,7 +268,7 @@ func TestEvalRangeIndex(t *testing.T) {
 			),
 			firstIndex:  object.NewInteger(-2),
 			secondIndex: object.NewInteger(-3),
-			expected:    object.NULL,
+			expected:    object.NIL,
 		},
 
 		// 12345[2:] => ERROR: range index operator not supported: INTEGER

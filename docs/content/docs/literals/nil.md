@@ -1,10 +1,10 @@
 ---
-title: "Null"
+title: "Nil"
 menu:
   docs:
     parent: "literals"
 ---
-# Null
+# Nil
 
 
 

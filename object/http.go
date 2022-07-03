@@ -46,7 +46,7 @@ func init() {
 				[]string{INTEGER_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{NULL_OBJ, ERROR_OBJ},
+				[]string{NIL_OBJ, ERROR_OBJ},
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {
@@ -94,7 +94,7 @@ func init() {
 					return o.(*HTTP).raisedError
 				}
 
-				return NULL
+				return NIL
 			},
 		},
 		"handle": ObjectMethod{
@@ -113,7 +113,7 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 				[]string{FUNCTION_OBJ},
 			},
 			returnPattern: [][]string{
-				[]string{NULL_OBJ, ERROR_OBJ},
+				[]string{NIL_OBJ, ERROR_OBJ},
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {
@@ -237,7 +237,7 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 				})
 
 				o.(*HTTP).registeredPaths = append(o.(*HTTP).registeredPaths, path)
-				return NULL
+				return NIL
 			},
 		},
 	}

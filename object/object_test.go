@@ -47,7 +47,7 @@ func testInput(t *testing.T, tests []inputTestCase) {
 				testStringObject(t, strObj, expected)
 				continue
 			}
-			_, ok = evaluated.(*object.Null)
+			_, ok = evaluated.(*object.Nil)
 			if ok {
 				continue
 			}
@@ -82,7 +82,7 @@ func TestIsError(t *testing.T) {
 	falseErrors := []object.Object{
 		nil,
 		object.NewString("a"),
-		object.NULL,
+		object.NIL,
 	}
 	for _, err := range falseErrors {
 		if object.IsError(nil) {
@@ -98,8 +98,8 @@ func TestIsNumber(t *testing.T) {
 	if !object.IsNumber(object.NewFloat(1.1)) {
 		t.Error("FLOAT_OBJ should be a number")
 	}
-	if object.IsNumber(object.NULL) {
-		t.Error("NULL_OBJ is not a number")
+	if object.IsNumber(object.NIL) {
+		t.Error("NIL_OBJ is not a number")
 	}
 }
 
@@ -110,8 +110,8 @@ func TestIsTruthy(t *testing.T) {
 	if !object.IsTruthy(object.NewString("")) {
 		t.Error("STRING_OBJ should be truthy")
 	}
-	if object.IsTruthy(object.NULL) {
-		t.Error("NULL_OBJ should not be truthy")
+	if object.IsTruthy(object.NIL) {
+		t.Error("NIL_OBJ should not be truthy")
 	}
 	if object.IsTruthy(object.FALSE) {
 		t.Errorf("BOOLEAN_OBJ=false, should not be truthy")
@@ -125,8 +125,8 @@ func TestIsFalsy(t *testing.T) {
 	if object.IsFalsy(object.NewString("")) {
 		t.Error("STRING_OBJ should not be falsy")
 	}
-	if !object.IsFalsy(object.NULL) {
-		t.Error("NULL_OBJ should be falsy")
+	if !object.IsFalsy(object.NIL) {
+		t.Error("NIL_OBJ should be falsy")
 	}
 	if !object.IsFalsy(object.FALSE) {
 		t.Errorf("BOOLEAN_OBJ=false, should be falsy")

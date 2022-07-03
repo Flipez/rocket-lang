@@ -17,5 +17,5 @@ func evalWhile(w *ast.While, env *object.Environment) object.Object {
 		v = Eval(w.Condition, env)
 	}
 
-	return object.NULL
+	return object.NIL
 }

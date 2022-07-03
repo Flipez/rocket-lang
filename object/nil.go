@@ -1,16 +1,16 @@
 package object
 
-var NULL = new(Null)
+var NIL = new(Nil)
 
-type Null struct{}
+type Nil struct{}
 
-func (n *Null) Type() ObjectType { return NULL_OBJ }
-func (n *Null) Inspect() string  { return "null" }
-func (n *Null) InvokeMethod(method string, env Environment, args ...Object) Object {
+func (n *Nil) Type() ObjectType { return NIL_OBJ }
+func (n *Nil) Inspect() string  { return "nil" }
+func (n *Nil) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(n, method, env, args)
 }
 func init() {
-	objectMethods[NULL_OBJ] = map[string]ObjectMethod{
+	objectMethods[NIL_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
 			description: "Returns empty string.",
 			returnPattern: [][]string{

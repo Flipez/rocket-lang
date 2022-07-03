@@ -189,7 +189,7 @@ func TestErrorHandling(t *testing.T) {
 		{"🔥 != 👍", "identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
-		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NULL"},
+		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NIL"},
 		{"if (5 % 0)\n puts(true)\nend", "division by zero not allowed"},
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
@@ -205,7 +205,7 @@ func TestErrorHandling(t *testing.T) {
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 		{"break(1.nope())", "undefined method `.nope()` for INTEGER"},
 		{"next(1.nope())", "undefined method `.nope()` for INTEGER"},
-		{"nil.nope()", "undefined method `.nope()` for NULL"},
+		{"nil.nope()", "undefined method `.nope()` for NIL"},
 	}
 
 	for _, tt := range tests {
@@ -636,8 +636,8 @@ func TestImportSearchPaths(t *testing.T) {
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
-	if obj != object.NULL {
-		t.Errorf("object is not object.NULL. got=%T (%+v)", obj, obj)
+	if obj != object.NIL {
+		t.Errorf("object is not object.NIL. got=%T (%+v)", obj, obj)
 		return false
 	}
 	return true

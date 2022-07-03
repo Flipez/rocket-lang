@@ -26,7 +26,7 @@ HTTP.listen(3000)
 ## Literal Specific Methods
 
 ### handle(STRING, FUNCTION)
-> Returns `NULL|ERROR`
+> Returns `NIL|ERROR`
 
 Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
 Inside the function a variable called "request" will be populated which is a hash with information about the request.
@@ -45,7 +45,7 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 
 
 ### listen(INTEGER)
-> Returns `NULL|ERROR`
+> Returns `NIL|ERROR`
 
 Starts a blocking webserver on the given port.
 

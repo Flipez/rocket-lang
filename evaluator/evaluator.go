@@ -72,7 +72,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
 	case *ast.Nil:
-		return &object.Null{}
+		return &object.Nil{}
 
 	case *ast.Prefix:
 		right := Eval(node.Right, env)
@@ -209,7 +209,7 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 		return object.FALSE
 	case object.FALSE:
 		return object.TRUE
-	case object.NULL:
+	case object.NIL:
 		return object.TRUE
 	default:
 		return object.FALSE
