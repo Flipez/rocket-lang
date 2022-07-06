@@ -27,17 +27,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return object.NewReturnValue(val)
 	case *ast.Break:
-		val := Eval(node.BreakValue, env)
-		if object.IsError(val) {
-			return val
-		}
-		return object.NewBreakValue(val)
+		return object.NewBreakValue(object.NIL)
 	case *ast.Next:
-		val := Eval(node.NextValue, env)
-		if object.IsError(val) {
-			return val
-		}
-		return object.NewNextValue(val)
+		return object.NewNextValue(object.NIL)
 
 	// Expressions
 	case *ast.Integer:
