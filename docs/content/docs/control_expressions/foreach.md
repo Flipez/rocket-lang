@@ -54,7 +54,7 @@ end
 => "test"
 ```
 
-It is possible to use `next` or `break` inside a loop. Both cane take one argument which will returned, otherwise nil will be returned.
+It is possible to use `next` or `break` inside a loop.
 
 ```js
 foreach i in 5

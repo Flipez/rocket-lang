@@ -49,28 +49,12 @@ func TestString(t *testing.T) {
 			"puts(true)",
 		},
 		{
-			"next();",
-			"next(nil)",
+			"next",
+			"next",
 		},
 		{
-			"next(true);",
-			"next(true)",
-		},
-		{
-			"break();",
-			"break(nil)",
-		},
-		{
-			"break(true);",
-			"break(true)",
-		},
-		{
-			"next;",
-			"next(nil)",
-		},
-		{
-			"break;",
-			"break(nil)",
+			"break",
+			"break",
 		},
 	}
 
