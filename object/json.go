@@ -53,7 +53,7 @@ func interfaceToObject(i interface{}) Object {
 		return jsonObject
 	case []interface{}:
 		jsonArray := NewArray(nil)
-		for element := range v {
+		for _, element := range v {
 			jsonArray.Elements = append(jsonArray.Elements, interfaceToObject(element))
 		}
 		return jsonArray
