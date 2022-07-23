@@ -1,6 +1,6 @@
 module github.com/flipez/rocket-lang
 
-go 1.17
+go 1.18
 
 require (
 	github.com/abiosoft/ishell/v2 v2.0.2
@@ -13,5 +13,5 @@ require (
 	github.com/flynn-archive/go-shlex v0.0.0-20150515145356-3f9db97f8568 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
-	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 )
