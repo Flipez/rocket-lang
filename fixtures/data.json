@@ -1,5 +1,6 @@
 {
-  "name": "Kadeem Sawyer",
-  "phone": 12.3,
-  "postalZip": ["11137", 1234]
+  "string": "Kadeem Sawyer",
+  "float": 12.3,
+  "array": ["11137", 1234],
+  "bool": true
 }
