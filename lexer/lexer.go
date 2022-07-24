@@ -193,7 +193,6 @@ func (l *Lexer) readDoubleQuoteString() string {
 		}
 
 		escapedString += string(l.ch)
-
 	}
 
 	return escapedString

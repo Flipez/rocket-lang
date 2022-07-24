@@ -329,8 +329,8 @@ func (s *String) Inspect() string {
 	}
 
 	return `"` + output + `"`
-
 }
+
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(s, method, env, args)
 }
