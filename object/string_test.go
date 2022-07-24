@@ -91,6 +91,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"te\nst".size()`, 6},
 		{`"te\"st".size()`, 5},
 		{`'te\"st'.size()`, 6},
+		{`"te\"st" == 'te"st'`, true},
 	}
 
 	testInput(t, tests)

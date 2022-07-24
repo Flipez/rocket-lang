@@ -57,7 +57,14 @@ puts(s)
 "cdef"
 "ef"
 "bcd"
-"abCdEf"`,
+"abCdEf"
+
+// you can also use single quotes
+'test "string" with doublequotes'
+
+// and you can scape a double quote in a double quote string
+"te\"st" == 'te"st'
+`,
 		LiteralMethods: string_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/string.md", tempData)
