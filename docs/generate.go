@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/flipez/rocket-lang/object"
 	"os"
 	"text/template"
+
+	"github.com/flipez/rocket-lang/object"
 )
 
 type templateData struct {
@@ -186,10 +187,10 @@ HTTP.listen(3000)
 
 	tempData = templateData{
 		Title:          "JSON",
-		Example:        `/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}`,
-		LiteralMethods: http_methods,
+		Example:        `JSON.parse(json_string)`,
+		LiteralMethods: json_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/json.md", tempData)
 }
 
 func create_doc(path string, target string, data templateData) bool {
