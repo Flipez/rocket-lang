@@ -26,6 +26,7 @@ func main() {
 	nil_methods := object.ListObjectMethods()[object.NIL_OBJ]
 	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
 	http_methods := object.ListObjectMethods()[object.HTTP_OBJ]
+	json_methods := object.ListObjectMethods()[object.JSON_OBJ]
 
 	tempData := templateData{
 		Title: "String",
@@ -183,6 +184,12 @@ HTTP.listen(3000)
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
 
+	tempData = templateData{
+		Title:          "JSON",
+		Example:        `/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}`,
+		LiteralMethods: http_methods,
+		DefaultMethods: default_methods}
+	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
 }
 
 func create_doc(path string, target string, data templateData) bool {
