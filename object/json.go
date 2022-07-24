@@ -15,6 +15,11 @@ func (j *JSON) InvokeMethod(method string, env Environment, args ...Object) Obje
 func init() {
 	objectMethods[JSON_OBJ] = map[string]ObjectMethod{
 		"parse": ObjectMethod{
+			description: "Takes a STRING and parses it to a HASH or ARRAY. Numbers are always FLOAT.",
+			example: `🚀 > JSON.parse('{"test": 123}')
+=> {"test": 123.0}
+🚀 > JSON.parse('["test", 123]')
+=> ["test", 123.0]`,
 			returnPattern: [][]string{
 				[]string{HASH_OBJ},
 			},

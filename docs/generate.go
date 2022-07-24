@@ -193,8 +193,9 @@ HTTP.listen(3000)
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
 
 	tempData = templateData{
-		Title:          "JSON",
-		Example:        `JSON.parse(json_string)`,
+		Title: "JSON",
+		Example: `🚀 > JSON.parse('{"test": 123}')
+=> {"test": 123.0}`,
 		LiteralMethods: json_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/content/docs/literals/json.md", tempData)
