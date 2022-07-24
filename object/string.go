@@ -317,7 +317,20 @@ func init() {
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
-func (s *String) Inspect() string  { return `"` + s.Value + `"` }
+func (s *String) Inspect() string {
+	var output string
+
+	for _, char := range s.Value {
+		if char == '"' {
+			output += string('\\')
+		}
+
+		output += string(char)
+	}
+
+	return `"` + output + `"`
+
+}
 func (s *String) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(s, method, env, args)
 }
