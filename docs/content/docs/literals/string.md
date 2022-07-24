@@ -39,6 +39,13 @@ puts(s)
 "ef"
 "bcd"
 "abCdEf"
+
+// you can also use single quotes
+'test "string" with doublequotes'
+
+// and you can scape a double quote in a double quote string
+"te\"st" == 'te"st'
+
 ```
 
 ## Literal Specific Methods

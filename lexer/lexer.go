@@ -139,7 +139,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 	case '"':
 		tok.Type = token.STRING
-		tok.Literal = l.readString()
+		tok.Literal = l.readDoubleQuoteString()
+	case '\'':
+		tok.Type = token.STRING
+		tok.Literal = l.readSingleQuoteString()
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
@@ -177,11 +180,29 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-func (l *Lexer) readString() string {
+func (l *Lexer) readDoubleQuoteString() string {
+	var escapedString string
+
+	for {
+		l.readChar()
+
+		if l.ch == '\\' && l.peekChar() == '"' {
+			l.readChar()
+		} else if l.ch == '"' || l.ch == 0 {
+			break
+		}
+
+		escapedString += string(l.ch)
+	}
+
+	return escapedString
+}
+
+func (l *Lexer) readSingleQuoteString() string {
 	position := l.position + 1
 	for {
 		l.readChar()
-		if l.ch == '"' || l.ch == 0 {
+		if l.ch == '\'' || l.ch == 0 {
 			break
 		}
 	}
