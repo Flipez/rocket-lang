@@ -14,6 +14,7 @@ func init() {
 	RegisterFunction("open", openFunction)
 
 	RegisterClass("HTTP", &object.HTTP{})
+	RegisterClass("JSON", &object.JSON{})
 }
 
 func RegisterFunction(name string, function object.BuiltinFunction) {
