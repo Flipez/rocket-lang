@@ -1,12 +1,18 @@
 # Changelog
 
-## [Unreleased](https://github.com/flipez/rocket-lang/tree/HEAD)
+## [v0.18.0](https://github.com/flipez/rocket-lang/tree/v0.18.0) (2022-07-25)
 
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.17.1...HEAD)
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.17.1...v0.18.0)
 
 **Implemented enhancements:**
 
 - Parser: add more errors for bad syntax [\#68](https://github.com/Flipez/rocket-lang/issues/68)
+
+**Merged pull requests:**
+
+- Add support for single quotes and escape double quotes [\#96](https://github.com/Flipez/rocket-lang/pull/96) ([Flipez](https://github.com/Flipez))
+- add json object [\#95](https://github.com/Flipez/rocket-lang/pull/95) ([Flipez](https://github.com/Flipez))
+- remove args from next and break [\#94](https://github.com/Flipez/rocket-lang/pull/94) ([Flipez](https://github.com/Flipez))
 
 ## [v0.17.1](https://github.com/flipez/rocket-lang/tree/v0.17.1) (2022-07-03)
 
