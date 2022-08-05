@@ -1,3 +1,4 @@
+/* stylelint-disable docusaurus/copyright-header */
 /**
  * Any CSS included here will be global. The classic template
  * bundles Infima by default. Infima is a CSS framework designed to
@@ -6,25 +7,71 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #0b84f3;
+  --ifm-color-primary-dark: #0a77db;
+  --ifm-color-primary-darker: #0970cf;
+  --ifm-color-primary-darkest: #085caa;
+  --ifm-color-primary-light: #2290f5;
+  --ifm-color-primary-lighter: #2f96f6;
+  --ifm-color-primary-lightest: #53a9f7;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+[data-theme="light"] {
+  --text-color: #000;
+  --blue-button-color: #084696;
+  --blue-underlay: rgba(66, 144, 245, 0.15);
+  --blue-underlay-hover: rgba(66, 144, 245, 0.25);
+  --light-text-color: #777;
+  --clear-hover: rgba(0, 0, 0, 0.04);
+  --box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] {
+  --text-color: #fff;
+  --blue-underlay: rgba(255, 255, 255, 0.15);
+  --blue-underlay-hover: rgba(255, 255, 255, 0.25);
+  --clear-hover: rgba(255, 255, 255, 0.06);
+  --blue-button-color: white;
+  --light-text-color: #aaa;
+  --box-shadow: 0 1px 8px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .docusaurus-highlight-code-line {
+  background-color: rgb(232, 232, 232);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme="dark"] .docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+/* Hide code blocks according to theme */
+[data-theme="light"] .shiki.github-dark {
+  display: none;
+}
+
+[data-theme="dark"] .shiki.github-light {
+  display: none;
+}
+
+/* Patches */
+pre.shiki > .code-title {
+  color: var(--ifm-color-emphasis-900) !important;
+}
+
+code {
+  background-color: transparent;
+  border-width: 0;
+  color: #0b84f3;
+  padding: 0;
+}
+
+.markdown a {
+  text-underline-position: under;
+  text-decoration: underline;
 }

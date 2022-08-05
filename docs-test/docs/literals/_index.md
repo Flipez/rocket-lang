@@ -1,4 +1,0 @@
----
-title: Literals
-bookFlatSection: true
----
