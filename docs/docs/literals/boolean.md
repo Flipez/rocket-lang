@@ -1,9 +1,3 @@
----
-title: "Boolean"
-menu:
-  docs:
-    parent: "literals"
----
 # Boolean
 
 A Boolean can represent two values: `true` and `false` and can be used in control flows.
@@ -81,3 +75,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

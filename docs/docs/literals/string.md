@@ -1,9 +1,3 @@
----
-title: "String"
-menu:
-  docs:
-    parent: "literals"
----
 # String
 
 
@@ -317,3 +311,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

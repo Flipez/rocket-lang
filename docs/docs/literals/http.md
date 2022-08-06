@@ -1,9 +1,3 @@
----
-title: "HTTP"
-menu:
-  docs:
-    parent: "literals"
----
 # HTTP
 
 
@@ -107,3 +101,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

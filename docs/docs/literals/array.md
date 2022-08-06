@@ -1,9 +1,3 @@
----
-title: "Array"
-menu:
-  docs:
-    parent: "literals"
----
 # Array
 
 
@@ -168,3 +162,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

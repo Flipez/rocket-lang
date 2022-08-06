@@ -1,9 +1,3 @@
----
-title: "Error"
-menu:
-  docs:
-    parent: "literals"
----
 # Error
 
 
@@ -56,3 +50,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

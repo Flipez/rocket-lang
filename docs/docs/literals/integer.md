@@ -1,9 +1,3 @@
----
-title: "Integer"
-menu:
-  docs:
-    parent: "literals"
----
 # Integer
 
 An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
@@ -112,3 +106,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

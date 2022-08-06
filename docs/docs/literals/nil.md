@@ -1,9 +1,3 @@
----
-title: "Nil"
-menu:
-  docs:
-    parent: "literals"
----
 # Nil
 
 Nil is the representation of "nothing".
@@ -78,3 +72,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

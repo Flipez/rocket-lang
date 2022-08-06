@@ -1,9 +1,3 @@
----
-title: "Float"
-menu:
-  docs:
-    parent: "literals"
----
 # Float
 
 
@@ -91,3 +85,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+

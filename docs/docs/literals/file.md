@@ -1,9 +1,3 @@
----
-title: "File"
-menu:
-  docs:
-    parent: "literals"
----
 # File
 
 
@@ -109,3 +103,4 @@ Returns the supported methods with usage information.
 => BOOLEAN supports the following methods:
 				plz_s()
 ```
+
