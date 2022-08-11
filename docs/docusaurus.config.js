@@ -13,7 +13,6 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
@@ -31,6 +30,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/flipez/rocket-lang/tree/main/docs/',
+            lastVersion: 'v0.18.0',
         },
         blog: {
           showReadingTime: true,
@@ -49,6 +49,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      algolia: {
+        appId: 'a',
+        apiKey: 'a',
+        indexName: 'a',
+      },
       navbar: {
         title: 'RocketLang',
         logo: {
@@ -62,6 +67,15 @@ const config = {
             label: 'Documentation',
           },
           //{to: '/blog', label: 'Blog', position: 'left'},
+          {
+            type: 'search',
+            position: 'right',
+          },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+            dropdownActiveClassDisabled: true,
+          },
           {
             href: 'https://github.com/flipez/rocket-lang',
             label: 'GitHub',
