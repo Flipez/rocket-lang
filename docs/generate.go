@@ -69,7 +69,7 @@ puts(s)
 `,
 		LiteralMethods: string_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/string.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/string.md", tempData)
 
 	tempData = templateData{
 		Title: "Array",
@@ -92,7 +92,7 @@ puts(a[1:-2])
 `,
 		LiteralMethods: array_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/array.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/array.md", tempData)
 
 	tempData = templateData{
 		Title: "Hash",
@@ -120,7 +120,7 @@ true
 true`,
 		LiteralMethods: hash_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/hash.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/hash.md", tempData)
 
 	tempData = templateData{
 		Title:       "Boolean",
@@ -137,17 +137,17 @@ is_false = a == b;
 is_true = a != b;`,
 		LiteralMethods: boolean_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/boolean.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/boolean.md", tempData)
 
 	tempData = templateData{Title: "Error", LiteralMethods: error_methods, DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/error.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/error.md", tempData)
 
 	tempData = templateData{
 		Title:          "File",
 		Example:        `input = open("examples/aoc/2021/day-1/input").lines()`,
 		LiteralMethods: file_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/file.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/file.md", tempData)
 
 	tempData = templateData{
 		Title: "Nil",
@@ -155,7 +155,7 @@ is_true = a != b;`,
 	It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.`,
 		LiteralMethods: nil_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/nil.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/nil.md", tempData)
 
 	tempData = templateData{
 		Title: "Integer",
@@ -170,10 +170,10 @@ is_false = 1 == 2;`,
 To cast a negative integer a digit can be prefixed with a - eg. -456.`,
 		LiteralMethods: integer_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/integer.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/integer.md", tempData)
 
 	tempData = templateData{Title: "Float", LiteralMethods: float_methods, DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/float.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/float.md", tempData)
 
 	tempData = templateData{
 		Title: "HTTP",
@@ -190,7 +190,7 @@ HTTP.listen(3000)
 // {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}`,
 		LiteralMethods: http_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/http.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/http.md", tempData)
 
 	tempData = templateData{
 		Title: "JSON",
@@ -198,7 +198,7 @@ HTTP.listen(3000)
 => {"test": 123.0}`,
 		LiteralMethods: json_methods,
 		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/content/docs/literals/json.md", tempData)
+	create_doc("docs/templates/literal.md", "docs/docs/literals/json.md", tempData)
 }
 
 func create_doc(path string, target string, data templateData) bool {

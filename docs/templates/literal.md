@@ -1,9 +1,3 @@
----
-title: "{{ .Title }}"
-menu:
-  docs:
-    parent: "literals"
----
 # {{ .Title }}
 
 {{ .Description }}
