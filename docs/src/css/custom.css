@@ -75,3 +75,7 @@ code {
   text-underline-position: under;
   text-decoration: underline;
 }
+
+.highlight {
+  color: #4fd1d9;
+}

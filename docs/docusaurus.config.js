@@ -1,8 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+//const lightCodeTheme = require('prism-react-renderer/themes/github');
+//const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const codeTheme = require('./components/CodeBlockTheme');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -50,9 +51,9 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       algolia: {
-        appId: 'a',
-        apiKey: 'a',
-        indexName: 'a',
+        appId: 'P0XYEH7IPQ',
+        apiKey: 'd5f8e27e198519529222235cec0febfe',
+        indexName: 'rocket-lang',
       },
       navbar: {
         title: 'RocketLang',
@@ -62,6 +63,11 @@ const config = {
         },
         items: [
           {
+            type: 'docsVersionDropdown',
+            position: 'left',
+            dropdownActiveClassDisabled: true,
+          },
+          {
             to: 'docs',
             position: 'left',
             label: 'Documentation',
@@ -70,11 +76,6 @@ const config = {
           {
             type: 'search',
             position: 'right',
-          },
-          {
-            type: 'docsVersionDropdown',
-            position: 'right',
-            dropdownActiveClassDisabled: true,
           },
           {
             href: 'https://github.com/flipez/rocket-lang',
@@ -89,8 +90,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} RocketLang.org`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: codeTheme,
+        darkTheme: codeTheme,
       },
     }),
 };

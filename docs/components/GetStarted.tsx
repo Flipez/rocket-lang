@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { BlueButton } from "./layout/Button";
 import styles from "./get-started.module.css";
-import { GithubButton } from "./GithubButton";
 
 export const GetStarted: React.FC = () => {
   const [clicked, setClicked] = useState<number | null>(null);
@@ -27,6 +25,10 @@ export const GetStarted: React.FC = () => {
           </div>
         </div>
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   );
 };
