@@ -33,13 +33,6 @@ const config = {
             'https://github.com/flipez/rocket-lang/tree/main/docs/',
             lastVersion: 'v0.18.0',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/flipez/rocket-lang/tree/main/docs/',
-        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -72,7 +65,7 @@ const config = {
             position: 'left',
             label: 'Documentation',
           },
-          //{to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'search',
             position: 'right',
