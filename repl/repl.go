@@ -4,9 +4,13 @@ import (
 	//"bufio"
 	"fmt"
 	"io"
-	"strings"
+	//"log"
+	"os"
+	//"strings"
 
-	"github.com/abiosoft/ishell/v2"
+	"github.com/peterh/liner"
+
+	//"github.com/abiosoft/ishell/v2"
 	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
@@ -20,37 +24,57 @@ var buildVersion = "v0.10.0"
 var buildDate = "2021-12-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
-	shell := ishell.New()
-	shell.SetHomeHistoryPath(".rocket_history")
-	shell.SetOut(out)
-	shell.SetPrompt("🚀 > ")
+	line := liner.NewLiner()
+	defer line.Close()
+
+	//shell := ishell.New()
+	//shell.SetHomeHistoryPath(".rocket_history")
+	//shell.SetOut(out)
+	//shell.SetPrompt("🚀 > ")
 
 	env := object.NewEnvironment()
 	imports := make(map[string]struct{})
 
-	shell.Println(SplashScreen())
-	shell.NotFound(func(ctx *ishell.Context) {
+	line.SetCtrlCAborts(true)
 
-		l := lexer.New(strings.Join(ctx.RawArgs, " "))
-		p := parser.New(l, imports)
+	//if f, err := os.Open(history); err == nil {
+	//	line.ReadHistory(f)
+	//	f.Close()
+	//}
 
-		object.AddEvaluator(evaluator.Eval)
+	//if f, err := os.Create(history); err != nil {
+	//	log.Error("system error: unable to write to history file: %s", err)
+	//} else {
+	//	line.WriteHistory(f)
+	//	f.Close()
+	//}
 
-		var program *ast.Program
+	for {
+		source, err := line.Prompt("🚀 > ")
 
-		program, imports = p.ParseProgram()
-		if len(p.Errors()) > 0 {
-			printParserErrors(ctx, p.Errors())
-			return
+		if err == liner.ErrPromptAborted {
+			//log.Info("Exiting...")
+			os.Exit(1)
+		} else {
+			l := lexer.New(source)
+			p := parser.New(l, imports)
+
+			object.AddEvaluator(evaluator.Eval)
+
+			var program *ast.Program
+
+			program, imports = p.ParseProgram()
+			if len(p.Errors()) > 0 {
+				//printParserErrors(source, p.Errors())
+				return
+			}
+
+			evaluated := evaluator.Eval(program, env)
+			if evaluated != nil {
+				//ctx.Println("=> " + evaluated.Inspect())
+			}
 		}
-
-		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
-			ctx.Println("=> " + evaluated.Inspect())
-		}
-	})
-
-	shell.Run()
+	}
 }
 
 const ROCKET = `
@@ -70,10 +94,10 @@ func SplashVersion() string {
 	return fmt.Sprintf("rocket-lang version %s (%s)\n", buildVersion, buildDate)
 }
 
-func printParserErrors(ctx *ishell.Context, errors []string) {
-	ctx.Println("🔥 Great, you broke it!")
-	ctx.Println(" parser errors:")
-	for _, msg := range errors {
-		ctx.Printf("\t %s\n", msg)
-	}
-}
+// func printParserErrors(ctx *ishell.Context, errors []string) {
+// 	ctx.Println("🔥 Great, you broke it!")
+// 	ctx.Println(" parser errors:")
+// 	for _, msg := range errors {
+// 		ctx.Printf("\t %s\n", msg)
+// 	}
+// }

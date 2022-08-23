@@ -14,7 +14,7 @@ func init() {
 	cwd, err := os.Getwd()
 
 	if err != nil {
-		log.Fatalf("error getting cwd: %s", err)
+		log.Printf("error getting cwd: %s", err)
 	}
 
 	if e := os.Getenv("ROCKETLANGPATH"); e != "" {
