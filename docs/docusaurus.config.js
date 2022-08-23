@@ -66,6 +66,7 @@ const config = {
             label: 'Documentation',
           },
           {to: '/blog', label: 'Blog', position: 'left'},
+          {to: 'https://play.rocket-lang.org', label: 'Playground', position: 'left'},
           {
             type: 'search',
             position: 'right',
