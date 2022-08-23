@@ -56,10 +56,31 @@
 		if (shareData) {
 		  window.input.value = atob(shareData)
 		}
+
+
 		this.shareButton.addEventListener('click',function(e) {
       urlParams.set('share', btoa(window.input.value));
       window.location.search = urlParams;
 		});
+
+
+    window.input.addEventListener('keydown', function(e) {
+      if (e.key == 'Tab') {
+        e.preventDefault();
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+
+        // set textarea value to: text before caret + tab + text after caret
+        this.value = this.value.substring(0, start) +
+          "\t" + this.value.substring(end);
+
+        // put caret at right position again
+        this.selectionStart =
+          this.selectionEnd = start + 1;
+      }
+    });
+
+
 		(function() {
 			if (!('WebAssembly' in window)) {
 				document.body.innerText = 'Sorry, you need a browser with WebAssembly support';
