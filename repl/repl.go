@@ -5,6 +5,8 @@ package repl
 import (
 	"fmt"
 	"io"
+	"log"
+	"os"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -20,9 +22,14 @@ var buildVersion = "v0.10.0"
 var buildDate = "2021-12-27T21:13:44Z"
 
 func Start(in io.Reader, out io.Writer) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:                 "🚀 \033[31m»\033[0m ",
-		HistoryFile:            "/tmp/readline-multiline",
+		HistoryFile:            homeDir + "/.rocket_history",
 		InterruptPrompt:        "^C",
 		DisableAutoSaveHistory: true,
 	})
