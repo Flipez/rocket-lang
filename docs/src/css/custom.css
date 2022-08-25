@@ -6,6 +6,7 @@
  */
 
 /* You can override the default Infima variables here. */
+@import url('https://rsms.me/inter/inter.css');
 :root {
   --ifm-color-primary: #0b84f3;
   --ifm-color-primary-dark: #0a77db;
@@ -78,4 +79,9 @@ code {
 
 .highlight {
   color: #4fd1d9;
+}
+
+html { font-family: 'Inter', sans-serif; }
+@supports (font-variation-settings: normal) {
+  html { font-family: 'Inter var', sans-serif; }
 }
