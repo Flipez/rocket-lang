@@ -13,6 +13,7 @@ const (
 	LOWEST
 	ASSIGN      //=
 	TERNARY     // ? :
+	LOGICAL     // logical or and logical and
 	EQUALS      //==
 	LESSGREATER // > or <
 	SUM         // +
@@ -37,6 +38,8 @@ var precedences = map[token.TokenType]int{
 	token.ASTERISK: PRODUCT,
 	token.PERCENT:  MODULO,
 	token.QUESTION: TERNARY,
+	token.AND:      LOGICAL,
+	token.OR:       LOGICAL,
 	token.LPAREN:   CALL,
 	token.PERIOD:   CALL,
 	token.LBRACKET: INDEX,
@@ -104,6 +107,8 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.LPAREN, p.parseCall)
 	p.registerInfix(token.LBRACKET, p.parseIndex)
 	p.registerInfix(token.QUESTION, p.parseTernary)
+	p.registerInfix(token.AND, p.parseInfix)
+	p.registerInfix(token.OR, p.parseInfix)
 
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()

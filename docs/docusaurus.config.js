@@ -28,6 +28,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          sidebarCollapsible: false,
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/flipez/rocket-lang/tree/main/docs/',

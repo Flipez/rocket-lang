@@ -71,6 +71,16 @@ func evalFloatInfix(operator string, left, right object.Object) object.Object {
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
 	switch {
+	case operator == "and":
+		if left == object.FALSE || left.Type() == object.NIL_OBJ {
+			return left
+		}
+		return right
+	case operator == "or":
+		if left == object.FALSE || left.Type() == object.NIL_OBJ {
+			return right
+		}
+		return left
 	case operator == "==":
 		return nativeBoolToBooleanObject(object.CompareObjects(left, right))
 	case operator == "!=":
