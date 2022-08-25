@@ -36,6 +36,8 @@ const (
 	LT_EQ = "<="
 	GT    = ">"
 	GT_EQ = ">="
+	AND   = "AND"
+	OR    = "OR"
 
 	COMMA     = ","
 	SEMICOLON = ";"
@@ -91,6 +93,8 @@ var keywords = map[string]TokenType{
 	"export":  EXPORT,
 	"import":  IMPORT,
 	"nil":     NIL,
+	"and":     AND,
+	"or":      OR,
 }
 
 func LookupIdent(ident string) TokenType {
