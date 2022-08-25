@@ -38,6 +38,18 @@ func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 
 	switch l.ch {
+	case '&':
+		if l.peekChar() == '&' {
+			l.readChar()
+			tok.Type = token.AND
+			tok.Literal = "and"
+		}
+	case '|':
+		if l.peekChar() == '|' {
+			l.readChar()
+			tok.Type = token.OR
+			tok.Literal = "or"
+		}
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
