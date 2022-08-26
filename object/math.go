@@ -149,7 +149,7 @@ func init() {
 		},
 		"pow": ObjectMethod{
 			description: "Returns argument1**argument2, the base-argument1 exponential of argument2",
-			example: `🚀 > Math.copysign(2.0, 3.0)
+			example: `🚀 > Math.pow(2.0, 3.0)
 => 8.0`,
 			returnPattern: [][]string{[]string{FLOAT_OBJ}},
 			argPattern:    [][]string{[]string{FLOAT_OBJ}, []string{FLOAT_OBJ}},

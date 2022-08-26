@@ -156,7 +156,7 @@ Returns argument1**argument2, the base-argument1 exponential of argument2
 
 
 ```js
-🚀 > Math.copysign(2.0, 3.0)
+🚀 > Math.pow(2.0, 3.0)
 => 8.0
 ```
 
