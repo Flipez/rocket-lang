@@ -218,6 +218,7 @@ func TestErrorHandling(t *testing.T) {
 		{"break(1.nope())", "undefined method `.nope()` for INTEGER"},
 		{"next(1.nope())", "undefined method `.nope()` for INTEGER"},
 		{"nil.nope()", "undefined method `.nope()` for NIL"},
+		{"-true", "unknown operator: -BOOLEAN"},
 	}
 
 	for _, tt := range tests {
