@@ -209,12 +209,16 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 }
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
-	if right.Type() != object.INTEGER_OBJ {
+	switch right.Type() {
+	case object.INTEGER_OBJ:
+		i := right.(*object.Integer).Value
+		return object.NewInteger(-i)
+	case object.FLOAT_OBJ:
+		f := right.(*object.Float).Value
+		return object.NewFloat(-f)
+	default:
 		return object.NewErrorFormat("unknown operator: -%s", right.Type())
 	}
-
-	value := right.(*object.Integer).Value
-	return object.NewInteger(-value)
 }
 
 func nativeBoolToBooleanObject(input bool) *object.Boolean {
