@@ -5,6 +5,7 @@ import (
 	"text/template"
 
 	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/stdlib"
 )
 
 type templateData struct {
@@ -13,6 +14,10 @@ type templateData struct {
 	Example        string
 	LiteralMethods map[string]object.ObjectMethod
 	DefaultMethods map[string]object.ObjectMethod
+}
+
+type constantsData struct {
+	Constants map[string]object.Object
 }
 
 func main() {
@@ -28,6 +33,7 @@ func main() {
 	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
 	http_methods := object.ListObjectMethods()[object.HTTP_OBJ]
 	json_methods := object.ListObjectMethods()[object.JSON_OBJ]
+	math_methods := object.ListObjectMethods()[object.MATH_OBJ]
 
 	tempData := templateData{
 		Title: "String",
@@ -199,6 +205,15 @@ HTTP.listen(3000)
 		LiteralMethods: json_methods,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/docs/literals/json.md", tempData)
+
+	tempData = templateData{
+		Title:          "Math",
+		Example:        "",
+		LiteralMethods: math_methods,
+		DefaultMethods: default_methods}
+	create_doc("docs/templates/literal.md", "docs/docs/standard_library/math.md", tempData)
+
+	create_constants()
 }
 
 func create_doc(path string, target string, data templateData) bool {
@@ -211,6 +226,22 @@ func create_doc(path string, target string, data templateData) bool {
 
 	t := template.Must(template.New("literal.md").ParseFiles(paths...))
 	err = t.Execute(f, data)
+	if err != nil {
+		panic(err)
+	}
+	return true
+}
+
+func create_constants() bool {
+	paths := []string{"docs/templates/constants.md"}
+
+	f, err := os.Create("docs/docs/standard_library/constants.md")
+	if err != nil {
+		panic(err)
+	}
+
+	t := template.Must(template.New("constants.md").ParseFiles(paths...))
+	err = t.Execute(f, constantsData{Constants: stdlib.Constants})
 	if err != nil {
 		panic(err)
 	}

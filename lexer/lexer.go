@@ -258,7 +258,7 @@ func (l *Lexer) isNewline() bool {
 }
 
 func (l *Lexer) isIdentifier(ch byte) bool {
-	return !isDigit(ch) && !l.isWhitespace(ch) && !isBrace(ch) && !isOperator(ch) && !isComparison(ch) && !isCompound(ch) && !isBrace(ch) && !isParen(ch) && !isBracket(ch) && !isEmpty(ch)
+	return !l.isWhitespace(ch) && !isBrace(ch) && !isOperator(ch) && !isComparison(ch) && !isCompound(ch) && !isBrace(ch) && !isParen(ch) && !isBracket(ch) && !isEmpty(ch)
 }
 
 func (l *Lexer) isWhitespace(ch byte) bool {

@@ -6,6 +6,7 @@ import (
 
 var Builtins = map[string]*object.Builtin{}
 var Clazzes = map[string]object.Object{}
+var Constants = map[string]object.Object{}
 
 func init() {
 	RegisterFunction("puts", putsFunction)
@@ -15,6 +16,9 @@ func init() {
 
 	RegisterClass("HTTP", &object.HTTP{})
 	RegisterClass("JSON", &object.JSON{})
+	RegisterClass("Math", &object.Math{})
+
+	registerConstants()
 }
 
 func RegisterFunction(name string, function object.BuiltinFunction) {

@@ -49,6 +49,7 @@ const (
 	MODULE_OBJ       = "MODULE"
 	HTTP_OBJ         = "HTTP"
 	JSON_OBJ         = "JSON"
+	MATH_OBJ         = "MATH"
 )
 
 type ObjectMethod struct {

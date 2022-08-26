@@ -7,6 +7,10 @@ import (
 )
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
+	if val, ok := stdlib.Constants[node.Value]; ok {
+		return val
+	}
+
 	if val, ok := env.Get(node.Value); ok {
 		return val
 	}
