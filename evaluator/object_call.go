@@ -15,5 +15,9 @@ func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object
 		}
 	}
 
+	if ident, ok := call.Call.(*ast.Identifier); ok {
+		return object.NewBuiltin(ident.Value, nil)
+	}
+
 	return object.NewErrorFormat("undefined method `.%s()` for %s", call.Call.(*ast.Call).Callable.String(), obj.Type())
 }

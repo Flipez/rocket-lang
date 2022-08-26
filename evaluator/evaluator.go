@@ -156,6 +156,9 @@ func applyFunction(def object.Object, args []object.Object, env *object.Environm
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
+		if def.Fn == nil {
+			return object.NewErrorFormat("missing context")
+		}
 		return def.Fn(env, args...)
 
 	default:
