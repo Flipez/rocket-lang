@@ -13,9 +13,9 @@ import (
 
 func TestHTTPObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`HTTP.nope()`, "undefined method `.nope()` for HTTP"},
-		{`HTTP.handle(1, "test")`, "wrong argument type on position 0: got=INTEGER, want=STRING"},
-		{`HTTP.handle("/", "test")`, "wrong argument type on position 1: got=STRING, want=FUNCTION"},
+		{`HTTP.new().nope()`, "undefined method `.nope()` for HTTP"},
+		{`HTTP.new().handle(1, "test")`, "wrong argument type on position 0: got=INTEGER, want=STRING"},
+		{`HTTP.new().handle("/", "test")`, "wrong argument type on position 1: got=STRING, want=FUNCTION"},
 		{`HTTP.listen(3000)`, "Invalid handler. Call only supported on instance."},
 		{"def test()\nend;HTTP.handle(\"/\", test)", "Invalid handler. Call only supported on instance."},
 		{`a = HTTP.new(); a.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
