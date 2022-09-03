@@ -11,7 +11,10 @@ var mathProperties = map[string]*object.BuiltinProperty{}
 
 func init() {
 	mathFunctions["abs"] = object.NewBuiltinFunction("abs",
-		object.MethodLayout{},
+		object.MethodLayout{
+			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
+			ArgPattern:    object.Args(object.Arg(object.FLOAT_OBJ)),
+		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			f := args[0].(*object.Float)
 			return object.NewFloat(math.Abs(f.Value))
