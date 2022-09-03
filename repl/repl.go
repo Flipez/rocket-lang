@@ -42,12 +42,10 @@ func Start(in io.Reader, out io.Writer) {
 
 	env := object.NewEnvironment()
 	imports := make(map[string]struct{})
-	var cmds []string
 
 	fmt.Println(SplashScreen())
 
 	for {
-		//source, err := line.Prompt("🚀 > ")
 		line, err := rl.Readline()
 
 		if err != nil {
@@ -59,18 +57,10 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		cmds = append(cmds, line)
-
-		//if !strings.HasSuffix(line, ";") {
-		//	rl.SetPrompt("🚀 \033[31m»»»\033[0m ")
-		//	continue
-		//}
-
-		cmd := strings.Join(cmds, " ")
 		rl.SetPrompt("🚀 \033[31m»\033[0m ")
-		rl.SaveHistory(cmd)
+		rl.SaveHistory(line)
 
-		l := lexer.New(cmd)
+		l := lexer.New(line)
 		p := parser.New(l, imports)
 
 		object.AddEvaluator(evaluator.Eval)
@@ -85,7 +75,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			fmt.Println("❌ " + evaluated.Inspect())
+			fmt.Println("» " + evaluated.Inspect())
 		}
 	}
 }
