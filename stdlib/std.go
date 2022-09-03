@@ -15,6 +15,7 @@ func init() {
 
 	RegisterModule("Math", "", mathFunctions, mathProperties)
 	RegisterModule("HTTP", "", httpFunctions, httpProperties)
+	RegisterModule("JSON", "", jsonFunctions, jsonProperties)
 }
 
 func RegisterFunction(name string, layout object.MethodLayout, function func(object.Environment, ...object.Object) object.Object) {

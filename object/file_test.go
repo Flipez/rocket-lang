@@ -22,7 +22,7 @@ func TestFileObjectMethods(t *testing.T) {
 		{`open("../fixtures/nope", "r", "0644")`, "open ../fixtures/nope: no such file or directory"},
 		{`open("../fixtures/nope", "r", "0644").content()`, "undefined method `.content()` for ERROR"},
 		{`a = open("../fixtures/nope", "rw", "0644"); a.content()`, ""},
-		{`(open("../fixtures/module.rl", "r", "0644").wat().lines().size() == open("../fixtures/module.rl").methods().size() + 1).plz_s()`, "true"},
+		{`f = open("../fixtures/module.rl", "r", "0644"); (f.wat().lines().size() == f.methods().size() + 1).plz_s()`, "true"},
 		{`open("").type()`, "ERROR"},
 		{`open("../fixtures/module.rl", "r", "0644").type()`, "FILE"},
 	}
