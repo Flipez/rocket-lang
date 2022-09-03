@@ -30,12 +30,12 @@ func init() {
 => 1
 🚀 > "test1".count(1)
 => 1`,
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
-				},
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ArgPattern: Args(
+					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -50,12 +50,12 @@ func init() {
 => 1
 🚀 > "test".find("f")
 => -1`,
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
-				},
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ArgPattern: Args(
+					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -68,9 +68,9 @@ func init() {
 				Description: "Returns the amount of characters in the string.",
 				Example: `🚀 > "test".size()
 => 4`,
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -94,13 +94,12 @@ func init() {
 
 🚀 > "0x1234".plz_i(10)
 => 0`,
-				ArgsOptional: true,
-				ArgPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -124,13 +123,13 @@ func init() {
 				Description: "Replaces the first string with the second string in the given string.",
 				Example: `🚀 > "test".replace("t", "f")
 => "fesf"`,
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ},
-					[]string{STRING_OBJ},
-				},
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+					Arg(STRING_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -144,9 +143,9 @@ func init() {
 				Description: "Returns a copy of the string with all characters reversed.",
 				Example: `🚀 > "stressed".reverse()
 => "desserts"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -168,9 +167,9 @@ func init() {
 => nil
 🚀 > a
 => "desserts"`,
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+        ),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -192,13 +191,12 @@ func init() {
 
 🚀 > "test and another test".split()
 => ["test", "and", "another", "test"]`,
-				ArgsOptional: true,
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ},
-				},
+				ArgPattern: Args(
+					OptArg(STRING_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -223,9 +221,9 @@ func init() {
 				Description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`.",
 				Example: `🚀 > "test\ntest2".lines()
 => ["test", "test2"]`,
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -246,9 +244,9 @@ func init() {
 				Description: "Returns a copy of the string with all leading and trailing whitespaces removed.",
 				Example: `🚀 > " test ".strip()
 => "test"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -265,9 +263,9 @@ func init() {
 => nil
 🚀 > a
 => "test"`,
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -280,9 +278,9 @@ func init() {
 				Description: "Returns the string with all uppercase letters replaced with lowercase counterparts.",
 				Example: `🚀 > "TeST".downcase()
 => test`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -299,9 +297,9 @@ func init() {
 => nil
 🚀 > a
 => test`,
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -314,9 +312,9 @@ func init() {
 				Description: "Returns the string with all lowercase letters replaced with uppercase counterparts.",
 				Example: `🚀 > "test".upcase()
 => TEST`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -333,9 +331,9 @@ func init() {
 => nil
 🚀 > a
 => TEST`,
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)

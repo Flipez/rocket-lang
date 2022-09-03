@@ -376,7 +376,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`exit()`, "to few arguments: got=0, want=1"},
 		{`exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
-		{`open()`, "to few arguments: got=0, want=3"},
+		{`open()`, "to few arguments: got=0, want=1"},
 		{`open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 		{`open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},

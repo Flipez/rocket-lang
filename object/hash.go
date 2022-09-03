@@ -73,9 +73,9 @@ func init() {
 				Description: "Returns the keys of the hash.",
 				Example: `🚀 > {"a": "1", "b": "2"}.keys()
 => ["a", "b"]`,
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)
@@ -96,9 +96,9 @@ func init() {
 				Description: "Returns the values of the hash.",
 				Example: `🚀 > {"a": "1", "b": "2"}.values()
 => ["2", "1"]`,
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)

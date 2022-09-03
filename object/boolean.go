@@ -36,9 +36,9 @@ func init() {
 				Description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value.",
 				Example: `🚀 > true.plz_s()
 => "true"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				b := o.(*Boolean)

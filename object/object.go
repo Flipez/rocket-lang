@@ -68,12 +68,52 @@ const (
 	BUILTIN_PROPERTY_OBJ = "BUILTIN_PROPERTY"
 )
 
+type Argument struct {
+  Types []string
+  Optional bool
+}
+
+func (a Argument) String() string {
+  return strings.Join(a.Types, "|")
+}
+
+func (a Argument) Check(o Object) bool {
+  for _, t := range a.Types {
+    if ObjectType(t) == o.Type() {
+      return true
+    }
+  }
+  return false
+}
+
+func Arg(types ...string) Argument {
+  return Argument{Types: types}
+}
+
+func OptArg(types ...string) Argument {
+  return Argument{Types: types, Optional: true}
+}
+
+func Args(args ...Argument) []Argument {
+  return args
+}
+
 type MethodLayout struct {
-	ArgsOptional  bool
-	ArgPattern    [][]string
-	ReturnPattern [][]string
+	ArgPattern    []Argument
+	ReturnPattern []Argument
 	Description   string
 	Example       string
+}
+
+func (ml MethodLayout) requiredArgs() []Argument {
+  args := make([]Argument, 0)
+  for _, arg := range ml.ArgPattern {
+    if arg.Optional {
+      continue
+    }
+    args = append(args, arg)
+  }
+  return args
 }
 
 type ObjectMethod struct {
@@ -82,14 +122,25 @@ type ObjectMethod struct {
 }
 
 func (ml MethodLayout) validateArgs(args []Object) error {
-	if (len(args) < len(ml.ArgPattern)) && !ml.ArgsOptional {
-		return fmt.Errorf("to few arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
+  requiredArgs := ml.requiredArgs()
+	if len(args) < len(requiredArgs) {
+		return fmt.Errorf("to few arguments: got=%d, want=%d", len(args), len(requiredArgs))
 	}
 
 	if len(args) > len(ml.ArgPattern) {
 		return fmt.Errorf("to many arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
 	}
 
+  if len(args) > 0 {
+    for idx, arg := range args {
+      if !ml.ArgPattern[idx].Check(arg) {
+				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, arg.Type(), ml.ArgPattern[idx])
+      }
+    }
+  }
+
+
+  /*
 	if !ml.ArgsOptional || (ml.ArgsOptional && len(args) > 0) {
 		for idx, pattern := range ml.ArgPattern {
 			var valid bool
@@ -104,6 +155,7 @@ func (ml MethodLayout) validateArgs(args []Object) error {
 			}
 		}
 	}
+  */
 
 	return nil
 }
@@ -111,7 +163,7 @@ func (ml MethodLayout) validateArgs(args []Object) error {
 func (ml MethodLayout) DocsReturnPattern() string {
 	types := make([]string, len(ml.ReturnPattern))
 	for idx, pattern := range ml.ReturnPattern {
-		types[idx] = strings.Join(pattern, "|")
+		types[idx] = strings.Join(pattern.Types, "|")
 	}
 	return strings.Join(types, ", ")
 }
@@ -122,7 +174,7 @@ func (ml MethodLayout) Usage(name string) string {
 	if len(ml.ArgPattern) > 0 {
 		types := make([]string, len(ml.ArgPattern))
 		for idx, pattern := range ml.ArgPattern {
-			types[idx] = strings.Join(pattern, "|")
+			types[idx] = strings.Join(pattern.Types, "|")
 		}
 		args = strings.Join(types, ", ")
 	}
@@ -152,9 +204,9 @@ func init() {
 => {"test": 1234}
 🚀 > a.to_json()
 => "{"test":1234}"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ, ERROR_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				if serializeableObject, ok := o.(Serializable); ok {
@@ -173,9 +225,9 @@ func init() {
 				Description: "Returns an array of all supported methods names.",
 				Example: `🚀 > "test".methods()
 => [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]`,
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
@@ -194,9 +246,9 @@ func init() {
 				Example: `🚀 > true.wat()
 => BOOLEAN supports the following methods:
 				plz_s()`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
@@ -214,9 +266,9 @@ func init() {
 				Description: "Returns the type of the object.",
 				Example: `🚀 > "test".type()
 => "STRING"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				return NewString(string(o.Type()))

@@ -53,9 +53,9 @@ func init() {
 				Description: "Returns the amount of elements in the array.",
 				Example: `🚀 > ["a", "b", 1, 2].size()
 => 4`,
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -67,9 +67,9 @@ func init() {
 				Description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.",
 				Example: `🚀 > ["a", 1, 1, 2].uniq()
 => [1, 2, "a"]`,
-				ReturnPattern: [][]string{
-					[]string{ARRAY_OBJ, ERROR_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -99,12 +99,12 @@ func init() {
 				Description: "Returns the index of the given element in the array if found. Otherwise return `-1`.",
 				Example: `🚀 > ["a", "b", 1, 2].index(1)
 => 2`,
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -125,9 +125,9 @@ func init() {
 				Description: "Returns the first element of the array. Shorthand for `array[0]`",
 				Example: `🚀 > ["a", "b", 1, 2].first()
 => "a"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -142,9 +142,9 @@ func init() {
 				Description: "Returns the last element of the array.",
 				Example: `🚀 > ["a", "b", 1, 2].last()
 => 2`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -163,9 +163,9 @@ func init() {
 => 3
 🚀 > a
 => [1, 2]`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -190,12 +190,12 @@ func init() {
 => nil
 🚀 > a
 => [1, 2, 3, "a"]`,
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ},
-				},
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)

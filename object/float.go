@@ -29,9 +29,9 @@ func init() {
 		"plz_f": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns self",
-				ReturnPattern: [][]string{
-					[]string{FLOAT_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				return o
@@ -44,9 +44,9 @@ func init() {
 => 123.456
 🚀 > a.plz_s()
 => "123.456"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*Float)
@@ -60,9 +60,9 @@ func init() {
 => 123.456
 🚀 > a.plz_i()
 => "123"`,
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*Float)

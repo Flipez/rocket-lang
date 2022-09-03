@@ -36,12 +36,12 @@ func init() {
 			Layout: MethodLayout{
 				Description: "Starts a blocking webserver on the given port.",
 				Example:     `🚀 > HTTP.listen(3000)`,
-				ArgPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ, ERROR_OBJ},
-				},
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(NIL_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {
@@ -104,13 +104,13 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 - "body" needs to be a STRING. Default ""
 - "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}`,
 				Example: `🚀 > HTTP.handle("/", callback_func)`,
-				ArgPattern: [][]string{
-					[]string{STRING_OBJ},
-					[]string{FUNCTION_OBJ},
-				},
-				ReturnPattern: [][]string{
-					[]string{NIL_OBJ, ERROR_OBJ},
-				},
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+					Arg(FUNCTION_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(NIL_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {

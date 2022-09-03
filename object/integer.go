@@ -37,13 +37,12 @@ func init() {
 => "2322"
 🚀 > 1234.plz_s(10)
 => "1234"`,
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
-				ArgsOptional: true,
-				ArgPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				i := o.(*Integer)
@@ -59,9 +58,9 @@ func init() {
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns self",
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				return o
@@ -77,9 +76,9 @@ func init() {
 
 🚀 > 1234.plz_f()
 => 1234.0`,
-				ReturnPattern: [][]string{
-					[]string{FLOAT_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				i := o.(*Integer)

@@ -14,9 +14,9 @@ func init() {
 		"plz_s": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns empty string.",
-				ReturnPattern: [][]string{
-					[]string{STRING_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewString("")
@@ -25,9 +25,9 @@ func init() {
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns zero integer.",
-				ReturnPattern: [][]string{
-					[]string{INTEGER_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewInteger(0)
@@ -36,9 +36,9 @@ func init() {
 		"plz_f": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns zero float.",
-				ReturnPattern: [][]string{
-					[]string{FLOAT_OBJ},
-				},
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewFloat(0)
