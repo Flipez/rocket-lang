@@ -4,7 +4,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func openFunction(env *object.Environment, args ...object.Object) object.Object {
+func openFunction(env object.Environment, args ...object.Object) object.Object {
 	path := ""
 	mode := "r"
 	perm := "0644"

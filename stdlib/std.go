@@ -4,8 +4,8 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-var Builtins = map[string]*object.Builtin{}
-var Clazzes = map[string]object.Object{}
+var Functions = map[string]*object.BuiltinFunction{}
+var Modules = map[string]*object.BuiltinModule{}
 
 func init() {
 	RegisterFunction("puts", putsFunction)
@@ -13,14 +13,13 @@ func init() {
 	RegisterFunction("raise", raiseFunction)
 	RegisterFunction("open", openFunction)
 
-	RegisterClass("HTTP", &object.HTTP{})
-	RegisterClass("JSON", &object.JSON{})
+	RegisterModule("Math", mathFunctions, mathProperties)
 }
 
-func RegisterFunction(name string, function object.BuiltinFunction) {
-	Builtins[name] = object.NewBuiltin(name, function)
+func RegisterFunction(name string, function func(object.Environment, ...object.Object) object.Object) {
+	Functions[name] = object.NewBuiltinFunction(name, function)
 }
 
-func RegisterClass(name string, class object.Object) {
-	Clazzes[name] = class
+func RegisterModule(name string, funcs map[string]*object.BuiltinFunction, props map[string]*object.BuiltinProperty) {
+	Modules[name] = object.NewBuiltinModule(name, funcs, props)
 }

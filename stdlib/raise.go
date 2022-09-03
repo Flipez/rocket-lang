@@ -7,7 +7,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func raiseFunction(env *object.Environment, args ...object.Object) object.Object {
+func raiseFunction(env object.Environment, args ...object.Object) object.Object {
 	if len(args) != 2 {
 		return object.NewErrorFormat("wrong number of arguments. got=%d, want=2", len(args))
 	}

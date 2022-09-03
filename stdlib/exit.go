@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func exitFunction(env *object.Environment, args ...object.Object) object.Object {
+func exitFunction(env object.Environment, args ...object.Object) object.Object {
 	if len(args) != 1 {
 		return object.NewErrorFormat("wrong number of arguments. got=%d, want=1", len(args))
 	}

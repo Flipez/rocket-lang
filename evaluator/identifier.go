@@ -11,12 +11,12 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 		return val
 	}
 
-	if builtin, ok := stdlib.Builtins[node.Value]; ok {
-		return builtin
+	if fn, ok := stdlib.Functions[node.Value]; ok {
+		return fn
 	}
 
-	if clazz, ok := stdlib.Clazzes[node.Value]; ok {
-		return clazz
+	if mod, ok := stdlib.Modules[node.Value]; ok {
+		return mod
 	}
 
 	return object.NewErrorFormat("identifier not found: " + node.Value)
