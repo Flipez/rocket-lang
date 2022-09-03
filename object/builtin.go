@@ -21,7 +21,7 @@ func (b *BuiltinModule) Type() ObjectType { return BUILTIN_MODULE_OBJ }
 func (b *BuiltinModule) Inspect() string  { return b.Name }
 func (b *BuiltinModule) InvokeMethod(method string, env Environment, args ...Object) Object {
 	if fn, ok := b.Functions[method]; ok {
-		return fn.Fn(env, args...)
+		return fn.Call(args, env)
 	}
 
 	return objectMethodLookup(b, method, env, args)

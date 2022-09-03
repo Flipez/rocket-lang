@@ -17,7 +17,6 @@ func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
 
 	if ok := !p.peekTokenIs(token.LPAREN); ok {
 		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
-		p.nextToken()
 		return &ast.Index{Left: obj, Index: index}
 	}
 
