@@ -24,7 +24,8 @@
 {{ end }}
 
 ## Properties
-{{ range $name, $property := .Properties }}
-### {{ $name }}
-{{ $property.Value.Value }}
+| Name | Value |
+| ---- | ----- |
+{{ range $propertyName, $property := .Properties -}}
+| {{ $propertyName }} | {{ $property.Value.Value }} |
 {{ end }}
