@@ -1,16 +1,19 @@
 package object
 
 type BuiltinModule struct {
-	Name       string
-	Functions  map[string]*BuiltinFunction
-	Properties map[string]*BuiltinProperty
+	Name        string
+	Description string
+	Example     string
+	Functions   map[string]*BuiltinFunction
+	Properties  map[string]*BuiltinProperty
 }
 
-func NewBuiltinModule(name string, funcs map[string]*BuiltinFunction, props map[string]*BuiltinProperty) *BuiltinModule {
+func NewBuiltinModule(name string, description string, funcs map[string]*BuiltinFunction, props map[string]*BuiltinProperty) *BuiltinModule {
 	return &BuiltinModule{
-		Name:       name,
-		Functions:  funcs,
-		Properties: props,
+		Name:        name,
+		Description: description,
+		Functions:   funcs,
+		Properties:  props,
 	}
 }
 
@@ -25,14 +28,16 @@ func (b *BuiltinModule) InvokeMethod(method string, env Environment, args ...Obj
 }
 
 type BuiltinFunction struct {
-	Name string
-	Fn   func(Environment, ...Object) Object
+	Layout MethodLayout
+	Name   string
+	Fn     func(Environment, ...Object) Object
 }
 
-func NewBuiltinFunction(name string, f func(Environment, ...Object) Object) *BuiltinFunction {
+func NewBuiltinFunction(name string, layout MethodLayout, f func(Environment, ...Object) Object) *BuiltinFunction {
 	return &BuiltinFunction{
-		Name: name,
-		Fn:   f,
+		Layout: layout,
+		Name:   name,
+		Fn:     f,
 	}
 }
 
@@ -40,6 +45,12 @@ func (b *BuiltinFunction) Type() ObjectType { return BUILTIN_FUNCTION_OBJ }
 func (b *BuiltinFunction) Inspect() string  { return b.Name }
 func (b *BuiltinFunction) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(b, method, env, args)
+}
+func (b *BuiltinFunction) Call(args []Object, env Environment) Object {
+	if err := b.Layout.validateArgs(args); err != nil {
+		return NewError(err)
+	}
+	return b.Fn(env, args...)
 }
 
 type BuiltinProperty struct {

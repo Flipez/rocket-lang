@@ -74,9 +74,11 @@ func (f *File) Open(mode string, perm string) error {
 func init() {
 	objectMethods[FILE_OBJ] = map[string]ObjectMethod{
 		"close": ObjectMethod{
-			description: "Closes the file pointer. Returns always `true`.",
-			returnPattern: [][]string{
-				[]string{BOOLEAN_OBJ},
+			Layout: MethodLayout{
+				Description: "Closes the file pointer. Returns always `true`.",
+				ReturnPattern: [][]string{
+					[]string{BOOLEAN_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				f := o.(*File)
@@ -86,9 +88,11 @@ func init() {
 			},
 		},
 		"lines": ObjectMethod{
-			description: "If successfull, returns all lines of the file as array elements, otherwise `nil`. Resets the position to 0 after read.",
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ, ERROR_OBJ},
+			Layout: MethodLayout{
+				Description: "If successfull, returns all lines of the file as array elements, otherwise `nil`. Resets the position to 0 after read.",
+				ReturnPattern: [][]string{
+					[]string{ARRAY_OBJ, ERROR_OBJ},
+				},
 			},
 			method: func(o Object, oo []Object, env Environment) Object {
 				file := readFile(o, oo, env)
@@ -105,16 +109,20 @@ func init() {
 			},
 		},
 		"content": ObjectMethod{
-			description: "Reads content of the file and returns it. Resets the position to 0 after read.",
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ERROR_OBJ},
+			Layout: MethodLayout{
+				Description: "Reads content of the file and returns it. Resets the position to 0 after read.",
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ, ERROR_OBJ},
+				},
 			},
 			method: readFile,
 		},
 		"position": ObjectMethod{
-			description: "Returns the position of the current file handle. -1 if the file is closed.",
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+			Layout: MethodLayout{
+				Description: "Returns the position of the current file handle. -1 if the file is closed.",
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				f := o.(*File)
@@ -122,12 +130,14 @@ func init() {
 			},
 		},
 		"read": ObjectMethod{
-			description: "Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.",
-			argPattern: [][]string{
-				[]string{INTEGER_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ERROR_OBJ},
+			Layout: MethodLayout{
+				Description: "Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.",
+				ArgPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ, ERROR_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)
@@ -148,13 +158,15 @@ func init() {
 			},
 		},
 		"seek": ObjectMethod{
-			description: "Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.",
-			argPattern: [][]string{
-				[]string{INTEGER_OBJ},
-				[]string{INTEGER_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ, ERROR_OBJ},
+			Layout: MethodLayout{
+				Description: "Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.",
+				ArgPattern: [][]string{
+					[]string{INTEGER_OBJ},
+					[]string{INTEGER_OBJ},
+				},
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ, ERROR_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)
@@ -176,12 +188,14 @@ func init() {
 			},
 		},
 		"write": ObjectMethod{
-			description: "Writes the given string to the file. Returns number of written bytes on success.",
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ, ERROR_OBJ},
-			},
-			argPattern: [][]string{
-				[]string{STRING_OBJ},
+			Layout: MethodLayout{
+				Description: "Writes the given string to the file. Returns number of written bytes on success.",
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ, ERROR_OBJ},
+				},
+				ArgPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				f := o.(*File)

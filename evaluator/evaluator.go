@@ -156,7 +156,7 @@ func applyFunction(def object.Object, args []object.Object, env *object.Environm
 		return unwrapReturnValue(evaluated)
 
 	case *object.BuiltinFunction:
-		return def.Fn(*env, args...)
+		return def.Call(args, *env)
 
 	default:
 		return object.NewErrorFormat("not a function: %s", def.Type())

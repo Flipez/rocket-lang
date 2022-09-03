@@ -8,18 +8,19 @@ var Functions = map[string]*object.BuiltinFunction{}
 var Modules = map[string]*object.BuiltinModule{}
 
 func init() {
-	RegisterFunction("puts", putsFunction)
-	RegisterFunction("exit", exitFunction)
-	RegisterFunction("raise", raiseFunction)
-	RegisterFunction("open", openFunction)
+	RegisterFunction("puts", object.MethodLayout{ArgPattern: [][]string{object.ANY_OBJ}}, putsFunction)
+	RegisterFunction("exit", object.MethodLayout{ArgPattern: [][]string{[]string{object.INTEGER_OBJ}}}, exitFunction)
+	RegisterFunction("raise", object.MethodLayout{ArgPattern: [][]string{[]string{object.INTEGER_OBJ}, []string{object.STRING_OBJ}}}, raiseFunction)
+	RegisterFunction("open", object.MethodLayout{ArgPattern: [][]string{[]string{object.STRING_OBJ}, []string{object.STRING_OBJ}, []string{object.STRING_OBJ}}}, openFunction)
 
-	RegisterModule("Math", mathFunctions, mathProperties)
+	RegisterModule("Math", "", mathFunctions, mathProperties)
+	RegisterModule("HTTP", "", httpFunctions, httpProperties)
 }
 
-func RegisterFunction(name string, function func(object.Environment, ...object.Object) object.Object) {
-	Functions[name] = object.NewBuiltinFunction(name, function)
+func RegisterFunction(name string, layout object.MethodLayout, function func(object.Environment, ...object.Object) object.Object) {
+	Functions[name] = object.NewBuiltinFunction(name, layout, function)
 }
 
-func RegisterModule(name string, funcs map[string]*object.BuiltinFunction, props map[string]*object.BuiltinProperty) {
-	Modules[name] = object.NewBuiltinModule(name, funcs, props)
+func RegisterModule(name string, description string, funcs map[string]*object.BuiltinFunction, props map[string]*object.BuiltinProperty) {
+	Modules[name] = object.NewBuiltinModule(name, description, funcs, props)
 }

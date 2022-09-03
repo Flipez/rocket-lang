@@ -9,26 +9,26 @@
 {{ end }}
 ## Literal Specific Methods
 {{ range $method, $object := .LiteralMethods }}
-### {{ $object.Usage $method }}
-> Returns `{{ $object.ReturnPattern }}`
+### {{ $object.Layout.Usage $method }}
+> Returns `{{ $object.Layout.DocsReturnPattern }}`
 
-{{ $object.Description }}
+{{ $object.Layout.Description }}
 
-{{ if $object.Example }}
+{{ if $object.Layout.Example }}
 ```js
-{{ $object.Example }}
+{{ $object.Layout.Example }}
 ```
 {{ end }}
 {{ end }}
 
 ## Generic Literal Methods
 {{ range $method, $object := .DefaultMethods }}
-### {{ $object.Usage $method }}
-> Returns `{{ $object.ReturnPattern }}`
+### {{ $object.Layout.Usage $method }}
+> Returns `{{ $object.Layout.DocsReturnPattern }}`
 
-{{ $object.Description }}
+{{ $object.Layout.Description }}
 
 ```js
-{{ $object.Example }}
+{{ $object.Layout.Example }}
 ```
 {{ end }}

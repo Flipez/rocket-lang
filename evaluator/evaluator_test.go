@@ -371,15 +371,15 @@ func TestBuiltinFunctions(t *testing.T) {
 		expected interface{}
 	}{
 		{`puts("test")`, nil},
-		{`raise("Error")`, "wrong number of arguments. got=1, want=2"},
-		{`raise("Error", 1)`, "first argument to `raise` must be INTEGER, got=STRING"},
-		{`raise(1, 1)`, "second argument to `raise` must be STRING, got=INTEGER"},
-		{`exit()`, "wrong number of arguments. got=0, want=1"},
-		{`exit("Error")`, "argument to `exit` must be INTEGER, got=STRING"},
-		{`open()`, "wrong number of arguments. got=0, want=1"},
-		{`open(1)`, "argument to `file` not supported, got=INTEGER"},
-		{`open("fixtures/module.rl", 1)`, "argument mode to `file` not supported, got=INTEGER"},
-		{`open("fixtures/module.rl", "r", 1)`, "argument perm to `file` not supported, got=INTEGER"},
+		{`raise("Error")`, "to few arguments: got=1, want=2"},
+		{`raise("Error", 1)`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
+		{`raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
+		{`exit()`, "to few arguments: got=0, want=1"},
+		{`exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
+		{`open()`, "to few arguments: got=0, want=3"},
+		{`open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
+		{`open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
 		{`open("fixtures/module.rl", "nope", "0644").read(1)`, "undefined method `.read()` for ERROR"},
 	}
 

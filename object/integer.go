@@ -24,8 +24,9 @@ func (i *Integer) HashKey() HashKey {
 func init() {
 	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
-			description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems",
-			example: `🚀 > a = 456
+			Layout: MethodLayout{
+				Description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems",
+				Example: `🚀 > a = 456
 => 456
 🚀 > a.plz_s()
 => "456"
@@ -36,12 +37,13 @@ func init() {
 => "2322"
 🚀 > 1234.plz_s(10)
 => "1234"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
-			},
-			argsOptional: true,
-			argPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
+				ArgsOptional: true,
+				ArgPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				i := o.(*Integer)
@@ -55,25 +57,29 @@ func init() {
 			},
 		},
 		"plz_i": ObjectMethod{
-			description: "Returns self",
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+			Layout: MethodLayout{
+				Description: "Returns self",
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				return o
 			},
 		},
 		"plz_f": ObjectMethod{
-			description: "Converts the integer into a float.",
-			example: `🚀 > a = 456
+			Layout: MethodLayout{
+				Description: "Converts the integer into a float.",
+				Example: `🚀 > a = 456
 => 456
 🚀 > a.plz_f()
 => 456.0
 
 🚀 > 1234.plz_f()
 => 1234.0`,
-			returnPattern: [][]string{
-				[]string{FLOAT_OBJ},
+				ReturnPattern: [][]string{
+					[]string{FLOAT_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				i := o.(*Integer)

@@ -12,10 +12,15 @@ func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
 		return &ast.Index{Left: obj, Index: index}
 	}
 
-	methodCall := &ast.ObjectCall{Token: p.curToken, Object: obj}
 	p.nextToken()
 	name := p.parseIdentifier()
+
+	if ok := !p.peekTokenIs(token.LPAREN); ok {
+		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
+		p.nextToken()
+		return &ast.Index{Left: obj, Index: index}
+	}
+
 	p.nextToken()
-	methodCall.Call = p.parseCall(name)
-	return methodCall
+	return &ast.ObjectCall{Token: p.curToken, Object: obj, Call: p.parseCall(name)}
 }

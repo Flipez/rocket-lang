@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"text/template"
 
 	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/stdlib"
 )
 
 type templateData struct {
@@ -13,6 +15,14 @@ type templateData struct {
 	Example        string
 	LiteralMethods map[string]object.ObjectMethod
 	DefaultMethods map[string]object.ObjectMethod
+}
+
+type builtinTemplateData struct {
+	Title       string
+	Description string
+	Example     string
+	Functions   map[string]object.BuiltinFunction
+	Properties  map[string]object.BuiltinProperty
 }
 
 func main() {
@@ -27,7 +37,6 @@ func main() {
 	nil_methods := object.ListObjectMethods()[object.NIL_OBJ]
 	float_methods := object.ListObjectMethods()[object.FLOAT_OBJ]
 	http_methods := object.ListObjectMethods()[object.HTTP_OBJ]
-	json_methods := object.ListObjectMethods()[object.JSON_OBJ]
 
 	tempData := templateData{
 		Title: "String",
@@ -192,27 +201,23 @@ HTTP.listen(3000)
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/docs/literals/http.md", tempData)
 
-	tempData = templateData{
-		Title: "JSON",
-		Example: `🚀 > JSON.parse('{"test": 123}')
-=> {"test": 123.0}`,
-		LiteralMethods: json_methods,
-		DefaultMethods: default_methods}
-	create_doc("docs/templates/literal.md", "docs/docs/literals/json.md", tempData)
+	// builtin module docs
+	for _, module := range stdlib.Modules {
+		create_doc("docs/templates/builtin.md", fmt.Sprintf("docs/docs/builtins/%s.md", module.Name), module)
+	}
 }
 
-func create_doc(path string, target string, data templateData) bool {
-	paths := []string{path}
-
+func create_doc(path string, target string, data any) bool {
 	f, err := os.Create(target)
 	if err != nil {
 		panic(err)
 	}
 
-	t := template.Must(template.New("literal.md").ParseFiles(paths...))
+	t := template.Must(template.ParseFiles(path))
 	err = t.Execute(f, data)
 	if err != nil {
 		panic(err)
 	}
+
 	return true
 }

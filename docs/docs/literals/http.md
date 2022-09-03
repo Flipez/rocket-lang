@@ -49,13 +49,6 @@ Starts a blocking webserver on the given port.
 ```
 
 
-### new()
-> Returns `HTTP`
-
-
-
-
-
 
 ## Generic Literal Methods
 

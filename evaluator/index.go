@@ -14,6 +14,8 @@ func evalIndex(left, index object.Object) object.Object {
 		return evalStringIndexExpression(left, index)
 	case left.Type() == object.MODULE_OBJ:
 		return evalModuleIndexExpression(left, index)
+	case left.Type() == object.BUILTIN_MODULE_OBJ:
+		return evalBuiltinModuleIndexExpression(left, index)
 	default:
 		return object.NewErrorFormat("index operator not supported: %s", left.Type())
 	}
@@ -45,6 +47,17 @@ func evalModuleIndexExpression(module, index object.Object) object.Object {
 	moduleObject := module.(*object.Module)
 
 	return evalHashIndexExpression(moduleObject.Attributes, index)
+}
+
+func evalBuiltinModuleIndexExpression(module, index object.Object) object.Object {
+	moduleObject := module.(*object.BuiltinModule)
+
+	name := index.(*object.String).Value
+	if val, ok := moduleObject.Properties[name]; ok {
+		return val.Value
+	}
+
+	return object.NewErrorFormat("property `%s` not found for builtin-module `%s`", name, moduleObject.Name)
 }
 
 func evalStringIndexExpression(left, index object.Object) object.Object {

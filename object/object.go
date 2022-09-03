@@ -31,6 +31,22 @@ type Serializable interface {
 	MarshalJSON() ([]byte, error)
 }
 
+var ANY_OBJ = []string{
+	INTEGER_OBJ,
+	STRING_OBJ,
+	BOOLEAN_OBJ,
+	ARRAY_OBJ,
+	HASH_OBJ,
+	FLOAT_OBJ,
+	ERROR_OBJ,
+	NIL_OBJ,
+}
+
+var NUMBER_OBJ = []string{
+	INTEGER_OBJ,
+	FLOAT_OBJ,
+}
+
 const (
 	INTEGER_OBJ          = "INTEGER"
 	FLOAT_OBJ            = "FLOAT"
@@ -47,33 +63,35 @@ const (
 	FILE_OBJ             = "FILE"
 	MODULE_OBJ           = "MODULE"
 	HTTP_OBJ             = "HTTP"
-	JSON_OBJ             = "JSON"
 	BUILTIN_MODULE_OBJ   = "BUILTIN_MODULE"
 	BUILTIN_FUNCTION_OBJ = "BUILTIN_FUNCTION"
 	BUILTIN_PROPERTY_OBJ = "BUILTIN_PROPERTY"
 )
 
-type ObjectMethod struct {
-	argsOptional   bool
-	argOverloading bool
-	argPattern     [][]string
-	returnPattern  [][]string
-	description    string
-	example        string
-	method         func(Object, []Object, Environment) Object
+type MethodLayout struct {
+	ArgsOptional  bool
+	ArgPattern    [][]string
+	ReturnPattern [][]string
+	Description   string
+	Example       string
 }
 
-func (om ObjectMethod) validateArgs(args []Object) error {
-	if (len(args) < len(om.argPattern)) && !om.argsOptional {
-		return fmt.Errorf("to few arguments: want=%d, got=%d", len(om.argPattern), len(args))
+type ObjectMethod struct {
+	Layout MethodLayout
+	method func(Object, []Object, Environment) Object
+}
+
+func (ml MethodLayout) validateArgs(args []Object) error {
+	if (len(args) < len(ml.ArgPattern)) && !ml.ArgsOptional {
+		return fmt.Errorf("to few arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
 	}
 
-	if len(args) > len(om.argPattern) && !om.argOverloading {
-		return fmt.Errorf("to many arguments: want=%d, got=%d", len(om.argPattern), len(args))
+	if len(args) > len(ml.ArgPattern) {
+		return fmt.Errorf("to many arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
 	}
 
-	if !om.argsOptional || (om.argsOptional && len(args) > 0) {
-		for idx, pattern := range om.argPattern {
+	if !ml.ArgsOptional || (ml.ArgsOptional && len(args) > 0) {
+		for idx, pattern := range ml.ArgPattern {
 			var valid bool
 			for _, argType := range pattern {
 				if ObjectType(argType) == args[idx].Type() {
@@ -82,68 +100,38 @@ func (om ObjectMethod) validateArgs(args []Object) error {
 				}
 			}
 			if !valid {
-				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx, args[idx].Type(), strings.Join(pattern, "|"))
+				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, args[idx].Type(), strings.Join(pattern, "|"))
 			}
 		}
 	}
-
-	/* not needed for now, as there is no string method with flexible argument count
-	if om.argOverloading {
-		lastPattern := om.argPattern[len(om.argPattern)-1]
-		for idx, arg := range args[len(om.argPattern)-1:] {
-			var valid bool
-			for _, argType := range lastPattern {
-				if argType == args.Type() {
-					valid = true
-					break
-				}
-			}
-			if !valid {
-				return fmt.Errorf("FALSCHER TYPE AUF POSITION %d got=%s, want=%s", idx, arg.Type(), strings.Join(lastPattern, "|"))
-			}
-		}
-	}
-	*/
 
 	return nil
 }
 
-func (om ObjectMethod) ReturnPattern() string {
-	types := make([]string, len(om.returnPattern))
-	for idx, pattern := range om.returnPattern {
+func (ml MethodLayout) DocsReturnPattern() string {
+	types := make([]string, len(ml.ReturnPattern))
+	for idx, pattern := range ml.ReturnPattern {
 		types[idx] = strings.Join(pattern, "|")
 	}
 	return strings.Join(types, ", ")
 }
 
-func (om ObjectMethod) Description() string {
-	return om.description
-}
-
-func (om ObjectMethod) Example() string {
-	return om.example
-}
-
-func (om ObjectMethod) Usage(name string) string {
+func (ml MethodLayout) Usage(name string) string {
 	var args string
 
-	if len(om.argPattern) > 0 {
-		types := make([]string, len(om.argPattern))
-		for idx, pattern := range om.argPattern {
+	if len(ml.ArgPattern) > 0 {
+		types := make([]string, len(ml.ArgPattern))
+		for idx, pattern := range ml.ArgPattern {
 			types[idx] = strings.Join(pattern, "|")
 		}
 		args = strings.Join(types, ", ")
-
-		if om.argOverloading {
-			args += "..."
-		}
 	}
 
 	return fmt.Sprintf("%s(%s)", name, args)
 }
 
 func (om ObjectMethod) Call(o Object, args []Object, env Environment) Object {
-	if err := om.validateArgs(args); err != nil {
+	if err := om.Layout.validateArgs(args); err != nil {
 		return NewError(err)
 	}
 	return om.method(o, args, env)
@@ -158,13 +146,15 @@ func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"to_json": ObjectMethod{
-			description: "Returns the object as json notation.",
-			example: `🚀 > a = {"test": 1234}
+			Layout: MethodLayout{
+				Description: "Returns the object as json notation.",
+				Example: `🚀 > a = {"test": 1234}
 => {"test": 1234}
 🚀 > a.to_json()
 => "{"test":1234}"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ERROR_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ, ERROR_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				if serializeableObject, ok := o.(Serializable); ok {
@@ -179,11 +169,13 @@ func init() {
 			},
 		},
 		"methods": ObjectMethod{
-			description: "Returns an array of all supported methods names.",
-			example: `🚀 > "test".methods()
+			Layout: MethodLayout{
+				Description: "Returns an array of all supported methods names.",
+				Example: `🚀 > "test".methods()
 => [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]`,
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ},
+				ReturnPattern: [][]string{
+					[]string{ARRAY_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
@@ -197,30 +189,34 @@ func init() {
 			},
 		},
 		"wat": ObjectMethod{
-			description: "Returns the supported methods with usage information.",
-			example: `🚀 > true.wat()
+			Layout: MethodLayout{
+				Description: "Returns the supported methods with usage information.",
+				Example: `🚀 > true.wat()
 => BOOLEAN supports the following methods:
 				plz_s()`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
 				result := make([]string, len(oms))
 				var i int
 				for name, objectMethod := range oms {
-					result[i] = fmt.Sprintf("\t%s", objectMethod.Usage(name))
+					result[i] = fmt.Sprintf("\t%s", objectMethod.Layout.Usage(name))
 					i++
 				}
 				return NewString(fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n")))
 			},
 		},
 		"type": ObjectMethod{
-			description: "Returns the type of the object.",
-			example: `🚀 > "test".type()
+			Layout: MethodLayout{
+				Description: "Returns the type of the object.",
+				Example: `🚀 > "test".type()
 => "STRING"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				return NewString(string(o.Type()))

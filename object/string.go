@@ -20,8 +20,9 @@ func NewString(s string) *String {
 func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
-			description: "Counts how often a given string or integer occurs in the string. Converts given integers to strings automatically.",
-			example: `🚀 > "test".count("t")
+			Layout: MethodLayout{
+				Description: "Counts how often a given string or integer occurs in the string. Converts given integers to strings automatically.",
+				Example: `🚀 > "test".count("t")
 => 2
 🚀 > "test".count("f")
 => 0
@@ -29,11 +30,12 @@ func init() {
 => 1
 🚀 > "test1".count(1)
 => 1`,
-			argPattern: [][]string{
-				[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
-			},
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ArgPattern: [][]string{
+					[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
+				},
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -42,16 +44,18 @@ func init() {
 			},
 		},
 		"find": ObjectMethod{
-			description: "Returns the character index of a given string if found. Otherwise returns `-1`",
-			example: `🚀 > "test".find("e")
+			Layout: MethodLayout{
+				Description: "Returns the character index of a given string if found. Otherwise returns `-1`",
+				Example: `🚀 > "test".find("e")
 => 1
 🚀 > "test".find("f")
 => -1`,
-			argPattern: [][]string{
-				[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
-			},
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ArgPattern: [][]string{
+					[]string{STRING_OBJ, INTEGER_OBJ}, // first argument can be string or int
+				},
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -60,11 +64,13 @@ func init() {
 			},
 		},
 		"size": ObjectMethod{
-			description: "Returns the amount of characters in the string.",
-			example: `🚀 > "test".size()
+			Layout: MethodLayout{
+				Description: "Returns the amount of characters in the string.",
+				Example: `🚀 > "test".size()
 => 4`,
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -72,8 +78,9 @@ func init() {
 			},
 		},
 		"plz_i": ObjectMethod{
-			description: "Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`.",
-			example: `🚀 > "1234".plz_i()
+			Layout: MethodLayout{
+				Description: "Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`.",
+				Example: `🚀 > "1234".plz_i()
 => 1234
 
 🚀 > "1234".plz_i(8)
@@ -87,12 +94,13 @@ func init() {
 
 🚀 > "0x1234".plz_i(10)
 => 0`,
-			argsOptional: true,
-			argPattern: [][]string{
-				[]string{INTEGER_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ArgsOptional: true,
+				ArgPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
+				ReturnPattern: [][]string{
+					[]string{INTEGER_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -112,15 +120,17 @@ func init() {
 			},
 		},
 		"replace": ObjectMethod{
-			description: "Replaces the first string with the second string in the given string.",
-			example: `🚀 > "test".replace("t", "f")
+			Layout: MethodLayout{
+				Description: "Replaces the first string with the second string in the given string.",
+				Example: `🚀 > "test".replace("t", "f")
 => "fesf"`,
-			argPattern: [][]string{
-				[]string{STRING_OBJ},
-				[]string{STRING_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ArgPattern: [][]string{
+					[]string{STRING_OBJ},
+					[]string{STRING_OBJ},
+				},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -130,11 +140,13 @@ func init() {
 			},
 		},
 		"reverse": ObjectMethod{
-			description: "Returns a copy of the string with all characters reversed.",
-			example: `🚀 > "stressed".reverse()
+			Layout: MethodLayout{
+				Description: "Returns a copy of the string with all characters reversed.",
+				Example: `🚀 > "stressed".reverse()
 => "desserts"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -148,15 +160,17 @@ func init() {
 			},
 		},
 		"reverse!": ObjectMethod{
-			description: "Replaces all the characters in a string in reverse order.",
-			example: `🚀 > a = "stressed"
+			Layout: MethodLayout{
+				Description: "Replaces all the characters in a string in reverse order.",
+				Example: `🚀 > a = "stressed"
 => "stressed"
 🚀 > a.reverse!()
 => nil
 🚀 > a
 => "desserts"`,
-			returnPattern: [][]string{
-				[]string{NIL_OBJ},
+				ReturnPattern: [][]string{
+					[]string{NIL_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -171,18 +185,20 @@ func init() {
 			},
 		},
 		"split": ObjectMethod{
-			description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`",
-			example: `🚀 > "a,b,c,d".split(",")
+			Layout: MethodLayout{
+				Description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`",
+				Example: `🚀 > "a,b,c,d".split(",")
 => ["a", "b", "c", "d"]
 
 🚀 > "test and another test".split()
 => ["test", "and", "another", "test"]`,
-			argsOptional: true,
-			argPattern: [][]string{
-				[]string{STRING_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ},
+				ArgsOptional: true,
+				ArgPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
+				ReturnPattern: [][]string{
+					[]string{ARRAY_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -203,11 +219,13 @@ func init() {
 			},
 		},
 		"lines": ObjectMethod{
-			description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`.",
-			example: `🚀 > "test\ntest2".lines()
+			Layout: MethodLayout{
+				Description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`.",
+				Example: `🚀 > "test\ntest2".lines()
 => ["test", "test2"]`,
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ},
+				ReturnPattern: [][]string{
+					[]string{ARRAY_OBJ},
+				},
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
@@ -224,11 +242,13 @@ func init() {
 			},
 		},
 		"strip": ObjectMethod{
-			description: "Returns a copy of the string with all leading and trailing whitespaces removed.",
-			example: `🚀 > " test ".strip()
+			Layout: MethodLayout{
+				Description: "Returns a copy of the string with all leading and trailing whitespaces removed.",
+				Example: `🚀 > " test ".strip()
 => "test"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -236,16 +256,18 @@ func init() {
 			},
 		},
 		"strip!": ObjectMethod{
-			description: "Removes all leading and trailing whitespaces in the string.",
-			example: `
+			Layout: MethodLayout{
+				Description: "Removes all leading and trailing whitespaces in the string.",
+				Example: `
 🚀 > a = " test "
 => " test "
 🚀 > a.strip!()
 => nil
 🚀 > a
 => "test"`,
-			returnPattern: [][]string{
-				[]string{NIL_OBJ},
+				ReturnPattern: [][]string{
+					[]string{NIL_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -254,11 +276,13 @@ func init() {
 			},
 		},
 		"downcase": ObjectMethod{
-			description: "Returns the string with all uppercase letters replaced with lowercase counterparts.",
-			example: `🚀 > "TeST".downcase()
+			Layout: MethodLayout{
+				Description: "Returns the string with all uppercase letters replaced with lowercase counterparts.",
+				Example: `🚀 > "TeST".downcase()
 => test`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -266,16 +290,18 @@ func init() {
 			},
 		},
 		"downcase!": ObjectMethod{
-			description: "Replaces all upcase characters with lowercase counterparts.",
-			example: `
+			Layout: MethodLayout{
+				Description: "Replaces all upcase characters with lowercase counterparts.",
+				Example: `
 🚀 > a = "TeST"
 => TeST
 🚀 > a.downcase!()
 => nil
 🚀 > a
 => test`,
-			returnPattern: [][]string{
-				[]string{NIL_OBJ},
+				ReturnPattern: [][]string{
+					[]string{NIL_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -284,11 +310,13 @@ func init() {
 			},
 		},
 		"upcase": ObjectMethod{
-			description: "Returns the string with all lowercase letters replaced with uppercase counterparts.",
-			example: `🚀 > "test".upcase()
+			Layout: MethodLayout{
+				Description: "Returns the string with all lowercase letters replaced with uppercase counterparts.",
+				Example: `🚀 > "test".upcase()
 => TEST`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: [][]string{
+					[]string{STRING_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -296,16 +324,18 @@ func init() {
 			},
 		},
 		"upcase!": ObjectMethod{
-			description: "Replaces all lowercase characters with upcase counterparts.",
-			example: `
+			Layout: MethodLayout{
+				Description: "Replaces all lowercase characters with upcase counterparts.",
+				Example: `
 🚀 > a = "test"
 => test
 🚀 > a.upcase!()
 => nil
 🚀 > a
 => TEST`,
-			returnPattern: [][]string{
-				[]string{NIL_OBJ},
+				ReturnPattern: [][]string{
+					[]string{NIL_OBJ},
+				},
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
