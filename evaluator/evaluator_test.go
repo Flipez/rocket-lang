@@ -371,11 +371,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		expected interface{}
 	}{
 		{`puts("test")`, nil},
-		{`raise("Error")`, "to few arguments: got=1, want=2"},
-		{`raise("Error", 1)`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
-		{`raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
-		{`exit()`, "to few arguments: got=0, want=1"},
-		{`exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
+		{`OS.raise("Error")`, "to few arguments: got=1, want=2"},
+		{`OS.raise("Error", 1)`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
+		{`OS.raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
+		{`OS.exit()`, "to few arguments: got=0, want=1"},
+		{`OS.exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
 		{`IO.open()`, "to few arguments: got=0, want=1"},
 		{`IO.open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
