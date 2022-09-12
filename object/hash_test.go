@@ -60,3 +60,37 @@ func TestHashType(t *testing.T) {
 		t.Errorf("hash.Type() returns wrong type")
 	}
 }
+
+func TestHashSet(t *testing.T) {
+	hash := object.NewHash(nil)
+
+	hash.Set("a", 1)
+	obj, ok := hash.Get("a")
+	if !ok || obj == nil {
+		t.Errorf("expected to get value")
+	} else {
+		if obj.Type() != object.INTEGER_OBJ {
+			t.Errorf("unexpected type of value, got=%s want=%s", obj.Type(), object.INTEGER_OBJ)
+		}
+	}
+
+	hash.Set(object.NewString("a"), 2)
+	obj, ok = hash.Get("a")
+	if !ok || obj == nil {
+		t.Errorf("expected to get value")
+	} else {
+		if obj.Type() != object.INTEGER_OBJ {
+			t.Errorf("unexpected type of value, got=%s want=%s", obj.Type(), object.INTEGER_OBJ)
+		}
+	}
+
+	hash.Set(object.NewString("b"), object.NewInteger(3))
+	obj, ok = hash.Get("b")
+	if !ok || obj == nil {
+		t.Errorf("expected to get value")
+	} else {
+		if obj.Type() != object.INTEGER_OBJ {
+			t.Errorf("unexpected type of value, got=%s want=%s", obj.Type(), object.INTEGER_OBJ)
+		}
+	}
+}
