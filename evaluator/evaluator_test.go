@@ -376,11 +376,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`exit()`, "to few arguments: got=0, want=1"},
 		{`exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
-		{`open()`, "to few arguments: got=0, want=1"},
-		{`open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
-		{`open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
-		{`open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
-		{`open("fixtures/module.rl", "nope", "0644").read(1)`, "undefined method `.read()` for ERROR"},
+		{`IO.open()`, "to few arguments: got=0, want=1"},
+		{`IO.open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
+		{`IO.open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
+		{`IO.open("fixtures/module.rl", "nope", "0644").read(1)`, "undefined method `.read()` for ERROR"},
 	}
 
 	for _, tt := range tests {

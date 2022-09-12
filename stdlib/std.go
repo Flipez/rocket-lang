@@ -11,11 +11,11 @@ func init() {
 	RegisterFunction("puts", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY_OBJ...))}, putsFunction)
 	RegisterFunction("exit", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.INTEGER_OBJ))}, exitFunction)
 	RegisterFunction("raise", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.INTEGER_OBJ), object.Arg(object.STRING_OBJ))}, raiseFunction)
-	RegisterFunction("open", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.STRING_OBJ), object.OptArg(object.STRING_OBJ), object.OptArg(object.STRING_OBJ))}, openFunction)
 
 	RegisterModule("Math", "", mathFunctions, mathProperties)
 	RegisterModule("HTTP", "", httpFunctions, httpProperties)
 	RegisterModule("JSON", "", jsonFunctions, jsonProperties)
+	RegisterModule("IO", "", ioFunctions, ioProperties)
 }
 
 func RegisterFunction(name string, layout object.MethodLayout, function func(object.Environment, ...object.Object) object.Object) {

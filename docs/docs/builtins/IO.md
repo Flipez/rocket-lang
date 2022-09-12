@@ -1,0 +1,23 @@
+# IO
+
+
+
+
+## Module Function
+
+### open(STRING, STRING, STRING)
+> Returns `FILE`
+
+Opens a file pointer to the file at the path, mode and permission can be set optionally.
+
+
+```js
+🚀 > open("main.go", "r", "0644")
+=> <file:main.go>
+```
+
+
+
+## Properties
+| Name | Value |
+| ---- | ----- |

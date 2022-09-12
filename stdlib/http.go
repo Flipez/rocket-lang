@@ -14,7 +14,7 @@ func init() {
 			Description: "Creates a new instance of HTTP",
 			ReturnPattern: object.Args(
 				object.Arg(object.HTTP_OBJ),
-      ),
+			),
 		},
 		func(_ object.Environment, _ ...object.Object) object.Object {
 			return object.NewHTTP()
