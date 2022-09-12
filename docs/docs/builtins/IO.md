@@ -12,7 +12,7 @@ Opens a file pointer to the file at the path, mode and permission can be set opt
 
 
 ```js
-🚀 > open("main.go", "r", "0644")
+🚀 > IO.open("main.go", "r", "0644")
 => <file:main.go>
 ```
 

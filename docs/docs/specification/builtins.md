@@ -39,15 +39,3 @@ Prints the string representation of the given object to STDOUT.
 🚀 > puts(["test",true,3])
 ["test", true, 3]
 ```
-
-## open(STRING, STRING, STRING)
-> Returns FILE
-
-Opens a file pointer to the file at the path of argument one with the mode of (optional) argument two and a file permission as optional argument three.
-
-```js
-🚀 > open("main.go", "r", "0644")
-=> <file:main.go>
-```
-
-Available file modes are `r`, `w`, `wa`, `rw` and `rwa`,
