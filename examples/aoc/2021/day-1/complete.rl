@@ -1,4 +1,4 @@
-input = open("examples/aoc/2021/day-1/input").lines()
+input = IO.open("examples/aoc/2021/day-1/input").lines()
 
 // Part 1
 
