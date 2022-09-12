@@ -66,6 +66,21 @@ func (h *Hash) Get(name string) (Object, bool) {
 	return nil, ok
 }
 
+func (h *Hash) Set(key, value any) {
+	var keyObj, valObj Object
+	if obj, ok := key.(Object); ok {
+		keyObj = obj
+	} else {
+		keyObj = AnyToObject(key)
+	}
+	if obj, ok := value.(Object); ok {
+		valObj = obj
+	} else {
+		valObj = AnyToObject(value)
+	}
+	h.Pairs[keyObj.(Hashable).HashKey()] = HashPair{Key: keyObj, Value: valObj}
+}
+
 func init() {
 	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
 		"keys": ObjectMethod{

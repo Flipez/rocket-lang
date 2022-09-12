@@ -129,56 +129,19 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 					requestBodyBuf := new(bytes.Buffer)
 					requestBodyBuf.ReadFrom(request.Body)
 
-					httpRequest := NewHash(map[HashKey]HashPair{
-						NewString("method").HashKey(): HashPair{
-							Key:   NewString("method"),
-							Value: NewString(request.Method),
-						},
-						NewString("host").HashKey(): HashPair{
-							Key:   NewString("host"),
-							Value: NewString(request.Host),
-						},
-						NewString("contentLength").HashKey(): HashPair{
-							Key:   NewString("contentLength"),
-							Value: NewInteger(request.ContentLength),
-						},
-						NewString("protocol").HashKey(): HashPair{
-							Key:   NewString("protocol"),
-							Value: NewString(request.Proto),
-						},
-						NewString("protocolMajor").HashKey(): HashPair{
-							Key:   NewString("protocolMajor"),
-							Value: NewInteger(int64(request.ProtoMajor)),
-						},
-						NewString("protocolMinor").HashKey(): HashPair{
-							Key:   NewString("protocolMinor"),
-							Value: NewInteger(int64(request.ProtoMinor)),
-						},
-						NewString("body").HashKey(): HashPair{
-							Key:   NewString("body"),
-							Value: NewString(requestBodyBuf.String()),
-						},
-					})
+					httpRequest := NewHash(nil)
+					httpRequest.Set("method", request.Method)
+					httpRequest.Set("host", request.Host)
+					httpRequest.Set("contentLength", request.ContentLength)
+					httpRequest.Set("protocol", request.Proto)
+					httpRequest.Set("protocolMajor", request.ProtoMajor)
+					httpRequest.Set("protocolMinor", request.ProtoMinor)
+					httpRequest.Set("body", requestBodyBuf.String())
 
-					httpResponse := NewHash(map[HashKey]HashPair{
-						NewString("status").HashKey(): HashPair{
-							Key:   NewString("status"),
-							Value: NewInteger(200),
-						},
-						NewString("body").HashKey(): HashPair{
-							Key:   NewString("body"),
-							Value: NewString(""),
-						},
-						NewString("headers").HashKey(): HashPair{
-							Key: NewString("headers"),
-							Value: NewHash(map[HashKey]HashPair{
-								NewString("Content-Type").HashKey(): HashPair{
-									Key:   NewString("Content-Type"),
-									Value: NewString("text/plain"),
-								},
-							}),
-						},
-					})
+					httpResponse := NewHash(nil)
+					httpResponse.Set("status", 200)
+					httpResponse.Set("body", "")
+					httpResponse.Set("headers", map[string]any{"Content-Type": "text/plain"})
 
 					env.Set("request", httpRequest)
 					env.Set("response", httpResponse)

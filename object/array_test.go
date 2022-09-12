@@ -79,3 +79,24 @@ func TestArrayHashKey(t *testing.T) {
 		t.Errorf("arrays with different content have same hash keys")
 	}
 }
+
+func TestArrayAdd(t *testing.T) {
+	array := object.NewArray(nil)
+	array.Add("a")
+	if len(array.Elements) != 1 || array.Elements[0].Type() != object.STRING_OBJ {
+		t.Errorf("expected array to have a string value on index 0")
+	}
+
+	array.Add(object.NewString("b"))
+	if len(array.Elements) != 2 || array.Elements[1].Type() != object.STRING_OBJ {
+		t.Errorf("expected array to have a string value on index 1")
+	}
+
+	array.Add(object.NewString("c"), 1)
+	if len(array.Elements) != 4 || array.Elements[2].Type() != object.STRING_OBJ {
+		t.Errorf("expected array to have a string value on index 2")
+	}
+	if len(array.Elements) != 4 || array.Elements[3].Type() != object.INTEGER_OBJ {
+		t.Errorf("expected array to have an integer value on index 3")
+	}
+}

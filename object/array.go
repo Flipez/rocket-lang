@@ -46,6 +46,16 @@ func (ao *Array) HashKey() HashKey {
 	return HashKey{Type: ao.Type(), Value: h.Sum64()}
 }
 
+func (ao *Array) Add(items ...any) {
+	for _, item := range items {
+		obj, ok := item.(Object)
+		if !ok {
+			obj = AnyToObject(item)
+		}
+		ao.Elements = append(ao.Elements, obj)
+	}
+}
+
 func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
 		"size": ObjectMethod{
