@@ -132,3 +132,20 @@ func TestIsFalsy(t *testing.T) {
 		t.Errorf("BOOLEAN_OBJ=false, should be falsy")
 	}
 }
+
+func TestAnyToObject(t *testing.T) {
+	testcases := map[any]object.Object{
+		"a":        object.NewString("a"),
+		1:          object.NewInteger(1),
+		1.2:        object.NewFloat(1.2),
+		true:       object.TRUE,
+		struct{}{}: object.NIL,
+	}
+
+	for input, expected := range testcases {
+		obj := object.AnyToObject(input)
+		if obj.Type() != expected.Type() {
+			t.Errorf("wrong object type, got=%s want=%s", obj.Type(), expected.Type())
+		}
+	}
+}

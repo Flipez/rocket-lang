@@ -35,40 +35,7 @@ func init() {
 				return object.NewErrorFormat("Error while parsing json: %s", err)
 			}
 
-			return interfaceToObject(i)
+			return object.AnyToObject(i)
 		},
 	)
-}
-
-func interfaceToObject(i interface{}) object.Object {
-	switch v := i.(type) {
-	case map[string]interface{}:
-		jsonObject := object.NewHash(nil)
-		for key, val := range v {
-			hp := object.HashPair{
-				Key:   object.NewString(key),
-				Value: interfaceToObject(val),
-			}
-
-			jsonObject.Pairs[hp.Key.(object.Hashable).HashKey()] = hp
-		}
-
-		return jsonObject
-	case []interface{}:
-		jsonArray := object.NewArray(nil)
-		for _, element := range v {
-			jsonArray.Elements = append(jsonArray.Elements, interfaceToObject(element))
-		}
-		return jsonArray
-	case string:
-		return object.NewString(v)
-	case float64:
-		return object.NewFloat(v)
-	case bool:
-		if v {
-			return object.TRUE
-		}
-		return object.FALSE
-	}
-	return object.NIL
 }

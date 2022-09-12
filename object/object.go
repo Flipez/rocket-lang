@@ -69,33 +69,33 @@ const (
 )
 
 type Argument struct {
-  Types []string
-  Optional bool
+	Types    []string
+	Optional bool
 }
 
 func (a Argument) String() string {
-  return strings.Join(a.Types, "|")
+	return strings.Join(a.Types, "|")
 }
 
 func (a Argument) Check(o Object) bool {
-  for _, t := range a.Types {
-    if ObjectType(t) == o.Type() {
-      return true
-    }
-  }
-  return false
+	for _, t := range a.Types {
+		if ObjectType(t) == o.Type() {
+			return true
+		}
+	}
+	return false
 }
 
 func Arg(types ...string) Argument {
-  return Argument{Types: types}
+	return Argument{Types: types}
 }
 
 func OptArg(types ...string) Argument {
-  return Argument{Types: types, Optional: true}
+	return Argument{Types: types, Optional: true}
 }
 
 func Args(args ...Argument) []Argument {
-  return args
+	return args
 }
 
 type MethodLayout struct {
@@ -106,14 +106,14 @@ type MethodLayout struct {
 }
 
 func (ml MethodLayout) requiredArgs() []Argument {
-  args := make([]Argument, 0)
-  for _, arg := range ml.ArgPattern {
-    if arg.Optional {
-      continue
-    }
-    args = append(args, arg)
-  }
-  return args
+	args := make([]Argument, 0)
+	for _, arg := range ml.ArgPattern {
+		if arg.Optional {
+			continue
+		}
+		args = append(args, arg)
+	}
+	return args
 }
 
 type ObjectMethod struct {
@@ -122,7 +122,7 @@ type ObjectMethod struct {
 }
 
 func (ml MethodLayout) validateArgs(args []Object) error {
-  requiredArgs := ml.requiredArgs()
+	requiredArgs := ml.requiredArgs()
 	if len(args) < len(requiredArgs) {
 		return fmt.Errorf("to few arguments: got=%d, want=%d", len(args), len(requiredArgs))
 	}
@@ -131,31 +131,30 @@ func (ml MethodLayout) validateArgs(args []Object) error {
 		return fmt.Errorf("to many arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
 	}
 
-  if len(args) > 0 {
-    for idx, arg := range args {
-      if !ml.ArgPattern[idx].Check(arg) {
+	if len(args) > 0 {
+		for idx, arg := range args {
+			if !ml.ArgPattern[idx].Check(arg) {
 				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, arg.Type(), ml.ArgPattern[idx])
-      }
-    }
-  }
-
-
-  /*
-	if !ml.ArgsOptional || (ml.ArgsOptional && len(args) > 0) {
-		for idx, pattern := range ml.ArgPattern {
-			var valid bool
-			for _, argType := range pattern {
-				if ObjectType(argType) == args[idx].Type() {
-					valid = true
-					break
-				}
-			}
-			if !valid {
-				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, args[idx].Type(), strings.Join(pattern, "|"))
 			}
 		}
 	}
-  */
+
+	/*
+		if !ml.ArgsOptional || (ml.ArgsOptional && len(args) > 0) {
+			for idx, pattern := range ml.ArgPattern {
+				var valid bool
+				for _, argType := range pattern {
+					if ObjectType(argType) == args[idx].Type() {
+						valid = true
+						break
+					}
+				}
+				if !valid {
+					return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, args[idx].Type(), strings.Join(pattern, "|"))
+				}
+			}
+		}
+	*/
 
 	return nil
 }
@@ -395,4 +394,35 @@ func IsFalsy(o Object) bool {
 
 func AddEvaluator(e func(node ast.Node, env *Environment) Object) {
 	Evaluator = e
+}
+
+func AnyToObject(a any) Object {
+	switch v := a.(type) {
+	case bool:
+		if v {
+			return TRUE
+		}
+		return FALSE
+	case string:
+		return NewString(v)
+	case int:
+		return NewInteger(int64(v))
+	case int64:
+		return NewInteger(v)
+	case float64:
+		return NewFloat(v)
+	case []any:
+		arr := make([]Object, len(v))
+		for idx, item := range v {
+			arr[idx] = AnyToObject(item)
+		}
+		return NewArray(arr)
+	case map[string]any:
+		hash := NewHash(nil)
+		for key, val := range v {
+			hash.Set(AnyToObject(key), AnyToObject(val))
+		}
+		return hash
+	}
+	return NIL
 }
