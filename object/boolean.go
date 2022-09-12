@@ -32,11 +32,13 @@ func (b *Boolean) HashKey() HashKey {
 func init() {
 	objectMethods[BOOLEAN_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
-			description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value.",
-			example: `🚀 > true.plz_s()
+			Layout: MethodLayout{
+				Description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value.",
+				Example: `🚀 > true.plz_s()
 => "true"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				b := o.(*Boolean)

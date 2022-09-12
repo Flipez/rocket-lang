@@ -49,11 +49,13 @@ func (ao *Array) HashKey() HashKey {
 func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
 		"size": ObjectMethod{
-			description: "Returns the amount of elements in the array.",
-			example: `🚀 > ["a", "b", 1, 2].size()
+			Layout: MethodLayout{
+				Description: "Returns the amount of elements in the array.",
+				Example: `🚀 > ["a", "b", 1, 2].size()
 => 4`,
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -61,11 +63,13 @@ func init() {
 			},
 		},
 		"uniq": ObjectMethod{
-			description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.",
-			example: `🚀 > ["a", 1, 1, 2].uniq()
+			Layout: MethodLayout{
+				Description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.",
+				Example: `🚀 > ["a", 1, 1, 2].uniq()
 => [1, 2, "a"]`,
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ, ERROR_OBJ},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -91,14 +95,16 @@ func init() {
 			},
 		},
 		"index": ObjectMethod{
-			description: "Returns the index of the given element in the array if found. Otherwise return `-1`.",
-			example: `🚀 > ["a", "b", 1, 2].index(1)
+			Layout: MethodLayout{
+				Description: "Returns the index of the given element in the array if found. Otherwise return `-1`.",
+				Example: `🚀 > ["a", "b", 1, 2].index(1)
 => 2`,
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
-			},
-			argPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ},
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -115,11 +121,13 @@ func init() {
 			},
 		},
 		"first": ObjectMethod{
-			description: "Returns the first element of the array. Shorthand for `array[0]`",
-			example: `🚀 > ["a", "b", 1, 2].first()
+			Layout: MethodLayout{
+				Description: "Returns the first element of the array. Shorthand for `array[0]`",
+				Example: `🚀 > ["a", "b", 1, 2].first()
 => "a"`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -130,11 +138,13 @@ func init() {
 			},
 		},
 		"last": ObjectMethod{
-			description: "Returns the last element of the array.",
-			example: `🚀 > ["a", "b", 1, 2].last()
+			Layout: MethodLayout{
+				Description: "Returns the last element of the array.",
+				Example: `🚀 > ["a", "b", 1, 2].last()
 => 2`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -145,15 +155,17 @@ func init() {
 			},
 		},
 		"yeet": ObjectMethod{
-			description: "Removes the last element of the array and returns it.",
-			example: `🚀 > a = [1,2,3]
+			Layout: MethodLayout{
+				Description: "Removes the last element of the array and returns it.",
+				Example: `🚀 > a = [1,2,3]
 => [1, 2, 3]
 🚀 > a.yeet()
 => 3
 🚀 > a
 => [1, 2]`,
-			returnPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				ReturnPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
@@ -170,18 +182,20 @@ func init() {
 			},
 		},
 		"yoink": ObjectMethod{
-			description: "Adds the given object as last element to the array.",
-			example: `🚀 > a = [1,2,3]
+			Layout: MethodLayout{
+				Description: "Adds the given object as last element to the array.",
+				Example: `🚀 > a = [1,2,3]
 => [1, 2, 3]
 🚀 > a.yoink("a")
 => nil
 🚀 > a
 => [1, 2, 3, "a"]`,
-			returnPattern: [][]string{
-				[]string{NIL_OBJ},
-			},
-			argPattern: [][]string{
-				[]string{STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ},
+				ReturnPattern: Args(
+					Arg(NIL_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)

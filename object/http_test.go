@@ -13,11 +13,9 @@ import (
 
 func TestHTTPObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`HTTP.nope()`, "undefined method `.nope()` for HTTP"},
-		{`HTTP.handle(1, "test")`, "wrong argument type on position 0: got=INTEGER, want=STRING"},
-		{`HTTP.handle("/", "test")`, "wrong argument type on position 1: got=STRING, want=FUNCTION"},
-		{`HTTP.listen(3000)`, "Invalid handler. Call only supported on instance."},
-		{"def test()\nend;HTTP.handle(\"/\", test)", "Invalid handler. Call only supported on instance."},
+		{`HTTP.new().nope()`, "undefined method `.nope()` for HTTP"},
+		{`HTTP.new().handle(1, "test")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`HTTP.new().handle("/", "test")`, "wrong argument type on position 2: got=STRING, want=FUNCTION"},
 		{`a = HTTP.new(); a.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},
 		{`a = HTTP.new(); a.listen(80)`, "listening on port 80: listen tcp :80: bind: permission denied"},
 		{"HTTP.new().to_json()", "HTTP is not serializable"},
@@ -31,7 +29,7 @@ func TestHTTPType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		def := testEval(tt.input).(*object.HTTP)
+		def := testEval(tt.input).(*object.BuiltinModule)
 		defInspect := def.Inspect()
 
 		if defInspect != tt.expected {

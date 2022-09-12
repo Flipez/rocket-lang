@@ -69,11 +69,13 @@ func (h *Hash) Get(name string) (Object, bool) {
 func init() {
 	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
 		"keys": ObjectMethod{
-			description: "Returns the keys of the hash.",
-			example: `🚀 > {"a": "1", "b": "2"}.keys()
+			Layout: MethodLayout{
+				Description: "Returns the keys of the hash.",
+				Example: `🚀 > {"a": "1", "b": "2"}.keys()
 => ["a", "b"]`,
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)
@@ -90,11 +92,13 @@ func init() {
 			},
 		},
 		"values": ObjectMethod{
-			description: "Returns the values of the hash.",
-			example: `🚀 > {"a": "1", "b": "2"}.values()
+			Layout: MethodLayout{
+				Description: "Returns the values of the hash.",
+				Example: `🚀 > {"a": "1", "b": "2"}.values()
 => ["2", "1"]`,
-			returnPattern: [][]string{
-				[]string{ARRAY_OBJ},
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				h := o.(*Hash)

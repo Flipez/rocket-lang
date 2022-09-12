@@ -12,27 +12,33 @@ func (n *Nil) InvokeMethod(method string, env Environment, args ...Object) Objec
 func init() {
 	objectMethods[NIL_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
-			description: "Returns empty string.",
-			returnPattern: [][]string{
-				[]string{STRING_OBJ},
+			Layout: MethodLayout{
+				Description: "Returns empty string.",
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewString("")
 			},
 		},
 		"plz_i": ObjectMethod{
-			description: "Returns zero integer.",
-			returnPattern: [][]string{
-				[]string{INTEGER_OBJ},
+			Layout: MethodLayout{
+				Description: "Returns zero integer.",
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewInteger(0)
 			},
 		},
 		"plz_f": ObjectMethod{
-			description: "Returns zero float.",
-			returnPattern: [][]string{
-				[]string{FLOAT_OBJ},
+			Layout: MethodLayout{
+				Description: "Returns zero float.",
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
 			},
 			method: func(_ Object, _ []Object, _ Environment) Object {
 				return NewFloat(0)

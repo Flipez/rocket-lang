@@ -18,6 +18,7 @@ type HTTP struct {
 	raisedError     *Error
 }
 
+func NewHTTP() *HTTP             { return &HTTP{mux: http.NewServeMux()} }
 func (h *HTTP) Type() ObjectType { return HTTP_OBJ }
 func (h *HTTP) Inspect() string  { return "HTTP" }
 func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Object {
@@ -31,22 +32,16 @@ func (h *HTTP) raiseErrorAndInterrupt(error string) {
 
 func init() {
 	objectMethods[HTTP_OBJ] = map[string]ObjectMethod{
-		"new": ObjectMethod{
-			returnPattern: [][]string{
-				[]string{HTTP_OBJ},
-			},
-			method: func(_ Object, _ []Object, _ Environment) Object {
-				return &HTTP{mux: http.NewServeMux()}
-			},
-		},
 		"listen": ObjectMethod{
-			description: "Starts a blocking webserver on the given port.",
-			example:     `🚀 > HTTP.listen(3000)`,
-			argPattern: [][]string{
-				[]string{INTEGER_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{NIL_OBJ, ERROR_OBJ},
+			Layout: MethodLayout{
+				Description: "Starts a blocking webserver on the given port.",
+				Example:     `🚀 > HTTP.listen(3000)`,
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(NIL_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {
@@ -98,7 +93,8 @@ func init() {
 			},
 		},
 		"handle": ObjectMethod{
-			description: `Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
+			Layout: MethodLayout{
+				Description: `Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
 Inside the function a variable called "request" will be populated which is a hash with information about the request.
 
 Also a variable called "response" will be created which will be returned automatically as a response to the client.
@@ -107,13 +103,14 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 - "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
 - "body" needs to be a STRING. Default ""
 - "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}`,
-			example: `🚀 > HTTP.handle("/", callback_func)`,
-			argPattern: [][]string{
-				[]string{STRING_OBJ},
-				[]string{FUNCTION_OBJ},
-			},
-			returnPattern: [][]string{
-				[]string{NIL_OBJ, ERROR_OBJ},
+				Example: `🚀 > HTTP.handle("/", callback_func)`,
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+					Arg(FUNCTION_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(NIL_OBJ, ERROR_OBJ),
+				),
 			},
 			method: func(o Object, args []Object, env Environment) Object {
 				if o.(*HTTP).mux == nil {

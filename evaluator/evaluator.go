@@ -155,8 +155,8 @@ func applyFunction(def object.Object, args []object.Object, env *object.Environm
 		evaluated := Eval(def.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
 
-	case *object.Builtin:
-		return def.Fn(env, args...)
+	case *object.BuiltinFunction:
+		return def.Call(args, *env)
 
 	default:
 		return object.NewErrorFormat("not a function: %s", def.Type())
@@ -209,12 +209,13 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 }
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
-	if right.Type() != object.INTEGER_OBJ {
-		return object.NewErrorFormat("unknown operator: -%s", right.Type())
-	}
-
-	value := right.(*object.Integer).Value
-	return object.NewInteger(-value)
+  switch val := right.(type) {
+  case *object.Integer:
+    return object.NewInteger(-val.Value)
+  case *object.Float:
+    return object.NewFloat(-val.Value)
+  }
+  return object.NewErrorFormat("unknown operator: -%s", right.Type())
 }
 
 func nativeBoolToBooleanObject(input bool) *object.Boolean {
