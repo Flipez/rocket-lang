@@ -16,7 +16,7 @@ type Lexer struct {
 }
 
 func New(input string) *Lexer {
-	l := &Lexer{input: input, currentLine: 0, positionInLine: 0}
+	l := &Lexer{input: input, currentLine: 1, positionInLine: 0}
 	l.readChar()
 	return l
 }
@@ -26,6 +26,10 @@ func (l *Lexer) readChar() {
 		l.ch = 0
 	} else {
 		l.ch = l.input[l.readPosition]
+	}
+	if l.ch == '\n' {
+		l.currentLine += 1
+		l.positionInLine = 0
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
@@ -159,6 +163,9 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
+
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
@@ -167,6 +174,8 @@ func (l *Lexer) NextToken() token.Token {
 			} else {
 				tok.Type = token.INT
 			}
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -178,6 +187,8 @@ func (l *Lexer) NextToken() token.Token {
 
 			tok.Literal = token.LookupLiteral(string(out))
 			tok.Type = token.LookupEmoji(string(out))
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
 
 			return tok
 		} else {
@@ -248,13 +259,7 @@ func (l *Lexer) readIdentifier() string {
 }
 
 func (l *Lexer) isNewline() bool {
-	if l.ch == '\n' {
-		l.currentLine += 1
-		l.positionInLine = 0
-		return true
-	}
-
-	return false
+	return l.ch == '\n'
 }
 
 func (l *Lexer) isIdentifier(ch byte) bool {

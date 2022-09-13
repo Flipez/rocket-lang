@@ -211,7 +211,7 @@ func TestErrorHandling(t *testing.T) {
 		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
 		{
 			`import("../fixtures/parser_error")`,
-			"Parse Error: [0:10: expected next token to be EOF, got EOF instead]",
+			"Parse Error: [1:10: expected next token to be ), got EOF instead]",
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
