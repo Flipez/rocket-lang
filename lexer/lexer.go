@@ -163,6 +163,9 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
+
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
@@ -171,6 +174,8 @@ func (l *Lexer) NextToken() token.Token {
 			} else {
 				tok.Type = token.INT
 			}
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -182,6 +187,8 @@ func (l *Lexer) NextToken() token.Token {
 
 			tok.Literal = token.LookupLiteral(string(out))
 			tok.Type = token.LookupEmoji(string(out))
+			tok.LineNumber = l.currentLine
+			tok.LinePosition = l.positionInLine
 
 			return tok
 		} else {
