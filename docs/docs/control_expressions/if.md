@@ -17,3 +17,22 @@ end
 // which prints
 is a string
 ```
+
+## else if
+You can also chain an `if` statement after an `else` statement which makes the nested `end` optional.
+
+```js
+if (type == "BOOLEAN")
+  a.yoink(true)
+else if (type == "STRING")
+  a.yoink("")
+else if (type == "INTEGER")
+  a.yoink(0)
+else if (type == "FLOAT")
+  a.yoink(0.0)
+else if (type == "ARRAY")
+  a.yoink([])
+else if (type == "HASH")
+  a.yoink({})
+end
+```
