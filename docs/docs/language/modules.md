@@ -1,10 +1,3 @@
----
-title: "Modules"
-menu:
-  docs:
-    parent: "specification"
-toc: true
----
 # Modules
 > 👉 Modules were introduced in `0.11`
 
@@ -41,4 +34,13 @@ You can use it like so:
 => 5
 🚀 > module.Sum(module.A, 2)
 => 7
+```
+
+You can also define a name for the variable in which the module will be available:
+
+```js
+🚀 > import("fixtures/module", "anotherModule")
+=> nil
+🚀 > anotherModule.A
+=> 5
 ```
