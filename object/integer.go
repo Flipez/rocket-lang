@@ -8,7 +8,6 @@ import (
 
 type Integer struct {
 	Value int64
-	index int64
 }
 
 func NewInteger(i int64) *Integer {
@@ -96,19 +95,23 @@ func (i *Integer) ToFloat() Object {
 	return NewFloat(float64(i.Value))
 }
 
-func (i *Integer) Reset() {
-	i.index = 0
-}
-
-func (i *Integer) Next() (Object, Object, bool) {
-	if i.index < i.Value {
-		index := NewInteger(i.index)
-		i.index++
-		return index, index, true
-	}
-	return nil, NewInteger(0), false
+func (i *Integer) GetIterator() Iterator {
+	return &integerIterator{max: i.Value}
 }
 
 func (i *Integer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(i.Value)
+}
+
+type integerIterator struct {
+	current, max int64
+}
+
+func (i *integerIterator) Next() (Object, Object, bool) {
+	if i.current < i.max {
+		obj := NewInteger(i.current)
+		i.current++
+		return obj, obj, true
+	}
+	return nil, NewInteger(0), false
 }
