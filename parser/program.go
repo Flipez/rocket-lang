@@ -18,8 +18,12 @@ func (p *Parser) ParseProgram() (*ast.Program, map[string]struct{}) {
 
 			if expStmt, ok := stmt.(*ast.ExpressionStatement); ok {
 				if importExpr, ok := expStmt.Expression.(*ast.Import); ok {
-					implicitVarName := filepath.Base(importExpr.Name.String())
-					p.imports[implicitVarName] = struct{}{}
+					if importExpr.Name != nil {
+						p.imports[importExpr.Name.String()] = struct{}{}
+					} else {
+						implicitVarName := filepath.Base(importExpr.Location.String())
+						p.imports[implicitVarName] = struct{}{}
+					}
 				}
 			}
 		}
