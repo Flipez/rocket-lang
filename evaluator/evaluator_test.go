@@ -610,6 +610,10 @@ func TestImportExpression(t *testing.T) {
 			`import("../fixtures/module"); module.a`,
 			nil,
 		},
+		{
+			`import("../fixtures/module", "module2"); module2.A`,
+			5,
+		},
 	}
 
 	for _, tt := range tests {

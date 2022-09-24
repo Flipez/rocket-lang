@@ -12,12 +12,12 @@ func (p *Parser) parseImport() ast.Expression {
 		return nil
 	}
 
-	p.nextToken()
+	argList := p.parseExpressionList(token.RPAREN)
 
-	expression.Name = p.parseExpression(LOWEST)
+	expression.Location = argList[0]
 
-	if !p.expectPeek(token.RPAREN) {
-		return nil
+	if len(argList) == 2 {
+		expression.Name = argList[1]
 	}
 
 	return expression

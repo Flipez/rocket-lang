@@ -8,22 +8,29 @@ import (
 )
 
 func evalImport(ie *ast.Import, env *object.Environment) object.Object {
-	name := Eval(ie.Name, env)
+	location := Eval(ie.Location, env)
 
-	if object.IsError(name) {
-		return name
+	if object.IsError(location) {
+		return location
 	}
 
-	if s, ok := name.(*object.String); ok {
+	if s, ok := location.(*object.String); ok {
 		attributes := EvalModule(s.Value)
 
 		if object.IsError(attributes) {
 			return attributes
 		}
 
-		env.Set(filepath.Base(s.Value), object.NewModule(s.Value, attributes))
+		if ie.Name != nil {
+			name := Eval(ie.Name, env)
+			if nameString, ok := name.(*object.String); ok {
+				env.Set(nameString.Value, object.NewModule(s.Value, attributes))
+			}
+		} else {
+			env.Set(filepath.Base(s.Value), object.NewModule(s.Value, attributes))
+		}
 		return object.NIL
 	}
 
-	return object.NewErrorFormat("Import Error: invalid import path '%s'", name)
+	return object.NewErrorFormat("Import Error: invalid import path '%s'", location)
 }
