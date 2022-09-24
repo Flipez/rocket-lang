@@ -59,9 +59,10 @@ func TestIntegerInspect(t *testing.T) {
 
 func TestIntegerIteratable(t *testing.T) {
 	int1 := object.NewInteger(3)
+	int1Iterator := int1.GetIterator()
 
 	for expected := int64(0); expected < 3; expected++ {
-		_, value, ok := int1.Next()
+		_, value, ok := int1Iterator.Next()
 		actual := value.(*object.Integer)
 
 		if !ok {
@@ -77,14 +78,14 @@ func TestIntegerIteratable(t *testing.T) {
 		}
 	}
 
-	_, _, ok := int1.Next()
+	_, _, ok := int1Iterator.Next()
 	if ok {
 		t.Errorf("integer iteration didn't finish")
 	}
 
-	int1.Reset()
-	_, _, ok = int1.Next()
+	int1Iterator = int1.GetIterator()
+	_, _, ok = int1Iterator.Next()
 	if !ok {
-		t.Errorf("integer iteration shouldn't finish after reset")
+		t.Errorf("new integer iteration shouldn't finish after first next")
 	}
 }
