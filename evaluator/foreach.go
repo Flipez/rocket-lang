@@ -15,9 +15,9 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 
 	child := object.NewEnclosedEnvironment(env)
 
-	helper.Reset()
+	iterator := helper.GetIterator()
 
-	ret, idx, ok := helper.Next()
+	ret, idx, ok := iterator.Next()
 
 	for ok {
 
@@ -41,7 +41,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 			return rt.(*object.BreakValue).Value
 		}
 
-		ret, idx, ok = helper.Next()
+		ret, idx, ok = iterator.Next()
 	}
 
 	return val

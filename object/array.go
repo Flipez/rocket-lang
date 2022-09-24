@@ -9,7 +9,6 @@ import (
 
 type Array struct {
 	Elements []Object
-	offset   int
 }
 
 func NewArray(slice []Object) *Array {
@@ -209,13 +208,7 @@ func init() {
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				newElements := make([]Object, length+1)
-				copy(newElements, ao.Elements)
-				newElements[length] = args[0]
-
-				ao.Elements = newElements
+				ao.Elements = append(ao.Elements, args[0])
 				return NIL
 			},
 		},
@@ -226,20 +219,25 @@ func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Ob
 	return objectMethodLookup(ao, method, env, args)
 }
 
-func (ao *Array) Reset() {
-	ao.offset = 0
-}
-func (ao *Array) Next() (Object, Object, bool) {
-	if ao.offset < len(ao.Elements) {
-		ao.offset++
-
-		element := ao.Elements[ao.offset-1]
-		return element, NewInteger(int64(ao.offset - 1)), true
-	}
-
-	return nil, NewInteger(0), false
+func (ao *Array) GetIterator() Iterator {
+	return &arrayIterator{items: ao.Elements}
 }
 
 func (ao *Array) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ao.Elements)
+}
+
+type arrayIterator struct {
+	items []Object
+	index int
+}
+
+func (a *arrayIterator) Next() (Object, Object, bool) {
+	if a.index < len(a.items) {
+		val := a.items[a.index]
+		idx := NewInteger(int64(a.index))
+		a.index++
+		return val, idx, true
+	}
+	return nil, NewInteger(0), false
 }

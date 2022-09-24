@@ -9,8 +9,7 @@ import (
 )
 
 type Hash struct {
-	Pairs  map[HashKey]HashPair
-	offset int
+	Pairs map[HashKey]HashPair
 }
 
 func NewHash(pairs map[HashKey]HashPair) *Hash {
@@ -137,24 +136,12 @@ func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Obje
 
 }
 
-func (h *Hash) Reset() {
-	h.offset = 0
-}
-
-func (h *Hash) Next() (Object, Object, bool) {
-	if h.offset < len(h.Pairs) {
-		idx := 0
-
-		for _, pair := range h.Pairs {
-			if h.offset == idx {
-				h.offset++
-				return pair.Key, pair.Value, true
-			}
-			idx++
-		}
+func (h *Hash) GetIterator() Iterator {
+	pairs := make([]HashPair, 0)
+	for _, val := range h.Pairs {
+		pairs = append(pairs, val)
 	}
-
-	return nil, NewInteger(0), false
+	return &hashIterator{pairs: pairs}
 }
 
 func (h *Hash) MarshalJSON() ([]byte, error) {
@@ -177,4 +164,18 @@ func (h *Hash) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(tempHash)
+}
+
+type hashIterator struct {
+	pairs []HashPair
+	index int
+}
+
+func (h *hashIterator) Next() (Object, Object, bool) {
+	if h.index < len(h.pairs) {
+		pair := h.pairs[h.index]
+		h.index++
+		return pair.Key, pair.Value, true
+	}
+	return nil, NewInteger(0), false
 }

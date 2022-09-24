@@ -19,7 +19,10 @@ type Object interface {
 }
 
 type Iterable interface {
-	Reset()
+	GetIterator() Iterator
+}
+
+type Iterator interface {
 	Next() (Object, Object, bool)
 }
 

@@ -9,8 +9,7 @@ import (
 )
 
 type String struct {
-	Value  string
-	offset int
+	Value string
 }
 
 func NewString(s string) *String {
@@ -169,7 +168,7 @@ func init() {
 => "desserts"`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
-        ),
+				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
@@ -370,23 +369,25 @@ func (s *String) HashKey() HashKey {
 	return HashKey{Type: s.Type(), Value: h.Sum64()}
 }
 
-func (s *String) Reset() {
-	s.offset = 0
-}
-
-func (s *String) Next() (Object, Object, bool) {
-	if s.offset < utf8.RuneCountInString(s.Value) {
-		s.offset++
-
-		chars := []rune(s.Value)
-		val := NewString(string(chars[s.offset-1]))
-
-		return val, NewInteger(int64(s.offset - 1)), true
-	}
-
-	return nil, NewInteger(0), false
+func (s *String) GetIterator() Iterator {
+	return &stringIterator{chars: []rune(s.Value)}
 }
 
 func (s *String) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
+}
+
+type stringIterator struct {
+	chars []rune
+	index int
+}
+
+func (s *stringIterator) Next() (Object, Object, bool) {
+	if s.index < len(s.chars) {
+		val := NewString(string(s.chars[s.index]))
+		idx := NewInteger(int64(s.index))
+		s.index++
+		return val, idx, true
+	}
+	return nil, NewInteger(0), false
 }
