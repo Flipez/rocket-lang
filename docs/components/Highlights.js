@@ -125,10 +125,10 @@ function Builtins() {
             </h2>
             <p>
               RocketLang ships some neat builtins such as handling HTTP requests and responses,
-              marshaling and unmashaling of JSON objects.
+              marshalling and unmashalling of JSON objects.
             </p>
             <p>
-              It also comes with support of closures and modules and context sensitive variables in order
+              It also comes with support of closures, modules and context sensitive variables in order
               to create complex programs.
             </p>
           </div>
@@ -167,7 +167,7 @@ function EverythingObject() {
               Inspired by Ruby, in RocketLang everything is an object.
             </p>
             <p>
-              This allows to thread unknown input in the same way and figuring out what kind of
+              This allows to threat unknown input in the same way and figuring out what kind of
               information your function passes on the go.
               Every object supports the same minimum default subset of methods to achive this.
             </p>
