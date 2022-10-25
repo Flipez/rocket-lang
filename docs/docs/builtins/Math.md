@@ -144,6 +144,30 @@ Returns the binary logarithm of argument
 ```
 
 
+### max(FLOAT, FLOAT)
+> Returns `FLOAT`
+
+Returns the larger of the two numbers
+
+
+```js
+🚀 > Math.max(5.0, 10.0)
+=> 10.0
+```
+
+
+### min(FLOAT, FLOAT)
+> Returns `FLOAT`
+
+Returns the smaller of the two numbers
+
+
+```js
+🚀 > Math.max(5.0, 10.0)
+=> 5.0
+```
+
+
 ### pow(FLOAT, FLOAT)
 > Returns `FLOAT`
 
@@ -153,6 +177,18 @@ Returns argument1**argument2, the base-argument1 exponential of argument2
 ```js
 🚀 > Math.pow(2.0, 3.0)
 => 8.0
+```
+
+
+### rand()
+> Returns `FLOAT`
+
+Returns a pseudo-random number in the half-open interval [0.0, 1.0].
+
+
+```js
+🚀 > Math.rand()
+=> 0.6046602879796196
 ```
 
 

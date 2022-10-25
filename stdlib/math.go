@@ -2,6 +2,7 @@ package stdlib
 
 import (
 	"math"
+	"math/rand"
 
 	"github.com/flipez/rocket-lang/object"
 )
@@ -164,6 +165,34 @@ func init() {
 			return object.NewFloat(math.Log2(f.Value))
 		},
 	)
+	mathFunctions["max"] = object.NewBuiltinFunction("max",
+		object.MethodLayout{
+			Description: "Returns the larger of the two numbers",
+			Example: `🚀 > Math.max(5.0, 10.0)
+=> 10.0`,
+			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
+			ArgPattern:    object.Args(object.Arg(object.FLOAT_OBJ), object.Arg(object.FLOAT_OBJ)),
+		},
+		func(_ object.Environment, args ...object.Object) object.Object {
+			x := args[0].(*object.Float)
+			y := args[1].(*object.Float)
+			return object.NewFloat(math.Max(x.Value, y.Value))
+		},
+	)
+	mathFunctions["min"] = object.NewBuiltinFunction("min",
+		object.MethodLayout{
+			Description: "Returns the smaller of the two numbers",
+			Example: `🚀 > Math.max(5.0, 10.0)
+=> 5.0`,
+			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
+			ArgPattern:    object.Args(object.Arg(object.FLOAT_OBJ), object.Arg(object.FLOAT_OBJ)),
+		},
+		func(_ object.Environment, args ...object.Object) object.Object {
+			x := args[0].(*object.Float)
+			y := args[1].(*object.Float)
+			return object.NewFloat(math.Min(x.Value, y.Value))
+		},
+	)
 	mathFunctions["pow"] = object.NewBuiltinFunction("pow",
 		object.MethodLayout{
 			Description: "Returns argument1**argument2, the base-argument1 exponential of argument2",
@@ -176,6 +205,17 @@ func init() {
 			x := args[0].(*object.Float)
 			y := args[1].(*object.Float)
 			return object.NewFloat(math.Pow(x.Value, y.Value))
+		},
+	)
+	mathFunctions["rand"] = object.NewBuiltinFunction("rand",
+		object.MethodLayout{
+			Description: "Returns a pseudo-random number in the half-open interval [0.0, 1.0].",
+			Example: `🚀 > Math.rand()
+=> 0.6046602879796196`,
+			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
+		},
+		func(_ object.Environment, args ...object.Object) object.Object {
+			return object.NewFloat(rand.Float64())
 		},
 	)
 	mathFunctions["remainder"] = object.NewBuiltinFunction("remainder",
