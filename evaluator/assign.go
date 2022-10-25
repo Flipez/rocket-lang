@@ -18,13 +18,7 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	case *ast.Identifier:
 		env.Set(v.String(), evaluated)
 	case *ast.Index:
-		switch v.Left.(type) {
-		case *ast.Index:
-			return evalAssignIndex(v.Left.(*ast.Index), env, evaluated)
-		}
-
 		return evalAssignIndex(v, env, evaluated)
-
 	}
 	return evaluated
 }
@@ -39,6 +33,11 @@ func handleIntegerIndex(ai *ast.Index, env *object.Environment) (int64, error) {
 }
 
 func evalAssignIndex(v *ast.Index, env *object.Environment, evaluated object.Object) (val object.Object) {
+	switch v.Left.(type) {
+	case *ast.Index:
+		return evalAssignIndex(v.Left.(*ast.Index), env, evaluated)
+	}
+
 	obj, _ := env.Get(v.Left.String())
 	switch o := obj.(type) {
 	case *object.Array:
