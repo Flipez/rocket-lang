@@ -37,6 +37,8 @@ func TestMathObjectMethods(t *testing.T) {
 		{`Math.log(2.7183)`, math.Log(2.7183)},
 		{`Math.log10(100.0)`, math.Log10(100.0)},
 		{`Math.log2(256.0)`, math.Log2(256.0)},
+		{`Math.max(5.0, 10.0)`, math.Max(5.0, 10.0)},
+		{`Math.min(5.0, 10.0)`, math.Min(5.0, 10.0)},
 		{`Math.pow(2.0, 3.0)`, math.Pow(2.0, 3.0)},
 		{`Math.remainder(100.0, 30.0)`, math.Remainder(100.0, 30.0)},
 		{`Math.sin(Math.Pi)`, math.Sin(math.Pi)},
