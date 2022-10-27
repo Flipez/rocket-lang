@@ -3,6 +3,7 @@ package stdlib
 import (
 	"math"
 	"math/rand"
+	"time"
 
 	"github.com/flipez/rocket-lang/object"
 )
@@ -215,7 +216,9 @@ func init() {
 			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
-			return object.NewFloat(rand.Float64())
+			randSource := rand.NewSource(time.Now().UnixNano())
+			randomizedRand := rand.New(randSource)
+			return object.NewFloat(randomizedRand.Float64())
 		},
 	)
 	mathFunctions["remainder"] = object.NewBuiltinFunction("remainder",
