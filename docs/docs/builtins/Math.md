@@ -163,7 +163,7 @@ Returns the smaller of the two numbers
 
 
 ```js
-🚀 > Math.max(5.0, 10.0)
+🚀 > Math.min(5.0, 10.0)
 => 5.0
 ```
 

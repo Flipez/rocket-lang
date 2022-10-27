@@ -182,7 +182,7 @@ func init() {
 	mathFunctions["min"] = object.NewBuiltinFunction("min",
 		object.MethodLayout{
 			Description: "Returns the smaller of the two numbers",
-			Example: `🚀 > Math.max(5.0, 10.0)
+			Example: `🚀 > Math.min(5.0, 10.0)
 => 5.0`,
 			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
 			ArgPattern:    object.Args(object.Arg(object.FLOAT_OBJ), object.Arg(object.FLOAT_OBJ)),
