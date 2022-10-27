@@ -175,7 +175,7 @@ func (h *hashIterator) Next() (Object, Object, bool) {
 	if h.index < len(h.pairs) {
 		pair := h.pairs[h.index]
 		h.index++
-		return pair.Key, pair.Value, true
+		return pair.Value, pair.Key, true
 	}
 	return nil, NewInteger(0), false
 }
