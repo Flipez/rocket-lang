@@ -12,6 +12,10 @@ var mathFunctions = map[string]*object.BuiltinFunction{}
 var mathProperties = map[string]*object.BuiltinProperty{}
 
 func init() {
+	// Randomize seed each runtime to avoid predictable results
+	randSource := rand.NewSource(time.Now().UnixNano())
+	randomizedRand := rand.New(randSource)
+
 	mathFunctions["abs"] = object.NewBuiltinFunction("abs",
 		object.MethodLayout{
 			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
@@ -216,8 +220,6 @@ func init() {
 			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
-			randSource := rand.NewSource(time.Now().UnixNano())
-			randomizedRand := rand.New(randSource)
 			return object.NewFloat(randomizedRand.Float64())
 		},
 	)
