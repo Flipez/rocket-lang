@@ -41,6 +41,7 @@ func TestMathObjectMethods(t *testing.T) {
 		{`Math.min(5.0, 10.0)`, math.Min(5.0, 10.0)},
 		{`Math.pow(2.0, 3.0)`, math.Pow(2.0, 3.0)},
 		{`Math.remainder(100.0, 30.0)`, math.Remainder(100.0, 30.0)},
+		{`Math.round(73.3)`, math.Round(73.3)},
 		{`Math.sin(Math.Pi)`, math.Sin(math.Pi)},
 		{`Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)`, math.Sqrt(3.0*3.0 + 4.0*4.0)},
 		{`Math.tan(0.0)`, math.Tan(0.0)},
