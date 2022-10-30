@@ -93,6 +93,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`'te\"st'.size()`, 6},
 		{`"te\"st" == 'te"st'`, true},
 		{`"test%d".format(1)`, "test1"},
+		{`"%dtest%d".format(1,2)`, "1test2"},
 		{`"test%5d".format(1)`, "test    1"},
 		{`"test%f".format(1.3)`, "test1.300000"},
 		{`"test%1.1f".format(1.3)`, "test1.3"},
