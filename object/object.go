@@ -74,6 +74,7 @@ const (
 type Argument struct {
 	Types    []string
 	Optional bool
+	Overload bool
 }
 
 func (a Argument) String() string {
@@ -95,6 +96,10 @@ func Arg(types ...string) Argument {
 
 func OptArg(types ...string) Argument {
 	return Argument{Types: types, Optional: true}
+}
+
+func OverloadArg(types ...string) Argument {
+	return Argument{Types: types, Overload: true}
 }
 
 func Args(args ...Argument) []Argument {
@@ -126,38 +131,33 @@ type ObjectMethod struct {
 
 func (ml MethodLayout) validateArgs(args []Object) error {
 	requiredArgs := ml.requiredArgs()
-	if len(args) < len(requiredArgs) {
-		return fmt.Errorf("to few arguments: got=%d, want=%d", len(args), len(requiredArgs))
+	requiredArgsLen := len(requiredArgs)
+	possibleArgsLen := len(ml.ArgPattern)
+	givenArgsLen := len(args)
+	overloadArgs := possibleArgsLen > 0 && ml.ArgPattern[possibleArgsLen-1].Overload
+
+	if givenArgsLen < requiredArgsLen {
+		return fmt.Errorf("to few arguments: got=%d, want=%d", givenArgsLen, requiredArgsLen)
 	}
 
-	if len(args) > len(ml.ArgPattern) {
-		return fmt.Errorf("to many arguments: got=%d, want=%d", len(args), len(ml.ArgPattern))
+	if (givenArgsLen > possibleArgsLen) && !overloadArgs {
+		return fmt.Errorf("to many arguments: got=%d, want=%d", givenArgsLen, possibleArgsLen)
 	}
 
-	if len(args) > 0 {
+	if givenArgsLen > 0 {
 		for idx, arg := range args {
-			if !ml.ArgPattern[idx].Check(arg) {
-				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, arg.Type(), ml.ArgPattern[idx])
+			var argToCheck Argument
+			if (idx >= possibleArgsLen) && overloadArgs {
+				argToCheck = ml.ArgPattern[possibleArgsLen-1]
+			} else {
+				argToCheck = ml.ArgPattern[idx]
+			}
+
+			if !argToCheck.Check(arg) {
+				return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, arg.Type(), argToCheck)
 			}
 		}
 	}
-
-	/*
-		if !ml.ArgsOptional || (ml.ArgsOptional && len(args) > 0) {
-			for idx, pattern := range ml.ArgPattern {
-				var valid bool
-				for _, argType := range pattern {
-					if ObjectType(argType) == args[idx].Type() {
-						valid = true
-						break
-					}
-				}
-				if !valid {
-					return fmt.Errorf("wrong argument type on position %d: got=%s, want=%s", idx+1, args[idx].Type(), strings.Join(pattern, "|"))
-				}
-			}
-		}
-	*/
 
 	return nil
 }
