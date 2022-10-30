@@ -65,11 +65,13 @@ func init() {
 		},
 		"format": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "",
-				Example: `🚀 > "test".find("e")
-=> 1
-🚀 > "test".find("f")
-=> -1`,
+				Description: "Formats according to a format specifier and returns the resulting string",
+				Example: `🚀 » "test%9d".format(1)
+» "test        1"
+🚀 » "test%1.2f".format(1.5)
+» "test1.50"
+🚀 » "test%s".format("test")
+» "testtest"`,
 				ArgPattern: Args(
 					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ), // first argument can be string or int
 				),

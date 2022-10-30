@@ -105,6 +105,22 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 ```
 
 
+### format(STRING|INTEGER|FLOAT|BOOLEAN)
+> Returns `STRING`
+
+Formats according to a format specifier and returns the resulting string
+
+
+```js
+🚀 » "test%9d".format(1)
+» "test        1"
+🚀 » "test%1.2f".format(1.5)
+» "test1.50"
+🚀 » "test%s".format("test")
+» "testtest"
+```
+
+
 ### lines()
 > Returns `ARRAY`
 
