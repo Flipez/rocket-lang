@@ -2,8 +2,8 @@ package object
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -231,7 +231,7 @@ func readFile(o Object, _ []Object, _ Environment) Object {
 		return NewError(err)
 	}
 
-	file, err := ioutil.ReadAll(f.Handle)
+	file, err := io.ReadAll(f.Handle)
 	if err != nil {
 		return NewError(err)
 	}
