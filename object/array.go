@@ -77,7 +77,9 @@ func init() {
 			// https://github.com/golang/go/issues/48522
 			// is fixed
 			Layout: MethodLayout{
-				Description:   "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT",
+				Description: "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT",
+				Example: `🚀 » [3.4, 3.1, 2.0].sort()
+» [2.0, 3.1, 3.4]`,
 				ReturnPattern: Args(Arg(ARRAY_OBJ)),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
