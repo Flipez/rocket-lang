@@ -30,8 +30,8 @@ func TestTimeModule(t *testing.T) {
 
 func TestTimeObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`a = 1667144827; Time.format(a, "%a %b %e %H:%M:%S %Y")`, "Sun Oct 30 16:47:07 2022"},
-		{`a = 1667144827; Time.format(a, "Mon Jan _2 15:04:05 2006")`, "Sun Oct 30 16:47:07 2022"},
+		{`a = 1667144827; Time.format(a, "%a %b %e %M:%S %Y")`, "Sun Oct 30 47:07 2022"},
+		{`a = 1667144827; Time.format(a, "Mon Jan _2 04:05 2006")`, "Sun Oct 30 47:07 2022"},
 	}
 
 	testInput(t, tests)
