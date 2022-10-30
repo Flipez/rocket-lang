@@ -61,6 +61,18 @@ Returns the last element of the array.
 ```
 
 
+### reverse()
+> Returns `ARRAY`
+
+Reverses the elements of the array
+
+
+```js
+🚀 > ["a", "b", 1, 2].reverse()
+=> [2, 1, "b", "a"]
+```
+
+
 ### size()
 > Returns `INTEGER`
 

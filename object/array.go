@@ -58,6 +58,24 @@ func (ao *Array) Add(items ...any) {
 
 func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
+		"reverse": ObjectMethod{
+			Layout: MethodLayout{
+				Description: "Reverses the elements of the array",
+				Example: `🚀 > ["a", "b", 1, 2].reverse()
+=> [2, 1, "b", "a"]`,
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				for i, j := 0, len(ao.Elements)-1; i < j; i, j = i+1, j-1 {
+					ao.Elements[i], ao.Elements[j] = ao.Elements[j], ao.Elements[i]
+				}
+				return ao
+			},
+		},
 		"size": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns the amount of elements in the array.",
