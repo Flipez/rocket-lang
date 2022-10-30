@@ -237,6 +237,19 @@ func init() {
 			return object.NewFloat(math.Remainder(x.Value, y.Value))
 		},
 	)
+	mathFunctions["round"] = object.NewBuiltinFunction("round",
+		object.MethodLayout{
+			Description: "Returns the nearest integer, rounding half away from zero",
+			Example: `🚀 > Math.round(73.3)
+=> 73.0`,
+			ReturnPattern: object.Args(object.Arg(object.FLOAT_OBJ)),
+			ArgPattern:    object.Args(object.Arg(object.FLOAT_OBJ)),
+		},
+		func(_ object.Environment, args ...object.Object) object.Object {
+			f := args[0].(*object.Float)
+			return object.NewFloat(math.Round(f.Value))
+		},
+	)
 	mathFunctions["sin"] = object.NewBuiltinFunction("sin",
 		object.MethodLayout{
 			Description: "Returns the sine of the radion argument",
