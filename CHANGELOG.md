@@ -1,42 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/flipez/rocket-lang/tree/HEAD)
+## [v0.19.0](https://github.com/flipez/rocket-lang/tree/v0.19.0) (2022-10-30)
 
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.18.0...HEAD)
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.18.0...v0.19.0)
 
 **Implemented enhancements:**
 
-- Add missing math functions [\#127](https://github.com/Flipez/rocket-lang/issues/127)
-- Document `else if`  [\#121](https://github.com/Flipez/rocket-lang/issues/121)
-- Triginometric functions and pi [\#104](https://github.com/Flipez/rocket-lang/issues/104)
 - \[foreach/hash\] Swap key/value order [\#132](https://github.com/Flipez/rocket-lang/pull/132) ([Flipez](https://github.com/Flipez))
-- allow module name to be defined optionally [\#123](https://github.com/Flipez/rocket-lang/pull/123) ([Flipez](https://github.com/Flipez))
-- introduce an object iterator [\#122](https://github.com/Flipez/rocket-lang/pull/122) ([MarkusFreitag](https://github.com/MarkusFreitag))
-- add Time builtin [\#113](https://github.com/Flipez/rocket-lang/pull/113) ([Flipez](https://github.com/Flipez))
-- move exit and raise to os module [\#111](https://github.com/Flipez/rocket-lang/pull/111) ([Flipez](https://github.com/Flipez))
-- move open into IO module [\#109](https://github.com/Flipez/rocket-lang/pull/109) ([Flipez](https://github.com/Flipez))
-- Implement `and`, `or` , `&&` and `||` [\#102](https://github.com/Flipez/rocket-lang/pull/102) ([Flipez](https://github.com/Flipez))
+- \[import\] Allow module name to be defined optionally [\#123](https://github.com/Flipez/rocket-lang/pull/123) ([Flipez](https://github.com/Flipez))
+- \[stdlib/time\] Add Time standard library [\#113](https://github.com/Flipez/rocket-lang/pull/113) ([Flipez](https://github.com/Flipez))
+- \[stdlib/os\] Add standard library OS with exit\(\) and raise\(\) [\#111](https://github.com/Flipez/rocket-lang/pull/111) ([Flipez](https://github.com/Flipez))
+- \[stdlib/io\] Add standard library IO with open\(\) [\#109](https://github.com/Flipez/rocket-lang/pull/109) ([Flipez](https://github.com/Flipez))
+- \[builtin\] Add Math standard library and rewrite builtins [\#108](https://github.com/Flipez/rocket-lang/pull/108) ([Flipez](https://github.com/Flipez))
+- \[language\] Implement `and`, `or` , `&&` and `||` [\#102](https://github.com/Flipez/rocket-lang/pull/102) ([Flipez](https://github.com/Flipez))
+- \[docs\] Add Playground to website [\#100](https://github.com/Flipez/rocket-lang/pull/100) ([Flipez](https://github.com/Flipez))
 
 **Fixed bugs:**
 
-- Nested loop seems to be broken [\#120](https://github.com/Flipez/rocket-lang/issues/120)
-- Line number for error is off [\#114](https://github.com/Flipez/rocket-lang/issues/114)
 - \[stdlib/math\] Seed rand on each call [\#131](https://github.com/Flipez/rocket-lang/pull/131) ([Flipez](https://github.com/Flipez))
 - \[stdlib/math\] fix typo in docs [\#130](https://github.com/Flipez/rocket-lang/pull/130) ([RaphaelPour](https://github.com/RaphaelPour))
-- document else if [\#124](https://github.com/Flipez/rocket-lang/pull/124) ([Flipez](https://github.com/Flipez))
-- Fix line calculation in error messages [\#117](https://github.com/Flipez/rocket-lang/pull/117) ([Flipez](https://github.com/Flipez))
-- fix repl cmd handling [\#107](https://github.com/Flipez/rocket-lang/pull/107) ([Flipez](https://github.com/Flipez))
+- \[evaluator/assign\] Fix assign if assigned to nested element [\#129](https://github.com/Flipez/rocket-lang/pull/129) ([Flipez](https://github.com/Flipez))
+- \[foreach\] Add internal object iterator to fix nested loops [\#122](https://github.com/Flipez/rocket-lang/pull/122) ([MarkusFreitag](https://github.com/MarkusFreitag))
+- \[lexer,parser\] Fix line calculation in error messages [\#117](https://github.com/Flipez/rocket-lang/pull/117) ([Flipez](https://github.com/Flipez))
+- \[repl\] Fix bugged command history in repl [\#107](https://github.com/Flipez/rocket-lang/pull/107) ([Flipez](https://github.com/Flipez))
 
 **Merged pull requests:**
 
-- Hash convenience set [\#110](https://github.com/Flipez/rocket-lang/pull/110) ([MarkusFreitag](https://github.com/MarkusFreitag))
-- change builtin implementation [\#108](https://github.com/Flipez/rocket-lang/pull/108) ([Flipez](https://github.com/Flipez))
-- use inter font [\#103](https://github.com/Flipez/rocket-lang/pull/103) ([Flipez](https://github.com/Flipez))
-- link playground [\#101](https://github.com/Flipez/rocket-lang/pull/101) ([Flipez](https://github.com/Flipez))
-- Add Playground [\#100](https://github.com/Flipez/rocket-lang/pull/100) ([Flipez](https://github.com/Flipez))
-- add release posts; fix favicon [\#99](https://github.com/Flipez/rocket-lang/pull/99) ([Flipez](https://github.com/Flipez))
-- add first release post [\#98](https://github.com/Flipez/rocket-lang/pull/98) ([Flipez](https://github.com/Flipez))
-- Update docs page [\#97](https://github.com/Flipez/rocket-lang/pull/97) ([Flipez](https://github.com/Flipez))
+- \[docs\] Migrate Website to Docusaurus [\#97](https://github.com/Flipez/rocket-lang/pull/97) ([Flipez](https://github.com/Flipez))
 
 ## [v0.18.0](https://github.com/flipez/rocket-lang/tree/v0.18.0) (2022-07-25)
 
