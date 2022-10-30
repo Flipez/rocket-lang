@@ -18,7 +18,7 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	case *ast.Identifier:
 		env.Set(v.String(), evaluated)
 	case *ast.Index:
-		obj, _ := env.Get(v.Left.String())
+		obj := Eval(v.Left, env)
 		switch o := obj.(type) {
 		case *object.Array:
 			idx, err := handleIntegerIndex(v, env)
