@@ -17,8 +17,6 @@
 
 **Fixed bugs:**
 
-- \[stdlib/math\] Seed rand on each call [\#131](https://github.com/Flipez/rocket-lang/pull/131) ([Flipez](https://github.com/Flipez))
-- \[stdlib/math\] fix typo in docs [\#130](https://github.com/Flipez/rocket-lang/pull/130) ([RaphaelPour](https://github.com/RaphaelPour))
 - \[evaluator/assign\] Fix assign if assigned to nested element [\#129](https://github.com/Flipez/rocket-lang/pull/129) ([Flipez](https://github.com/Flipez))
 - \[foreach\] Add internal object iterator to fix nested loops [\#122](https://github.com/Flipez/rocket-lang/pull/122) ([MarkusFreitag](https://github.com/MarkusFreitag))
 - \[lexer,parser\] Fix line calculation in error messages [\#117](https://github.com/Flipez/rocket-lang/pull/117) ([Flipez](https://github.com/Flipez))
