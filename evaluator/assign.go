@@ -76,8 +76,6 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 		default:
 			return object.NewErrorFormat("expected object to be indexable")
 		}
-
-		return evaluated
 	}
 	return evaluated
 }
