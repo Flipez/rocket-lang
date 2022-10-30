@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	flag "github.com/spf13/pflag"
@@ -39,7 +38,7 @@ func main() {
 	if len(os.Args) == 1 {
 		repl.Start(os.Stdin, os.Stdout)
 	} else {
-		file, err := ioutil.ReadFile(os.Args[1])
+		file, err := os.ReadFile(os.Args[1])
 		if err == nil {
 			runProgram(string(file))
 		}

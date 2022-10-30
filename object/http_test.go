@@ -1,7 +1,7 @@
 package object_test
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -72,7 +72,7 @@ func TestHTTPServerMethods(t *testing.T) {
 			log.Fatal(err)
 		}
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatal(err)
 		}
