@@ -204,6 +204,18 @@ Returns the IEEE 754 floating-point remainder of argument1/argument2
 ```
 
 
+### round(FLOAT)
+> Returns `FLOAT`
+
+Returns the nearest integer, rounding half away from zero
+
+
+```js
+🚀 > Math.round(73.3)
+=> 73.0
+```
+
+
 ### sin(FLOAT)
 > Returns `FLOAT`
 
