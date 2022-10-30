@@ -52,6 +52,14 @@ func TestArrayObjectMethods(t *testing.T) {
 		{"[1,2,3].last()", 3},
 		{"[1,2,3].to_json()", "[1,2,3]"},
 		{`["test",true,3].to_json()`, `["test",true,3]`},
+		{`[3.4, 3.1, 2.0].sort()`, `[2.0, 3.1, 3.4]`},
+		{`[3, 1, 4].sort()`, `[1, 3, 4]`},
+		{`["Gopher", "Go", "Alpha"].sort()`, `["Alpha", "Go", "Gopher"]`},
+		{`["Gopher", 1, "Alpha"].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[1, "Go", 1].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[2.0, "Go", 2.0].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[true, "Go", true].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[].sort()`, `[]`},
 	}
 
 	testInput(t, tests)

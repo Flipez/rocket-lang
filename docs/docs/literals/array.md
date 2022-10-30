@@ -73,6 +73,18 @@ Returns the amount of elements in the array.
 ```
 
 
+### sort()
+> Returns `ARRAY`
+
+Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
+
+
+```js
+🚀 » [3.4, 3.1, 2.0].sort()
+» [2.0, 3.1, 3.4]
+```
+
+
 ### uniq()
 > Returns `ARRAY|ERROR`
 
