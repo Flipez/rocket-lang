@@ -6,15 +6,12 @@
 
 **Implemented enhancements:**
 
-- \[stdlib/math\] Add support for min\(\), max\(\) and random\(\) [\#127](https://github.com/Flipez/rocket-lang/issues/127)
-- \[stdlib/math\] Add support for Math.round\(\) [\#134](https://github.com/Flipez/rocket-lang/pull/134) ([Flipez](https://github.com/Flipez))
-- \[evaluator/module\] fix ioutil deprecation [\#133](https://github.com/Flipez/rocket-lang/pull/133) ([Flipez](https://github.com/Flipez))
 - \[foreach/hash\] Swap key/value order [\#132](https://github.com/Flipez/rocket-lang/pull/132) ([Flipez](https://github.com/Flipez))
 - \[import\] Allow module name to be defined optionally [\#123](https://github.com/Flipez/rocket-lang/pull/123) ([Flipez](https://github.com/Flipez))
 - \[stdlib/time\] Add Time standard library [\#113](https://github.com/Flipez/rocket-lang/pull/113) ([Flipez](https://github.com/Flipez))
 - \[stdlib/os\] Add standard library OS with exit\(\) and raise\(\) [\#111](https://github.com/Flipez/rocket-lang/pull/111) ([Flipez](https://github.com/Flipez))
-- \[stdlib/io\] Add standard library OS with open\(\) [\#109](https://github.com/Flipez/rocket-lang/pull/109) ([Flipez](https://github.com/Flipez))
-- \[builtin\] Rewrite builtins [\#108](https://github.com/Flipez/rocket-lang/pull/108) ([Flipez](https://github.com/Flipez))
+- \[stdlib/io\] Add standard library IO with open\(\) [\#109](https://github.com/Flipez/rocket-lang/pull/109) ([Flipez](https://github.com/Flipez))
+- \[builtin\] Add Math standard library and rewrite builtins [\#108](https://github.com/Flipez/rocket-lang/pull/108) ([Flipez](https://github.com/Flipez))
 - \[language\] Implement `and`, `or` , `&&` and `||` [\#102](https://github.com/Flipez/rocket-lang/pull/102) ([Flipez](https://github.com/Flipez))
 - \[docs\] Add Playground to website [\#100](https://github.com/Flipez/rocket-lang/pull/100) ([Flipez](https://github.com/Flipez))
 
