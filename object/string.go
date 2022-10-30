@@ -2,6 +2,7 @@ package object
 
 import (
 	"encoding/json"
+	"fmt"
 	"hash/fnv"
 	"strconv"
 	"strings"
@@ -60,6 +61,41 @@ func init() {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 				return NewInteger(int64(strings.Index(s.Value, arg)))
+			},
+		},
+		"format": ObjectMethod{
+			Layout: MethodLayout{
+				Description: "Formats according to a format specifier and returns the resulting string",
+				Example: `🚀 » "test%9d".format(1)
+» "test        1"
+🚀 » "test%1.2f".format(1.5)
+» "test1.50"
+🚀 » "test%s".format("test")
+» "testtest"`,
+				ArgPattern: Args(
+					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ), // first argument can be string or int
+				),
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				s := o.(*String)
+				nativeObjects := []interface{}{}
+				for _, arg := range args {
+					switch e := arg.(type) {
+					case *String:
+						nativeObjects = append(nativeObjects, e.Value)
+					case *Integer:
+						nativeObjects = append(nativeObjects, e.Value)
+					case *Float:
+						nativeObjects = append(nativeObjects, e.Value)
+					case *Boolean:
+						nativeObjects = append(nativeObjects, e.Value)
+					}
+				}
+
+				return NewString(fmt.Sprintf(s.Value, nativeObjects...))
 			},
 		},
 		"size": ObjectMethod{
