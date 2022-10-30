@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/parser"
 	"github.com/flipez/rocket-lang/utilities"
 
-	"io/ioutil"
+	"os"
 )
 
 func EvalModule(name string) object.Object {
@@ -16,7 +16,7 @@ func EvalModule(name string) object.Object {
 		return object.NewErrorFormat("Import Error: no module named '%s' found", name)
 	}
 
-	b, err := ioutil.ReadFile(filename)
+	b, err := os.ReadFile(filename)
 
 	if err != nil {
 		return object.NewErrorFormat("IO Error: error reading module '%s': %s", name, err)
