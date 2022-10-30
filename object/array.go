@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"hash/fnv"
+	"sort"
 	"strings"
 )
 
@@ -69,6 +70,81 @@ func init() {
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 				return NewInteger(int64(len(ao.Elements)))
+			},
+		},
+		"sort": ObjectMethod{
+			// Can be refactored to generics once
+			// https://github.com/golang/go/issues/48522
+			// is fixed
+			Layout: MethodLayout{
+				Description:   "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT",
+				ReturnPattern: Args(Arg(ARRAY_OBJ)),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+				sortError := false
+
+				if len(ao.Elements) == 0 {
+					return ao
+				}
+
+				switch ao.Elements[0].(type) {
+				case *Float:
+					sort.SliceStable(ao.Elements, func(i, j int) bool {
+						leftElement, ok := ao.Elements[i].(*Float)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						rightElement, ok := ao.Elements[j].(*Float)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						return leftElement.Value < rightElement.Value
+					})
+				case *Integer:
+					sort.SliceStable(ao.Elements, func(i, j int) bool {
+						leftElement, ok := ao.Elements[i].(*Integer)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						rightElement, ok := ao.Elements[j].(*Integer)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						return leftElement.Value < rightElement.Value
+					})
+				case *String:
+					sort.SliceStable(ao.Elements, func(i, j int) bool {
+						leftElement, ok := ao.Elements[i].(*String)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						rightElement, ok := ao.Elements[j].(*String)
+						if !ok {
+							sortError = true
+							return false
+						}
+
+						return leftElement.Value < rightElement.Value
+					})
+				default:
+					sortError = true
+				}
+
+				if sortError {
+					return NewError("Array does contain either an object not INTEGER, FLOAT or STRING or is mixed")
+				}
+				return ao
 			},
 		},
 		"uniq": ObjectMethod{
