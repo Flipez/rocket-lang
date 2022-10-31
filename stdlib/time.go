@@ -65,8 +65,8 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 			ReturnPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 			),
-			Example: `🚀 » Time.format(Time.unix(), "%a %%b %b %e %H:%M:%S %Y")
-» "Mon %Oct Oct 31 00:28:37 2022"
+			Example: `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
+» "Mon Oct 31 00:08:10 2022"
 🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
 » "Mon Oct 31 00:28:43 2022"`,
 		},
@@ -93,11 +93,9 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 			ReturnPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 			),
-			Example: `🚀 » a = "2022-03-23"
-» "2022-03-23"
-🚀 » format = "2006-01-02"
-» "2006-01-02"
-🚀 » Time.parse(a, format)
+			Example: `🚀 » Time.parse("2022-03-23", "2006-01-02")
+» 1647993600
+🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
 » 1647993600`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
