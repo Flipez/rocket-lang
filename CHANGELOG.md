@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased](https://github.com/flipez/rocket-lang/tree/HEAD)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.19.0...HEAD)
+
+**Implemented enhancements:**
+
+- \[stdlib/time\] Add support for `Time.format()` and `Time.parse()` [\#140](https://github.com/Flipez/rocket-lang/pull/140) ([Flipez](https://github.com/Flipez))
+- \[object/string\] Add support for .format\(\) [\#139](https://github.com/Flipez/rocket-lang/pull/139) ([Flipez](https://github.com/Flipez))
+- \[object/array\] Add ability to .reverse\(\) [\#138](https://github.com/Flipez/rocket-lang/pull/138) ([Flipez](https://github.com/Flipez))
+- \[object/array\] Add ability to .sort\(\) [\#137](https://github.com/Flipez/rocket-lang/pull/137) ([Flipez](https://github.com/Flipez))
+
 ## [v0.19.0](https://github.com/flipez/rocket-lang/tree/v0.19.0) (2022-10-30)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.18.0...v0.19.0)
