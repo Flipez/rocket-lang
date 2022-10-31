@@ -9,7 +9,7 @@ import (
 type Block struct {
 	Token      token.Token // the { token
 	Statements []Statement
-	Rescue     *Block
+	Rescue     *Rescue
 }
 
 func (bs *Block) TokenLiteral() string { return bs.Token.Literal }
@@ -22,7 +22,7 @@ func (bs *Block) String() string {
 
 	if bs.Rescue != nil {
 		out.WriteString("\nrescue\n")
-		for _, s := range bs.Rescue.Statements {
+		for _, s := range bs.Rescue.Block.Statements {
 			out.WriteString(s.String())
 		}
 	}
