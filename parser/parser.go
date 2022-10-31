@@ -89,6 +89,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.LBRACE, p.parseHash)
 	p.registerPrefix(token.IMPORT, p.parseImport)
 	p.registerPrefix(token.NIL, p.parseNil)
+	p.registerPrefix(token.BEGIN, p.parseBegin)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
