@@ -10,9 +10,9 @@
 
 Formats the given unix timestamp with the given layout.
 
-Go [date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
+[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
 You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
-Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatter are supported.
+Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
 
 
 ```js
@@ -20,6 +20,26 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 » "Mon %Oct Oct 31 00:28:37 2022"
 🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
 » "Mon Oct 31 00:28:43 2022"
+```
+
+
+### parse(STRING, STRING)
+> Returns `STRING`
+
+Parses a given string with the given format to a unix timestamp.
+
+[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
+You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
+Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
+
+
+```js
+🚀 » a = "2022-03-23"
+» "2022-03-23"
+🚀 » format = "2006-01-02"
+» "2006-01-02"
+🚀 » Time.parse(a, format)
+» 1647993600
 ```
 
 

@@ -32,6 +32,8 @@ func TestTimeObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`a = 1667144827; Time.format(a, "%a %b %e %M:%S %Y")`, "Sun Oct 30 47:07 2022"},
 		{`a = 1667144827; Time.format(a, "Mon Jan _2 04:05 2006")`, "Sun Oct 30 47:07 2022"},
+		{`a = "2022-03-23"; format = "2006-01-02"; Time.parse(a, format)`, 1647993600},
+		{`a = "2022-03-23"; format = "09-01-02"; Time.parse(a, format)`, `Error while parsing time: parsing time "2022-03-23" as "09-01-02": cannot parse "2022-03-23" as "09-"`},
 	}
 
 	testInput(t, tests)

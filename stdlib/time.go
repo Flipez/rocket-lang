@@ -55,9 +55,9 @@ func init() {
 		object.MethodLayout{
 			Description: `Formats the given unix timestamp with the given layout.
 
-Go [date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
+[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
 You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
-Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatter are supported.`,
+Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.`,
 			ArgPattern: object.Args(
 				object.Arg(object.INTEGER_OBJ),
 				object.Arg(object.STRING_OBJ),
@@ -77,6 +77,39 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 			time := time.Unix(unixTimestamp.Value, 0)
 
 			return object.NewString(time.Format(convertTimeFormat(timeFormat)))
+		})
+	timeFunctions["parse"] = object.NewBuiltinFunction(
+		"parse",
+		object.MethodLayout{
+			Description: `Parses a given string with the given format to a unix timestamp.
+
+[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
+You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
+Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.`,
+			ArgPattern: object.Args(
+				object.Arg(object.STRING_OBJ),
+				object.Arg(object.STRING_OBJ),
+			),
+			ReturnPattern: object.Args(
+				object.Arg(object.STRING_OBJ),
+			),
+			Example: `🚀 » a = "2022-03-23"
+» "2022-03-23"
+🚀 » format = "2006-01-02"
+» "2006-01-02"
+🚀 » Time.parse(a, format)
+» 1647993600`,
+		},
+		func(_ object.Environment, args ...object.Object) object.Object {
+			timeString := args[0].(*object.String)
+			timeFormat := args[1].(*object.String)
+
+			timeParsed, err := time.Parse(convertTimeFormat(timeFormat), timeString.Value)
+			if err != nil {
+				return object.NewErrorFormat("Error while parsing time: %s", err)
+			}
+
+			return object.NewInteger(timeParsed.Unix())
 		})
 	timeFunctions["sleep"] = object.NewBuiltinFunction(
 		"sleep",
