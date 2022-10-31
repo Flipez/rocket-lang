@@ -21,7 +21,8 @@ func (bs *Block) String() string {
 	}
 
 	if bs.Rescue != nil {
-		out.WriteString("\nrescue\n")
+		out.WriteString("\nrescue ")
+		out.WriteString(bs.Rescue.ErrorIdent.Literal + "\n")
 		for _, s := range bs.Rescue.Block.Statements {
 			out.WriteString(s.String())
 		}
