@@ -15,6 +15,7 @@ func evalBlock(block *ast.Block, env *object.Environment) object.Object {
 			rt := result.Type()
 			if rt == object.ERROR_OBJ {
 				if block.Rescue != nil {
+					env.Set("error", result)
 					result = evalBlock(block.Rescue, env)
 				}
 				return result
