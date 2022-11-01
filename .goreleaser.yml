@@ -19,7 +19,7 @@ build:
     - CGO_ENABLED=0
 
 archives:
-  - name_template: "{{.Binary}}_{{.Os}}_{{.Arch}}"
+  - name_template: "{{.Binary}}_{{.Os}}_{{.Arch}}_{{.Tag}}"
 
 release:
   draft: true
