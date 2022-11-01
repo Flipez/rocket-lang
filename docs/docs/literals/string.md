@@ -47,7 +47,7 @@ puts(s)
 ### count(STRING)
 > Returns `INTEGER`
 
-Counts how often a given string or integer occurs in the string. Converts given integers to strings automatically.
+Counts how often a given substring occurs in the string.
 
 
 ```js
