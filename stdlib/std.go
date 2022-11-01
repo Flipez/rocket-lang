@@ -9,6 +9,14 @@ var Modules = map[string]*object.BuiltinModule{}
 
 func init() {
 	RegisterFunction("puts", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY_OBJ...))}, putsFunction)
+	RegisterFunction(
+		"raise",
+		object.MethodLayout{
+			ArgPattern:    object.Args(object.Arg(object.STRING_OBJ)),
+			ReturnPattern: object.Args(object.Arg(object.ERROR_OBJ)),
+		},
+		raiseFunction,
+	)
 
 	RegisterModule("Math", "", mathFunctions, mathProperties)
 	RegisterModule("HTTP", "", httpFunctions, httpProperties)

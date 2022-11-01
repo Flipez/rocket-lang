@@ -155,6 +155,8 @@ An error does often replace the original return value of a function or identifie
 The documentation of those functions does indicate ERROR as a potential return value.
 
 A program can rescue from errors within a block or alter it's behavior within other blocks like 'if' or 'def'.
+
+It is possible for the user to create errors using 'raise(STRING)' which will return an ERROR object with STRING as the message.
 `,
 		Example: `def test()
   puts(nope)
