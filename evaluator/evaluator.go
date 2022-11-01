@@ -40,6 +40,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return object.NewFloat(node.Value)
 	case *ast.Function:
 		function := object.NewFunction(
+			node.Name,
 			node.Parameters,
 			env,
 			node.Body,

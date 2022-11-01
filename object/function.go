@@ -8,13 +8,15 @@ import (
 )
 
 type Function struct {
+	Name       string
 	Parameters []*ast.Identifier
 	Body       *ast.Block
 	Env        *Environment
 }
 
-func NewFunction(params []*ast.Identifier, env *Environment, body *ast.Block) *Function {
+func NewFunction(name string, params []*ast.Identifier, env *Environment, body *ast.Block) *Function {
 	return &Function{
+		Name:       name,
 		Parameters: params,
 		Env:        env,
 		Body:       body,
@@ -31,6 +33,7 @@ func (f *Function) Inspect() string {
 	}
 
 	out.WriteString("def ")
+	out.WriteString(f.Name)
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") \n")
