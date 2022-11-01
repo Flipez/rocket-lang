@@ -7,8 +7,7 @@ import Link from "@docusaurus/Link";
 import clsx from "clsx";
 import { GetStarted } from "./GetStarted";
 
-const WelcomeCode = `
-🚀 > puts("hello from rocket-lang!")
+const WelcomeCode = `🚀 > puts("hello from rocket-lang!")
 "hello from rocket-lang!"
 => nil
 
@@ -32,13 +31,15 @@ function Welcome() {
         <div className="row">
           <div className="col col--6">
             <h1 className={styles.writeincsstitle}>
-              It's not <br /> rocket science.
+              It's not <br /> rocket science. Is it?
             </h1>
             <p>
-              Use some of the syntax features of Ruby (but worse) and create programs that will maybe perform better.
+              Started as a joke to learn the inner mechanics of a interpreted language
+              <span className="highlight2"></span>RocketLang
+              quickly evolved into a long running projects with some more orless ambitious
+              goals such as being used for&nbsp;
+              <a href="https://adventofcode.com">Advent of Code</a> to test it's limits.
             </p>
-
-            < GetStarted />
           </div>
           <div className="col col--6">
             <CodeBlock language="js" children={WelcomeCode} />
@@ -52,37 +53,64 @@ function Welcome() {
 
 
 
-const JSONExample = `
-🚀 > JSON.parse('{"test": 123}')
+const JSONExample = `🚀 > JSON.parse('{"test": 123}')
 => {"test": 123.0}
+
 
 🚀 > a = {"test": 1234}
 => {"test": 1234}
+
 
 🚀 > a.to_json()
 => '{"test":1234}'
 `;
 
-const HTTPExample = `
-def test()
+const HTTPExample = `def test()
   puts(request["body"])
   return("test")
 end
 
+
 HTTP.handle("/", test)
+
 
 HTTP.listen(3000)
 `;
 
-const ClosuresExample = `
-newGreeter = def (greeting)
+const MathExample = `🚀 » Math.E
+» 2.718281828459045
+
+
+🚀 » Math.Pi
+» 3.141592653589793
+
+
+🚀 > Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
+=> 5.0
+`;
+
+const TimeExample = `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
+» "Mon Oct 31 00:08:10 2022"
+🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
+» "Mon Oct 31 00:28:43 2022"
+
+
+🚀 » Time.parse("2022-03-23", "2006-01-02")
+» 1647993600
+🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
+» 1647993600
+`;
+
+const ClosuresExample = `newGreeter = def (greeting)
   return def (name)
-           puts(greeting + " " + name)
-         end
+    puts(greeting + " " + name)
+  end
 end
 
 hello = newGreeter("Hello");
 hello("dear, future Reader!");
+
+=> "Hello dear, future Reader!"
 `;
 
 const BuiltinList = [
@@ -95,6 +123,16 @@ const BuiltinList = [
     label: "HTTP",
     value: "http",
     content: <CodeBlock language="js" children={HTTPExample} />,
+  },
+  {
+    label: "Math",
+    value: "math",
+    content: <CodeBlock language="js" children={MathExample} />,
+  },
+  {
+    label: "Time",
+    value: "time",
+    content: <CodeBlock language="js" children={TimeExample} />,
   },
   {
     label: "Closures",
@@ -121,7 +159,7 @@ function Builtins() {
           </div>
           <div className="col col--6">
             <h2>
-              Strong and stable <span className="highlight">builtins</span>
+              Strong and stable <span className="highlight2">builtins</span>
             </h2>
             <p>
               RocketLang ships some neat builtins such as handling HTTP requests and responses,
@@ -138,8 +176,7 @@ function Builtins() {
   );
 }
 
-const ObjectExample = `
-🚀 > "test".type()
+const ObjectExample = `🚀 > "test".type()
 => "STRING"
 
 🚀 > true.wat()
@@ -155,9 +192,9 @@ function EverythingObject() {
     <section className={clsx(styles.section)}>
       <div className="container">
         <div className="row">
-          <div className="col">
+          <div className="col col--6">
             <h2>
-              <span className="highlight">Everything</span> is an object
+              <span className="highlight2">Everything</span> is an object
             </h2>
           </div>
         </div>
@@ -181,10 +218,40 @@ function EverythingObject() {
   );
 }
 
+function Quickstart() {
+  return (
+    <section className={clsx(styles.section)}>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <h2>
+              <span className="highlight2">Get started</span> quickly
+            </h2>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <div className={styles.centerjustify}>
+              <GetStarted />
+            </div>
+            <div className={styles.centerjustify}>
+              <p>
+                You can also install RocketLang via APT, RPM, as a binary or from source.
+                See <a href="/docs/install">&nbsp;the install guide&nbsp;</a> for more detailed information.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Highlights() {
   return (
     <span>
       {Welcome()}
+      {Quickstart()}
       {Builtins()}
       {EverythingObject()}
     </span>
