@@ -27,11 +27,9 @@ func init() {
 🚀 > "test".count("f")
 => 0
 🚀 > "test1".count("1")
-=> 1
-🚀 > "test1".count(1)
 => 1`,
 				ArgPattern: Args(
-					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+					Arg(STRING_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -51,7 +49,7 @@ func init() {
 🚀 > "test".find("f")
 => -1`,
 				ArgPattern: Args(
-					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+					Arg(STRING_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -73,7 +71,7 @@ func init() {
 🚀 » "test%s".format("test")
 » "testtest"`,
 				ArgPattern: Args(
-					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ), // first argument can be string or int
+					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
