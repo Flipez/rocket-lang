@@ -9,6 +9,7 @@ import (
 type Block struct {
 	Token      token.Token // the { token
 	Statements []Statement
+	Rescue     *Rescue
 }
 
 func (bs *Block) TokenLiteral() string { return bs.Token.Literal }
@@ -17,6 +18,14 @@ func (bs *Block) String() string {
 
 	for _, s := range bs.Statements {
 		out.WriteString(s.String())
+	}
+
+	if bs.Rescue != nil {
+		out.WriteString("\nrescue ")
+		out.WriteString(bs.Rescue.ErrorIdent.Literal + "\n")
+		for _, s := range bs.Rescue.Block.Statements {
+			out.WriteString(s.String())
+		}
 	}
 
 	return out.String()

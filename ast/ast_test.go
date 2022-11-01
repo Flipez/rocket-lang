@@ -56,6 +56,10 @@ func TestString(t *testing.T) {
 			"break",
 			"break",
 		},
+		{
+			"begin\ntrue\nrescue e\nfalse\nend",
+			"begin\ntrue\nrescue e\nfalse\nend",
+		},
 	}
 
 	for _, tt := range tests {

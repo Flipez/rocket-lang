@@ -75,6 +75,9 @@ const (
 	IMPORT = "IMPORT"
 
 	NIL = "NIL"
+
+	BEGIN  = "BEGIN"
+	RESCUE = "RESCUE"
 )
 
 var keywords = map[string]TokenType{
@@ -95,6 +98,8 @@ var keywords = map[string]TokenType{
 	"nil":     NIL,
 	"and":     AND,
 	"or":      OR,
+	"begin":   BEGIN,
+	"rescue":  RESCUE,
 }
 
 func LookupIdent(ident string) TokenType {
