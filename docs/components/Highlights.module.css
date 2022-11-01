@@ -31,10 +31,6 @@
   }
 }
 
-.section code {
-  font-size: 0.83rem;
-}
-
 .wantMore {
   border-top: 1px dashed #d4d5d8;
   margin-top: 1rem;
@@ -55,5 +51,10 @@
   );
   -webkit-background-clip: text;
   max-width: 600px;
-  margin-top: 50px
+  margin-top: 30px
+}
+
+.centerjustify {
+  display: flex;
+  justify-content: center;
 }

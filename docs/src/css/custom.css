@@ -73,15 +73,28 @@ code {
 }
 
 .markdown a {
-  text-underline-position: under;
-  text-decoration: underline;
+  text-decoration: none;
+  border-bottom: #EA215A 0.205em dotted;
 }
 
 .highlight {
-  color: #4fd1d9;
+  color: rgba(79,209,217,255);
+}
+
+.highlight2 {
+  color: rgb(255, 90, 121);
 }
 
 html { font-family: 'Inter', sans-serif; }
 @supports (font-variation-settings: normal) {
   html { font-family: 'Inter var', sans-serif; }
+}
+
+p a {
+  text-decoration: none;
+  border-bottom: #EA215A 0.205em dotted;
+}
+
+p a:hover {
+  text-decoration: none;
 }

@@ -25,10 +25,6 @@ export const GetStarted: React.FC = () => {
           </div>
         </div>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
     </>
   );
 };
