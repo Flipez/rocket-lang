@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.20.0](https://github.com/flipez/rocket-lang/tree/v0.20.0) (2022-11-01)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.19.1...v0.20.0)
+
+**Implemented enhancements:**
+
+- \[object/error\] Add `raise()` builtin [\#145](https://github.com/Flipez/rocket-lang/pull/145) ([Flipez](https://github.com/Flipez))
+- \[object/error\] Add ability to rescue errors and introduce `begin/rescue/end` [\#142](https://github.com/Flipez/rocket-lang/pull/142) ([Flipez](https://github.com/Flipez))
+
+**Fixed bugs:**
+
+- \[object/funtion\] Missing name to use when inspect [\#143](https://github.com/Flipez/rocket-lang/pull/143) ([Flipez](https://github.com/Flipez))
+
 ## [v0.19.1](https://github.com/flipez/rocket-lang/tree/v0.19.1) (2022-10-31)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.19.0...v0.19.1)
