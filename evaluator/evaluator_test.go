@@ -221,6 +221,7 @@ func TestErrorHandling(t *testing.T) {
 		{"begin puts(nope) end", "identifier not found: nope"},
 		{"begin puts(nope) rescue e e.nope() end", "undefined method `.nope()` for ERROR"},
 		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "undefined method `.nope()` for STRING"},
+		{`raise("custom error")`, "custom error"},
 	}
 
 	for _, tt := range tests {

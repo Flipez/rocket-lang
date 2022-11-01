@@ -6,6 +6,8 @@ The documentation of those functions does indicate ERROR as a potential return v
 
 A program can rescue from errors within a block or alter it's behavior within other blocks like 'if' or 'def'.
 
+It is possible for the user to create errors using 'raise(STRING)' which will return an ERROR object with STRING as the message.
+
 
 
 ```js
@@ -50,7 +52,7 @@ Please note that performing `.msg()` on a ERROR object does result in a STRING o
 
 
 ```js
-» def ()
+» def test()
 puts(nope)
 rescue e
 puts((rescued error: + e.msg()))
