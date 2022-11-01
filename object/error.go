@@ -25,7 +25,7 @@ func init() {
 		"msg": ObjectMethod{
 			Layout: MethodLayout{
 				Description: "Returns the error message\n\n:::caution\nPlease note that performing `.msg()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::",
-				Example: `» def ()
+				Example: `» def test()
 puts(nope)
 rescue e
 puts((rescued error: + e.msg()))
