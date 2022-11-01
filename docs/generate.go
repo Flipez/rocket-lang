@@ -148,7 +148,43 @@ is_true = a != b;`,
 		DefaultMethods: default_methods}
 	create_doc("docs/templates/literal.md", "docs/docs/literals/boolean.md", tempData)
 
-	tempData = templateData{Title: "Error", LiteralMethods: error_methods, DefaultMethods: default_methods}
+	tempData = templateData{
+		Title: "Error",
+		Description: `An Error is created by RocketLang if unallowed or invalid code is run.
+An error does often replace the original return value of a function or identifier.
+The documentation of those functions does indicate ERROR as a potential return value.
+
+A program can rescue from errors within a block or alter it's behavior within other blocks like 'if' or 'def'.
+`,
+		Example: `def test()
+  puts(nope)
+rescue e
+  puts("Got error: '" + e.msg() + "'")
+end
+
+test()
+
+=> "Got error in if: 'identifier not found: error'"
+
+if (true)
+  nope()
+rescue your_name
+  puts("Got error in if: '" + your_name.msg() + "'")
+end
+
+=> "Got error in if: 'identifier not found: nope'"
+
+begin
+  puts(nope)
+rescue e
+  puts("rescue")
+end
+
+=> "rescue"
+`,
+		LiteralMethods: error_methods,
+		DefaultMethods: default_methods,
+	}
 	create_doc("docs/templates/literal.md", "docs/docs/literals/error.md", tempData)
 
 	tempData = templateData{
