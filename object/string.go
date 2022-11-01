@@ -71,7 +71,7 @@ func init() {
 🚀 » "test%s".format("test")
 » "testtest"`,
 				ArgPattern: Args(
-					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ),
+					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ, ARRAY_OBJ, HASH_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
@@ -79,20 +79,10 @@ func init() {
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
-				nativeObjects := []interface{}{}
-				for _, arg := range args {
-					switch e := arg.(type) {
-					case *String:
-						nativeObjects = append(nativeObjects, e.Value)
-					case *Integer:
-						nativeObjects = append(nativeObjects, e.Value)
-					case *Float:
-						nativeObjects = append(nativeObjects, e.Value)
-					case *Boolean:
-						nativeObjects = append(nativeObjects, e.Value)
-					}
+				nativeObjects := make([]any, len(args))
+				for idx, arg := range args {
+					nativeObjects[idx] = ObjectToAny(arg)
 				}
-
 				return NewString(fmt.Sprintf(s.Value, nativeObjects...))
 			},
 		},
