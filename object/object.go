@@ -429,3 +429,32 @@ func AnyToObject(a any) Object {
 	}
 	return NIL
 }
+
+func ObjectToAny(o Object) any {
+	switch v := o.(type) {
+	case *Boolean:
+		return v.Value
+	case *String:
+		return v.Value
+	case *Integer:
+		return v.Value
+	case *Float:
+		return v.Value
+	case *Array:
+		array := make([]any, len(v.Elements))
+		for idx, element := range v.Elements {
+			array[idx] = ObjectToAny(element)
+		}
+		return array
+	case *Hash:
+		hash := make(map[any]any)
+		for _, pair := range v.Pairs {
+			key := ObjectToAny(pair.Key)
+			if key != nil {
+				hash[key] = ObjectToAny(pair.Value)
+			}
+		}
+		return hash
+	}
+	return nil
+}

@@ -2,13 +2,14 @@ package object_test
 
 import (
 	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/flipez/rocket-lang/evaluator"
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
-
-	"testing"
 )
 
 type inputTestCase struct {
@@ -147,5 +148,27 @@ func TestAnyToObject(t *testing.T) {
 		if obj.Type() != expected.Type() {
 			t.Errorf("wrong object type, got=%s want=%s", obj.Type(), expected.Type())
 		}
+	}
+}
+
+func TestObjectToAny(t *testing.T) {
+	stringObj := object.NewString("a")
+	intObj := object.NewInteger(1)
+	floatObj := object.NewFloat(1.2)
+	testcases := map[object.Object]any{
+		stringObj:   "a",
+		intObj:      int64(1),
+		floatObj:    float64(1.2),
+		object.TRUE: true,
+		object.NewArrayWithObjects(stringObj, intObj, floatObj): []any{"a", int64(1), float64(1.2)},
+		object.NIL: nil,
+	}
+
+	hash := object.NewHash(nil)
+	hash.Set("a", int64(1))
+	testcases[hash] = map[any]any{"a": int64(1)}
+
+	for input, expected := range testcases {
+		require.Equal(t, expected, object.ObjectToAny(input))
 	}
 }
