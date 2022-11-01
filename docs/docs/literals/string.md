@@ -44,10 +44,10 @@ puts(s)
 
 ## Literal Specific Methods
 
-### count(STRING|INTEGER)
+### count(STRING)
 > Returns `INTEGER`
 
-Counts how often a given string or integer occurs in the string. Converts given integers to strings automatically.
+Counts how often a given substring occurs in the string.
 
 
 ```js
@@ -56,8 +56,6 @@ Counts how often a given string or integer occurs in the string. Converts given 
 🚀 > "test".count("f")
 => 0
 🚀 > "test1".count("1")
-=> 1
-🚀 > "test1".count(1)
 => 1
 ```
 
@@ -91,7 +89,7 @@ Replaces all upcase characters with lowercase counterparts.
 ```
 
 
-### find(STRING|INTEGER)
+### find(STRING)
 > Returns `INTEGER`
 
 Returns the character index of a given string if found. Otherwise returns `-1`

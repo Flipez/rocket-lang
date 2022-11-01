@@ -21,17 +21,15 @@ func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Counts how often a given string or integer occurs in the string. Converts given integers to strings automatically.",
+				Description: "Counts how often a given substring occurs in the string.",
 				Example: `🚀 > "test".count("t")
 => 2
 🚀 > "test".count("f")
 => 0
 🚀 > "test1".count("1")
-=> 1
-🚀 > "test1".count(1)
 => 1`,
 				ArgPattern: Args(
-					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+					Arg(STRING_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -51,7 +49,7 @@ func init() {
 🚀 > "test".find("f")
 => -1`,
 				ArgPattern: Args(
-					Arg(STRING_OBJ, INTEGER_OBJ), // first argument can be string or int
+					Arg(STRING_OBJ),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
