@@ -32,7 +32,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/flipez/rocket-lang/tree/main/docs/',
-            lastVersion: 'v0.20.0',
+            lastVersion: 'v0.20.1',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
