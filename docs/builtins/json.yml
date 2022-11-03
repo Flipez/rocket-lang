@@ -1,0 +1,8 @@
+functions:
+  parse:
+    description: "Takes a STRING and parses it to a HASH or ARRAY. Numbers are always FLOAT."
+    example: |
+      🚀 » JSON.parse('{"test": 123}')
+      » {"test": 123.0}
+      🚀 » JSON.parse('["test", 123]')
+      » ["test", 123.0]

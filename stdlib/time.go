@@ -53,11 +53,6 @@ func init() {
 	timeFunctions["format"] = object.NewBuiltinFunction(
 		"format",
 		object.MethodLayout{
-			Description: `Formats the given unix timestamp with the given layout.
-
-[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
-You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
-Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.`,
 			ArgPattern: object.Args(
 				object.Arg(object.INTEGER_OBJ),
 				object.Arg(object.STRING_OBJ),
@@ -65,10 +60,6 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 			ReturnPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 			),
-			Example: `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
-» "Mon Oct 31 00:08:10 2022"
-🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
-» "Mon Oct 31 00:28:43 2022"`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			unixTimestamp := args[0].(*object.Integer)
@@ -81,11 +72,6 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 	timeFunctions["parse"] = object.NewBuiltinFunction(
 		"parse",
 		object.MethodLayout{
-			Description: `Parses a given string with the given format to a unix timestamp.
-
-[Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
-You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
-Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.`,
 			ArgPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 				object.Arg(object.STRING_OBJ),
@@ -93,10 +79,6 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 			ReturnPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 			),
-			Example: `🚀 » Time.parse("2022-03-23", "2006-01-02")
-» 1647993600
-🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
-» 1647993600`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			timeString := args[0].(*object.String)
@@ -112,14 +94,12 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 	timeFunctions["sleep"] = object.NewBuiltinFunction(
 		"sleep",
 		object.MethodLayout{
-			Description: "Stops the RocketLang routine for at least the stated duration in seconds",
 			ArgPattern: object.Args(
 				object.Arg(object.INTEGER_OBJ),
 			),
 			ReturnPattern: object.Args(
 				object.Arg(object.NIL_OBJ),
 			),
-			Example: `🚀 > Time.sleep(2)`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			time.Sleep(time.Duration(args[0].(*object.Integer).Value) * time.Second)
@@ -128,11 +108,9 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 	timeFunctions["unix"] = object.NewBuiltinFunction(
 		"unix",
 		object.MethodLayout{
-			Description: "Returns the current time as unix timestamp",
 			ReturnPattern: object.Args(
 				object.Arg(object.INTEGER_OBJ),
 			),
-			Example: `🚀 > Time.Unix()`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			return object.NewInteger(time.Now().Unix())

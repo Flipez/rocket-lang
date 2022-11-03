@@ -1,0 +1,17 @@
+title: "Float"
+methods:
+  plz_f:
+    description: "Returns self"
+    example: |
+      🚀 » 123.456.plz_f()
+      » 123.456
+  plz_s:
+    description: "Returns a string representation of the float."
+    example: |
+      🚀 » 123.456.plz_s()
+      » "123.456"
+  plz_i:
+    description: "Converts the float into an integer."
+    example: |
+      🚀 » 123.456.plz_i()
+      » 123

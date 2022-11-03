@@ -11,7 +11,6 @@ func init() {
 	httpFunctions["new"] = object.NewBuiltinFunction(
 		"new",
 		object.MethodLayout{
-			Description: "Creates a new instance of HTTP",
 			ReturnPattern: object.Args(
 				object.Arg(object.HTTP_OBJ),
 			),

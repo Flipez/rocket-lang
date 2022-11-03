@@ -1,0 +1,34 @@
+title: "Integer"
+description: |
+  An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
+
+  To cast a negative integer a digit can be prefixed with a - eg. -456.
+example: |
+  a = 1;
+
+  b = a + 2;
+
+  is_true = 1 == 1;
+  is_false = 1 == 2;
+methods:
+  plz_s:
+    description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems"
+    example: |
+      🚀 » 1234.plz_s()
+      » "1234"
+      🚀 » 1234.plz_s(2)
+      » "10011010010"
+      🚀 » 1234.plz_s(8)
+      » "2322"
+      🚀 » 1234.plz_s(10)
+      » "1234"
+  plz_i:
+    description: "Returns self"
+    example: |
+      🚀 » 1234.plz_i()
+      » 1234
+  plz_f:
+    description: "Converts the integer into a float."
+    example: |
+      🚀 » 1234.plz_f()
+      » 1234.0

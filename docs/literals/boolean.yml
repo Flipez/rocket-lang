@@ -1,0 +1,19 @@
+title: "Boolean"
+description: "A Boolean can represent two values: `true` and `false` and can be used in control flows."
+example: |
+  true // Is the representation for truthyness
+  false // is it for a falsy value
+
+  a = true;
+  b = false;
+
+  is_true = a == a;
+  is_false = a == b;
+
+  is_true = a != b;
+methods:
+  plz_s:
+    description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value."
+    example: |
+      🚀 » true.plz_s()
+      » "true"

@@ -8,12 +8,11 @@ type BuiltinModule struct {
 	Properties  map[string]*BuiltinProperty
 }
 
-func NewBuiltinModule(name string, description string, funcs map[string]*BuiltinFunction, props map[string]*BuiltinProperty) *BuiltinModule {
+func NewBuiltinModule(name string, funcs map[string]*BuiltinFunction, props map[string]*BuiltinProperty) *BuiltinModule {
 	return &BuiltinModule{
-		Name:        name,
-		Description: description,
-		Functions:   funcs,
-		Properties:  props,
+		Name:       name,
+		Functions:  funcs,
+		Properties: props,
 	}
 }
 
