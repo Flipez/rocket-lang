@@ -51,12 +51,11 @@ Counts how often a given substring occurs in the string.
 
 
 ```js
-🚀 > "test".count("t")
-=> 2
-🚀 > "test".count("f")
-=> 0
-🚀 > "test1".count("1")
-=> 1
+🚀 » "test".count("t")
+» 2
+🚀 » "test".count("f")
+» 0
+
 ```
 
 
@@ -67,8 +66,9 @@ Returns the string with all uppercase letters replaced with lowercase counterpar
 
 
 ```js
-🚀 > "TeST".downcase()
-=> test
+🚀 » "TeST".downcase()
+» "test"
+
 ```
 
 
@@ -79,13 +79,13 @@ Replaces all upcase characters with lowercase counterparts.
 
 
 ```js
+🚀 » a = "TeST"
+» "TeST"
+🚀 » a.downcase!()
+» nil
+🚀 » a
+» "test"
 
-🚀 > a = "TeST"
-=> TeST
-🚀 > a.downcase!()
-=> nil
-🚀 > a
-=> test
 ```
 
 
@@ -96,10 +96,11 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 
 
 ```js
-🚀 > "test".find("e")
-=> 1
-🚀 > "test".find("f")
-=> -1
+🚀 » "test".find("e")
+» 1
+🚀 » "test".find("f")
+» -1
+
 ```
 
 
@@ -116,6 +117,7 @@ Formats according to a format specifier and returns the resulting string
 » "test1.50"
 🚀 » "test%s".format("test")
 » "testtest"
+
 ```
 
 
@@ -126,8 +128,9 @@ Splits the string at newline escape sequence and return all chunks in an array. 
 
 
 ```js
-🚀 > "test\ntest2".lines()
-=> ["test", "test2"]
+🚀 » "test\ntest2".lines()
+» ["test\ntest2"]
+
 ```
 
 
@@ -138,20 +141,17 @@ Interprets the string as an integer with an optional given base. The default bas
 
 
 ```js
-🚀 > "1234".plz_i()
-=> 1234
+🚀 » "1234".plz_i()
+» 1234
+🚀 » "1234".plz_i(8)
+» 668
+🚀 » "0x1234".plz_i(8)
+» 668
+🚀 » "0x1234".plz_i()
+» 668
+🚀 » "0x1234".plz_i(10)
+» 0
 
-🚀 > "1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i()
-=> 668
-
-🚀 > "0x1234".plz_i(10)
-=> 0
 ```
 
 
@@ -162,8 +162,9 @@ Replaces the first string with the second string in the given string.
 
 
 ```js
-🚀 > "test".replace("t", "f")
-=> "fesf"
+🚀 » "test".replace("t", "f")
+» "fesf"
+
 ```
 
 
@@ -174,8 +175,9 @@ Returns a copy of the string with all characters reversed.
 
 
 ```js
-🚀 > "stressed".reverse()
-=> "desserts"
+🚀 » "stressed".reverse()
+» "desserts"
+
 ```
 
 
@@ -186,12 +188,13 @@ Replaces all the characters in a string in reverse order.
 
 
 ```js
-🚀 > a = "stressed"
-=> "stressed"
-🚀 > a.reverse!()
-=> nil
-🚀 > a
-=> "desserts"
+🚀 » a = "stressed"
+» "stressed"
+🚀 » a.reverse!()
+» nil
+🚀 » a
+» "desserts"
+
 ```
 
 
@@ -202,8 +205,9 @@ Returns the amount of characters in the string.
 
 
 ```js
-🚀 > "test".size()
-=> 4
+🚀 » "test".size()
+» 4
+
 ```
 
 
@@ -214,11 +218,11 @@ Splits the string on a given seperator and returns all the chunks in an array. D
 
 
 ```js
-🚀 > "a,b,c,d".split(",")
-=> ["a", "b", "c", "d"]
+🚀 » "a,b,c,d".split(",")
+» ["a", "b", "c", "d"]
+🚀 » "test and another test".split()
+» ["test", "and", "another", "test"]
 
-🚀 > "test and another test".split()
-=> ["test", "and", "another", "test"]
 ```
 
 
@@ -229,8 +233,9 @@ Returns a copy of the string with all leading and trailing whitespaces removed.
 
 
 ```js
-🚀 > " test ".strip()
-=> "test"
+🚀 » " test ".strip()
+» "test"
+
 ```
 
 
@@ -241,13 +246,13 @@ Removes all leading and trailing whitespaces in the string.
 
 
 ```js
+🚀 » a = " test "
+» " test "
+🚀 » a.strip!()
+» nil
+🚀 » a
+» "test"
 
-🚀 > a = " test "
-=> " test "
-🚀 > a.strip!()
-=> nil
-🚀 > a
-=> "test"
 ```
 
 
@@ -258,8 +263,9 @@ Returns the string with all lowercase letters replaced with uppercase counterpar
 
 
 ```js
-🚀 > "test".upcase()
-=> TEST
+🚀 » "test".upcase()
+» "TEST"
+
 ```
 
 
@@ -270,13 +276,13 @@ Replaces all lowercase characters with upcase counterparts.
 
 
 ```js
+🚀 » a = "test"
+» "test"
+🚀 » a.upcase!()
+» nil
+🚀 » a
+» "TEST"
 
-🚀 > a = "test"
-=> test
-🚀 > a.upcase!()
-=> nil
-🚀 > a
-=> TEST
 ```
 
 
@@ -289,8 +295,9 @@ Replaces all lowercase characters with upcase counterparts.
 Returns an array of all supported methods names.
 
 ```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
+🚀 »  "test".methods()
+» ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+
 ```
 
 ### to_json()
@@ -299,10 +306,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 ```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
+🚀 » a = {"test": 1234}
+» {"test": 1234}
+🚀 » a.to_json()
+» "{\"test\":1234}"
+
 ```
 
 ### type()
@@ -311,8 +319,9 @@ Returns the object as json notation.
 Returns the type of the object.
 
 ```js
-🚀 > "test".type()
-=> "STRING"
+🚀 » "test".type()
+» "STRING"
+
 ```
 
 ### wat()
@@ -321,8 +330,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 ```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
+🚀 » true.wat()
+» "BOOLEAN supports the following methods:
+        plz_s()"
+
 ```
 

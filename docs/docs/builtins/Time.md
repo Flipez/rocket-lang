@@ -8,11 +8,12 @@
 ### format(INTEGER, STRING)
 > Returns `STRING`
 
-Formats the given unix timestamp with the given layout.
+Formats the given unix timestamp with the given layout
 
 [Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
 You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
 Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
+
 
 
 ```js
@@ -20,6 +21,7 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 » "Mon Oct 31 00:08:10 2022"
 🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
 » "Mon Oct 31 00:28:43 2022"
+
 ```
 
 
@@ -33,11 +35,13 @@ You can also use some but not all [formats present in many other languages](http
 Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
 
 
+
 ```js
 🚀 » Time.parse("2022-03-23", "2006-01-02")
 » 1647993600
 🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
 » 1647993600
+
 ```
 
 
@@ -49,6 +53,7 @@ Stops the RocketLang routine for at least the stated duration in seconds
 
 ```js
 🚀 > Time.sleep(2)
+
 ```
 
 
@@ -60,6 +65,7 @@ Returns the current time as unix timestamp
 
 ```js
 🚀 > Time.Unix()
+
 ```
 
 
@@ -83,3 +89,4 @@ Returns the current time as unix timestamp
 | StampMilli | Jan _2 15:04:05.000 |
 | StampNano | Jan _2 15:04:05.000000000 |
 | UnixDate | Mon Jan _2 15:04:05 MST 2006 |
+

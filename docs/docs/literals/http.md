@@ -15,6 +15,7 @@ HTTP.listen(3000)
 
 // Example request hash:
 // {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}
+
 ```
 
 ## Literal Specific Methods
@@ -33,8 +34,10 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 - "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}
 
 
+
 ```js
-🚀 > HTTP.handle("/", callback_func)
+🚀 » HTTP.handle("/", callback_func)
+
 ```
 
 
@@ -45,7 +48,8 @@ Starts a blocking webserver on the given port.
 
 
 ```js
-🚀 > HTTP.listen(3000)
+🚀 » HTTP.listen(3000)
+
 ```
 
 
@@ -58,8 +62,9 @@ Starts a blocking webserver on the given port.
 Returns an array of all supported methods names.
 
 ```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
+🚀 »  "test".methods()
+» ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+
 ```
 
 ### to_json()
@@ -68,10 +73,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 ```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
+🚀 » a = {"test": 1234}
+» {"test": 1234}
+🚀 » a.to_json()
+» "{\"test\":1234}"
+
 ```
 
 ### type()
@@ -80,8 +86,9 @@ Returns the object as json notation.
 Returns the type of the object.
 
 ```js
-🚀 > "test".type()
-=> "STRING"
+🚀 » "test".type()
+» "STRING"
+
 ```
 
 ### wat()
@@ -90,8 +97,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 ```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
+🚀 » true.wat()
+» "BOOLEAN supports the following methods:
+        plz_s()"
+
 ```
 

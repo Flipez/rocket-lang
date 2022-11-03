@@ -26,6 +26,7 @@ true
 3
 "moo"
 true
+
 ```
 
 ## Literal Specific Methods
@@ -37,8 +38,9 @@ Returns the keys of the hash.
 
 
 ```js
-🚀 > {"a": "1", "b": "2"}.keys()
-=> ["a", "b"]
+🚀 » {"a": "1", "b": "2"}.keys()
+» ["a", "b"]
+
 ```
 
 
@@ -49,8 +51,9 @@ Returns the values of the hash.
 
 
 ```js
-🚀 > {"a": "1", "b": "2"}.values()
-=> ["2", "1"]
+🚀 » {"a": "1", "b": "2"}.values()
+» ["1", "2"]
+
 ```
 
 
@@ -63,8 +66,9 @@ Returns the values of the hash.
 Returns an array of all supported methods names.
 
 ```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
+🚀 »  "test".methods()
+» ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+
 ```
 
 ### to_json()
@@ -73,10 +77,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 ```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
+🚀 » a = {"test": 1234}
+» {"test": 1234}
+🚀 » a.to_json()
+» "{\"test\":1234}"
+
 ```
 
 ### type()
@@ -85,8 +90,9 @@ Returns the object as json notation.
 Returns the type of the object.
 
 ```js
-🚀 > "test".type()
-=> "STRING"
+🚀 » "test".type()
+» "STRING"
+
 ```
 
 ### wat()
@@ -95,8 +101,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 ```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
+🚀 » true.wat()
+» "BOOLEAN supports the following methods:
+        plz_s()"
+
 ```
 
