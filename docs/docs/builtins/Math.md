@@ -1,3 +1,5 @@
+import CodeExample from '@site/components/CodeExample'
+
 # Math
 
 
@@ -18,10 +20,7 @@
 Returns the arccosine, in radians, of the argument
 
 
-```js
-🚀 > Math.acos(1.0)
-=> 0.0
-```
+<CodeExample code='Math.acos(1.0)' />
 
 
 ### asin(FLOAT)
@@ -29,11 +28,8 @@ Returns the arccosine, in radians, of the argument
 
 Returns the arcsine, in radians, of the argument
 
+<CodeExample code='Math.asin(0.0)' />
 
-```js
-🚀 > Math.asin(0.0)
-=> 0.0
-```
 
 
 ### atan(FLOAT)
