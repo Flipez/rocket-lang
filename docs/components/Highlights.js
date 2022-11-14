@@ -34,10 +34,10 @@ function Welcome() {
               It's not <br /> rocket science. Is it?
             </h1>
             <p>
-              Started as a joke to learn the inner mechanics of a interpreted language
-              <span className="highlight2"></span>RocketLang
-              quickly evolved into a long running projects with some more orless ambitious
-              goals such as being used for&nbsp;
+              Started as a joke to learn the inner mechanics of a interpreted language,
+              <span className="highlight2"> RocketLang </span>
+              quickly evolved into a long running project with more and more ambitious
+              goals, such as being used for&nbsp;
               <a href="https://adventofcode.com">Advent of Code</a> to test it's limits.
             </p>
           </div>
@@ -204,7 +204,7 @@ function EverythingObject() {
               Inspired by Ruby, in RocketLang everything is an object.
             </p>
             <p>
-              This allows to threat unknown input in the same way and figuring out what kind of
+              This allows to treat unknown input in the same way and figuring out what kind of
               information your function passes on the go.
               Every object supports the same minimum default subset of methods to achive this.
             </p>
