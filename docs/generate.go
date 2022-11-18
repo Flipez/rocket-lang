@@ -82,7 +82,7 @@ func createDoc(path string, target string, data any) error {
 }
 
 func loadTemplateData(name string, methods map[string]object.ObjectMethod) (*templateData, error) {
-	content, err := os.ReadFile(fmt.Sprintf("docs/object/%s.yml", name))
+	content, err := os.ReadFile(fmt.Sprintf("docs/literals/%s.yml", name))
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,8 @@ func loadTemplateData(name string, methods map[string]object.ObjectMethod) (*tem
 		Example     string `yaml:"example"`
 		Methods     map[string]struct {
 			Description string `yaml:"description"`
-			Example     string `yaml:"example"`
+			Input       string `yaml:"input"`
+			Output      string `yaml:"output"`
 		} `yaml:"methods"`
 	}
 	if err := yaml.Unmarshal(content, &docData); err != nil {
@@ -113,7 +114,8 @@ func loadTemplateData(name string, methods map[string]object.ObjectMethod) (*tem
 		}
 		if v, ok := docData.Methods[name]; ok {
 			objMethod.Layout.Description = v.Description
-			objMethod.Layout.Example = v.Example
+			objMethod.Layout.Input = v.Input
+			objMethod.Layout.Output = v.Output
 		}
 		tempData.LiteralMethods[name] = objMethod
 	}
@@ -132,7 +134,8 @@ func loadBuiltinTemplateData(module *object.BuiltinModule) (*templateData, error
 		Example     string `yaml:"example"`
 		Functions   map[string]struct {
 			Description string `yaml:"description"`
-			Example     string `yaml:"example"`
+			Input       string `yaml:"input"`
+			Output      string `yaml:"output"`
 		} `yaml:"functions"`
 	}
 	if err := yaml.Unmarshal(content, &docData); err != nil {
@@ -153,7 +156,8 @@ func loadBuiltinTemplateData(module *object.BuiltinModule) (*templateData, error
 		}
 		if v, ok := docData.Functions[name]; ok {
 			fn.Layout.Description = v.Description
-			fn.Layout.Example = v.Example
+			fn.Layout.Input = v.Input
+			fn.Layout.Output = v.Output
 		}
 		tempData.Functions[name] = fn
 	}

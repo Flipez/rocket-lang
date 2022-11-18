@@ -1,12 +1,14 @@
 functions:
   exit:
     description: "Terminates the program with the given exit code."
-    example: |
-      🚀 > OS.exit(1)
+    input: |
+      OS.exit(1)
+    output: |
       exit status 1
   raise:
     description: "Terminates the program with the given exit code and prints the error message."
-    example: |
-      🚀 > OS.raise(1, "broken")
+    input: |
+      OS.raise(1, "broken")
+    output: |
       🔥 RocketLang raised an error: "broken"
       exit status 1

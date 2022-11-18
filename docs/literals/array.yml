@@ -20,54 +20,63 @@ example: |
 methods:
   reverse:
     description: "Reverses the elements of the array"
-    example: |
-      🚀 » ["a", "b", 1, 2].reverse()
-      » [2, 1, "b", "a"]
+    input: |
+      ["a", "b", 1, 2].reverse()
+    output: |
+      [2, 1, "b", "a"]
   size:
     description: "Returns the amount of elements in the array."
-    example: |
-      🚀 » ["a", "b", 1, 2].size()
-      » 4
+    input: |
+      ["a", "b", 1, 2].size()
+    output: |
+      4
   sort:
     description: "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT"
-    example: |
-      🚀 » [3.4, 3.1, 2.0].sort()
-      » [2.0, 3.1, 3.4]
+    input: |
+      [3.4, 3.1, 2.0].sort()
+    output: |
+      [2.0, 3.1, 3.4]
   uniq:
     description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable."
-    example: |
-      🚀 » ["a", 1, 1, 2].uniq()
-      » [1, 2, "a"]
+    input: |
+      ["a", 1, 1, 2].uniq()
+    output: |
+      [1, 2, "a"]
   index:
     description: "Returns the index of the given element in the array if found. Otherwise return `-1`."
-    example: |
-      🚀 » ["a", "b", 1, 2].index(1)
-      » 2
+    input: |
+      ["a", "b", 1, 2].index(1)
+    output: |
+      2
   first:
     description: "Returns the first element of the array. Shorthand for `array[0]`"
-    example: |
-      🚀 » ["a", "b", 1, 2].first()
-      » "a"
+    input: |
+      ["a", "b", 1, 2].first()
+    output: |
+      "a"
   last:
     description: "Returns the last element of the array."
-    example: |
-      🚀 » ["a", "b", 1, 2].last()
-      » 2
+    input: |
+      ["a", "b", 1, 2].last()
+    output: |
+      2
   yeet:
     description: "Removes the last element of the array and returns it."
-    example: |
-      🚀 » a = [1,2,3]
-      » [1, 2, 3]
-      🚀 » a.yeet()
-      » 3
-      🚀 » a
-      » [1, 2]
+    input: |
+      a = [1,2,3]
+      a.yeet()
+      a
+    output: |
+      [1, 2, 3]
+      3
+      [1, 2]
   yoink:
     description: "Adds the given object as last element to the array."
-    example: |
-      🚀 » a = [1,2,3]
-      » [1, 2, 3]
-      🚀 » a.yoink("a")
-      » nil
-      🚀 » a
-      » [1, 2, 3, "a"]
+    input: |
+      a = [1,2,3]
+      a.yoink("a")
+      a
+    output: |
+      [1, 2, 3]
+      nil
+      [1, 2, 3, "a"]

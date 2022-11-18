@@ -25,10 +25,15 @@ Converts the integer into a float.
 
 
 ```js
-🚀 » 1234.plz_f()
-» 1234.0
+1234.plz_f()
 
 ```
+
+```js
+1234.0
+
+```
+
 
 
 ### plz_i()
@@ -38,10 +43,15 @@ Returns self
 
 
 ```js
-🚀 » 1234.plz_i()
-» 1234
+1234.plz_i()
 
 ```
+
+```js
+1234
+
+```
+
 
 
 ### plz_s(INTEGER)
@@ -51,16 +61,21 @@ Returns a string representation of the integer. Also takes an argument which rep
 
 
 ```js
-🚀 » 1234.plz_s()
-» "1234"
-🚀 » 1234.plz_s(2)
-» "10011010010"
-🚀 » 1234.plz_s(8)
-» "2322"
-🚀 » 1234.plz_s(10)
-» "1234"
+1234.plz_s()
+1234.plz_s(2)
+1234.plz_s(8)
+1234.plz_s(10)
 
 ```
+
+```js
+"1234"
+"10011010010"
+"2322"
+"1234"
+
+```
+
 
 
 
@@ -71,45 +86,73 @@ Returns a string representation of the integer. Also takes an argument which rep
 
 Returns an array of all supported methods names.
 
+
 ```js
-🚀 »  "test".methods()
-» ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+"test".methods()
 
 ```
+
+```js
+["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+
+```
+
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
+
 ```js
-🚀 » a = {"test": 1234}
-» {"test": 1234}
-🚀 » a.to_json()
-» "{\"test\":1234}"
+a = {"test": 1234}
+a.to_json()
 
 ```
+
+```js
+{"test": 1234}
+"{\"test\":1234}"
+
+```
+
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
+
 ```js
-🚀 » "test".type()
-» "STRING"
+"test".type()
 
 ```
+
+```js
+"STRING"
+
+```
+
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
+
 ```js
-🚀 » true.wat()
-» "BOOLEAN supports the following methods:
-        plz_s()"
+true.wat()
 
 ```
+
+```js
+"BOOLEAN supports the following methods:
+  plz_s()"
+
+```
+
+
 

@@ -25,11 +25,13 @@ example: |
 methods:
   keys:
     description: "Returns the keys of the hash."
-    example: |
-      🚀 » {"a": "1", "b": "2"}.keys()
-      » ["a", "b"]
+    input: |
+      {"a": "1", "b": "2"}.keys()
+    output: |
+      ["a", "b"]
   values:
     description: "Returns the values of the hash."
-    example: |
-      🚀 » {"a": "1", "b": "2"}.values()
-      » ["1", "2"]
+    input: |
+      {"a": "1", "b": "2"}.values()
+    output: |
+      ["1", "2"]

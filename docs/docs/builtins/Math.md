@@ -19,10 +19,15 @@ Returns the arccosine, in radians, of the argument
 
 
 ```js
-🚀 > Math.acos(1.0)
-=> 0.0
+Math.acos(1.0)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 ### asin(FLOAT)
@@ -32,10 +37,15 @@ Returns the arcsine, in radians, of the argument
 
 
 ```js
-🚀 > Math.asin(0.0)
-=> 0.0
+Math.asin(0.0)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 ### atan(FLOAT)
@@ -45,10 +55,15 @@ Returns the arctangent, in radians, of the argument
 
 
 ```js
-🚀 > Math.atan(0.0)
-=> 0.0
+Math.atan(0.0)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 ### ceil(FLOAT)
@@ -58,10 +73,15 @@ Returns the least integer value greater or equal to the argument
 
 
 ```js
-🚀 > Math.ceil(1.49)
-=> 2.0
+Math.ceil(1.49)
 
 ```
+
+```js
+2.0
+
+```
+
 
 
 ### copysign(FLOAT, FLOAT)
@@ -71,10 +91,15 @@ Returns a value with the magnitude of first argument and sign of second argument
 
 
 ```js
-🚀 > Math.copysign(3.2, -1.0)
-=> -3.2
+Math.copysign(3.2, -1.0)
 
 ```
+
+```js
+-3.2
+
+```
+
 
 
 ### cos(FLOAT)
@@ -84,10 +109,15 @@ Returns the cosine of the radion argument
 
 
 ```js
-🚀 > Math.cos(Pi/2)
-=> 0.0
+Math.cos(Pi/2)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 ### exp(FLOAT)
@@ -97,10 +127,15 @@ Returns e**argument, the base-e exponential of argument
 
 
 ```js
-🚀 > Math.exp(1.0)
-=> 2.72
+Math.exp(1.0)
 
 ```
+
+```js
+2.72
+
+```
+
 
 
 ### floor(FLOAT)
@@ -110,10 +145,15 @@ Returns the greatest integer value less than or equal to argument
 
 
 ```js
-🚀 > Math.floor(1.51)
-=> 1.0
+Math.floor(1.51)
 
 ```
+
+```js
+1.0
+
+```
+
 
 
 ### log(FLOAT)
@@ -123,10 +163,15 @@ Returns the natural logarithm of argument
 
 
 ```js
-🚀 > Math.log(2.7183)
-=> 1.0
+Math.log(2.7183)
 
 ```
+
+```js
+1.0
+
+```
+
 
 
 ### log10(FLOAT)
@@ -136,10 +181,15 @@ Returns the decimal logarithm of argument
 
 
 ```js
-🚀 > Math.log(100.0)
-=> 2.0
+Math.log(100.0)
 
 ```
+
+```js
+2.0
+
+```
+
 
 
 ### log2(FLOAT)
@@ -149,10 +199,15 @@ Returns the binary logarithm of argument
 
 
 ```js
-🚀 > Math.log2(256.0)
-=> 8.0
+Math.log2(256.0)
 
 ```
+
+```js
+8.0
+
+```
+
 
 
 ### max(FLOAT, FLOAT)
@@ -162,10 +217,15 @@ Returns the larger of the two numbers
 
 
 ```js
-🚀 > Math.max(5.0, 10.0)
-=> 10.0
+Math.max(5.0, 10.0)
 
 ```
+
+```js
+10.0
+
+```
+
 
 
 ### min(FLOAT, FLOAT)
@@ -175,10 +235,15 @@ Returns the smaller of the two numbers
 
 
 ```js
-🚀 > Math.min(5.0, 10.0)
-=> 5.0
+Math.min(5.0, 10.0)
 
 ```
+
+```js
+5.0
+
+```
+
 
 
 ### pow(FLOAT, FLOAT)
@@ -188,10 +253,15 @@ Returns argument1**argument2, the base-argument1 exponential of argument2
 
 
 ```js
-🚀 > Math.pow(2.0, 3.0)
-=> 8.0
+Math.pow(2.0, 3.0)
 
 ```
+
+```js
+8.0
+
+```
+
 
 
 ### rand()
@@ -201,10 +271,15 @@ Returns a pseudo-random number in the half-open interval [0.0, 1.0].
 
 
 ```js
-🚀 > Math.rand()
-=> 0.6046602879796196
+Math.rand()
 
 ```
+
+```js
+0.6046602879796196
+
+```
+
 
 
 ### remainder(FLOAT, FLOAT)
@@ -214,10 +289,15 @@ Returns the IEEE 754 floating-point remainder of argument1/argument2
 
 
 ```js
-🚀 > Math.remainder(100.0, 30.0)
-=> 10.0
+Math.remainder(100.0, 30.0)
 
 ```
+
+```js
+10.0
+
+```
+
 
 
 ### round(FLOAT)
@@ -227,10 +307,15 @@ Returns the nearest integer, rounding half away from zero
 
 
 ```js
-🚀 > Math.round(73.3)
-=> 73.0
+Math.round(73.3)
 
 ```
+
+```js
+73.0
+
+```
+
 
 
 ### sin(FLOAT)
@@ -240,10 +325,15 @@ Returns the sine of the radion argument
 
 
 ```js
-🚀 > Math.sin(Pi)
-=> 0.0
+Math.sin(Pi)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 ### sqrt(FLOAT)
@@ -253,10 +343,15 @@ Returns the square root of argument
 
 
 ```js
-🚀 > Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
-=> 5.0
+Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
 
 ```
+
+```js
+5.0
+
+```
+
 
 
 ### tan(FLOAT)
@@ -266,10 +361,15 @@ Returns the tangent of the radion argument
 
 
 ```js
-🚀 > Math.tan(0.0)
-=> 0.0
+Math.tan(0.0)
 
 ```
+
+```js
+0.0
+
+```
+
 
 
 

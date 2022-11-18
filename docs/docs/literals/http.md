@@ -36,9 +36,10 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 
 
 ```js
-🚀 » HTTP.handle("/", callback_func)
+HTTP.handle("/", callback_func)
 
 ```
+
 
 
 ### listen(INTEGER)
@@ -48,9 +49,10 @@ Starts a blocking webserver on the given port.
 
 
 ```js
-🚀 » HTTP.listen(3000)
+HTTP.listen(3000)
 
 ```
+
 
 
 
@@ -61,45 +63,73 @@ Starts a blocking webserver on the given port.
 
 Returns an array of all supported methods names.
 
+
 ```js
-🚀 »  "test".methods()
-» ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+"test".methods()
 
 ```
+
+```js
+["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+
+```
+
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
+
 ```js
-🚀 » a = {"test": 1234}
-» {"test": 1234}
-🚀 » a.to_json()
-» "{\"test\":1234}"
+a = {"test": 1234}
+a.to_json()
 
 ```
+
+```js
+{"test": 1234}
+"{\"test\":1234}"
+
+```
+
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
+
 ```js
-🚀 » "test".type()
-» "STRING"
+"test".type()
 
 ```
+
+```js
+"STRING"
+
+```
+
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
+
 ```js
-🚀 » true.wat()
-» "BOOLEAN supports the following methods:
-        plz_s()"
+true.wat()
 
 ```
+
+```js
+"BOOLEAN supports the following methods:
+  plz_s()"
+
+```
+
+
 

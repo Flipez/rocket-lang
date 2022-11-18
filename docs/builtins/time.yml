@@ -6,11 +6,12 @@ functions:
       [Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
       You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
       Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
-    example: |
-      🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
-      » "Mon Oct 31 00:08:10 2022"
-      🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
-      » "Mon Oct 31 00:28:43 2022"
+    input: |
+      Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
+      Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
+    output: |
+      "Mon Oct 31 00:08:10 2022"
+      "Mon Oct 31 00:28:43 2022"
   parse:
     description: |
       Parses a given string with the given format to a unix timestamp.
@@ -18,16 +19,19 @@ functions:
       [Go date and time formats](https://gosamples.dev/date-time-format-cheatsheet/) are natively supported.
       You can also use some but not all [formats present in many other languages](https://apidock.com/ruby/Time/strftime) which are not fully supported.
       Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdlib/time.go) to see which formatters are supported.
-    example: |
-      🚀 » Time.parse("2022-03-23", "2006-01-02")
-      » 1647993600
-      🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
-      » 1647993600
+    input: |
+      Time.parse("2022-03-23", "2006-01-02")
+      Time.parse("2022-03-23", "%Y-%m-%d")
+    output: |
+      1647993600
+      1647993600
   sleep:
     description: "Stops the RocketLang routine for at least the stated duration in seconds"
-    example: |
-      🚀 > Time.sleep(2)
+    input: |
+      Time.sleep(2)
   unix:
     description: "Returns the current time as unix timestamp"
-    example: |
-      🚀 > Time.Unix()
+    input: |
+      Time.unix()
+    output: |
+      1668788502

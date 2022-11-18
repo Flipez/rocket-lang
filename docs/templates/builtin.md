@@ -16,10 +16,15 @@
 
 {{ $function.Layout.Description }}
 
-{{ if $function.Layout.Example }}
+{{ if $function.Layout.Input }}
 ```js
-{{ $function.Layout.Example }}
+{{ $function.Layout.Input }}
 ```
+{{ if $function.Layout.Output }}
+```js
+{{ $function.Layout.Output }}
+```
+{{ end}}
 {{ end }}
 {{ end }}
 

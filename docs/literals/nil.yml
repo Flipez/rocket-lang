@@ -5,16 +5,19 @@ description: |
 methods:
   plz_s:
     description: "Returns empty string."
-    example: |
-      🚀 » nil.plz_s()
-      » ""
+    input: |
+      nil.plz_s()
+    output: |
+      ""
   plz_i:
     description: "Returns zero integer."
-    example: |
-      🚀 » nil.plz_i()
-      » 0
+    input: |
+      nil.plz_i()
+    output: |
+      0
   plz_f:
     description: "Returns zero float."
-    example: |
-      🚀 » nil.plz_f()
-      » 0.0
+    input: |
+      nil.plz_f()
+    output: |
+      0.0

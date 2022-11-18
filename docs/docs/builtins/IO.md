@@ -12,10 +12,15 @@ Opens a file pointer to the file at the path, mode and permission can be set opt
 
 
 ```js
-🚀 » IO.open("main.go", "r", "0644")
-» <file:main.go>
+IO.open("main.go", "r", "0644")
 
 ```
+
+```js
+<file:main.go>
+
+```
+
 
 
 

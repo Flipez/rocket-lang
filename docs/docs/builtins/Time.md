@@ -17,12 +17,17 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 
 
 ```js
-🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
-» "Mon Oct 31 00:08:10 2022"
-🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
-» "Mon Oct 31 00:28:43 2022"
+Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
+Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
 
 ```
+
+```js
+"Mon Oct 31 00:08:10 2022"
+"Mon Oct 31 00:28:43 2022"
+
+```
+
 
 
 ### parse(STRING, STRING)
@@ -37,12 +42,17 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 
 
 ```js
-🚀 » Time.parse("2022-03-23", "2006-01-02")
-» 1647993600
-🚀 » Time.parse("2022-03-23", "%Y-%m-%d")
-» 1647993600
+Time.parse("2022-03-23", "2006-01-02")
+Time.parse("2022-03-23", "%Y-%m-%d")
 
 ```
+
+```js
+1647993600
+1647993600
+
+```
+
 
 
 ### sleep(INTEGER)
@@ -52,9 +62,10 @@ Stops the RocketLang routine for at least the stated duration in seconds
 
 
 ```js
-🚀 > Time.sleep(2)
+Time.sleep(2)
 
 ```
+
 
 
 ### unix()
@@ -64,9 +75,15 @@ Returns the current time as unix timestamp
 
 
 ```js
-🚀 > Time.Unix()
+Time.unix()
 
 ```
+
+```js
+1668788502
+
+```
+
 
 
 

@@ -14,10 +14,15 @@
 
 {{ $object.Layout.Description }}
 
-{{ if $object.Layout.Example }}
+{{ if $object.Layout.Input }}
 ```js
-{{ $object.Layout.Example }}
+{{ $object.Layout.Input }}
 ```
+{{ if $object.Layout.Output }}
+```js
+{{ $object.Layout.Output }}
+```
+{{ end}}
 {{ end }}
 {{ end }}
 
@@ -28,7 +33,14 @@
 
 {{ $object.Layout.Description }}
 
+{{ if $object.Layout.Input }}
 ```js
-{{ $object.Layout.Example }}
+{{ $object.Layout.Input }}
 ```
+{{ if $object.Layout.Output }}
+```js
+{{ $object.Layout.Output }}
+```
+{{ end}}
+{{ end }}
 {{ end }}

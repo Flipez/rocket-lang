@@ -3,7 +3,8 @@ package object
 type BuiltinModule struct {
 	Name        string
 	Description string
-	Example     string
+	Input       string
+	Output      string
 	Functions   map[string]*BuiltinFunction
 	Properties  map[string]*BuiltinProperty
 }

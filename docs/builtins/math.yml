@@ -3,101 +3,121 @@ functions:
     description: ""
   acos:
     description: "Returns the arccosine, in radians, of the argument"
-    example: |
-      🚀 > Math.acos(1.0)
-      => 0.0
+    input: |
+      Math.acos(1.0)
+    output: |
+      0.0
   asin:
     description: "Returns the arcsine, in radians, of the argument"
-    example: |
-      🚀 > Math.asin(0.0)
-      => 0.0
+    input: |
+      Math.asin(0.0)
+    output: |
+      0.0
   atan:
     description: "Returns the arctangent, in radians, of the argument"
-    example: |
-      🚀 > Math.atan(0.0)
-      => 0.0
+    input: |
+      Math.atan(0.0)
+    output: |
+      0.0
   ceil:
     description: "Returns the least integer value greater or equal to the argument"
-    example: |
-      🚀 > Math.ceil(1.49)
-      => 2.0
+    input: |
+      Math.ceil(1.49)
+    output: |
+      2.0
   copysign:
     description: "Returns a value with the magnitude of first argument and sign of second argument"
-    example: |
-      🚀 > Math.copysign(3.2, -1.0)
-      => -3.2
+    input: |
+      Math.copysign(3.2, -1.0)
+    output: |
+      -3.2
   cos:
     description: "Returns the cosine of the radion argument"
-    example: |
-      🚀 > Math.cos(Pi/2)
-      => 0.0
+    input: |
+      Math.cos(Pi/2)
+    output: |
+      0.0
   exp:
     description: "Returns e**argument, the base-e exponential of argument"
-    example: |
-      🚀 > Math.exp(1.0)
-      => 2.72
+    input: |
+      Math.exp(1.0)
+    output: |
+      2.72
   floor:
     description: "Returns the greatest integer value less than or equal to argument"
-    example: |
-      🚀 > Math.floor(1.51)
-      => 1.0
+    input: |
+      Math.floor(1.51)
+    output: |
+      1.0
   log:
     description: "Returns the natural logarithm of argument"
-    example: |
-      🚀 > Math.log(2.7183)
-      => 1.0
+    input: |
+      Math.log(2.7183)
+    output: |
+      1.0
   log10:
     description: "Returns the decimal logarithm of argument"
-    example: |
-      🚀 > Math.log(100.0)
-      => 2.0
+    input: |
+      Math.log(100.0)
+    output: |
+      2.0
   log2:
     description: "Returns the binary logarithm of argument"
-    example: |
-      🚀 > Math.log2(256.0)
-      => 8.0
+    input: |
+      Math.log2(256.0)
+    output: |
+      8.0
   max:
     description: "Returns the larger of the two numbers"
-    example: |
-      🚀 > Math.max(5.0, 10.0)
-      => 10.0
+    input: |
+      Math.max(5.0, 10.0)
+    output: |
+      10.0
   min:
     description: "Returns the smaller of the two numbers"
-    example: |
-      🚀 > Math.min(5.0, 10.0)
-      => 5.0
+    input: |
+      Math.min(5.0, 10.0)
+    output: |
+      5.0
   pow:
     description: "Returns argument1**argument2, the base-argument1 exponential of argument2"
-    example: |
-      🚀 > Math.pow(2.0, 3.0)
-      => 8.0
+    input: |
+      Math.pow(2.0, 3.0)
+    output: |
+      8.0
   rand:
     description: "Returns a pseudo-random number in the half-open interval [0.0, 1.0]."
-    example: |
-      🚀 > Math.rand()
-      => 0.6046602879796196
+    input: |
+      Math.rand()
+    output: |
+      0.6046602879796196
   remainder:
     description: "Returns the IEEE 754 floating-point remainder of argument1/argument2"
-    example: |
-      🚀 > Math.remainder(100.0, 30.0)
-      => 10.0
+    input: |
+      Math.remainder(100.0, 30.0)
+    output: |
+      10.0
   round:
     description: "Returns the nearest integer, rounding half away from zero"
-    example: |
-      🚀 > Math.round(73.3)
-      => 73.0
+    input: |
+      Math.round(73.3)
+    output: |
+      73.0
   sin:
     description: "Returns the sine of the radion argument"
-    example: |
-      🚀 > Math.sin(Pi)
-      => 0.0
+    input: |
+      Math.sin(Pi)
+    output: |
+      0.0
   sqrt:
     description: "Returns the square root of argument"
-    example: |
-      🚀 > Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
-      => 5.0
+    input: |
+      Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
+    output: |
+      5.0
   tan:
     description: "Returns the tangent of the radion argument"
-    example: |
-      🚀 > Math.tan(0.0)
-      => 0.0
+    input: |
+      Math.tan(0.0)
+    output: |
+      0.0

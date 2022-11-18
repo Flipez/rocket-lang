@@ -110,7 +110,8 @@ type MethodLayout struct {
 	ArgPattern    []Argument
 	ReturnPattern []Argument
 	Description   string
-	Example       string
+	Input         string
+	Output        string
 }
 
 func (ml MethodLayout) requiredArgs() []Argument {
