@@ -42,8 +42,8 @@ func init() {
 				clazz := o.(*Class)
 				instance := &Instance{Class: clazz, Environment: NewEnclosedEnvironment(clazz.Env)}
 
-				if _, ok := instance.Environment.Get("constructor"); ok {
-					instance.InvokeMethod("constructor", *instance.Environment, args...)
+				if _, ok := instance.Environment.Get("initialize"); ok {
+					instance.InvokeMethod("initialize", *instance.Environment, args...)
 				}
 
 				return instance

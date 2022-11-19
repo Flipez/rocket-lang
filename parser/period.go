@@ -5,7 +5,7 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
+func (p *Parser) parsePeriod(obj ast.Expression) ast.Expression {
 	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
 		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}

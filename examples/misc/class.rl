@@ -1,5 +1,5 @@
 class Car
-  def constructor(b)
+  def initialize(b)
     this.brand = b
   end
 

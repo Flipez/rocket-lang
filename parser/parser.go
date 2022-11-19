@@ -102,7 +102,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.PERCENT, p.parseInfix)
 	p.registerInfix(token.EQ, p.parseInfix)
 	p.registerInfix(token.NOT_EQ, p.parseInfix)
-	p.registerInfix(token.PERIOD, p.parseMethodCall)
+	p.registerInfix(token.PERIOD, p.parsePeriod)
 	p.registerInfix(token.LT, p.parseInfix)
 	p.registerInfix(token.LT_EQ, p.parseInfix)
 	p.registerInfix(token.GT, p.parseInfix)
