@@ -13,6 +13,7 @@ func NewEnvironment() *Environment {
 type Environment struct {
 	store map[string]Object
 	outer *Environment
+	Self  Object
 }
 
 func (e *Environment) Get(name string) (Object, bool) {

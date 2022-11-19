@@ -60,6 +60,8 @@ const (
 	RETURN   = "RETURN"
 	BREAK    = "BREAK"
 	NEXT     = "NEXT"
+	CLASS    = "CLASS"
+	THIS     = "THIS"
 
 	EQ     = "=="
 	NOT_EQ = "!="
@@ -100,6 +102,8 @@ var keywords = map[string]TokenType{
 	"or":      OR,
 	"begin":   BEGIN,
 	"rescue":  RESCUE,
+	"class":   CLASS,
+	"this":    THIS,
 }
 
 func LookupIdent(ident string) TokenType {
