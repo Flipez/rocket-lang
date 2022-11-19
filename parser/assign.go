@@ -8,7 +8,15 @@ import (
 
 func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	stmt := &ast.Assign{Token: p.curToken}
+
 	if n, ok := name.(*ast.Identifier); ok {
+		if p.previousProperty != nil {
+			stmt.Name = p.previousProperty
+			p.nextToken()
+			stmt.Value = p.parseExpression(LOWEST)
+			p.previousProperty = nil
+			return stmt
+		}
 		stmt.Name = n
 	} else if index, ok := name.(*ast.Index); ok {
 		stmt.Name = index

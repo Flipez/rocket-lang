@@ -58,6 +58,8 @@ type Parser struct {
 	curToken  token.Token
 	peekToken token.Token
 
+	previousProperty *ast.Property
+
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
 

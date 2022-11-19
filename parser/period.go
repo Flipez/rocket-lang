@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/token"
 )
@@ -10,9 +8,10 @@ import (
 func (p *Parser) parsePeriod(obj ast.Expression) ast.Expression {
 	if _, ok := obj.(*ast.This); ok {
 		p.nextToken()
-		fmt.Printf("%#v", p.curToken)
 		prop := &ast.Property{Token: p.curToken, Left: obj}
-		prop.Property = p.parseExpression(p.curPrecedence())
+		prop.Property = p.parseExpression(LOWEST)
+
+		p.previousProperty = prop
 
 		return prop
 	}
