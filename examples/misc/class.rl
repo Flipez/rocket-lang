@@ -4,8 +4,8 @@ class Car
   end
 
   def build()
-    puts(brand)
-    puts('New car from %s'.format(brand))
+    puts(this.brand)
+    puts('New car from %s'.format(this.brand))
   end
 end
 

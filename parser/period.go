@@ -1,15 +1,21 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/token"
 )
 
 func (p *Parser) parsePeriod(obj ast.Expression) ast.Expression {
-	if _, ok := p.imports[obj.String()]; ok {
-		p.expectPeek(token.IDENT)
-		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
-		return &ast.Index{Left: obj, Index: index}
+	fmt.Printf("%#v", obj)
+
+	if _, ok := obj.(*ast.This); !ok {
+		if _, ok := p.imports[obj.String()]; ok {
+			p.expectPeek(token.IDENT)
+			index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
+			return &ast.Index{Left: obj, Index: index}
+		}
 	}
 
 	p.nextToken()
