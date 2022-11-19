@@ -61,10 +61,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return elements[0]
 		}
 		return object.NewArray(elements)
+
 	case *ast.Class:
 		return evalClass(node, env)
 	case *ast.This:
 		return evalThis(node, env)
+	case *ast.Property:
+		return evalProperty(node, env)
 	case *ast.Hash:
 		return evalHash(node, env)
 
