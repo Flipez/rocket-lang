@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Array
 
 
@@ -31,10 +33,9 @@ puts(a[1:-2])
 Returns the first element of the array. Shorthand for `array[0]`
 
 
-```js
-🚀 > ["a", "b", 1, 2].first()
-=> "a"
-```
+<CodeBlockSimple input='["a", "b", 1, 2].first()
+' output='"a"
+' />
 
 
 ### index(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
@@ -43,10 +44,9 @@ Returns the first element of the array. Shorthand for `array[0]`
 Returns the index of the given element in the array if found. Otherwise return `-1`.
 
 
-```js
-🚀 > ["a", "b", 1, 2].index(1)
-=> 2
-```
+<CodeBlockSimple input='["a", "b", 1, 2].index(1)
+' output='2
+' />
 
 
 ### last()
@@ -55,10 +55,9 @@ Returns the index of the given element in the array if found. Otherwise return `
 Returns the last element of the array.
 
 
-```js
-🚀 > ["a", "b", 1, 2].last()
-=> 2
-```
+<CodeBlockSimple input='["a", "b", 1, 2].last()
+' output='2
+' />
 
 
 ### reverse()
@@ -67,10 +66,9 @@ Returns the last element of the array.
 Reverses the elements of the array
 
 
-```js
-🚀 > ["a", "b", 1, 2].reverse()
-=> [2, 1, "b", "a"]
-```
+<CodeBlockSimple input='["a", "b", 1, 2].reverse()
+' output='[2, 1, "b", "a"]
+' />
 
 
 ### size()
@@ -79,10 +77,9 @@ Reverses the elements of the array
 Returns the amount of elements in the array.
 
 
-```js
-🚀 > ["a", "b", 1, 2].size()
-=> 4
-```
+<CodeBlockSimple input='["a", "b", 1, 2].size()
+' output='4
+' />
 
 
 ### sort()
@@ -91,10 +88,9 @@ Returns the amount of elements in the array.
 Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
 
 
-```js
-🚀 » [3.4, 3.1, 2.0].sort()
-» [2.0, 3.1, 3.4]
-```
+<CodeBlockSimple input='[3.4, 3.1, 2.0].sort()
+' output='[2.0, 3.1, 3.4]
+' />
 
 
 ### uniq()
@@ -103,10 +99,9 @@ Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
 Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.
 
 
-```js
-🚀 > ["a", 1, 1, 2].uniq()
-=> [1, 2, "a"]
-```
+<CodeBlockSimple input='["a", 1, 1, 2].uniq()
+' output='[1, 2, "a"]
+' />
 
 
 ### yeet()
@@ -115,14 +110,13 @@ Returns a copy of the array with deduplicated elements. Raises an error if a ele
 Removes the last element of the array and returns it.
 
 
-```js
-🚀 > a = [1,2,3]
-=> [1, 2, 3]
-🚀 > a.yeet()
-=> 3
-🚀 > a
-=> [1, 2]
-```
+<CodeBlockSimple input='a = [1,2,3]
+a.yeet()
+a
+' output='[1, 2, 3]
+3
+[1, 2]
+' />
 
 
 ### yoink(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
@@ -131,14 +125,13 @@ Removes the last element of the array and returns it.
 Adds the given object as last element to the array.
 
 
-```js
-🚀 > a = [1,2,3]
-=> [1, 2, 3]
-🚀 > a.yoink("a")
-=> nil
-🚀 > a
-=> [1, 2, 3, "a"]
-```
+<CodeBlockSimple input='a = [1,2,3]
+a.yoink("a")
+a
+' output='[1, 2, 3]
+nil
+[1, 2, 3, "a"]
+' />
 
 
 
@@ -149,41 +142,45 @@ Adds the given object as last element to the array.
 
 Returns an array of all supported methods names.
 
-```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
-```
+
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
-```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
-```
+
+<CodeBlockSimple input='a = {"test": 1234}
+a.to_json()
+' output='{"test": 1234}
+"{\"test\":1234}"
+' />
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
-```js
-🚀 > "test".type()
-=> "STRING"
-```
+
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
-```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
-```
+
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
+  plz_s()"
+' />
+
 

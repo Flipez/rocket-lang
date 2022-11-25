@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Math
 
 
@@ -12,16 +14,17 @@
 
 
 
+
+
 ### acos(FLOAT)
 > Returns `FLOAT`
 
 Returns the arccosine, in radians, of the argument
 
 
-```js
-🚀 > Math.acos(1.0)
-=> 0.0
-```
+<CodeBlockSimple input='Math.acos(1.0)
+' output='0.0
+' />
 
 
 ### asin(FLOAT)
@@ -30,10 +33,9 @@ Returns the arccosine, in radians, of the argument
 Returns the arcsine, in radians, of the argument
 
 
-```js
-🚀 > Math.asin(0.0)
-=> 0.0
-```
+<CodeBlockSimple input='Math.asin(0.0)
+' output='0.0
+' />
 
 
 ### atan(FLOAT)
@@ -42,10 +44,9 @@ Returns the arcsine, in radians, of the argument
 Returns the arctangent, in radians, of the argument
 
 
-```js
-🚀 > Math.atan(0.0)
-=> 0.0
-```
+<CodeBlockSimple input='Math.atan(0.0)
+' output='0.0
+' />
 
 
 ### ceil(FLOAT)
@@ -54,10 +55,9 @@ Returns the arctangent, in radians, of the argument
 Returns the least integer value greater or equal to the argument
 
 
-```js
-🚀 > Math.ceil(1.49)
-=> 2.0
-```
+<CodeBlockSimple input='Math.ceil(1.49)
+' output='2.0
+' />
 
 
 ### copysign(FLOAT, FLOAT)
@@ -66,10 +66,9 @@ Returns the least integer value greater or equal to the argument
 Returns a value with the magnitude of first argument and sign of second argument
 
 
-```js
-🚀 > Math.copysign(3.2, -1.0)
-=> -3.2
-```
+<CodeBlockSimple input='Math.copysign(3.2, -1.0)
+' output='-3.2
+' />
 
 
 ### cos(FLOAT)
@@ -78,10 +77,9 @@ Returns a value with the magnitude of first argument and sign of second argument
 Returns the cosine of the radion argument
 
 
-```js
-🚀 > Math.cos(Pi/2)
-=> 0.0
-```
+<CodeBlockSimple input='Math.cos(Pi/2)
+' output='0.0
+' />
 
 
 ### exp(FLOAT)
@@ -90,10 +88,9 @@ Returns the cosine of the radion argument
 Returns e**argument, the base-e exponential of argument
 
 
-```js
-🚀 > Math.exp(1.0)
-=> 2.72
-```
+<CodeBlockSimple input='Math.exp(1.0)
+' output='2.72
+' />
 
 
 ### floor(FLOAT)
@@ -102,10 +99,9 @@ Returns e**argument, the base-e exponential of argument
 Returns the greatest integer value less than or equal to argument
 
 
-```js
-🚀 > Math.floor(1.51)
-=> 1.0
-```
+<CodeBlockSimple input='Math.floor(1.51)
+' output='1.0
+' />
 
 
 ### log(FLOAT)
@@ -114,10 +110,9 @@ Returns the greatest integer value less than or equal to argument
 Returns the natural logarithm of argument
 
 
-```js
-🚀 > Math.log(2.7183)
-=> 1.0
-```
+<CodeBlockSimple input='Math.log(2.7183)
+' output='1.0
+' />
 
 
 ### log10(FLOAT)
@@ -126,10 +121,9 @@ Returns the natural logarithm of argument
 Returns the decimal logarithm of argument
 
 
-```js
-🚀 > Math.log(100.0)
-=> 2.0
-```
+<CodeBlockSimple input='Math.log(100.0)
+' output='2.0
+' />
 
 
 ### log2(FLOAT)
@@ -138,10 +132,9 @@ Returns the decimal logarithm of argument
 Returns the binary logarithm of argument
 
 
-```js
-🚀 > Math.log2(256.0)
-=> 8.0
-```
+<CodeBlockSimple input='Math.log2(256.0)
+' output='8.0
+' />
 
 
 ### max(FLOAT, FLOAT)
@@ -150,10 +143,9 @@ Returns the binary logarithm of argument
 Returns the larger of the two numbers
 
 
-```js
-🚀 > Math.max(5.0, 10.0)
-=> 10.0
-```
+<CodeBlockSimple input='Math.max(5.0, 10.0)
+' output='10.0
+' />
 
 
 ### min(FLOAT, FLOAT)
@@ -162,10 +154,9 @@ Returns the larger of the two numbers
 Returns the smaller of the two numbers
 
 
-```js
-🚀 > Math.min(5.0, 10.0)
-=> 5.0
-```
+<CodeBlockSimple input='Math.min(5.0, 10.0)
+' output='5.0
+' />
 
 
 ### pow(FLOAT, FLOAT)
@@ -174,10 +165,9 @@ Returns the smaller of the two numbers
 Returns argument1**argument2, the base-argument1 exponential of argument2
 
 
-```js
-🚀 > Math.pow(2.0, 3.0)
-=> 8.0
-```
+<CodeBlockSimple input='Math.pow(2.0, 3.0)
+' output='8.0
+' />
 
 
 ### rand()
@@ -186,10 +176,9 @@ Returns argument1**argument2, the base-argument1 exponential of argument2
 Returns a pseudo-random number in the half-open interval [0.0, 1.0].
 
 
-```js
-🚀 > Math.rand()
-=> 0.6046602879796196
-```
+<CodeBlockSimple input='Math.rand()
+' output='0.6046602879796196
+' />
 
 
 ### remainder(FLOAT, FLOAT)
@@ -198,10 +187,9 @@ Returns a pseudo-random number in the half-open interval [0.0, 1.0].
 Returns the IEEE 754 floating-point remainder of argument1/argument2
 
 
-```js
-🚀 > Math.remainder(100.0, 30.0)
-=> 10.0
-```
+<CodeBlockSimple input='Math.remainder(100.0, 30.0)
+' output='10.0
+' />
 
 
 ### round(FLOAT)
@@ -210,10 +198,9 @@ Returns the IEEE 754 floating-point remainder of argument1/argument2
 Returns the nearest integer, rounding half away from zero
 
 
-```js
-🚀 > Math.round(73.3)
-=> 73.0
-```
+<CodeBlockSimple input='Math.round(73.3)
+' output='73.0
+' />
 
 
 ### sin(FLOAT)
@@ -222,10 +209,9 @@ Returns the nearest integer, rounding half away from zero
 Returns the sine of the radion argument
 
 
-```js
-🚀 > Math.sin(Pi)
-=> 0.0
-```
+<CodeBlockSimple input='Math.sin(Pi)
+' output='0.0
+' />
 
 
 ### sqrt(FLOAT)
@@ -234,10 +220,9 @@ Returns the sine of the radion argument
 Returns the square root of argument
 
 
-```js
-🚀 > Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
-=> 5.0
-```
+<CodeBlockSimple input='Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
+' output='5.0
+' />
 
 
 ### tan(FLOAT)
@@ -246,10 +231,9 @@ Returns the square root of argument
 Returns the tangent of the radion argument
 
 
-```js
-🚀 > Math.tan(0.0)
-=> 0.0
-```
+<CodeBlockSimple input='Math.tan(0.0)
+' output='0.0
+' />
 
 
 
@@ -267,3 +251,4 @@ Returns the tangent of the radion argument
 | SqrtE | 1.6487212707001282 |
 | SqrtPhi | 1.272019649514069 |
 | SqrtPi | 1.772453850905516 |
+
