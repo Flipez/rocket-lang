@@ -9,9 +9,8 @@ func (p *Parser) parsePeriod(obj ast.Expression) ast.Expression {
 	if _, ok := obj.(*ast.This); ok {
 		p.nextToken()
 		prop := &ast.Property{Token: p.curToken, Left: obj}
-		prop.Property = p.parseExpression(LOWEST)
-
-		p.previousProperty = prop
+		//p.previousProperty = prop
+		prop.Property = p.parseExpression(p.curPrecedence())
 
 		return prop
 	}

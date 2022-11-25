@@ -20,7 +20,22 @@ func evalProperty(property *ast.Property, env *object.Environment) object.Object
 		if v, ok := i.Environment.Get(p.Value); ok {
 			return v
 		}
+		//switch prop := property.Property.(type) {
+		//case *ast.Assign:
+		//	p := prop.Value.(*ast.Identifier)
+		//	i := left.(*object.Instance)
+
+		//	if v, ok := i.Environment.Get(p.Value); ok {
+		//		return v
+		//	}
+		//case *ast.Identifier:
+		//	i := left.(*object.Instance)
+
+		//	if v, ok := i.Environment.Get(prop.Value); ok {
+		//		return v
+		//	}
+		//}
 	}
 
-	return object.NewErrorFormat("%d:%d: runtime error: unknown property: %s.%s", property.Token.LineNumber, property.Token.LinePosition, left.(*object.Instance).String(), property.Property.(*ast.Identifier).Value)
+	return object.NewErrorFormat("%d:%d: runtime error: unknown property: %s.%s", property.Token.LineNumber, property.Token.LinePosition, left.(*object.Instance).String(), property.Property)
 }

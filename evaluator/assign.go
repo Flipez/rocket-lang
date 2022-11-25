@@ -17,6 +17,17 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	switch v := a.Name.(type) {
 	case *ast.Identifier:
 		env.Set(v.String(), evaluated)
+	//case *ast.Property:
+	//	left := Eval(v.Left, env)
+
+	//	switch obj := left.(type) {
+	//	case *object.Instance:
+	//		obj.Environment.Set(v.Property.(*ast.Identifier).Value, evaluated)
+
+	//		return nil
+	//	}
+
+	//	return object.NewErrorFormat("%d:%d: left is not an instance, got %s", v.Token.LineNumber, v.Token.LinePosition, left.Type())
 	case *ast.Index:
 		obj := Eval(v.Left, env)
 		switch o := obj.(type) {
