@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Float
 
 
@@ -11,16 +13,9 @@
 Returns self
 
 
-```js
-123.456.plz_f()
-
-```
-
-```js
-123.456
-
-```
-
+<CodeBlockSimple input='123.456.plz_f()
+' output='123.456
+' />
 
 
 ### plz_i()
@@ -29,16 +24,9 @@ Returns self
 Converts the float into an integer.
 
 
-```js
-123.456.plz_i()
-
-```
-
-```js
-123
-
-```
-
+<CodeBlockSimple input='123.456.plz_i()
+' output='123
+' />
 
 
 ### plz_s()
@@ -47,16 +35,9 @@ Converts the float into an integer.
 Returns a string representation of the float.
 
 
-```js
-123.456.plz_s()
-
-```
-
-```js
-"123.456"
-
-```
-
+<CodeBlockSimple input='123.456.plz_s()
+' output='"123.456"
+' />
 
 
 
@@ -68,16 +49,9 @@ Returns a string representation of the float.
 Returns an array of all supported methods names.
 
 
-```js
-"test".methods()
-
-```
-
-```js
-["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
-
-```
-
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
 
 
 ### to_json()
@@ -86,18 +60,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 
-```js
-a = {"test": 1234}
+<CodeBlockSimple input='a = {"test": 1234}
 a.to_json()
-
-```
-
-```js
-{"test": 1234}
+' output='{"test": 1234}
 "{\"test\":1234}"
-
-```
-
+' />
 
 
 ### type()
@@ -106,16 +73,9 @@ a.to_json()
 Returns the type of the object.
 
 
-```js
-"test".type()
-
-```
-
-```js
-"STRING"
-
-```
-
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
 
 
 ### wat()
@@ -124,16 +84,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 
-```js
-true.wat()
-
-```
-
-```js
-"BOOLEAN supports the following methods:
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
   plz_s()"
-
-```
-
+' />
 
 

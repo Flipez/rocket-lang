@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Integer
 
 An integer can be positiv or negative and is always internally represented by a 64-Bit Integer.
@@ -24,16 +26,9 @@ is_false = 1 == 2;
 Converts the integer into a float.
 
 
-```js
-1234.plz_f()
-
-```
-
-```js
-1234.0
-
-```
-
+<CodeBlockSimple input='1234.plz_f()
+' output='1234.0
+' />
 
 
 ### plz_i()
@@ -42,16 +37,9 @@ Converts the integer into a float.
 Returns self
 
 
-```js
-1234.plz_i()
-
-```
-
-```js
-1234
-
-```
-
+<CodeBlockSimple input='1234.plz_i()
+' output='1234
+' />
 
 
 ### plz_s(INTEGER)
@@ -60,22 +48,15 @@ Returns self
 Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems
 
 
-```js
-1234.plz_s()
+<CodeBlockSimple input='1234.plz_s()
 1234.plz_s(2)
 1234.plz_s(8)
 1234.plz_s(10)
-
-```
-
-```js
-"1234"
+' output='"1234"
 "10011010010"
 "2322"
 "1234"
-
-```
-
+' />
 
 
 
@@ -87,16 +68,9 @@ Returns a string representation of the integer. Also takes an argument which rep
 Returns an array of all supported methods names.
 
 
-```js
-"test".methods()
-
-```
-
-```js
-["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
-
-```
-
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
 
 
 ### to_json()
@@ -105,18 +79,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 
-```js
-a = {"test": 1234}
+<CodeBlockSimple input='a = {"test": 1234}
 a.to_json()
-
-```
-
-```js
-{"test": 1234}
+' output='{"test": 1234}
 "{\"test\":1234}"
-
-```
-
+' />
 
 
 ### type()
@@ -125,16 +92,9 @@ a.to_json()
 Returns the type of the object.
 
 
-```js
-"test".type()
-
-```
-
-```js
-"STRING"
-
-```
-
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
 
 
 ### wat()
@@ -143,16 +103,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 
-```js
-true.wat()
-
-```
-
-```js
-"BOOLEAN supports the following methods:
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
   plz_s()"
-
-```
-
+' />
 
 

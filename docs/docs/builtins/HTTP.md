@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # HTTP
 
 
@@ -9,6 +11,8 @@
 > Returns `HTTP`
 
 Creates a new instance of HTTP
+
+
 
 
 

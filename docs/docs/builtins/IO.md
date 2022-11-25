@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # IO
 
 
@@ -11,16 +13,9 @@
 Opens a file pointer to the file at the path, mode and permission can be set optionally.
 
 
-```js
-IO.open("main.go", "r", "0644")
-
-```
-
-```js
-<file:main.go>
-
-```
-
+<CodeBlockSimple input='IO.open("main.go", "r", "0644")
+' output='<file:main.go>
+' />
 
 
 

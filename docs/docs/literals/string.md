@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # String
 
 
@@ -51,10 +53,14 @@ Counts how often a given substring occurs in the string.
 
 
 
+
+
 ### downcase()
 > Returns `STRING`
 
 Returns the string with all uppercase letters replaced with lowercase counterparts.
+
+
 
 
 
@@ -65,10 +71,14 @@ Replaces all upcase characters with lowercase counterparts.
 
 
 
+
+
 ### find(STRING)
 > Returns `INTEGER`
 
 Returns the character index of a given string if found. Otherwise returns `-1`
+
+
 
 
 
@@ -79,10 +89,14 @@ Formats according to a format specifier and returns the resulting string
 
 
 
+
+
 ### lines()
 > Returns `ARRAY`
 
 Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split("\n")`.
+
+
 
 
 
@@ -93,10 +107,14 @@ Interprets the string as an integer with an optional given base. The default bas
 
 
 
+
+
 ### replace(STRING, STRING)
 > Returns `STRING`
 
 Replaces the first string with the second string in the given string.
+
+
 
 
 
@@ -107,10 +125,14 @@ Returns a copy of the string with all characters reversed.
 
 
 
+
+
 ### reverse!()
 > Returns `NIL`
 
 Replaces all the characters in a string in reverse order.
+
+
 
 
 
@@ -121,10 +143,14 @@ Returns the amount of characters in the string.
 
 
 
+
+
 ### split(STRING)
 > Returns `ARRAY`
 
 Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `" "`
+
+
 
 
 
@@ -135,10 +161,14 @@ Returns a copy of the string with all leading and trailing whitespaces removed.
 
 
 
+
+
 ### strip!()
 > Returns `NIL`
 
 Removes all leading and trailing whitespaces in the string.
+
+
 
 
 
@@ -149,10 +179,14 @@ Returns the string with all lowercase letters replaced with uppercase counterpar
 
 
 
+
+
 ### upcase!()
 > Returns `NIL`
 
 Replaces all lowercase characters with upcase counterparts.
+
+
 
 
 
@@ -165,16 +199,9 @@ Replaces all lowercase characters with upcase counterparts.
 Returns an array of all supported methods names.
 
 
-```js
-"test".methods()
-
-```
-
-```js
-["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
-
-```
-
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
 
 
 ### to_json()
@@ -183,18 +210,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 
-```js
-a = {"test": 1234}
+<CodeBlockSimple input='a = {"test": 1234}
 a.to_json()
-
-```
-
-```js
-{"test": 1234}
+' output='{"test": 1234}
 "{\"test\":1234}"
-
-```
-
+' />
 
 
 ### type()
@@ -203,16 +223,9 @@ a.to_json()
 Returns the type of the object.
 
 
-```js
-"test".type()
-
-```
-
-```js
-"STRING"
-
-```
-
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
 
 
 ### wat()
@@ -221,16 +234,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 
-```js
-true.wat()
-
-```
-
-```js
-"BOOLEAN supports the following methods:
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
   plz_s()"
-
-```
-
+' />
 
 

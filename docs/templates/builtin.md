@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # {{ .Title }}
 
 {{ .Description }}
@@ -16,15 +18,12 @@
 
 {{ $function.Layout.Description }}
 
+{{ if and $function.Layout.Input $function.Layout.Output}}
+<CodeBlockSimple input='{{$function.Layout.Input}}' output='{{$function.Layout.Output}}' />
+{{ else }}
 {{ if $function.Layout.Input }}
-```js
-{{ $function.Layout.Input }}
-```
-{{ if $function.Layout.Output }}
-```js
-{{ $function.Layout.Output }}
-```
-{{ end}}
+<CodeBlockSimple input='{{$function.Layout.Input}}' />
+{{ end }}
 {{ end }}
 {{ end }}
 

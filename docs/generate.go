@@ -156,7 +156,7 @@ func loadBuiltinTemplateData(module *object.BuiltinModule) (*templateData, error
 		}
 		if v, ok := docData.Functions[name]; ok {
 			fn.Layout.Description = v.Description
-			fn.Layout.Input = v.Input
+			fn.Layout.Input = strings.ReplaceAll(v.Input, "'", "&apos;")
 			fn.Layout.Output = v.Output
 		}
 		tempData.Functions[name] = fn

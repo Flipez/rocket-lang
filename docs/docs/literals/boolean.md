@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Boolean
 
 A Boolean can represent two values: `true` and `false` and can be used in control flows.
@@ -25,16 +27,9 @@ is_true = a != b;
 Converts a boolean into a String representation and returns `"true"` or `"false"` based on the value.
 
 
-```js
-true.plz_s()
-
-```
-
-```js
-"true"
-
-```
-
+<CodeBlockSimple input='true.plz_s()
+' output='"true"
+' />
 
 
 
@@ -46,16 +41,9 @@ true.plz_s()
 Returns an array of all supported methods names.
 
 
-```js
-"test".methods()
-
-```
-
-```js
-["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
-
-```
-
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
 
 
 ### to_json()
@@ -64,18 +52,11 @@ Returns an array of all supported methods names.
 Returns the object as json notation.
 
 
-```js
-a = {"test": 1234}
+<CodeBlockSimple input='a = {"test": 1234}
 a.to_json()
-
-```
-
-```js
-{"test": 1234}
+' output='{"test": 1234}
 "{\"test\":1234}"
-
-```
-
+' />
 
 
 ### type()
@@ -84,16 +65,9 @@ a.to_json()
 Returns the type of the object.
 
 
-```js
-"test".type()
-
-```
-
-```js
-"STRING"
-
-```
-
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
 
 
 ### wat()
@@ -102,16 +76,9 @@ Returns the type of the object.
 Returns the supported methods with usage information.
 
 
-```js
-true.wat()
-
-```
-
-```js
-"BOOLEAN supports the following methods:
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
   plz_s()"
-
-```
-
+' />
 
 
