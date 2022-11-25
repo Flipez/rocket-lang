@@ -58,6 +58,8 @@ type Parser struct {
 	curToken  token.Token
 	peekToken token.Token
 
+	previousProperty *ast.Property
+
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
 
@@ -90,6 +92,8 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerPrefix(token.IMPORT, p.parseImport)
 	p.registerPrefix(token.NIL, p.parseNil)
 	p.registerPrefix(token.BEGIN, p.parseBegin)
+	p.registerPrefix(token.CLASS, p.parseClass)
+	p.registerPrefix(token.THIS, p.parseThis)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
@@ -100,7 +104,7 @@ func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
 	p.registerInfix(token.PERCENT, p.parseInfix)
 	p.registerInfix(token.EQ, p.parseInfix)
 	p.registerInfix(token.NOT_EQ, p.parseInfix)
-	p.registerInfix(token.PERIOD, p.parseMethodCall)
+	p.registerInfix(token.PERIOD, p.parsePeriod)
 	p.registerInfix(token.LT, p.parseInfix)
 	p.registerInfix(token.LT_EQ, p.parseInfix)
 	p.registerInfix(token.GT, p.parseInfix)
