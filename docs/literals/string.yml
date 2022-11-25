@@ -1,0 +1,153 @@
+title: "String"
+description:
+example: |
+  a = "test_string";
+
+  b = "test" + "_string";
+
+  is_true = "test" == "test";
+  is_false = "test" == "string";
+
+  s = "abcdef"
+  puts(s[2])
+  puts(s[-2])
+  puts(s[:2])
+  puts(s[:-2])
+  puts(s[2:])
+  puts(s[-2:])
+  puts(s[1:-2])
+
+  s[2] = "C"
+  s[-2] = "E"
+  puts(s)
+
+  // should output
+  "c"
+  "e"
+  "ab"
+  "abcd"
+  "cdef"
+  "ef"
+  "bcd"
+  "abCdEf"
+
+  // you can also use single quotes
+  'test "string" with doublequotes'
+
+  // and you can scape a double quote in a double quote string
+  "te\"st" == 'te"st'
+methods:
+  count:
+    description: "Counts how often a given substring occurs in the string."
+    example: |
+      🚀 » "test".count("t")
+      » 2
+      🚀 » "test".count("f")
+      » 0
+  find:
+    description: "Returns the character index of a given string if found. Otherwise returns `-1`"
+    example: |
+      🚀 » "test".find("e")
+      » 1
+      🚀 » "test".find("f")
+      » -1
+  format:
+    description: "Formats according to a format specifier and returns the resulting string"
+    example: |
+      🚀 » "test%9d".format(1)
+      » "test        1"
+      🚀 » "test%1.2f".format(1.5)
+      » "test1.50"
+      🚀 » "test%s".format("test")
+      » "testtest"
+  size:
+    description: "Returns the amount of characters in the string."
+    example: |
+      🚀 » "test".size()
+      » 4
+  plz_i:
+    description: "Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`."
+    example: |
+      🚀 » "1234".plz_i()
+      » 1234
+      🚀 » "1234".plz_i(8)
+      » 668
+      🚀 » "0x1234".plz_i(8)
+      » 668
+      🚀 » "0x1234".plz_i()
+      » 668
+      🚀 » "0x1234".plz_i(10)
+      » 0
+  replace:
+    description: "Replaces the first string with the second string in the given string."
+    example: |
+      🚀 » "test".replace("t", "f")
+      » "fesf"
+  reverse:
+    description: "Returns a copy of the string with all characters reversed."
+    example: |
+      🚀 » "stressed".reverse()
+      » "desserts"
+  reverse!:
+    description: "Replaces all the characters in a string in reverse order."
+    example: |
+      🚀 » a = "stressed"
+      » "stressed"
+      🚀 » a.reverse!()
+      » nil
+      🚀 » a
+      » "desserts"
+  split:
+    description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`"
+    example: |
+      🚀 » "a,b,c,d".split(",")
+      » ["a", "b", "c", "d"]
+      🚀 » "test and another test".split()
+      » ["test", "and", "another", "test"]
+  lines:
+    description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`."
+    example: |
+      🚀 » "test\ntest2".lines()
+      » ["test\ntest2"]
+  strip:
+    description: "Returns a copy of the string with all leading and trailing whitespaces removed."
+    example: |
+      🚀 » " test ".strip()
+      » "test"
+  strip!:
+    description: "Removes all leading and trailing whitespaces in the string."
+    example: |
+      🚀 » a = " test "
+      » " test "
+      🚀 » a.strip!()
+      » nil
+      🚀 » a
+      » "test"
+  downcase:
+    description: "Returns the string with all uppercase letters replaced with lowercase counterparts."
+    example: |
+      🚀 » "TeST".downcase()
+      » "test"
+  downcase!:
+    description: "Replaces all upcase characters with lowercase counterparts."
+    example: |
+      🚀 » a = "TeST"
+      » "TeST"
+      🚀 » a.downcase!()
+      » nil
+      🚀 » a
+      » "test"
+  upcase:
+    description: "Returns the string with all lowercase letters replaced with uppercase counterparts."
+    example: |
+      🚀 » "test".upcase()
+      » "TEST"
+  upcase!:
+    description: "Replaces all lowercase characters with upcase counterparts."
+    example: |
+      🚀 » a = "test"
+      » "test"
+      🚀 » a.upcase!()
+      » nil
+      🚀 » a
+      » "TEST"

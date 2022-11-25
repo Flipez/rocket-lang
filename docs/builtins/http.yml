@@ -1,0 +1,3 @@
+functions:
+  new:
+    description: "Creates a new instance of HTTP"

@@ -60,9 +60,6 @@ func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
 		"reverse": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Reverses the elements of the array",
-				Example: `🚀 > ["a", "b", 1, 2].reverse()
-=> [2, 1, "b", "a"]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
 				),
@@ -78,9 +75,6 @@ func init() {
 		},
 		"size": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the amount of elements in the array.",
-				Example: `🚀 > ["a", "b", 1, 2].size()
-=> 4`,
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -95,9 +89,6 @@ func init() {
 			// https://github.com/golang/go/issues/48522
 			// is fixed
 			Layout: MethodLayout{
-				Description: "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT",
-				Example: `🚀 » [3.4, 3.1, 2.0].sort()
-» [2.0, 3.1, 3.4]`,
 				ReturnPattern: Args(Arg(ARRAY_OBJ)),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -169,9 +160,6 @@ func init() {
 		},
 		"uniq": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.",
-				Example: `🚀 > ["a", 1, 1, 2].uniq()
-=> [1, 2, "a"]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
 				),
@@ -201,9 +189,6 @@ func init() {
 		},
 		"index": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the index of the given element in the array if found. Otherwise return `-1`.",
-				Example: `🚀 > ["a", "b", 1, 2].index(1)
-=> 2`,
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -227,9 +212,6 @@ func init() {
 		},
 		"first": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the first element of the array. Shorthand for `array[0]`",
-				Example: `🚀 > ["a", "b", 1, 2].first()
-=> "a"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
 				),
@@ -244,9 +226,6 @@ func init() {
 		},
 		"last": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the last element of the array.",
-				Example: `🚀 > ["a", "b", 1, 2].last()
-=> 2`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
 				),
@@ -261,13 +240,6 @@ func init() {
 		},
 		"yeet": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Removes the last element of the array and returns it.",
-				Example: `🚀 > a = [1,2,3]
-=> [1, 2, 3]
-🚀 > a.yeet()
-=> 3
-🚀 > a
-=> [1, 2]`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
 				),
@@ -288,13 +260,6 @@ func init() {
 		},
 		"yoink": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Adds the given object as last element to the array.",
-				Example: `🚀 > a = [1,2,3]
-=> [1, 2, 3]
-🚀 > a.yoink("a")
-=> nil
-🚀 > a
-=> [1, 2, 3, "a"]`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
 				),

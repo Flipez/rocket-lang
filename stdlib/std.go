@@ -18,18 +18,18 @@ func init() {
 		raiseFunction,
 	)
 
-	RegisterModule("Math", "", mathFunctions, mathProperties)
-	RegisterModule("HTTP", "", httpFunctions, httpProperties)
-	RegisterModule("JSON", "", jsonFunctions, jsonProperties)
-	RegisterModule("IO", "", ioFunctions, ioProperties)
-	RegisterModule("OS", "", osFunctions, osProperties)
-	RegisterModule("Time", "", timeFunctions, timeProperties)
+	RegisterModule("Math", mathFunctions, mathProperties)
+	RegisterModule("HTTP", httpFunctions, httpProperties)
+	RegisterModule("JSON", jsonFunctions, jsonProperties)
+	RegisterModule("IO", ioFunctions, ioProperties)
+	RegisterModule("OS", osFunctions, osProperties)
+	RegisterModule("Time", timeFunctions, timeProperties)
 }
 
 func RegisterFunction(name string, layout object.MethodLayout, function func(object.Environment, ...object.Object) object.Object) {
 	Functions[name] = object.NewBuiltinFunction(name, layout, function)
 }
 
-func RegisterModule(name string, description string, funcs map[string]*object.BuiltinFunction, props map[string]*object.BuiltinProperty) {
-	Modules[name] = object.NewBuiltinModule(name, description, funcs, props)
+func RegisterModule(name string, funcs map[string]*object.BuiltinFunction, props map[string]*object.BuiltinProperty) {
+	Modules[name] = object.NewBuiltinModule(name, funcs, props)
 }

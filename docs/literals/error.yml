@@ -1,0 +1,38 @@
+title: "Error"
+description: |
+  An Error is created by RocketLang if unallowed or invalid code is run.
+  An error does often replace the original return value of a function or identifier.
+  The documentation of those functions does indicate ERROR as a potential return value.
+
+  A program can rescue from errors within a block or alter it's behavior within other blocks like 'if' or 'def'.
+
+  It is possible for the user to create errors using 'raise(STRING)' which will return an ERROR object with STRING as the message.
+example: |
+  def test()
+    puts(nope)
+  rescue e
+    puts("Got error: '" + e.msg() + "'")
+  end
+
+  test()
+
+  => "Got error in if: 'identifier not found: error'"
+
+  if (true)
+    nope()
+  rescue your_name
+    puts("Got error in if: '" + your_name.msg() + "'")
+  end
+
+  => "Got error in if: 'identifier not found: nope'"
+
+  begin
+    puts(nope)
+  rescue e
+    puts("rescue")
+  end
+
+  => "rescue"
+methods:
+  msg:
+    description: "Returns the error message\n\n:::caution\nPlease note that performing `.msg()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::"

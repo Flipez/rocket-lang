@@ -1,0 +1,37 @@
+title: "Hash"
+example: |
+  people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
+
+  // reassign of values
+  h = {"a": 1, 2: true}
+  puts(h["a"])
+  puts(h[2])
+  h["a"] = 3
+  h["b"] = "moo"
+  puts(h["a"])
+  puts(h["b"])
+  puts(h[2])h = {"a": 1, 2: true}
+  puts(h["a"])
+  puts(h[2])
+  h["a"] = 3
+  h["b"] = "moo"
+
+  // should output
+  1
+  true
+  3
+  "moo"
+  true
+methods:
+  keys:
+    description: "Returns the keys of the hash."
+    input: |
+      {"a": "1", "b": "2"}.keys()
+    output: |
+      ["a", "b"]
+  values:
+    description: "Returns the values of the hash."
+    input: |
+      {"a": "1", "b": "2"}.values()
+    output: |
+      ["1", "2"]

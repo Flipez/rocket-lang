@@ -13,7 +13,6 @@ func init() {
 	objectMethods[NIL_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns empty string.",
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -24,7 +23,6 @@ func init() {
 		},
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns zero integer.",
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -35,7 +33,6 @@ func init() {
 		},
 		"plz_f": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns zero float.",
 				ReturnPattern: Args(
 					Arg(FLOAT_OBJ),
 				),

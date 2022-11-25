@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # String
 
 
@@ -50,14 +52,7 @@ puts(s)
 Counts how often a given substring occurs in the string.
 
 
-```js
-🚀 > "test".count("t")
-=> 2
-🚀 > "test".count("f")
-=> 0
-🚀 > "test1".count("1")
-=> 1
-```
+
 
 
 ### downcase()
@@ -66,10 +61,7 @@ Counts how often a given substring occurs in the string.
 Returns the string with all uppercase letters replaced with lowercase counterparts.
 
 
-```js
-🚀 > "TeST".downcase()
-=> test
-```
+
 
 
 ### downcase!()
@@ -78,15 +70,7 @@ Returns the string with all uppercase letters replaced with lowercase counterpar
 Replaces all upcase characters with lowercase counterparts.
 
 
-```js
 
-🚀 > a = "TeST"
-=> TeST
-🚀 > a.downcase!()
-=> nil
-🚀 > a
-=> test
-```
 
 
 ### find(STRING)
@@ -95,12 +79,7 @@ Replaces all upcase characters with lowercase counterparts.
 Returns the character index of a given string if found. Otherwise returns `-1`
 
 
-```js
-🚀 > "test".find("e")
-=> 1
-🚀 > "test".find("f")
-=> -1
-```
+
 
 
 ### format(STRING|INTEGER|FLOAT|BOOLEAN|ARRAY|HASH)
@@ -109,14 +88,7 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 Formats according to a format specifier and returns the resulting string
 
 
-```js
-🚀 » "test%9d".format(1)
-» "test        1"
-🚀 » "test%1.2f".format(1.5)
-» "test1.50"
-🚀 » "test%s".format("test")
-» "testtest"
-```
+
 
 
 ### lines()
@@ -125,10 +97,7 @@ Formats according to a format specifier and returns the resulting string
 Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split("\n")`.
 
 
-```js
-🚀 > "test\ntest2".lines()
-=> ["test", "test2"]
-```
+
 
 
 ### plz_i(INTEGER)
@@ -137,22 +106,7 @@ Splits the string at newline escape sequence and return all chunks in an array. 
 Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`.
 
 
-```js
-🚀 > "1234".plz_i()
-=> 1234
 
-🚀 > "1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i()
-=> 668
-
-🚀 > "0x1234".plz_i(10)
-=> 0
-```
 
 
 ### replace(STRING, STRING)
@@ -161,10 +115,7 @@ Interprets the string as an integer with an optional given base. The default bas
 Replaces the first string with the second string in the given string.
 
 
-```js
-🚀 > "test".replace("t", "f")
-=> "fesf"
-```
+
 
 
 ### reverse()
@@ -173,10 +124,7 @@ Replaces the first string with the second string in the given string.
 Returns a copy of the string with all characters reversed.
 
 
-```js
-🚀 > "stressed".reverse()
-=> "desserts"
-```
+
 
 
 ### reverse!()
@@ -185,14 +133,7 @@ Returns a copy of the string with all characters reversed.
 Replaces all the characters in a string in reverse order.
 
 
-```js
-🚀 > a = "stressed"
-=> "stressed"
-🚀 > a.reverse!()
-=> nil
-🚀 > a
-=> "desserts"
-```
+
 
 
 ### size()
@@ -201,10 +142,7 @@ Replaces all the characters in a string in reverse order.
 Returns the amount of characters in the string.
 
 
-```js
-🚀 > "test".size()
-=> 4
-```
+
 
 
 ### split(STRING)
@@ -213,13 +151,7 @@ Returns the amount of characters in the string.
 Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `" "`
 
 
-```js
-🚀 > "a,b,c,d".split(",")
-=> ["a", "b", "c", "d"]
 
-🚀 > "test and another test".split()
-=> ["test", "and", "another", "test"]
-```
 
 
 ### strip()
@@ -228,10 +160,7 @@ Splits the string on a given seperator and returns all the chunks in an array. D
 Returns a copy of the string with all leading and trailing whitespaces removed.
 
 
-```js
-🚀 > " test ".strip()
-=> "test"
-```
+
 
 
 ### strip!()
@@ -240,15 +169,7 @@ Returns a copy of the string with all leading and trailing whitespaces removed.
 Removes all leading and trailing whitespaces in the string.
 
 
-```js
 
-🚀 > a = " test "
-=> " test "
-🚀 > a.strip!()
-=> nil
-🚀 > a
-=> "test"
-```
 
 
 ### upcase()
@@ -257,10 +178,7 @@ Removes all leading and trailing whitespaces in the string.
 Returns the string with all lowercase letters replaced with uppercase counterparts.
 
 
-```js
-🚀 > "test".upcase()
-=> TEST
-```
+
 
 
 ### upcase!()
@@ -269,15 +187,7 @@ Returns the string with all lowercase letters replaced with uppercase counterpar
 Replaces all lowercase characters with upcase counterparts.
 
 
-```js
 
-🚀 > a = "test"
-=> test
-🚀 > a.upcase!()
-=> nil
-🚀 > a
-=> TEST
-```
 
 
 
@@ -288,41 +198,45 @@ Replaces all lowercase characters with upcase counterparts.
 
 Returns an array of all supported methods names.
 
-```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
-```
+
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
-```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
-```
+
+<CodeBlockSimple input='a = {"test": 1234}
+a.to_json()
+' output='{"test": 1234}
+"{\"test\":1234}"
+' />
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
-```js
-🚀 > "test".type()
-=> "STRING"
-```
+
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
-```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
-```
+
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
+  plz_s()"
+' />
+
 

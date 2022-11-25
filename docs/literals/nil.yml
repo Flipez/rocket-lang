@@ -1,0 +1,23 @@
+title: "Nil"
+description: |
+  Nil is the representation of "nothing".
+  It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.
+methods:
+  plz_s:
+    description: "Returns empty string."
+    input: |
+      nil.plz_s()
+    output: |
+      ""
+  plz_i:
+    description: "Returns zero integer."
+    input: |
+      nil.plz_i()
+    output: |
+      0
+  plz_f:
+    description: "Returns zero float."
+    input: |
+      nil.plz_f()
+    output: |
+      0.0

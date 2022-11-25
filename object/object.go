@@ -110,7 +110,8 @@ type MethodLayout struct {
 	ArgPattern    []Argument
 	ReturnPattern []Argument
 	Description   string
-	Example       string
+	Input         string
+	Output        string
 }
 
 func (ml MethodLayout) requiredArgs() []Argument {
@@ -201,11 +202,6 @@ func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
 		"to_json": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the object as json notation.",
-				Example: `🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ERROR_OBJ),
 				),
@@ -224,9 +220,6 @@ func init() {
 		},
 		"methods": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns an array of all supported methods names.",
-				Example: `🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
 				),
@@ -244,10 +237,6 @@ func init() {
 		},
 		"wat": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the supported methods with usage information.",
-				Example: `🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -265,9 +254,6 @@ func init() {
 		},
 		"type": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the type of the object.",
-				Example: `🚀 > "test".type()
-=> "STRING"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),

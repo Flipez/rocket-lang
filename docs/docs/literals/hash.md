@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Hash
 
 
@@ -26,6 +28,7 @@ true
 3
 "moo"
 true
+
 ```
 
 ## Literal Specific Methods
@@ -36,10 +39,9 @@ true
 Returns the keys of the hash.
 
 
-```js
-🚀 > {"a": "1", "b": "2"}.keys()
-=> ["a", "b"]
-```
+<CodeBlockSimple input='{"a": "1", "b": "2"}.keys()
+' output='["a", "b"]
+' />
 
 
 ### values()
@@ -48,10 +50,9 @@ Returns the keys of the hash.
 Returns the values of the hash.
 
 
-```js
-🚀 > {"a": "1", "b": "2"}.values()
-=> ["2", "1"]
-```
+<CodeBlockSimple input='{"a": "1", "b": "2"}.values()
+' output='["1", "2"]
+' />
 
 
 
@@ -62,41 +63,45 @@ Returns the values of the hash.
 
 Returns an array of all supported methods names.
 
-```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
-```
+
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
-```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
-```
+
+<CodeBlockSimple input='a = {"test": 1234}
+a.to_json()
+' output='{"test": 1234}
+"{\"test\":1234}"
+' />
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
-```js
-🚀 > "test".type()
-=> "STRING"
-```
+
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
-```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
-```
+
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
+  plz_s()"
+' />
+
 

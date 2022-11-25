@@ -24,18 +24,6 @@ func init() {
 	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems",
-				Example: `🚀 > a = 456
-=> 456
-🚀 > a.plz_s()
-=> "456"
-
-🚀 > 1234.plz_s(2)
-=> "10011010010"
-🚀 > 1234.plz_s(8)
-=> "2322"
-🚀 > 1234.plz_s(10)
-=> "1234"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -56,7 +44,6 @@ func init() {
 		},
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns self",
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -67,14 +54,6 @@ func init() {
 		},
 		"plz_f": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Converts the integer into a float.",
-				Example: `🚀 > a = 456
-=> 456
-🚀 > a.plz_f()
-=> 456.0
-
-🚀 > 1234.plz_f()
-=> 1234.0`,
 				ReturnPattern: Args(
 					Arg(FLOAT_OBJ),
 				),

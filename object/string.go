@@ -21,13 +21,6 @@ func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Counts how often a given substring occurs in the string.",
-				Example: `🚀 > "test".count("t")
-=> 2
-🚀 > "test".count("f")
-=> 0
-🚀 > "test1".count("1")
-=> 1`,
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -43,11 +36,6 @@ func init() {
 		},
 		"find": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the character index of a given string if found. Otherwise returns `-1`",
-				Example: `🚀 > "test".find("e")
-=> 1
-🚀 > "test".find("f")
-=> -1`,
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -63,13 +51,6 @@ func init() {
 		},
 		"format": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Formats according to a format specifier and returns the resulting string",
-				Example: `🚀 » "test%9d".format(1)
-» "test        1"
-🚀 » "test%1.2f".format(1.5)
-» "test1.50"
-🚀 » "test%s".format("test")
-» "testtest"`,
 				ArgPattern: Args(
 					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ, ARRAY_OBJ, HASH_OBJ),
 				),
@@ -88,9 +69,6 @@ func init() {
 		},
 		"size": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the amount of characters in the string.",
-				Example: `🚀 > "test".size()
-=> 4`,
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -102,21 +80,6 @@ func init() {
 		},
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`.",
-				Example: `🚀 > "1234".plz_i()
-=> 1234
-
-🚀 > "1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i(8)
-=> 668
-
-🚀 > "0x1234".plz_i()
-=> 668
-
-🚀 > "0x1234".plz_i(10)
-=> 0`,
 				ArgPattern: Args(
 					OptArg(INTEGER_OBJ),
 				),
@@ -143,9 +106,6 @@ func init() {
 		},
 		"replace": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Replaces the first string with the second string in the given string.",
-				Example: `🚀 > "test".replace("t", "f")
-=> "fesf"`,
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
 					Arg(STRING_OBJ),
@@ -163,9 +123,6 @@ func init() {
 		},
 		"reverse": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns a copy of the string with all characters reversed.",
-				Example: `🚀 > "stressed".reverse()
-=> "desserts"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -183,13 +140,6 @@ func init() {
 		},
 		"reverse!": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Replaces all the characters in a string in reverse order.",
-				Example: `🚀 > a = "stressed"
-=> "stressed"
-🚀 > a.reverse!()
-=> nil
-🚀 > a
-=> "desserts"`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
 				),
@@ -208,12 +158,6 @@ func init() {
 		},
 		"split": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`",
-				Example: `🚀 > "a,b,c,d".split(",")
-=> ["a", "b", "c", "d"]
-
-🚀 > "test and another test".split()
-=> ["test", "and", "another", "test"]`,
 				ArgPattern: Args(
 					OptArg(STRING_OBJ),
 				),
@@ -241,9 +185,6 @@ func init() {
 		},
 		"lines": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`.",
-				Example: `🚀 > "test\ntest2".lines()
-=> ["test", "test2"]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
 				),
@@ -264,9 +205,6 @@ func init() {
 		},
 		"strip": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns a copy of the string with all leading and trailing whitespaces removed.",
-				Example: `🚀 > " test ".strip()
-=> "test"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -278,14 +216,6 @@ func init() {
 		},
 		"strip!": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Removes all leading and trailing whitespaces in the string.",
-				Example: `
-🚀 > a = " test "
-=> " test "
-🚀 > a.strip!()
-=> nil
-🚀 > a
-=> "test"`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
 				),
@@ -298,9 +228,6 @@ func init() {
 		},
 		"downcase": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the string with all uppercase letters replaced with lowercase counterparts.",
-				Example: `🚀 > "TeST".downcase()
-=> test`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -312,14 +239,6 @@ func init() {
 		},
 		"downcase!": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Replaces all upcase characters with lowercase counterparts.",
-				Example: `
-🚀 > a = "TeST"
-=> TeST
-🚀 > a.downcase!()
-=> nil
-🚀 > a
-=> test`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
 				),
@@ -332,9 +251,6 @@ func init() {
 		},
 		"upcase": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the string with all lowercase letters replaced with uppercase counterparts.",
-				Example: `🚀 > "test".upcase()
-=> TEST`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -346,14 +262,6 @@ func init() {
 		},
 		"upcase!": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Replaces all lowercase characters with upcase counterparts.",
-				Example: `
-🚀 > a = "test"
-=> test
-🚀 > a.upcase!()
-=> nil
-🚀 > a
-=> TEST`,
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),
 				),

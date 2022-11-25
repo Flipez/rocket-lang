@@ -28,7 +28,6 @@ func init() {
 	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{
 		"plz_f": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns self",
 				ReturnPattern: Args(
 					Arg(FLOAT_OBJ),
 				),
@@ -39,11 +38,6 @@ func init() {
 		},
 		"plz_s": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns a string representation of the float.",
-				Example: `🚀 > a = 123.456
-=> 123.456
-🚀 > a.plz_s()
-=> "123.456"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
@@ -55,11 +49,6 @@ func init() {
 		},
 		"plz_i": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Converts the float into an integer.",
-				Example: `🚀 > a = 123.456
-=> 123.456
-🚀 > a.plz_i()
-=> "123"`,
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),

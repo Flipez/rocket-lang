@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # Error
 
 An Error is created by RocketLang if unallowed or invalid code is run.
@@ -51,15 +53,7 @@ Please note that performing `.msg()` on a ERROR object does result in a STRING o
 :::
 
 
-```js
-» def test()
-puts(nope)
-rescue e
-puts((rescued error: + e.msg()))
-end
-🚀 » test()
-"rescued error:identifier not found: nope"
-```
+
 
 
 
@@ -70,41 +64,45 @@ end
 
 Returns an array of all supported methods names.
 
-```js
-🚀 > "test".methods()
-=> [count, downcase, find, reverse!, split, lines, upcase!, strip!, downcase!, size, plz_i, replace, reverse, strip, upcase]
-```
+
+<CodeBlockSimple input='"test".methods()
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' />
+
 
 ### to_json()
 > Returns `STRING|ERROR`
 
 Returns the object as json notation.
 
-```js
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
-🚀 > a.to_json()
-=> "{"test":1234}"
-```
+
+<CodeBlockSimple input='a = {"test": 1234}
+a.to_json()
+' output='{"test": 1234}
+"{\"test\":1234}"
+' />
+
 
 ### type()
 > Returns `STRING`
 
 Returns the type of the object.
 
-```js
-🚀 > "test".type()
-=> "STRING"
-```
+
+<CodeBlockSimple input='"test".type()
+' output='"STRING"
+' />
+
 
 ### wat()
 > Returns `STRING`
 
 Returns the supported methods with usage information.
 
-```js
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-				plz_s()
-```
+
+<CodeBlockSimple input='true.wat()
+' output='"BOOLEAN supports the following methods:
+  plz_s()"
+' />
+
 

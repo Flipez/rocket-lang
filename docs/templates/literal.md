@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # {{ .Title }}
 
 {{ .Description }}
@@ -14,10 +16,12 @@
 
 {{ $object.Layout.Description }}
 
-{{ if $object.Layout.Example }}
-```js
-{{ $object.Layout.Example }}
-```
+{{ if and $object.Layout.Input $object.Layout.Output}}
+<CodeBlockSimple input='{{$object.Layout.Input}}' output='{{$object.Layout.Output}}' />
+{{ else }}
+{{ if $object.Layout.Input }}
+<CodeBlockSimple input='{{$object.Layout.Input}}' />
+{{ end }}
 {{ end }}
 {{ end }}
 
@@ -28,7 +32,11 @@
 
 {{ $object.Layout.Description }}
 
-```js
-{{ $object.Layout.Example }}
-```
+{{ if and $object.Layout.Input $object.Layout.Output}}
+<CodeBlockSimple input='{{$object.Layout.Input}}' output='{{$object.Layout.Output}}' />
+{{ else }}
+{{ if $object.Layout.Input }}
+<CodeBlockSimple input='{{$object.Layout.Input}}' />
+{{ end }}
+{{ end }}
 {{ end }}

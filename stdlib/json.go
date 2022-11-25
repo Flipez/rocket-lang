@@ -13,11 +13,6 @@ func init() {
 	jsonFunctions["parse"] = object.NewBuiltinFunction(
 		"parse",
 		object.MethodLayout{
-			Description: "Takes a STRING and parses it to a HASH or ARRAY. Numbers are always FLOAT.",
-			Example: `🚀 > JSON.parse('{"test": 123}')
-=> {"test": 123.0}
-🚀 > JSON.parse('["test", 123]')
-=> ["test", 123.0]`,
 			ReturnPattern: object.Args(
 				object.Arg(object.HASH_OBJ),
 			),

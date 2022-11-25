@@ -34,8 +34,6 @@ func init() {
 	objectMethods[HTTP_OBJ] = map[string]ObjectMethod{
 		"listen": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Starts a blocking webserver on the given port.",
-				Example:     `🚀 > HTTP.listen(3000)`,
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -94,16 +92,6 @@ func init() {
 		},
 		"handle": ObjectMethod{
 			Layout: MethodLayout{
-				Description: `Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
-Inside the function a variable called "request" will be populated which is a hash with information about the request.
-
-Also a variable called "response" will be created which will be returned automatically as a response to the client.
-The response can be adjusted to the needs. It is a HASH supports the following content:
-
-- "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
-- "body" needs to be a STRING. Default ""
-- "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}`,
-				Example: `🚀 > HTTP.handle("/", callback_func)`,
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
 					Arg(FUNCTION_OBJ),

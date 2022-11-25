@@ -84,9 +84,6 @@ func init() {
 	objectMethods[HASH_OBJ] = map[string]ObjectMethod{
 		"keys": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the keys of the hash.",
-				Example: `🚀 > {"a": "1", "b": "2"}.keys()
-=> ["a", "b"]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
 				),
@@ -107,9 +104,6 @@ func init() {
 		},
 		"values": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the values of the hash.",
-				Example: `🚀 > {"a": "1", "b": "2"}.values()
-=> ["2", "1"]`,
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
 				),

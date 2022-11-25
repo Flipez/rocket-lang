@@ -11,7 +11,6 @@ func init() {
 	ioFunctions["open"] = object.NewBuiltinFunction(
 		"open",
 		object.MethodLayout{
-			Description: "Opens a file pointer to the file at the path, mode and permission can be set optionally.",
 			ArgPattern: object.Args(
 				object.Arg(object.STRING_OBJ),
 				object.OptArg(object.STRING_OBJ),
@@ -20,8 +19,6 @@ func init() {
 			ReturnPattern: object.Args(
 				object.Arg(object.FILE_OBJ),
 			),
-			Example: `🚀 > IO.open("main.go", "r", "0644")
-=> <file:main.go>`,
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
 			mode := "r"

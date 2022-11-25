@@ -33,9 +33,6 @@ func init() {
 	objectMethods[BOOLEAN_OBJ] = map[string]ObjectMethod{
 		"plz_s": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value.",
-				Example: `🚀 > true.plz_s()
-=> "true"`,
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),

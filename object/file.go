@@ -75,7 +75,6 @@ func init() {
 	objectMethods[FILE_OBJ] = map[string]ObjectMethod{
 		"close": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Closes the file pointer. Returns always `true`.",
 				ReturnPattern: Args(
 					Arg(BOOLEAN_OBJ),
 				),
@@ -89,7 +88,6 @@ func init() {
 		},
 		"lines": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "If successfull, returns all lines of the file as array elements, otherwise `nil`. Resets the position to 0 after read.",
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
 				),
@@ -110,7 +108,6 @@ func init() {
 		},
 		"content": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Reads content of the file and returns it. Resets the position to 0 after read.",
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ERROR_OBJ),
 				),
@@ -119,7 +116,6 @@ func init() {
 		},
 		"position": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Returns the position of the current file handle. -1 if the file is closed.",
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -131,7 +127,6 @@ func init() {
 		},
 		"read": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Reads the given amount of bytes from the file. Sets the position to the bytes that where actually read. At the end of file EOF error is returned.",
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
@@ -159,7 +154,6 @@ func init() {
 		},
 		"seek": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence. 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end.",
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
 					Arg(INTEGER_OBJ),
@@ -189,7 +183,6 @@ func init() {
 		},
 		"write": ObjectMethod{
 			Layout: MethodLayout{
-				Description: "Writes the given string to the file. Returns number of written bytes on success.",
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ, ERROR_OBJ),
 				),

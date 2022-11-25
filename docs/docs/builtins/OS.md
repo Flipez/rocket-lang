@@ -1,3 +1,5 @@
+import CodeBlockSimple from '@site/components/CodeBlockSimple'
+
 # OS
 
 
@@ -11,10 +13,9 @@
 Terminates the program with the given exit code.
 
 
-```js
-🚀 > OS.exit(1)
-exit status 1
-```
+<CodeBlockSimple input='OS.exit(1)
+' output='exit status 1
+' />
 
 
 ### raise(INTEGER, STRING)
@@ -23,14 +24,14 @@ exit status 1
 Terminates the program with the given exit code and prints the error message.
 
 
-```js
-🚀 > OS.raise(1, "broken")
-🔥 RocketLang raised an error: "broken"
+<CodeBlockSimple input='OS.raise(1, "broken")
+' output='🔥 RocketLang raised an error: "broken"
 exit status 1
-```
+' />
 
 
 
 ## Properties
 | Name | Value |
 | ---- | ----- |
+
