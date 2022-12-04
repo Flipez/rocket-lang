@@ -61,6 +61,10 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[true, "Go", true].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
 		{`[].sort()`, `[]`},
 		{`["a", "b", 1, 2].reverse()`, `[2, 1, "b", "a"]`},
+		{`[1,2,3].include?(4)`, false},
+		{`[1,2,3].include?(3)`, true},
+		{`[1,2,3].include?(true)`, false},
+		{`[1,2,3].include?()`, "to few arguments: got=0, want=1"},
 	}
 
 	testInput(t, tests)
