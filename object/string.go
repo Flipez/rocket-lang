@@ -272,6 +272,31 @@ func init() {
 				return NIL
 			},
 		},
+		"ascii": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ, ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				s := o.(*String)
+				length := len(s.Value)
+				var result Object
+				switch length {
+				case 0:
+					result = NewInteger(-1)
+				case 1:
+					result = NewInteger(int64(s.Value[0]))
+				default:
+					arr := make([]Object, length)
+					for idx, char := range s.Value {
+						arr[idx] = NewInteger(int64(char))
+					}
+					result = NewArray(arr)
+				}
+				return result
+			},
+		},
 	}
 }
 
