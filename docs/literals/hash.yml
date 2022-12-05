@@ -35,3 +35,11 @@ methods:
       {"a": "1", "b": "2"}.values()
     output: |
       ["1", "2"]
+  get:
+    description: "Returns the value of the given key or the default"
+    input: |
+      {"a": "1", "b": "2"}.get("a", 10)
+      {"a": "1", "b": "2"}.get("c", 10)
+    output: |
+      1
+      10
