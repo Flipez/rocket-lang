@@ -38,6 +38,19 @@ Returns the first element of the array. Shorthand for `array[0]`
 ' />
 
 
+### include?(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
+> Returns `BOOLEAN`
+
+Returns true or false wether the array contains the given element
+
+
+<CodeBlockSimple input='[1,2,3].include?(4)
+[1,2,3].include?(3)
+' output='false
+true
+' />
+
+
 ### index(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
 > Returns `INTEGER`
 

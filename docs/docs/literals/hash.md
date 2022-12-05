@@ -33,6 +33,15 @@ true
 
 ## Literal Specific Methods
 
+### include?(BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH)
+> Returns `BOOLEAN`
+
+
+
+
+
+
+
 ### keys()
 > Returns `ARRAY`
 
