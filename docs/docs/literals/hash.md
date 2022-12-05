@@ -33,6 +33,19 @@ true
 
 ## Literal Specific Methods
 
+### get(INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL, INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL)
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL`
+
+Returns the value of the given key or the default
+
+
+<CodeBlockSimple input='{"a": "1", "b": "2"}.get("a", 10)
+{"a": "1", "b": "2"}.get("c", 10)
+' output='1
+10
+' />
+
+
 ### keys()
 > Returns `ARRAY`
 
