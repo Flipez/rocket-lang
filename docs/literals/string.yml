@@ -37,6 +37,14 @@ example: |
   // and you can scape a double quote in a double quote string
   "te\"st" == 'te"st'
 methods:
+  ascii:
+    description: "Returns the ascii representation of a char or string"
+    input: |
+      "a".ascii()
+      "abc".ascii()
+    output: |
+      97
+      [97, 98, 99]
   count:
     description: "Counts how often a given substring occurs in the string."
     example: |
