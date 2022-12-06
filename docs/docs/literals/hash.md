@@ -33,15 +33,6 @@ true
 
 ## Literal Specific Methods
 
-### include?(BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH)
-> Returns `BOOLEAN`
-
-Returns true or false wether the hash contains the given object as key
-
-
-<CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)
-{"a": 1, 1: "b"}.include?("c")
-' output='true false' />
 ### get(INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL, INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL)
 > Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|FLOAT|ERROR|NIL`
 
@@ -53,6 +44,17 @@ Returns the value of the given key or the default
 ' output='1
 10
 ' />
+
+
+### include?(BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH)
+> Returns `BOOLEAN`
+
+Returns true or false wether the hash contains the given object as key
+
+
+<CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)
+{"a": 1, 1: "b"}.include?("c")
+' output='true false' />
 
 
 ### keys()
