@@ -68,6 +68,12 @@ methods:
       ["a", "b", 1, 2].last()
     output: |
       2
+  slices:
+    description: "Returns the elements of the array in slices with the size of the given integer"
+    input: |
+      [1,2,3,4,5,6,7,8].slices(3)
+    output: |
+      [[1, 2, 3], [4, 5, 6], [7, 8]]
   yeet:
     description: "Removes the last element of the array and returns it."
     input: |

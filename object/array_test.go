@@ -65,6 +65,10 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].include?(3)`, true},
 		{`[1,2,3].include?(true)`, false},
 		{`[1,2,3].include?()`, "to few arguments: got=0, want=1"},
+		{`[1,2,3,4,5,6,7,8,9].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`},
+		{`[1,2,3,4,5,6,7,8].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
+		{`[1,2].slices(3)`, `[[1, 2]]`},
+		{`[1,2].slices(0)`, `invalid slice size, needs to be > 0`},
 	}
 
 	testInput(t, tests)

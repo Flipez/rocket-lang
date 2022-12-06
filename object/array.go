@@ -290,6 +290,36 @@ func init() {
 				return TRUE
 			},
 		},
+		"slices": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				size := int(args[0].(*Integer).Value)
+				if size == 0 {
+					return NewError("invalid slice size, needs to be > 0")
+				}
+
+				length := len(ao.Elements)
+
+				slices := NewArray(make([]Object, 0))
+				for i := 0; i < length; i += size {
+					end := i + size
+					if end > length {
+						end = length
+					}
+					slices.Add(NewArray(ao.Elements[i:end]))
+				}
+
+				return slices
+			},
+		},
 	}
 }
 

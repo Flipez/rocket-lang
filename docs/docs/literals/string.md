@@ -46,6 +46,19 @@ puts(s)
 
 ## Literal Specific Methods
 
+### ascii()
+> Returns `INTEGER|ARRAY`
+
+Returns the ascii representation of a char or string
+
+
+<CodeBlockSimple input='"a".ascii()
+"abc".ascii()
+' output='97
+[97, 98, 99]
+' />
+
+
 ### count(STRING)
 > Returns `INTEGER`
 

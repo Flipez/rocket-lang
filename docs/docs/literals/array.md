@@ -95,6 +95,17 @@ Returns the amount of elements in the array.
 ' />
 
 
+### slices(INTEGER)
+> Returns `ARRAY`
+
+Returns the elements of the array in slices with the size of the given integer
+
+
+<CodeBlockSimple input='[1,2,3,4,5,6,7,8].slices(3)
+' output='[[1, 2, 3], [4, 5, 6], [7, 8]]
+' />
+
+
 ### sort()
 > Returns `ARRAY`
 

@@ -140,6 +140,25 @@ func init() {
 				return FALSE
 			},
 		},
+		"get": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				h := o.(*Hash)
+				k := args[0].(Hashable)
+				if pair, ok := h.Pairs[k.HashKey()]; ok {
+					return pair.Value
+				}
+				return args[1]
+			},
+		},
 	}
 }
 

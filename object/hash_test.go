@@ -36,6 +36,8 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.include?("c")`, false},
 		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH`},
 		{`{"a": 1, 1: "b"}.include?()`, `to few arguments: got=0, want=1`},
+		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
+		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
 	}
 
 	testInput(t, tests)
