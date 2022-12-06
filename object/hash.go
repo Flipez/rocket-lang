@@ -122,6 +122,24 @@ func init() {
 				return NewArray(values)
 			},
 		},
+		"include?": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(BOOLEAN_OBJ, STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, ARRAY_OBJ, HASH_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				h := o.(*Hash)
+				key := args[0].(Hashable)
+				if _, ok := h.Pairs[key.HashKey()]; ok {
+					return TRUE
+				}
+				return FALSE
+			},
+		},
 		"get": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(

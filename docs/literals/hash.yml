@@ -23,6 +23,14 @@ example: |
   "moo"
   true
 methods:
+  include?:
+    description: "Returns true or false wether the hash contains the given object as key"
+    input: |
+      {"a": 1, 1: "b"}.include?(1)
+      {"a": 1, 1: "b"}.include?("c")
+    output:
+      true
+      false
   keys:
     description: "Returns the keys of the hash."
     input: |
