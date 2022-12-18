@@ -326,8 +326,8 @@ func (s *String) HashKey() HashKey {
 	return HashKey{Type: s.Type(), Value: h.Sum64()}
 }
 
-func (s *String) GetIterator() Iterator {
-	return &stringIterator{chars: []rune(s.Value)}
+func (s *String) GetIterator(start, step int, _ bool) Iterator {
+	return &stringIterator{chars: []rune(s.Value), index: start, step: step}
 }
 
 func (s *String) MarshalJSON() ([]byte, error) {
@@ -337,13 +337,14 @@ func (s *String) MarshalJSON() ([]byte, error) {
 type stringIterator struct {
 	chars []rune
 	index int
+	step  int
 }
 
 func (s *stringIterator) Next() (Object, Object, bool) {
 	if s.index < len(s.chars) {
 		val := NewString(string(s.chars[s.index]))
 		idx := NewInteger(int64(s.index))
-		s.index++
+		s.index += s.step
 		return val, idx, true
 	}
 	return nil, NewInteger(0), false

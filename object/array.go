@@ -327,8 +327,8 @@ func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Ob
 	return objectMethodLookup(ao, method, env, args)
 }
 
-func (ao *Array) GetIterator() Iterator {
-	return &arrayIterator{items: ao.Elements}
+func (ao *Array) GetIterator(start, step int, _ bool) Iterator {
+	return &arrayIterator{items: ao.Elements, index: start, step: step}
 }
 
 func (ao *Array) MarshalJSON() ([]byte, error) {
@@ -338,13 +338,14 @@ func (ao *Array) MarshalJSON() ([]byte, error) {
 type arrayIterator struct {
 	items []Object
 	index int
+	step  int
 }
 
 func (a *arrayIterator) Next() (Object, Object, bool) {
 	if a.index < len(a.items) {
 		val := a.items[a.index]
 		idx := NewInteger(int64(a.index))
-		a.index++
+		a.index += a.step
 		return val, idx, true
 	}
 	return nil, NewInteger(0), false

@@ -79,6 +79,10 @@ const (
 
 	BEGIN  = "BEGIN"
 	RESCUE = "RESCUE"
+
+	RANGE_ROCKET_E = "->"
+	RANGE_ROCKET_I = "=>"
+	RANGE_STEPPER  = "^"
 )
 
 var keywords = map[string]TokenType{

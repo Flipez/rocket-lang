@@ -24,7 +24,7 @@ end
 input = a
 ```
 
-
+## Using an integer
 Count form zero to a given number (excluding):
 
 ```js
@@ -40,6 +40,7 @@ end
 => 5
 ```
 
+## Using a string
 Iterate over a string:
 
 ```js
@@ -54,6 +55,7 @@ end
 => "test"
 ```
 
+## Using break and next
 It is possible to use `next` or `break` inside a loop.
 
 ```js
@@ -79,4 +81,67 @@ end
 0
 1
 nil
+```
+
+## Using range
+
+You can use the so called `rocket range` operator to create an individual range with optional stepping:
+
+```js
+foreach i in 0 -> 5
+  puts(i)
+end
+
+// outputs
+0
+1
+2
+3
+4
+```
+
+There is also an inclusive alternative:
+
+```js
+foreach i in 0 => 5
+  puts(i)
+end
+
+// outputs
+0
+1
+2
+3
+4
+5
+```
+
+### Stepping
+
+You can specify stepping to change the default of `1`
+
+```js
+foreach i in 0 -> 5 ^ 2
+  puts(i)
+end
+
+// outputs
+0
+2
+4
+```
+
+### Reverse
+
+Ranges do support going from a higher value to a lower one
+
+```js
+foreach i in 5 -> 0 ^ 2
+  puts(i)
+end
+
+// outputs
+5
+3
+1
 ```

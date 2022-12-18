@@ -7,6 +7,7 @@ import (
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixParseFns[p.curToken.Type]
+
 	if prefix == nil {
 		p.noPrefixParseFnError(p.curToken)
 		return nil
