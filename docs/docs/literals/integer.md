@@ -30,7 +30,7 @@ Returns an array of all supported methods names.
 
 
 <CodeBlockSimple input='"test".methods()
-' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "to_i", "strip", "downcase"]
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "strip", "downcase"]
 ' />
 
 
