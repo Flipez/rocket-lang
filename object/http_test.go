@@ -13,7 +13,7 @@ import (
 
 func TestHTTPObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`HTTP.new().nope()`, "undefined method `.nope()` for HTTP"},
+		{`HTTP.new().nope()`, "test:1:11: undefined method `.nope()` for HTTP"},
 		{`HTTP.new().handle(1, "test")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 		{`HTTP.new().handle("/", "test")`, "wrong argument type on position 2: got=STRING, want=FUNCTION"},
 		{`a = HTTP.new(); a.listen(-1)`, "listening on port -1: listen tcp: address -1: invalid port"},

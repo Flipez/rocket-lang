@@ -6,6 +6,7 @@ import (
 )
 
 func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
+	startToken := p.curToken
 	if _, ok := p.imports[obj.String()]; ok {
 		p.expectPeek(token.IDENT)
 		index := &ast.String{Token: p.curToken, Value: p.curToken.Literal}
@@ -21,5 +22,5 @@ func (p *Parser) parseMethodCall(obj ast.Expression) ast.Expression {
 	}
 
 	p.nextToken()
-	return &ast.ObjectCall{Token: p.curToken, Object: obj, Call: p.parseCall(name)}
+	return &ast.ObjectCall{StartToken: startToken, Token: p.curToken, Object: obj, Call: p.parseCall(name)}
 }

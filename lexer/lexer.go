@@ -13,10 +13,11 @@ type Lexer struct {
 	ch             byte // current char under examination
 	currentLine    int
 	positionInLine int
+	file           string
 }
 
-func New(input string) *Lexer {
-	l := &Lexer{input: input, currentLine: 1, positionInLine: 0}
+func New(input string, file string) *Lexer {
+	l := &Lexer{input: input, currentLine: 1, positionInLine: 0, file: file}
 	l.readChar()
 	return l
 }
@@ -33,6 +34,7 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+	//fmt.Printf("%s\n", string(rune(l.ch)))
 	l.positionInLine += 1
 }
 
@@ -165,6 +167,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdent(tok.Literal)
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 
 			return tok
 		} else if isDigit(l.ch) {
@@ -176,6 +179,7 @@ func (l *Lexer) NextToken() token.Token {
 			}
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -189,6 +193,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupEmoji(string(out))
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 
 			return tok
 		} else {
@@ -199,6 +204,8 @@ func (l *Lexer) NextToken() token.Token {
 
 	tok.LineNumber = l.currentLine
 	tok.LinePosition = l.positionInLine
+	tok.File = l.file
+	//fmt.Println(l.positionInLine)
 	l.readChar()
 	return tok
 }
@@ -235,25 +242,30 @@ func (l *Lexer) readSingleQuoteString() string {
 func (l *Lexer) readIdentifier() string {
 	id := ""
 
-	position := l.position
-	rposition := l.readPosition
+	//position := l.position
+	//rposition := l.readPosition
 
 	for l.isIdentifier(l.ch) {
+		//fmt.Println(string(rune(l.ch)))
 		id += string(l.ch)
 		l.readChar()
 	}
 
-	if strings.Contains(id, ".") {
-		offset := strings.Index(id, ".")
-		id = id[:offset]
+	//if strings.Contains(id, ".") {
+	//	offset := strings.Index(id, ".")
+	//	id = id[:offset]
 
-		l.position = position
-		l.readPosition = rposition
-		for offset > 0 {
-			l.readChar()
-			offset--
-		}
-	}
+	//	l.position = position
+	//	l.readPosition = rposition
+	//	l.positionInLine = position
+	//	fmt.Println(position)
+	//	fmt.Println(offset)
+	//	fmt.Println(rposition)
+	//	for offset > 0 {
+	//		l.readChar()
+	//		offset--
+	//	}
+	//}
 
 	return id
 }
@@ -279,7 +291,7 @@ func isComparison(ch byte) bool {
 }
 
 func isCompound(ch byte) bool {
-	return ch == ',' || ch == ':' || ch == '"' || ch == ';'
+	return ch == ',' || ch == ':' || ch == '"' || ch == ';' || ch == '.'
 }
 
 func isBrace(ch byte) bool {

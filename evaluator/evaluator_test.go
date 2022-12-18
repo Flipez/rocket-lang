@@ -201,7 +201,7 @@ func TestErrorHandling(t *testing.T) {
 		{"🔥 != 👍", "identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
-		{"(4 > 5 ? true).nope()", "undefined method `.nope()` for NIL"},
+		{"(4 > 5 ? true).nope()", "test:1:15: undefined method `.nope()` for NIL"},
 		{"if (5 % 0)\n puts(true)\nend", "division by zero not allowed"},
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
@@ -215,12 +215,12 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
-		{"break(1.nope())", "undefined method `.nope()` for INTEGER"},
-		{"next(1.nope())", "undefined method `.nope()` for INTEGER"},
-		{"nil.nope()", "undefined method `.nope()` for NIL"},
+		{"break(1.nope())", "test:1:8: undefined method `.nope()` for INTEGER"},
+		{"next(1.nope())", "test:1:7: undefined method `.nope()` for INTEGER"},
+		{"nil.nope()", "test:1:4: undefined method `.nope()` for NIL"},
 		{"begin puts(nope) end", "identifier not found: nope"},
-		{"begin puts(nope) rescue e e.nope() end", "undefined method `.nope()` for ERROR"},
-		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "undefined method `.nope()` for STRING"},
+		{"begin puts(nope) rescue e e.nope() end", "test:1:28: undefined method `.nope()` for ERROR"},
+		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "test:1:45: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},
 	}
 
@@ -384,7 +384,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`IO.open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
-		{`IO.open("fixtures/module.rl", "nope", "0644").read(1)`, "undefined method `.read()` for ERROR"},
+		{`IO.open("fixtures/module.rl", "nope", "0644").read(1)`, "test:1:46: undefined method `.read()` for ERROR"},
 		{"a = Time.unix(); Time.sleep(2); b = Time.unix(); b - a", 2},
 	}
 
@@ -673,7 +673,7 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 }
 
 func testEval(input string) object.Object {
-	l := lexer.New(input)
+	l := lexer.New(input, "test")
 	imports := make(map[string]struct{})
 	p := parser.New(l, imports)
 	program, _ := p.ParseProgram()

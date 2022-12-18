@@ -57,7 +57,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test".upcase()`, "TEST"},
 		{`"tESt".downcase()`, "test"},
 		{`"test".type()`, "STRING"},
-		{`"test".nope()`, "undefined method `.nope()` for STRING"},
+		{`"test".nope()`, "test:1:7: undefined method `.nope()` for STRING"},
 		{`"test".methods().type()`, "ARRAY"},
 		{`("test".methods().size() > 0).plz_s()`, "true"},
 		{`"string".find("s")`, 0},

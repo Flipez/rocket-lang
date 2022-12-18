@@ -18,7 +18,7 @@ func TestErrorType(t *testing.T) {
 }
 func TestErrorObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`[1][1].nope().nope()`, "undefined method `.nope()` for ERROR"},
+		{`[1][1].nope().nope()`, "test:1:14: undefined method `.nope()` for ERROR"},
 	}
 
 	testInput(t, tests)

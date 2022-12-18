@@ -15,5 +15,5 @@ func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object
 		}
 	}
 
-	return object.NewErrorFormat("undefined method `.%s()` for %s", call.Call.(*ast.Call).Callable.String(), obj.Type())
+	return object.NewErrorFormat("%s:%d:%d: undefined method `.%s()` for %s", call.StartToken.File, call.StartToken.LineNumber, call.StartToken.LinePosition, call.Call.(*ast.Call).Callable.String(), obj.Type())
 }
