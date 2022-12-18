@@ -43,7 +43,7 @@ func TestRocketlangCode(t *testing.T) {
 		defer os.Remove(fakeStdout.Name())
 
 		os.Stdout = fakeStdout
-		runProgram(string(rlCode))
+		runProgram(string(rlCode), "test")
 		os.Stdout = origStdout
 
 		resultStdout, err := os.ReadFile(fakeStdout.Name())

@@ -11,6 +11,7 @@ type Token struct {
 	Literal      string
 	LineNumber   int
 	LinePosition int
+	File         string
 }
 
 const (

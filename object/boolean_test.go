@@ -25,12 +25,12 @@ func TestBooleanObjectMethods(t *testing.T) {
 		// true
 		{"true.plz_s()", "true"},
 		{"true.type()", "BOOLEAN"},
-		{"true.nope()", "undefined method `.nope()` for BOOLEAN"},
+		{"true.nope()", "test:1:5: undefined method `.nope()` for BOOLEAN"},
 
 		// false
 		{"false.plz_s()", "false"},
 		{"false.type()", "BOOLEAN"},
-		{"false.nope()", "undefined method `.nope()` for BOOLEAN"},
+		{"false.nope()", "test:1:6: undefined method `.nope()` for BOOLEAN"},
 
 		// other
 		{"(true.wat().lines().size() == true.methods().size() + 1).plz_s()", "true"},

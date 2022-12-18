@@ -32,5 +32,5 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		return object.NIL
 	}
 
-	return object.NewErrorFormat("Import Error: invalid import path '%s'", location)
+	return object.NewErrorFormat("%s:%d:%d: Import Error: invalid import path '%s'", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, location)
 }

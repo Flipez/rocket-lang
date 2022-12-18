@@ -63,7 +63,7 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		l := lexer.New(tt.input)
+		l := lexer.New(tt.input, "test")
 		p := parser.New(l, make(map[string]struct{}))
 
 		program, _ := p.ParseProgram()

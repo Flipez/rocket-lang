@@ -6,7 +6,7 @@ import (
 
 func TestJSONObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`JSON.nope()`, "undefined method `.nope()` for BUILTIN_MODULE"},
+		{`JSON.nope()`, "test:1:5: undefined method `.nope()` for BUILTIN_MODULE"},
 		{`JSON.parse("{a}")`, "Error while parsing json: invalid character 'a' looking for beginning of object key string"},
 		{`JSON.parse("{}").type()`, "HASH"},
 		{`JSON.parse("[]").type()`, "ARRAY"},

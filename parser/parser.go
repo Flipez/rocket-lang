@@ -55,6 +55,8 @@ type Parser struct {
 
 	errors []string
 
+	lines []string
+
 	curToken  token.Token
 	peekToken token.Token
 

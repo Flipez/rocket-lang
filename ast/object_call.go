@@ -7,9 +7,10 @@ import (
 )
 
 type ObjectCall struct {
-	Token  token.Token
-	Object Expression
-	Call   Expression
+	StartToken token.Token
+	Token      token.Token
+	Object     Expression
+	Call       Expression
 }
 
 func (oce *ObjectCall) TokenLiteral() string { return oce.Token.Literal }

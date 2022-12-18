@@ -22,7 +22,7 @@ func EvalModule(name string) object.Object {
 		return object.NewErrorFormat("IO Error: error reading module '%s': %s", name, err)
 	}
 
-	l := lexer.New(string(b))
+	l := lexer.New(string(b), filename)
 	imports := make(map[string]struct{})
 	p := parser.New(l, imports)
 
