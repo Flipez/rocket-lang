@@ -17,7 +17,7 @@ input = open("examples/aoc/2021/day-1/input").lines()
 
 a = []
 foreach i, number in input
-  a.yoink(number.strip().plz_i())
+  a.yoink(number.strip().to_i())
 end
 input = a
 

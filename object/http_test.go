@@ -49,7 +49,7 @@ func TestHTTPServerMethods(t *testing.T) {
   a = HTTP.new();
   a.handle("/", test);
   a.handle("/test2", test_a);
-  a.listen(3000)`
+  a.listen(3123)`
 
 	go testEval(httpServer)
 	time.Sleep(100 * time.Millisecond) // workaround to give testIntput time to evaluate the input and start the http handle
@@ -63,7 +63,7 @@ func TestHTTPServerMethods(t *testing.T) {
 
 	for _, tt := range tests {
 		var data = strings.NewReader("servus")
-		req, err := http.NewRequest("POST", "http://127.0.0.1:3000"+tt.input, data)
+		req, err := http.NewRequest("POST", "http://127.0.0.1:3123"+tt.input, data)
 		if err != nil {
 			log.Fatal(err)
 		}

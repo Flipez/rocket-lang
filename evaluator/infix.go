@@ -96,10 +96,10 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 
 		leftOrig, rightOrig := left, right
 		if left.Type() == object.INTEGER_OBJ {
-			left = left.(*object.Integer).ToFloat()
+			left = left.(*object.Integer).ToFloatObj()
 		}
 		if right.Type() == object.INTEGER_OBJ {
-			right = right.(*object.Integer).ToFloat()
+			right = right.(*object.Integer).ToFloatObj()
 		}
 
 		result := evalFloatInfix(operator, left, right)

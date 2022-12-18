@@ -11,27 +11,27 @@ example: |
   is_true = 1 == 1;
   is_false = 1 == 2;
 methods:
-  plz_s:
+  to_s:
     description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems"
     input: |
-      1234.plz_s()
-      1234.plz_s(2)
-      1234.plz_s(8)
-      1234.plz_s(10)
+      1234.to_s()
+      1234.to_s(2)
+      1234.to_s(8)
+      1234.to_s(10)
     output: |
       "1234"
       "10011010010"
       "2322"
       "1234"
-  plz_i:
+  to_i:
     description: "Returns self"
     input: |
-      1234.plz_i()
+      1234.to_i()
     output: |
       1234
-  plz_f:
+  to_f:
     description: "Converts the integer into a float."
     input: |
-      1234.plz_f()
+      1234.to_f()
     output: |
       1234.0

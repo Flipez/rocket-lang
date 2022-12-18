@@ -78,32 +78,6 @@ func init() {
 				return NewInteger(int64(utf8.RuneCountInString(s.Value)))
 			},
 		},
-		"plz_i": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					OptArg(INTEGER_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				s := o.(*String)
-				value := s.Value
-				base := 10
-
-				if len(args) > 0 {
-					base = int(args[0].(*Integer).Value)
-				} else if strings.HasPrefix(value, "0x") {
-					base = 8
-				}
-				if base == 8 {
-					value = strings.TrimPrefix(value, "0x")
-				}
-				i, _ := strconv.ParseInt(value, base, 64)
-				return NewInteger(i)
-			},
-		},
 		"replace": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
@@ -332,6 +306,32 @@ func (s *String) GetIterator(start, step int, _ bool) Iterator {
 
 func (s *String) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
+}
+
+func (s *String) ToStringObj(_ *Integer) *String {
+	return s
+}
+
+func (s *String) ToIntegerObj(base *Integer) *Integer {
+	defaultBase := 10
+	value := s.Value
+
+	if base != nil {
+		defaultBase = int(base.Value)
+	}
+
+	if strings.HasPrefix(value, "0x") {
+		defaultBase = 8
+		value = strings.TrimPrefix(value, "0x")
+	}
+
+	i, _ := strconv.ParseInt(value, defaultBase, 64)
+	return NewInteger(i)
+}
+
+func (s *String) ToFloatObj() *Float {
+	f, _ := strconv.ParseFloat(s.Value, 64)
+	return NewFloat(f)
 }
 
 type stringIterator struct {

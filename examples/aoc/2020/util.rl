@@ -41,9 +41,9 @@ def Format(a, b)
     if (item.type() == "STRING")
       val = item
     else
-      val = item.plz_s()
+      val = item.to_s()
     end
-    a = a.replace("{"+idx.plz_s()+"}", val)
+    a = a.replace("{"+idx.to_s()+"}", val)
   end
   return a
 end

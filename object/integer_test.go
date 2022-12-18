@@ -22,13 +22,12 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 
 func TestIntegerObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`2.plz_s()`, "2"},
-		{`10.plz_s(2)`, "1010"},
-		{`2.plz_f()`, 2.0},
-		{`2.plz_i()`, 2},
+		{`2.to_s()`, "2"},
+		{`10.to_s(2)`, "1010"},
+		{`2.to_f()`, 2.0},
+		{`2.to_i()`, 2},
 		{`10.type()`, "INTEGER"},
 		{`2.nope()`, "test:1:2: undefined method `.nope()` for INTEGER"},
-		{`(2.wat().lines().size() == 2.methods().size() + 1).plz_s()`, "true"},
 		{"1.to_json()", "1"},
 	}
 

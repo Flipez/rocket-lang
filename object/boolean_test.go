@@ -23,17 +23,16 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 func TestBooleanObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		// true
-		{"true.plz_s()", "true"},
+		{"true.to_s()", "true"},
 		{"true.type()", "BOOLEAN"},
 		{"true.nope()", "test:1:5: undefined method `.nope()` for BOOLEAN"},
 
 		// false
-		{"false.plz_s()", "false"},
+		{"false.to_s()", "false"},
 		{"false.type()", "BOOLEAN"},
 		{"false.nope()", "test:1:6: undefined method `.nope()` for BOOLEAN"},
 
 		// other
-		{"(true.wat().lines().size() == true.methods().size() + 1).plz_s()", "true"},
 		{"true == true", true},
 		{"true == false", false},
 

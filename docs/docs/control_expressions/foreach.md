@@ -17,7 +17,7 @@ a = []
 
 foreach i, number in input
   // read each line into temporary array and cast it into an integer
-  a.yoink(number.strip().plz_i())
+  a.yoink(number.strip().to_i())
 end
 
 // assign temporary array to input array

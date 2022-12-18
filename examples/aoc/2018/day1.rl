@@ -1,7 +1,7 @@
 def parseChanges(lines)
   changes = []
   foreach idx, line in lines
-    changes.yoink(line.strip().plz_i())
+    changes.yoink(line.strip().to_i())
   end
   return changes
 end

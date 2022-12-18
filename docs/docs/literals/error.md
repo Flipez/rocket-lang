@@ -66,8 +66,26 @@ Returns an array of all supported methods names.
 
 
 <CodeBlockSimple input='"test".methods()
-' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "to_i", "strip", "downcase"]
 ' />
+
+
+### to_f()
+> Returns `FLOAT`
+
+
+
+
+
+
+
+### to_i(INTEGER)
+> Returns `INTEGER`
+
+
+
+
+
 
 
 ### to_json()
@@ -81,6 +99,15 @@ a.to_json()
 ' output='{"test": 1234}
 "{\"test\":1234}"
 ' />
+
+
+### to_s(INTEGER)
+> Returns `STRING`
+
+
+
+
+
 
 
 ### type()
@@ -102,7 +129,7 @@ Returns the supported methods with usage information.
 
 <CodeBlockSimple input='true.wat()
 ' output='"BOOLEAN supports the following methods:
-  plz_s()"
+  to_s()"
 ' />
 
 

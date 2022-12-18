@@ -30,19 +30,7 @@ func (b *Boolean) HashKey() HashKey {
 }
 
 func init() {
-	objectMethods[BOOLEAN_OBJ] = map[string]ObjectMethod{
-		"plz_s": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				b := o.(*Boolean)
-				return NewString(strconv.FormatBool(b.Value))
-			},
-		},
-	}
+	objectMethods[BOOLEAN_OBJ] = map[string]ObjectMethod{}
 }
 
 func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) Object {
@@ -52,4 +40,22 @@ func (b *Boolean) InvokeMethod(method string, env Environment, args ...Object) O
 
 func (b *Boolean) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.Value)
+}
+
+func (b *Boolean) ToStringObj(_ *Integer) *String {
+	return NewString(strconv.FormatBool(b.Value))
+}
+
+func (b *Boolean) ToIntegerObj(_ *Integer) *Integer {
+	if b.Value {
+		return NewInteger(1)
+	}
+	return NewInteger(0)
+}
+
+func (b *Boolean) ToFloatObj() *Float {
+	if b.Value {
+		return NewFloat(1.0)
+	}
+	return NewFloat(0.0)
 }

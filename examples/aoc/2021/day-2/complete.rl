@@ -6,7 +6,7 @@ aim = 0
 
 foreach i, line in input
   command = line.split(" ")[0]
-  value = line.strip().split(" ")[1].plz_i()
+  value = line.strip().split(" ")[1].to_i()
   if (command == "forward")
     hor = hor + value
     depth = depth + (value * aim)

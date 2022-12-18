@@ -12,14 +12,14 @@ methods:
     input: |
       "test".methods()
     output: |
-      ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "plz_i", "strip", "downcase"]
+      ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "to_i", "strip", "downcase"]
   wat:
     description: "Returns the supported methods with usage information."
     input: |
       true.wat()
     output: |
       "BOOLEAN supports the following methods:
-        plz_s()"
+        to_s()"
   type:
     description: "Returns the type of the object."
     input: |

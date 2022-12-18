@@ -181,10 +181,10 @@ const ObjectExample = `🚀 > "test".type()
 
 🚀 > true.wat()
 => BOOLEAN supports the following methods:
-                plz_s()
+                to_s()
 
 🚀 > 1.methods()
-=> ["plz_s", "plz_i", "plz_f"]
+=> ["to_s", "to_i", "to_f"]
 `;
 
 function EverythingObject() {
