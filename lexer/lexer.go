@@ -34,7 +34,6 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
-	//fmt.Printf("%s\n", string(rune(l.ch)))
 	l.positionInLine += 1
 }
 
@@ -205,7 +204,6 @@ func (l *Lexer) NextToken() token.Token {
 	tok.LineNumber = l.currentLine
 	tok.LinePosition = l.positionInLine
 	tok.File = l.file
-	//fmt.Println(l.positionInLine)
 	l.readChar()
 	return tok
 }
@@ -242,30 +240,10 @@ func (l *Lexer) readSingleQuoteString() string {
 func (l *Lexer) readIdentifier() string {
 	id := ""
 
-	//position := l.position
-	//rposition := l.readPosition
-
 	for l.isIdentifier(l.ch) {
-		//fmt.Println(string(rune(l.ch)))
 		id += string(l.ch)
 		l.readChar()
 	}
-
-	//if strings.Contains(id, ".") {
-	//	offset := strings.Index(id, ".")
-	//	id = id[:offset]
-
-	//	l.position = position
-	//	l.readPosition = rposition
-	//	l.positionInLine = position
-	//	fmt.Println(position)
-	//	fmt.Println(offset)
-	//	fmt.Println(rposition)
-	//	for offset > 0 {
-	//		l.readChar()
-	//		offset--
-	//	}
-	//}
 
 	return id
 }
