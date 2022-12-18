@@ -31,6 +31,13 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": "b"}.to_json()`, `{"a":"b"}`},
 		{`{1: "b"}.to_json()`, `{"1":"b"}`},
 		{`{true: "b"}.to_json()`, `{"true":"b"}`},
+		{`{"a": 1, 1: "b"}.include?("a")`, true},
+		{`{"a": 1, 1: "b"}.include?(1)`, true},
+		{`{"a": 1, 1: "b"}.include?("c")`, false},
+		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH`},
+		{`{"a": 1, 1: "b"}.include?()`, `to few arguments: got=0, want=1`},
+		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
+		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
 	}
 
 	testInput(t, tests)

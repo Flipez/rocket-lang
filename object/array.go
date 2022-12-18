@@ -56,6 +56,15 @@ func (ao *Array) Add(items ...any) {
 	}
 }
 
+func (ao *Array) index(obj Object) int {
+	for idx, element := range ao.Elements {
+		if CompareObjects(element, obj) {
+			return idx
+		}
+	}
+	return -1
+}
+
 func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
 		"reverse": ObjectMethod{
@@ -198,16 +207,7 @@ func init() {
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
-
-				index := -1
-				for idx, element := range ao.Elements {
-					if CompareObjects(element, args[0]) {
-						index = idx
-						break
-					}
-				}
-
-				return NewInteger(int64(index))
+				return NewInteger(int64(ao.index(args[0])))
 			},
 		},
 		"first": ObjectMethod{
@@ -271,6 +271,53 @@ func init() {
 				ao := o.(*Array)
 				ao.Elements = append(ao.Elements, args[0])
 				return NIL
+			},
+		},
+		"include?": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ),
+				),
+				ArgPattern: Args(
+					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				if ao.index(args[0]) == -1 {
+					return FALSE
+				}
+				return TRUE
+			},
+		},
+		"slices": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				size := int(args[0].(*Integer).Value)
+				if size == 0 {
+					return NewError("invalid slice size, needs to be > 0")
+				}
+
+				length := len(ao.Elements)
+
+				slices := NewArray(make([]Object, 0))
+				for i := 0; i < length; i += size {
+					end := i + size
+					if end > length {
+						end = length
+					}
+					slices.Add(NewArray(ao.Elements[i:end]))
+				}
+
+				return slices
 			},
 		},
 	}

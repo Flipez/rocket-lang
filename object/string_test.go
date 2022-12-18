@@ -99,6 +99,9 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test%1.1f".format(1.3)`, "test1.3"},
 		{`"test%s".format("test")`, "testtest"},
 		{`"test%t".format(true)`, "testtrue"},
+		{`"".ascii()`, -1},
+		{`"a".ascii()`, 97},
+		{`"abc".ascii()`, `[97, 98, 99]`},
 	}
 
 	testInput(t, tests)
