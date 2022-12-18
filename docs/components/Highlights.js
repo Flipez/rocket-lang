@@ -7,21 +7,21 @@ import Link from "@docusaurus/Link";
 import clsx from "clsx";
 import { GetStarted } from "./GetStarted";
 
-const WelcomeCode = `🚀 > puts("hello from rocket-lang!")
+const WelcomeCode = `🚀 » puts("hello from rocket-lang!")
 "hello from rocket-lang!"
-=> nil
+» nil
 
-🚀 > langs = ["ruby", "go", "crystal", "python", "php"]
-=> ["ruby", "go", "crystal", "python", "php"]
+🚀 » langs = ["ruby", "go", "crystal", "python", "php"]
+» ["ruby", "go", "crystal", "python", "php"]
 
-🚀 > langs.yeet()
-=> "php"
+🚀 » langs.yeet()
+» "php"
 
-🚀 > langs.yoink("rocket-lang")
-=> nil
+🚀 » langs.yoink("rocket-lang")
+» nil
 
-🚀 > langs
-=> ["ruby", "go", "crystal", "python", "rocket-lang"]
+🚀 » langs
+» ["ruby", "go", "crystal", "python", "rocket-lang"]
 `
 
 function Welcome() {
@@ -53,16 +53,16 @@ function Welcome() {
 
 
 
-const JSONExample = `🚀 > JSON.parse('{"test": 123}')
-=> {"test": 123.0}
+const JSONExample = `🚀 » JSON.parse('{"test": 123}')
+» {"test": 123.0}
 
 
-🚀 > a = {"test": 1234}
-=> {"test": 1234}
+🚀 » a = {"test": 1234}
+» {"test": 1234}
 
 
-🚀 > a.to_json()
-=> '{"test":1234}'
+🚀 » a.to_json()
+» '{"test":1234}'
 `;
 
 const HTTPExample = `def test()
@@ -85,8 +85,8 @@ const MathExample = `🚀 » Math.E
 » 3.141592653589793
 
 
-🚀 > Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
-=> 5.0
+🚀 » Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)
+» 5.0
 `;
 
 const TimeExample = `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
@@ -110,7 +110,7 @@ end
 hello = newGreeter("Hello");
 hello("dear, future Reader!");
 
-=> "Hello dear, future Reader!"
+» "Hello dear, future Reader!"
 `;
 
 const BuiltinList = [
@@ -176,15 +176,14 @@ function Builtins() {
   );
 }
 
-const ObjectExample = `🚀 > "test".type()
-=> "STRING"
+const ObjectExample = `🚀 » "test".type()
+» "STRING"
 
-🚀 > true.wat()
-=> BOOLEAN supports the following methods:
-                to_s()
+🚀 » true.to_s()
+» "true"
 
-🚀 > 1.methods()
-=> ["to_s", "to_i", "to_f"]
+🚀 » 1.4.to_s()
+» "1.4"
 `;
 
 function EverythingObject() {
