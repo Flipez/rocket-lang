@@ -19,5 +19,5 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 		return mod
 	}
 
-	return object.NewErrorFormat("identifier not found: " + node.Value)
+	return object.NewErrorFormat("%s:%d:%d: identifier not found: "+node.Value, node.Token.File, node.Token.LineNumber, node.Token.LinePosition-len(node.TokenLiteral()))
 }

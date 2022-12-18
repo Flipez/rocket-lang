@@ -185,7 +185,7 @@ func TestErrorHandling(t *testing.T) {
 		{"true + false", "unknown operator: BOOLEAN + BOOLEAN"},
 		{"5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN"},
 		{"if (10 > 1) \n true + false \n", "unknown operator: BOOLEAN + BOOLEAN"},
-		{"foobar", "identifier not found: foobar"},
+		{"foobar", "test:1:1: identifier not found: foobar"},
 		{
 			`
 			if (10 > 1)
@@ -198,7 +198,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
-		{"🔥 != 👍", "identifier not found: IDENT"},
+		{"🔥 != 👍", "test:1:0: identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
 		{"(4 > 5 ? true).nope()", "test:1:15: undefined method `.nope()` for NIL"},
@@ -206,7 +206,7 @@ func TestErrorHandling(t *testing.T) {
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
 		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
-		{"import(true)", "Import Error: invalid import path '&{%!s(bool=true)}'"},
+		{"import(true)", "test:1:7: Import Error: invalid import path '&{%!s(bool=true)}'"},
 		{"import(5%0)", "division by zero not allowed"},
 		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
 		{
@@ -218,7 +218,7 @@ func TestErrorHandling(t *testing.T) {
 		{"break(1.nope())", "test:1:8: undefined method `.nope()` for INTEGER"},
 		{"next(1.nope())", "test:1:7: undefined method `.nope()` for INTEGER"},
 		{"nil.nope()", "test:1:4: undefined method `.nope()` for NIL"},
-		{"begin puts(nope) end", "identifier not found: nope"},
+		{"begin puts(nope) end", "test:1:12: identifier not found: nope"},
 		{"begin puts(nope) rescue e e.nope() end", "test:1:28: undefined method `.nope()` for ERROR"},
 		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "test:1:45: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},

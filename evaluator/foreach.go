@@ -10,7 +10,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 
 	helper, ok := val.(object.Iterable)
 	if !ok {
-		return object.NewErrorFormat("%s object doesn't implement the Iterable interface", val.Type())
+		return object.NewErrorFormat("%s:%d:%d: %s object doesn't implement the Iterable interface", fle.Token.File, fle.Token.LineNumber, fle.Token.LinePosition, val.Type())
 	}
 
 	child := object.NewEnclosedEnvironment(env)
