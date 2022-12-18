@@ -58,7 +58,7 @@ methods:
     input: |
       "test".methods()
     output: |
-      ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "to_i", "strip", "downcase"]
+      ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "strip", "downcase"]
   wat:
     description: "Returns the supported methods with usage information."
     input: |
