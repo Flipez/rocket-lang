@@ -31,7 +31,7 @@ func main() {
 	}
 
 	if len(*exec) > 0 {
-		runProgram(*exec)
+		runProgram(*exec, "")
 		return
 	}
 
@@ -40,14 +40,14 @@ func main() {
 	} else {
 		file, err := os.ReadFile(os.Args[1])
 		if err == nil {
-			runProgram(string(file))
+			runProgram(string(file), os.Args[1])
 		}
 	}
 }
 
-func runProgram(input string) {
+func runProgram(input string, file string) {
 	env := object.NewEnvironment()
-	l := lexer.New(input)
+	l := lexer.New(input, file)
 	p := parser.New(l, make(map[string]struct{}))
 
 	object.AddEvaluator(evaluator.Eval)

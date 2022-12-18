@@ -13,10 +13,11 @@ type Lexer struct {
 	ch             byte // current char under examination
 	currentLine    int
 	positionInLine int
+	file           string
 }
 
-func New(input string) *Lexer {
-	l := &Lexer{input: input, currentLine: 1, positionInLine: 0}
+func New(input string, file string) *Lexer {
+	l := &Lexer{input: input, currentLine: 1, positionInLine: 0, file: file}
 	l.readChar()
 	return l
 }
@@ -165,6 +166,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdent(tok.Literal)
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 
 			return tok
 		} else if isDigit(l.ch) {
@@ -176,6 +178,7 @@ func (l *Lexer) NextToken() token.Token {
 			}
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -189,6 +192,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupEmoji(string(out))
 			tok.LineNumber = l.currentLine
 			tok.LinePosition = l.positionInLine
+			tok.File = l.file
 
 			return tok
 		} else {
@@ -199,6 +203,7 @@ func (l *Lexer) NextToken() token.Token {
 
 	tok.LineNumber = l.currentLine
 	tok.LinePosition = l.positionInLine
+	tok.File = l.file
 	l.readChar()
 	return tok
 }
@@ -235,24 +240,9 @@ func (l *Lexer) readSingleQuoteString() string {
 func (l *Lexer) readIdentifier() string {
 	id := ""
 
-	position := l.position
-	rposition := l.readPosition
-
 	for l.isIdentifier(l.ch) {
 		id += string(l.ch)
 		l.readChar()
-	}
-
-	if strings.Contains(id, ".") {
-		offset := strings.Index(id, ".")
-		id = id[:offset]
-
-		l.position = position
-		l.readPosition = rposition
-		for offset > 0 {
-			l.readChar()
-			offset--
-		}
 	}
 
 	return id
@@ -279,7 +269,7 @@ func isComparison(ch byte) bool {
 }
 
 func isCompound(ch byte) bool {
-	return ch == ',' || ch == ':' || ch == '"' || ch == ';'
+	return ch == ',' || ch == ':' || ch == '"' || ch == ';' || ch == '.'
 }
 
 func isBrace(ch byte) bool {

@@ -10,7 +10,7 @@ import (
 )
 
 func createProgram(input string) (*ast.Program, *Parser) {
-	l := lexer.New(input)
+	l := lexer.New(input, "test")
 	imports := make(map[string]struct{})
 	p := New(l, imports)
 	program, _ := p.ParseProgram()
@@ -778,7 +778,7 @@ func TestParsingImportExpressions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		l := lexer.New(tt.input)
+		l := lexer.New(tt.input, "test")
 		imports := make(map[string]struct{})
 		p := New(l, imports)
 		program, _ := p.ParseProgram()
@@ -794,7 +794,7 @@ func TestParsingImportExpressions(t *testing.T) {
 }
 
 func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
-	l := lexer.New(`foreach i in -5 { puts(i)}`)
+	l := lexer.New(`foreach i in -5 { puts(i)}`, "test")
 	p := New(l, nil)
 	p.ParseProgram()
 

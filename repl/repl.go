@@ -60,7 +60,7 @@ func Start(in io.Reader, out io.Writer) {
 		rl.SetPrompt("🚀 \033[31m»\033[0m ")
 		rl.SaveHistory(line)
 
-		l := lexer.New(line)
+		l := lexer.New(line, "")
 		p := parser.New(l, imports)
 
 		object.AddEvaluator(evaluator.Eval)
