@@ -222,6 +222,9 @@ func TestErrorHandling(t *testing.T) {
 		{"begin puts(nope) rescue e e.nope() end", "test:1:28: undefined method `.nope()` for ERROR"},
 		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "test:1:45: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},
+		{"foreach i in 'test' -> 3 \nputs(i)\nend", "test:1:8: range rocket start has to be an integer, got STRING"},
+		{"foreach i in 0 -> 'test' \nputs(i)\nend", "test:1:8: unsupported range rocket value, got STRING"},
+		{"foreach i in 0 -> 5 ^ 'test' \nputs(i)\nend", "test:1:8: range rocket step has to be an integer, got STRING"},
 	}
 
 	for _, tt := range tests {
