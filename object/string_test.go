@@ -43,6 +43,8 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"0x1022".to_i()`, 530},
 		{`"0x1022".to_i(8)`, 530},
 		{`"1022".to_i(8)`, 530},
+		{`"1022".to_f()`, 1022.0},
+		{`"1022".to_s()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},
 		{`"test".replace()`, "to few arguments: got=0, want=2"},
 		{`"test".replace("e")`, "to few arguments: got=1, want=2"},

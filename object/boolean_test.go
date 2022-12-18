@@ -38,6 +38,12 @@ func TestBooleanObjectMethods(t *testing.T) {
 
 		{"true.to_json()", "true"},
 		{"false.to_json()", "false"},
+
+		{"true.to_i()", 1},
+		{"false.to_i()", 0},
+
+		{"true.to_f()", 1.0},
+		{"false.to_f()", 0.0},
 	}
 
 	testInput(t, tests)
