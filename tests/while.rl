@@ -17,6 +17,21 @@ def test_one()
 end
 
 def test_two()
+  i = 0
+  while (i < 10)
+    if (i < 3)
+      i = i + 1
+      next
+    end
+    puts(i)
+    if (i == 6)
+      break
+    end
+    i = i + 1
+  end
+end
+
+def test_three()
   a = 0
   while (a != 3)
     puts(a)
@@ -26,3 +41,4 @@ end
 
 test_one()
 test_two()
+test_three()
