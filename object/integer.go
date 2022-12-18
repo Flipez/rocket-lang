@@ -79,10 +79,10 @@ func (i *Integer) GetIterator(start, step int, inclusive bool) Iterator {
 	if val < start {
 		step *= -1
 		if inclusive {
-			val -= 1
+			val--
 		}
 	} else if inclusive {
-		val += 1
+		val++
 	}
 
 	return &integerIterator{max: val, step: step, current: start}
