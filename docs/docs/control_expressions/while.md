@@ -23,3 +23,26 @@ end
 3
 => nil
 ```
+
+It is possible to use `next` or `break` inside a while loop.
+
+```js
+i = 0
+while (i < 10)
+  if (i < 3)
+    i = i + 1
+    next
+  end
+  puts(i)
+  if (i == 6)
+    break
+  end
+  i = i + 1
+end
+
+// which prints
+3
+4
+5
+6
+```
