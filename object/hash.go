@@ -167,7 +167,7 @@ func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Obje
 
 }
 
-func (h *Hash) GetIterator() Iterator {
+func (h *Hash) GetIterator(_, _ int, _ bool) Iterator {
 	pairs := make([]HashPair, 0)
 	for _, val := range h.Pairs {
 		pairs = append(pairs, val)

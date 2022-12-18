@@ -19,7 +19,7 @@ type Object interface {
 }
 
 type Iterable interface {
-	GetIterator() Iterator
+	GetIterator(int, int, bool) Iterator
 }
 
 type Iterator interface {

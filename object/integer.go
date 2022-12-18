@@ -74,8 +74,18 @@ func (i *Integer) ToFloat() Object {
 	return NewFloat(float64(i.Value))
 }
 
-func (i *Integer) GetIterator() Iterator {
-	return &integerIterator{max: i.Value}
+func (i *Integer) GetIterator(start, step int, inclusive bool) Iterator {
+	val := int(i.Value)
+	if val < start {
+		step *= -1
+		if inclusive {
+			val -= 1
+		}
+	} else if inclusive {
+		val += 1
+	}
+
+	return &integerIterator{max: val, step: step, current: start}
 }
 
 func (i *Integer) MarshalJSON() ([]byte, error) {
@@ -83,14 +93,15 @@ func (i *Integer) MarshalJSON() ([]byte, error) {
 }
 
 type integerIterator struct {
-	current, max int64
+	current, max, step int
 }
 
 func (i *integerIterator) Next() (Object, Object, bool) {
-	if i.current < i.max {
-		obj := NewInteger(i.current)
-		i.current++
-		return obj, obj, true
+	if (i.step < 0 && i.current <= i.max) || (i.step > 0 && i.current >= i.max) {
+		return nil, NewInteger(0), false
 	}
-	return nil, NewInteger(0), false
+
+	obj := NewInteger(int64(i.current))
+	i.current += i.step
+	return obj, obj, true
 }

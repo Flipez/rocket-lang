@@ -42,19 +42,40 @@ func (p *Parser) parseForEach() ast.Expression {
 	}
 	p.nextToken()
 
-	expression.Value = p.parseExpression(LOWEST)
-	if expression.Value == nil {
-		return nil
+	if p.peekTokenIs(token.RANGE_ROCKET_E) || p.peekTokenIs(token.RANGE_ROCKET_I) {
+		if p.peekTokenIs(token.RANGE_ROCKET_I) {
+			expression.Inclusive = true
+		}
+		expression.Start = p.parseExpression(LOWEST)
+		p.nextToken()
+	}
+	if p.curTokenIs(token.RANGE_ROCKET_E) || p.curTokenIs(token.RANGE_ROCKET_I) {
+		if p.peekTokenIs(token.RANGE_ROCKET_I) {
+			expression.Inclusive = true
+		}
+		p.nextToken()
+		expression.Value = p.parseExpression(LOWEST)
+	} else {
+		expression.Value = p.parseExpression(LOWEST)
+		if expression.Value == nil {
+			return nil
+		}
+
+		// don't allow negative iterable integer
+		if prefix, ok := expression.Value.(*ast.Prefix); ok && prefix.Operator == "-" {
+			p.errors = append(p.errors, fmt.Sprintf(
+				"%d:%d: expected positive value got %v",
+				p.peekToken.LineNumber,
+				p.peekToken.LinePosition,
+				prefix))
+			return nil
+		}
 	}
 
-	// don't allow negative iterable integer
-	if prefix, ok := expression.Value.(*ast.Prefix); ok && prefix.Operator == "-" {
-		p.errors = append(p.errors, fmt.Sprintf(
-			"%d:%d: expected positive value got %v",
-			p.peekToken.LineNumber,
-			p.peekToken.LinePosition,
-			prefix))
-		return nil
+	if p.peekTokenIs(token.RANGE_STEPPER) {
+		p.nextToken()
+		p.nextToken()
+		expression.Step = p.parseExpression(LOWEST)
 	}
 
 	expression.Body = p.parseBlock()

@@ -7,11 +7,14 @@ import (
 )
 
 type Foreach struct {
-	Token token.Token
-	Index string
-	Ident string
-	Value Expression
-	Body  *Block
+	Token     token.Token
+	Index     string
+	Ident     string
+	Value     Expression // Value to iterate to
+	Start     Expression
+	Step      Expression
+	Body      *Block
+	Inclusive bool
 }
 
 func (fes *Foreach) TokenLiteral() string { return fes.Token.Literal }

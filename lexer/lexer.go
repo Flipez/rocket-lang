@@ -62,6 +62,11 @@ func (l *Lexer) NextToken() token.Token {
 			literal := string(ch) + string(l.ch)
 			tok.Type = token.EQ
 			tok.Literal = literal
+		} else if l.peekChar() == '>' {
+			ch := l.ch
+			l.readChar()
+			tok.Type = token.RANGE_ROCKET_I
+			tok.Literal = string(ch) + string(l.ch)
 		} else {
 			tok.Type = token.ASSIGN
 			tok.Literal = string(l.ch)
@@ -90,8 +95,15 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.PLUS
 		tok.Literal = string(l.ch)
 	case '-':
-		tok.Type = token.MINUS
-		tok.Literal = string(l.ch)
+		if l.peekChar() == '>' {
+			ch := l.ch
+			l.readChar()
+			tok.Type = token.RANGE_ROCKET_E
+			tok.Literal = string(ch) + string(l.ch)
+		} else {
+			tok.Type = token.MINUS
+			tok.Literal = string(l.ch)
+		}
 	case '*':
 		tok.Type = token.ASTERISK
 		tok.Literal = string(l.ch)
@@ -160,6 +172,9 @@ func (l *Lexer) NextToken() token.Token {
 	case '\'':
 		tok.Type = token.STRING
 		tok.Literal = l.readSingleQuoteString()
+	case '^':
+		tok.Type = token.RANGE_STEPPER
+		tok.Literal = "^"
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
