@@ -207,13 +207,10 @@ func init() {
 				var result int
 
 				for i, element := range ao.Elements {
-					switch val := element.(type) {
-					case Integerable:
+					if val, ok := element.(Integerable); ok {
 						result += int(val.ToIntegerObj(nil).Value)
-					case Floatable:
-						result += int(val.ToFloatObj().Value)
-					default:
-						return NewErrorFormat("Found non number element %s on index %d", val.Type(), i)
+					} else {
+						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
 					}
 				}
 				return NewInteger(int64(result))
