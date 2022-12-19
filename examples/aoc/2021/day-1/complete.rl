@@ -6,7 +6,7 @@ increase = 0
 
 a = []
 foreach i, number in input
-  a.yoink(number.strip().to_i())
+  a.push(number.strip().to_i())
 end
 input = a
 

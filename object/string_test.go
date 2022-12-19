@@ -85,7 +85,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`a = "test"; a.reverse!(); a`, "tset"},
 		{`a = " test "; a.strip!(); a`, "test"},
 		{`("test".wat().lines().size() == "test".methods().size() + 1).to_s()`, "true"},
-		{"a = \"test\"; b = []; foreach char in a \n b.yoink(char) \nend; b.size()", 4},
+		{"a = \"test\"; b = []; foreach char in a \n b.push(char) \nend; b.size()", 4},
 		{`"test" * 2`, "testtest"},
 		{`2 * "test"`, "testtest"},
 		{`"test".to_json()`, `"test"`},

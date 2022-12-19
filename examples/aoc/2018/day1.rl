@@ -1,7 +1,7 @@
 def parseChanges(lines)
   changes = []
   foreach idx, line in lines
-    changes.yoink(line.strip().to_i())
+    changes.push(line.strip().to_i())
   end
   return changes
 end
@@ -23,7 +23,7 @@ def part2(input)
       if (freqs.index(lastFreq) != -1)
         return lastFreq
       end
-      freqs.yoink(lastFreq)
+      freqs.push(lastFreq)
     end
   end
 end

@@ -9,17 +9,17 @@ def Make(type, size)
   if (size > 0)
     foreach i in size
       if (type == "BOOLEAN")
-        a.yoink(true)
+        a.push(true)
       else if (type == "STRING")
-        a.yoink("")
+        a.push("")
       else if (type == "INTEGER")
-        a.yoink(0)
+        a.push(0)
       else if (type == "FLOAT")
-        a.yoink(0.0)
+        a.push(0.0)
       else if (type == "ARRAY")
-        a.yoink([])
+        a.push([])
       else if (type == "HASH")
-        a.yoink({})
+        a.push({})
       end
     end
   end
