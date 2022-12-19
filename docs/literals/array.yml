@@ -74,21 +74,21 @@ methods:
       [1,2,3,4,5,6,7,8].slices(3)
     output: |
       [[1, 2, 3], [4, 5, 6], [7, 8]]
-  yeet:
+  pop:
     description: "Removes the last element of the array and returns it."
     input: |
       a = [1,2,3]
-      a.yeet()
+      a.pop()
       a
     output: |
       [1, 2, 3]
       3
       [1, 2]
-  yoink:
+  push:
     description: "Adds the given object as last element to the array."
     input: |
       a = [1,2,3]
-      a.yoink("a")
+      a.push("a")
       a
     output: |
       [1, 2, 3]

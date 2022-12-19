@@ -287,7 +287,7 @@ func init() {
 				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
-		"yeet": ObjectMethod{
+		"pop": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
@@ -307,7 +307,7 @@ func init() {
 				return returnElement
 			},
 		},
-		"yoink": ObjectMethod{
+		"push": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(NIL_OBJ),

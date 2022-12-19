@@ -146,14 +146,14 @@ Returns a copy of the array with deduplicated elements. Raises an error if a ele
 ' />
 
 
-### yeet()
+### pop()
 > Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
 
 Removes the last element of the array and returns it.
 
 
 <CodeBlockSimple input='a = [1,2,3]
-a.yeet()
+a.pop()
 a
 ' output='[1, 2, 3]
 3
@@ -161,14 +161,14 @@ a
 ' />
 
 
-### yoink(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
+### push(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
 > Returns `NIL`
 
 Adds the given object as last element to the array.
 
 
 <CodeBlockSimple input='a = [1,2,3]
-a.yoink("a")
+a.push("a")
 a
 ' output='[1, 2, 3]
 nil

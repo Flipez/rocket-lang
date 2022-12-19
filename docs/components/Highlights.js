@@ -14,10 +14,10 @@ const WelcomeCode = `🚀 » puts("hello from rocket-lang!")
 🚀 » langs = ["ruby", "go", "crystal", "python", "php"]
 » ["ruby", "go", "crystal", "python", "php"]
 
-🚀 » langs.yeet()
+🚀 » langs.pop()
 » "php"
 
-🚀 » langs.yoink("rocket-lang")
+🚀 » langs.push("rocket-lang")
 » nil
 
 🚀 » langs
