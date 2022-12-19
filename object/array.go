@@ -119,7 +119,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
-				return NewInteger(int64(len(ao.Elements)))
+				return NewInteger(len(ao.Elements))
 			},
 		},
 		"sort": ObjectMethod{
@@ -213,7 +213,7 @@ func init() {
 						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
 					}
 				}
-				return NewInteger(int64(result))
+				return NewInteger(result)
 			},
 		},
 		"uniq": ObjectMethod{
@@ -256,7 +256,7 @@ func init() {
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
-				return NewInteger(int64(ao.index(args[0])))
+				return NewInteger(ao.index(args[0]))
 			},
 		},
 		"first": ObjectMethod{
@@ -393,7 +393,7 @@ type arrayIterator struct {
 func (a *arrayIterator) Next() (Object, Object, bool) {
 	if a.index < len(a.items) {
 		val := a.items[a.index]
-		idx := NewInteger(int64(a.index))
+		idx := NewInteger(a.index)
 		a.index += a.step
 		return val, idx, true
 	}

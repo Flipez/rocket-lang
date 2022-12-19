@@ -178,7 +178,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 }
 
-func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
+func testIntegerLiteral(t *testing.T, il ast.Expression, value int) bool {
 	integ, ok := il.(*ast.Integer)
 	if !ok {
 		t.Errorf("il not *ast.IntegerLiteral. got=%T", il)
@@ -223,9 +223,9 @@ func testLiteralExpression(
 	expected interface{}) bool {
 	switch v := expected.(type) {
 	case int:
-		return testIntegerLiteral(t, exp, int64(v))
-	case int64:
 		return testIntegerLiteral(t, exp, v)
+	case int64:
+		return testIntegerLiteral(t, exp, int(v))
 	case string:
 		return testIdentifier(t, exp, v)
 	case bool:
@@ -639,7 +639,7 @@ func TestParsingHashLiteralsStringKeys(t *testing.T) {
 		t.Errorf("hash.Pairs has wrong lenght. got=%d", len(hash.Pairs))
 	}
 
-	expected := map[string]int64{
+	expected := map[string]int{
 		"one":   1,
 		"two":   2,
 		"three": 3,

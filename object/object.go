@@ -461,9 +461,9 @@ func AnyToObject(a any) Object {
 	case string:
 		return NewString(v)
 	case int:
-		return NewInteger(int64(v))
-	case int64:
 		return NewInteger(v)
+	case int64:
+		return NewInteger(int(v))
 	case float64:
 		return NewFloat(v)
 	case []any:

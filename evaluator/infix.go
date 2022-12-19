@@ -110,7 +110,7 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		return result
 	case ((left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ) || (right.Type() == object.STRING_OBJ && left.Type() == object.INTEGER_OBJ)) && operator == "*":
 		var stringObj string
-		var intObj int64
+		var intObj int
 		if left.Type() == object.STRING_OBJ {
 			stringObj = left.(*object.String).Value
 			intObj = right.(*object.Integer).Value

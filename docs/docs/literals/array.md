@@ -82,6 +82,36 @@ Returns the last element of the array.
 ' />
 
 
+### pop()
+> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
+
+Removes the last element of the array and returns it.
+
+
+<CodeBlockSimple input='a = [1,2,3]
+a.pop()
+a
+' output='[1, 2, 3]
+3
+[1, 2]
+' />
+
+
+### push(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
+> Returns `NIL`
+
+Adds the given object as last element to the array.
+
+
+<CodeBlockSimple input='a = [1,2,3]
+a.push("a")
+a
+' output='[1, 2, 3]
+nil
+[1, 2, 3, "a"]
+' />
+
+
 ### reverse()
 > Returns `ARRAY`
 
@@ -143,36 +173,6 @@ Returns a copy of the array with deduplicated elements. Raises an error if a ele
 
 <CodeBlockSimple input='["a", 1, 1, 2].uniq()
 ' output='[1, 2, "a"]
-' />
-
-
-### pop()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
-
-Removes the last element of the array and returns it.
-
-
-<CodeBlockSimple input='a = [1,2,3]
-a.pop()
-a
-' output='[1, 2, 3]
-3
-[1, 2]
-' />
-
-
-### push(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
-> Returns `NIL`
-
-Adds the given object as last element to the array.
-
-
-<CodeBlockSimple input='a = [1,2,3]
-a.push("a")
-a
-' output='[1, 2, 3]
-nil
-[1, 2, 3, "a"]
 ' />
 
 

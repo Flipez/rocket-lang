@@ -48,7 +48,7 @@ func init() {
 
 				var returnError *Error
 
-				port := strconv.FormatInt(args[0].(*Integer).Value, 10)
+				port := strconv.FormatInt(int64(args[0].(*Integer).Value), 10)
 				server := &http.Server{
 					Handler: o.(*HTTP).mux,
 					Addr:    ":" + port,

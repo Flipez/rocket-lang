@@ -62,7 +62,7 @@ func evalBuiltinModuleIndexExpression(module, index object.Object) object.Object
 
 func evalStringIndexExpression(left, index object.Object) object.Object {
 	obj := left.(*object.String)
-	max := int64(len(obj.Value) - 1)
+	max := len(obj.Value) - 1
 	idx := transformIndex(index.(*object.Integer).Value, max)
 
 	if idx > max {
@@ -74,7 +74,7 @@ func evalStringIndexExpression(left, index object.Object) object.Object {
 
 func evalStringRangeIndexExpression(left, firstIndex, secondIndex object.Object) object.Object {
 	obj := left.(*object.String)
-	max := int64(len(obj.Value) - 1)
+	max := len(obj.Value) - 1
 
 	if firstIndex == nil && secondIndex == nil {
 		return object.NewString(obj.Value)
@@ -119,7 +119,7 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 
 func evalArrayIndexExpression(array, index object.Object) object.Object {
 	obj := array.(*object.Array)
-	max := int64(len(obj.Elements) - 1)
+	max := len(obj.Elements) - 1
 	idx := transformIndex(index.(*object.Integer).Value, max)
 
 	if idx > max {
@@ -131,7 +131,7 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 
 func evalArrayRangeIndexExpression(left, firstIndex, secondIndex object.Object) object.Object {
 	obj := left.(*object.Array)
-	max := int64(len(obj.Elements) - 1)
+	max := len(obj.Elements) - 1
 
 	if firstIndex == nil && secondIndex == nil {
 		return object.NewArray(obj.Elements)
@@ -159,7 +159,7 @@ func evalArrayRangeIndexExpression(left, firstIndex, secondIndex object.Object) 
 	return object.NIL
 }
 
-func transformIndex(idx, max int64) int64 {
+func transformIndex(idx, max int) int {
 	if idx < 0 {
 		idx += max + 1
 	}

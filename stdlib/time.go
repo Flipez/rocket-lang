@@ -65,7 +65,7 @@ func init() {
 			unixTimestamp := args[0].(*object.Integer)
 			timeFormat := args[1].(*object.String)
 
-			time := time.Unix(unixTimestamp.Value, 0)
+			time := time.Unix(int64(unixTimestamp.Value), 0)
 
 			return object.NewString(time.Format(convertTimeFormat(timeFormat)))
 		})
@@ -89,7 +89,7 @@ func init() {
 				return object.NewErrorFormat("Error while parsing time: %s", err)
 			}
 
-			return object.NewInteger(timeParsed.Unix())
+			return object.NewInteger(int(timeParsed.Unix()))
 		})
 	timeFunctions["sleep"] = object.NewBuiltinFunction(
 		"sleep",
@@ -113,7 +113,7 @@ func init() {
 			),
 		},
 		func(_ object.Environment, args ...object.Object) object.Object {
-			return object.NewInteger(time.Now().Unix())
+			return object.NewInteger(int(time.Now().Unix()))
 		})
 
 	timeProperties["Layout"] = object.NewBuiltinProperty("Layout", object.NewString(time.Layout))
