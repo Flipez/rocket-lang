@@ -20,7 +20,7 @@ calc = def (input, idx, floor)
   new_idx = idx - 1
   delta = char_to_value[input[new_idx]]
   if (delta == nil)
-    raise(1, new_idx.plz_s())
+    raise(1, new_idx.to_s())
   end
   
   calc(input, new_idx, floor + delta)
@@ -37,7 +37,7 @@ if (part_one(")())())") != -3)
 end
 
 "// We can now read data from files so using 'real' input data is much easier"
-real_input = open("examples/aoc/2015/day1.input").content().strip()
+real_input = IO.open("examples/aoc/2015/day1.input").content().strip()
 
 puts("Solution Day 1 Part 1: ")
 puts(part_one(real_input))

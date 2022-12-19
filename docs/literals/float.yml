@@ -1,20 +1,20 @@
 title: "Float"
 methods:
-  plz_f:
+  to_f:
     description: "Returns self"
     input: |
-      123.456.plz_f()
+      123.456.to_f()
     output: |
       123.456
-  plz_s:
+  to_s:
     description: "Returns a string representation of the float."
     input: |
-      123.456.plz_s()
+      123.456.to_s()
     output: |
       "123.456"
-  plz_i:
+  to_i:
     description: "Converts the float into an integer."
     input: |
-      123.456.plz_i()
+      123.456.to_i()
     output: |
       123

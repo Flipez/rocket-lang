@@ -8,8 +8,8 @@ def part1(lines)
     char = parts[1][:-1]
     pass = parts[2]
 
-    min = parts[0].split("-")[0].plz_i()
-    max = parts[0].split("-")[1].plz_i()
+    min = parts[0].split("-")[0].to_i()
+    max = parts[0].split("-")[1].to_i()
 
     charCount = pass.count(char)
     if (charCount >= min && charCount <= max)
@@ -27,8 +27,8 @@ def part2(lines)
     char = parts[1][:-1]
     pass = parts[2]
 
-    firstPos = parts[0].split("-")[0].plz_i()
-    secondPos = parts[0].split("-")[1].plz_i()
+    firstPos = parts[0].split("-")[0].to_i()
+    secondPos = parts[0].split("-")[1].to_i()
 
     a = pass[firstPos-1]
     b = pass[secondPos-1]

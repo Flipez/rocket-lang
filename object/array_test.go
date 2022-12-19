@@ -35,7 +35,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].type()`, "ARRAY"},
 		{`a = []; a.yoink(1); a`, "[1]"},
 		{`[].nope()`, "test:1:3: undefined method `.nope()` for ARRAY"},
-		{`([].wat().lines().size() == [].methods().size() + 1).plz_s()`, "true"},
+		{`([].wat().lines().size() == [].methods().size() + 1).to_s()`, "true"},
 		{"a = [\"a\", \"b\"]; b = []; foreach i, item in a \n b.yoink(item) \nend; b.size()", 2},
 		{`[1,2,3].index(4)`, -1},
 		{`[1,2,3].index(3)`, 2},

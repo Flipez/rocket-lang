@@ -34,6 +34,18 @@ type Serializable interface {
 	MarshalJSON() ([]byte, error)
 }
 
+type Stringable interface {
+	ToStringObj(*Integer) *String
+}
+
+type Integerable interface {
+	ToIntegerObj(*Integer) *Integer
+}
+
+type Floatable interface {
+	ToFloatObj() *Float
+}
+
 var ANY_OBJ = []string{
 	INTEGER_OBJ,
 	STRING_OBJ,
@@ -200,6 +212,60 @@ func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
 
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
+		"to_s": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				if stringable, ok := o.(Stringable); ok {
+					if len(args) == 0 {
+						return stringable.ToStringObj(nil)
+					}
+					return stringable.ToStringObj(args[0].(*Integer))
+				}
+
+				return NewString("")
+			},
+		},
+		"to_i": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				if integerable, ok := o.(Integerable); ok {
+					if len(args) == 0 {
+						return integerable.ToIntegerObj(nil)
+					}
+					return integerable.ToIntegerObj(args[0].(*Integer))
+				}
+
+				return NewInteger(0)
+			},
+		},
+		"to_f": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				if floatable, ok := o.(Floatable); ok {
+					return floatable.ToFloatObj()
+				}
+
+				return NewFloat(0.0)
+			},
+		},
 		"to_json": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(

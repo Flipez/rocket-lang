@@ -3,7 +3,7 @@ import("util")
 def part1(lines)
   expenses = []
   foreach line in lines
-    expenses.yoink(line.plz_i())
+    expenses.yoink(line.to_i())
   end
   foreach i, a in expenses
     foreach b in expenses[i+1:]
@@ -17,7 +17,7 @@ end
 def part2(lines)
   expenses = []
   foreach line in lines
-    expenses.yoink(line.plz_i())
+    expenses.yoink(line.to_i())
   end
   foreach i, a in expenses
     foreach b in expenses[i+1:]

@@ -22,7 +22,7 @@ func TestHashObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "test:1:3: undefined method `.nope()` for HASH"},
-		{`({}.wat().lines().size() == {}.methods().size() + 1).plz_s()`, "true"},
+		{`({}.wat().lines().size() == {}.methods().size() + 1).to_s()`, "true"},
 		{`{}.type()`, "HASH"},
 		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.yoink(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
@@ -38,6 +38,9 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.include?()`, `to few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
+		{`{"a": 1, "b": 2}.to_s()`, ""},
+		{`{"a": 1, "b": 2}.to_i()`, 0},
+		{`{"a": 1, "b": 2}.to_f()`, 0.0},
 	}
 
 	testInput(t, tests)

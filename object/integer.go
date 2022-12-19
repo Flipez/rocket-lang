@@ -21,57 +21,11 @@ func (i *Integer) HashKey() HashKey {
 }
 
 func init() {
-	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{
-		"plz_s": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-				ArgPattern: Args(
-					OptArg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				i := o.(*Integer)
-
-				base := 10
-				if len(args) > 0 {
-					base = int(args[0].(*Integer).Value)
-				}
-
-				return NewString(strconv.FormatInt(i.Value, base))
-			},
-		},
-		"plz_i": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return o
-			},
-		},
-		"plz_f": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(FLOAT_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				i := o.(*Integer)
-				return NewFloat(float64(i.Value))
-			},
-		},
-	}
+	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{}
 }
 
 func (i *Integer) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(i, method, env, args)
-}
-
-func (i *Integer) ToFloat() Object {
-	return NewFloat(float64(i.Value))
 }
 
 func (i *Integer) GetIterator(start, step int, inclusive bool) Iterator {
@@ -90,6 +44,24 @@ func (i *Integer) GetIterator(start, step int, inclusive bool) Iterator {
 
 func (i *Integer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(i.Value)
+}
+
+func (i *Integer) ToStringObj(base *Integer) *String {
+	defaultBase := 10
+
+	if base != nil {
+		defaultBase = int(base.Value)
+	}
+
+	return NewString(strconv.FormatInt(i.Value, defaultBase))
+}
+
+func (i *Integer) ToIntegerObj(_ *Integer) *Integer {
+	return i
+}
+
+func (i *Integer) ToFloatObj() *Float {
+	return NewFloat(float64(i.Value))
 }
 
 type integerIterator struct {

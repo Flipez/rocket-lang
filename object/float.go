@@ -25,40 +25,7 @@ func (f *Float) HashKey() HashKey {
 }
 
 func init() {
-	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{
-		"plz_f": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(FLOAT_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return o
-			},
-		},
-		"plz_s": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				f := o.(*Float)
-				return NewString(f.toString())
-			},
-		},
-		"plz_i": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				f := o.(*Float)
-				return NewInteger(int64(f.Value))
-			},
-		},
-	}
+	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{}
 }
 
 func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Object {
@@ -81,4 +48,16 @@ func (f *Float) toString() string {
 
 func (f *Float) MarshalJSON() ([]byte, error) {
 	return json.Marshal(f.Value)
+}
+
+func (f *Float) ToStringObj(_ *Integer) *String {
+	return NewString(f.toString())
+}
+
+func (f *Float) ToIntegerObj(_ *Integer) *Integer {
+	return NewInteger(int64(f.Value))
+}
+
+func (f *Float) ToFloatObj() *Float {
+	return f
 }

@@ -22,12 +22,11 @@ func testFloatObject(t *testing.T, obj object.Object, expected float64) bool {
 
 func TestFloatObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`2.1.plz_s()`, "2.1"},
-		{`2.1.plz_f()`, 2.1},
-		{`2.1.plz_i()`, 2},
+		{`2.1.to_s()`, "2.1"},
+		{`2.1.to_f()`, 2.1},
+		{`2.1.to_i()`, 2},
 		{`10.0.type()`, "FLOAT"},
 		{`2.2.nope()`, "test:1:4: undefined method `.nope()` for FLOAT"},
-		{`(2.0.wat().lines().size() == 2.0.methods().size() + 1).plz_s()`, "true"},
 		{"1.1.to_json()", "1.1"},
 		{"3.123456.to_json()", "3.123456"},
 	}

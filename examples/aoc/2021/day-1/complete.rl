@@ -6,7 +6,7 @@ increase = 0
 
 a = []
 foreach i, number in input
-  a.yoink(number.strip().plz_i())
+  a.yoink(number.strip().to_i())
 end
 input = a
 
@@ -25,8 +25,8 @@ puts(increase)
 increase = 0
 
 foreach i, number in input
-  sum = number + input[i+1].plz_i() + input[i+2].plz_i()
-  sum_two = input[i+1].plz_i() + input[i+2].plz_i() + input[i+3].plz_i()
+  sum = number + input[i+1].to_i() + input[i+2].to_i()
+  sum_two = input[i+1].to_i() + input[i+2].to_i() + input[i+3].to_i()
   
   if (sum_two > sum)
     increase = increase + 1
