@@ -67,6 +67,35 @@ func (ao *Array) index(obj Object) int {
 
 func init() {
 	objectMethods[ARRAY_OBJ] = map[string]ObjectMethod{
+		"join": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ArgPattern: Args(
+					OptArg(STRING_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				arr := make([]string, len(ao.Elements))
+				join := ""
+
+				if len(args) > 0 {
+					join = args[0].(*String).Value
+				}
+
+				for i, element := range ao.Elements {
+					if e, ok := element.(Stringable); ok {
+						arr[i] = e.ToStringObj(nil).Value
+					} else {
+						return NewErrorFormat("Found non stringable element %s on index %d", element.Type(), i)
+					}
+				}
+
+				return NewString(strings.Join(arr, join))
+			},
+		},
 		"reverse": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(

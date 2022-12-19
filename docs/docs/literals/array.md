@@ -62,6 +62,15 @@ Returns the index of the given element in the array if found. Otherwise return `
 ' />
 
 
+### join(STRING)
+> Returns `STRING`
+
+
+
+
+
+
+
 ### last()
 > Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
 

@@ -69,6 +69,9 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3,4,5,6,7,8].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
 		{`[1,2].slices(3)`, `[[1, 2]]`},
 		{`[1,2].slices(0)`, `invalid slice size, needs to be > 0`},
+		{"[1,2,3,{}].join()", "Found non stringable element HASH on index 3"},
+		{"[1,2,3].join()", "123"},
+		{"[1,2,3].join('-')", "1-2-3"},
 	}
 
 	testInput(t, tests)
