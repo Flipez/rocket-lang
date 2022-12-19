@@ -126,6 +126,15 @@ Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
 ' />
 
 
+### sum()
+> Returns `INTEGER`
+
+
+
+
+
+
+
 ### uniq()
 > Returns `ARRAY|ERROR`
 

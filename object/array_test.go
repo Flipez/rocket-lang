@@ -72,6 +72,8 @@ func TestArrayObjectMethods(t *testing.T) {
 		{"[1,2,3,{}].join()", "Found non stringable element HASH on index 3"},
 		{"[1,2,3].join()", "123"},
 		{"[1,2,3].join('-')", "1-2-3"},
+		{"['1',2, 2.5,{}].sum()", "Found non number element HASH on index 3"},
+		{"['1', 2, 2.5].sum()", 5},
 	}
 
 	testInput(t, tests)
