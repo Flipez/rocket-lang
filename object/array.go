@@ -196,6 +196,26 @@ func init() {
 				return ao
 			},
 		},
+		"sum": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+				var result int
+
+				for i, element := range ao.Elements {
+					if val, ok := element.(Integerable); ok {
+						result += int(val.ToIntegerObj(nil).Value)
+					} else {
+						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
+					}
+				}
+				return NewInteger(int64(result))
+			},
+		},
 		"uniq": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
