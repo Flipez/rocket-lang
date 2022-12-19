@@ -78,7 +78,7 @@ func init() {
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
-				arr := []string{}
+				arr := make([]string, len(ao.Elements))
 				join := ""
 
 				if len(args) > 0 {
@@ -87,13 +87,13 @@ func init() {
 
 				for i, element := range ao.Elements {
 					if e, ok := element.(Stringable); ok {
-						arr = append(arr, e.ToStringObj(nil).Value)
+						arr[i] = e.ToStringObj(nil).Value
 					} else {
 						return NewErrorFormat("Found non stringable element %s on index %d", element.Type(), i)
 					}
 				}
 
-				return NewString(strings.Join(arr[:], join))
+				return NewString(strings.Join(arr, join))
 			},
 		},
 		"reverse": ObjectMethod{
