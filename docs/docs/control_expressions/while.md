@@ -46,3 +46,20 @@ end
 5
 6
 ```
+
+## Return Value
+Loops do return the variable they are iterating after the last loop.
+
+```js
+def iterate(items)
+  foreach item in items
+    puts(item)
+  end
+end
+
+a = [1,2,3,4,5]
+
+b = iterate(a)
+
+// b is now [1,2,3,4,5]
+```
