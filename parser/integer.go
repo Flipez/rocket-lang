@@ -18,7 +18,7 @@ func (p *Parser) parseInteger() ast.Expression {
 		return nil
 	}
 
-	lit.Value = value
+	lit.Value = int(value)
 
 	return lit
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
+func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 	result, ok := obj.(*object.Integer)
 	if !ok {
 		t.Errorf("object is not Integer. got=%T (%+v)", obj, obj)
@@ -60,7 +60,7 @@ func TestIntegerIteratable(t *testing.T) {
 	int1 := object.NewInteger(3)
 	int1Iterator := int1.GetIterator(0, 1, false)
 
-	for expected := int64(0); expected < 3; expected++ {
+	for expected := 0; expected < 3; expected++ {
 		_, value, ok := int1Iterator.Next()
 		actual := value.(*object.Integer)
 

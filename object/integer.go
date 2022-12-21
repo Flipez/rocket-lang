@@ -7,10 +7,10 @@ import (
 )
 
 type Integer struct {
-	Value int64
+	Value int
 }
 
-func NewInteger(i int64) *Integer {
+func NewInteger(i int) *Integer {
 	return &Integer{Value: i}
 }
 
@@ -53,7 +53,7 @@ func (i *Integer) ToStringObj(base *Integer) *String {
 		defaultBase = int(base.Value)
 	}
 
-	return NewString(strconv.FormatInt(i.Value, defaultBase))
+	return NewString(strconv.FormatInt(int64(i.Value), defaultBase))
 }
 
 func (i *Integer) ToIntegerObj(_ *Integer) *Integer {
@@ -73,7 +73,7 @@ func (i *integerIterator) Next() (Object, Object, bool) {
 		return nil, NewInteger(0), false
 	}
 
-	obj := NewInteger(int64(i.current))
+	obj := NewInteger(i.current)
 	i.current += i.step
 	return obj, obj, true
 }

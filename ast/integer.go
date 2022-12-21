@@ -6,7 +6,7 @@ import (
 
 type Integer struct {
 	Token token.Token
-	Value int64
+	Value int
 }
 
 func (il *Integer) TokenLiteral() string { return il.Token.Literal }

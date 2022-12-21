@@ -34,7 +34,7 @@ func testInput(t *testing.T, tests []inputTestCase) {
 
 		switch expected := tt.expected.(type) {
 		case int:
-			testIntegerObject(t, evaluated, int64(expected))
+			testIntegerObject(t, evaluated, expected)
 		case float64:
 			testFloatObject(t, evaluated, float64(expected))
 		case string:
@@ -157,16 +157,16 @@ func TestObjectToAny(t *testing.T) {
 	floatObj := object.NewFloat(1.2)
 	testcases := map[object.Object]any{
 		stringObj:   "a",
-		intObj:      int64(1),
+		intObj:      1,
 		floatObj:    float64(1.2),
 		object.TRUE: true,
-		object.NewArrayWithObjects(stringObj, intObj, floatObj): []any{"a", int64(1), float64(1.2)},
+		object.NewArrayWithObjects(stringObj, intObj, floatObj): []any{"a", 1, float64(1.2)},
 		object.NIL: nil,
 	}
 
 	hash := object.NewHash(nil)
-	hash.Set("a", int64(1))
-	testcases[hash] = map[any]any{"a": int64(1)}
+	hash.Set("a", 1)
+	testcases[hash] = map[any]any{"a": 1}
 
 	for input, expected := range testcases {
 		require.Equal(t, expected, object.ObjectToAny(input))

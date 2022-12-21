@@ -12,7 +12,7 @@ import (
 func TestEvalIntegerExpression(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected int64
+		expected int
 	}{
 		{"5", 5},
 		{"10", 10},
@@ -142,7 +142,7 @@ func TestIfElseExpressions(t *testing.T) {
 		evaluated := testEval(tt.input)
 		integer, ok := tt.expected.(int)
 		if ok {
-			testIntegerObject(t, evaluated, int64(integer))
+			testIntegerObject(t, evaluated, integer)
 		} else {
 			testNullObject(t, evaluated)
 		}
@@ -152,7 +152,7 @@ func TestIfElseExpressions(t *testing.T) {
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected int64
+		expected int
 	}{
 		{"return 10;", 10},
 		{"return 10; 9", 10},
@@ -245,7 +245,7 @@ func TestErrorHandling(t *testing.T) {
 func TestAssignStatements(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected int64
+		expected int
 	}{
 		{"a = 5; a;", 5},
 		{"a = 5 * 5; a;", 25},
@@ -285,7 +285,7 @@ func TestFunctionObject(t *testing.T) {
 func TestFunctionApplication(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected int64
+		expected int
 	}{
 		{"identity = def(x) \n x; \nend; identity(5);", 5},
 		{"identity = def(x) \n return x; \nend; identity(5);", 5},
@@ -396,7 +396,7 @@ func TestBuiltinFunctions(t *testing.T) {
 
 		switch expected := tt.expected.(type) {
 		case int:
-			testIntegerObject(t, evaluated, int64(expected))
+			testIntegerObject(t, evaluated, expected)
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
@@ -495,7 +495,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 		evaluated := testEval(tt.input)
 		integer, ok := tt.expected.(int)
 		if ok {
-			testIntegerObject(t, evaluated, int64(integer))
+			testIntegerObject(t, evaluated, integer)
 		} else {
 			testNullObject(t, evaluated)
 		}
@@ -519,7 +519,7 @@ func TestHashLiterals(t *testing.T) {
 		t.Fatalf("Eval did not return Hash. got=%T (%+v)", evaluated, evaluated)
 	}
 
-	expected := map[object.HashKey]int64{
+	expected := map[object.HashKey]int{
 		object.NewString("one").HashKey():   1,
 		object.NewString("two").HashKey():   2,
 		object.NewString("three").HashKey(): 3,
@@ -586,7 +586,7 @@ func TestHashIndexExpressions(t *testing.T) {
 		evaluated := testEval(tt.input)
 		integer, ok := tt.expected.(int)
 		if ok {
-			testIntegerObject(t, evaluated, int64(integer))
+			testIntegerObject(t, evaluated, integer)
 		} else {
 			testNullObject(t, evaluated)
 		}
@@ -596,7 +596,7 @@ func TestHashIndexExpressions(t *testing.T) {
 func TestNamedFunctionStatements(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected int64
+		expected int
 	}{
 		{"def five() \n return 5 \nend five()", 5},
 		{"def ten() \n return 10 \nend ten()", 10},
@@ -636,7 +636,7 @@ func TestImportExpression(t *testing.T) {
 		number, ok := tt.expected.(int)
 
 		if ok {
-			testIntegerObject(t, evaluated, int64(number))
+			testIntegerObject(t, evaluated, number)
 		} else {
 			testNullObject(t, evaluated)
 		}
@@ -663,7 +663,7 @@ func TestImportSearchPaths(t *testing.T) {
 		evaluated := testEval(tt.input)
 		number, _ := tt.expected.(int)
 
-		testIntegerObject(t, evaluated, int64(number))
+		testIntegerObject(t, evaluated, number)
 	}
 }
 
@@ -699,7 +699,7 @@ func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	return true
 }
 
-func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
+func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 	result, ok := obj.(*object.Integer)
 	if !ok {
 		t.Errorf("object is not Integer. got=%T (%+v)", obj, obj)

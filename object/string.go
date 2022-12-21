@@ -31,7 +31,7 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return NewInteger(int64(strings.Count(s.Value, arg)))
+				return NewInteger(strings.Count(s.Value, arg))
 			},
 		},
 		"find": ObjectMethod{
@@ -46,7 +46,7 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return NewInteger(int64(strings.Index(s.Value, arg)))
+				return NewInteger(strings.Index(s.Value, arg))
 			},
 		},
 		"format": ObjectMethod{
@@ -75,7 +75,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
-				return NewInteger(int64(utf8.RuneCountInString(s.Value)))
+				return NewInteger(utf8.RuneCountInString(s.Value))
 			},
 		},
 		"replace": ObjectMethod{
@@ -260,11 +260,11 @@ func init() {
 				case 0:
 					result = NewInteger(-1)
 				case 1:
-					result = NewInteger(int64(s.Value[0]))
+					result = NewInteger(int(s.Value[0]))
 				default:
 					arr := make([]Object, length)
 					for idx, char := range s.Value {
-						arr[idx] = NewInteger(int64(char))
+						arr[idx] = NewInteger(int(char))
 					}
 					result = NewArray(arr)
 				}
@@ -326,7 +326,7 @@ func (s *String) ToIntegerObj(base *Integer) *Integer {
 	}
 
 	i, _ := strconv.ParseInt(value, defaultBase, 64)
-	return NewInteger(i)
+	return NewInteger(int(i))
 }
 
 func (s *String) ToFloatObj() *Float {
@@ -343,7 +343,7 @@ type stringIterator struct {
 func (s *stringIterator) Next() (Object, Object, bool) {
 	if s.index < len(s.chars) {
 		val := NewString(string(s.chars[s.index]))
-		idx := NewInteger(int64(s.index))
+		idx := NewInteger(s.index)
 		s.index += s.step
 		return val, idx, true
 	}

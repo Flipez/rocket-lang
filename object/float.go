@@ -33,7 +33,7 @@ func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Obj
 }
 
 func (f *Float) TryInteger() Object {
-	if i := int64(f.Value); f.Value == float64(i) {
+	if i := int(f.Value); f.Value == float64(i) {
 		return NewInteger(i)
 	}
 	return f
@@ -55,7 +55,7 @@ func (f *Float) ToStringObj(_ *Integer) *String {
 }
 
 func (f *Float) ToIntegerObj(_ *Integer) *Integer {
-	return NewInteger(int64(f.Value))
+	return NewInteger(int(f.Value))
 }
 
 func (f *Float) ToFloatObj() *Float {

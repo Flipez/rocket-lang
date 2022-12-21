@@ -26,14 +26,14 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 				return object.NewError(err)
 			}
 
-			if l := int64(len(o.Elements)); int64(math.Abs(float64(idx))) >= l {
+			if l := len(o.Elements); int(math.Abs(float64(idx))) >= l {
 				return object.NewErrorFormat(
 					"index out of range, got %d but array has only %d elements", idx, l,
 				)
 			}
 
 			if idx < 0 {
-				idx = int64(len(o.Elements)) + idx
+				idx = len(o.Elements) + idx
 			}
 
 			o.Elements[idx] = evaluated
@@ -52,14 +52,14 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 				return object.NewError(err)
 			}
 
-			if l := int64(len(o.Value)); int64(math.Abs(float64(idx))) >= l {
+			if l := len(o.Value); int(math.Abs(float64(idx))) >= l {
 				return object.NewErrorFormat(
 					"index out of range, got %d but string is only %d long", idx, l,
 				)
 			}
 
 			if idx < 0 {
-				idx = int64(len(o.Value)) + idx
+				idx = len(o.Value) + idx
 			}
 
 			strEval, ok := evaluated.(*object.String)
@@ -80,7 +80,7 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	return evaluated
 }
 
-func handleIntegerIndex(ai *ast.Index, env *object.Environment) (int64, error) {
+func handleIntegerIndex(ai *ast.Index, env *object.Environment) (int, error) {
 	obj := Eval(ai.Index, env)
 	num, ok := obj.(*object.Integer)
 	if !ok {

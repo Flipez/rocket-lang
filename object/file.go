@@ -11,7 +11,7 @@ import (
 
 type File struct {
 	Filename string
-	Position int64
+	Position int
 	Handle   *os.File
 }
 
@@ -122,7 +122,7 @@ func init() {
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				f := o.(*File)
-				return NewInteger(f.Position)
+				return NewInteger(int(f.Position))
 			},
 		},
 		"read": ObjectMethod{
@@ -143,7 +143,7 @@ func init() {
 
 				buffer := make([]byte, bytesAmount)
 				bytesRealRead, err := f.Handle.Read(buffer)
-				f.Position += int64(bytesRealRead)
+				f.Position += bytesRealRead
 
 				if err != nil {
 					return NewError(err)
@@ -171,14 +171,14 @@ func init() {
 
 				seekAmount := args[0].(*Integer).Value
 				seekRelative := args[1].(*Integer).Value
-				newOffset, err := f.Handle.Seek(seekAmount, int(seekRelative))
-				f.Position = newOffset
+				newOffset, err := f.Handle.Seek(int64(seekAmount), int(seekRelative))
+				f.Position = int(newOffset)
 
 				if err != nil {
 					return NewError(err)
 				}
 
-				return NewInteger(f.Position)
+				return NewInteger(int(f.Position))
 			},
 		},
 		"write": ObjectMethod{
@@ -199,13 +199,13 @@ func init() {
 				}
 
 				bytesWritten, err := f.Handle.Write(content)
-				f.Position += int64(bytesWritten)
+				f.Position += bytesWritten
 
 				if err != nil {
 					return NewError(err)
 				}
 
-				return NewInteger(int64(bytesWritten))
+				return NewInteger(bytesWritten)
 			},
 		},
 	}
