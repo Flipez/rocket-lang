@@ -1,8 +1,8 @@
 # Changelog
 
-## [v0.21.1](https://github.com/flipez/rocket-lang/tree/v0.21.1) (2023-09-30)
+## [v0.22.0](https://github.com/flipez/rocket-lang/tree/v0.22.0) (2023-09-30)
 
-[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.21.0...v0.21.1)
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.21.0...v0.22.0)
 
 **Implemented enhancements:**
 
