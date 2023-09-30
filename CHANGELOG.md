@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.21.1](https://github.com/flipez/rocket-lang/tree/v0.21.1) (2023-09-30)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.21.0...v0.21.1)
+
+**Implemented enhancements:**
+
+- \[object/array\] Rename `.yeet()` and `.yoink()` to `.pop()` and `.push()` [\#179](https://github.com/Flipez/rocket-lang/pull/179) ([Flipez](https://github.com/Flipez))
+- \[object/array\] Add ability to `.sum()` elements [\#178](https://github.com/Flipez/rocket-lang/pull/178) ([Flipez](https://github.com/Flipez))
+- \[object/array\] Add ability to `.join()` elements [\#177](https://github.com/Flipez/rocket-lang/pull/177) ([Flipez](https://github.com/Flipez))
+- \[object\] Refactor type conversion and rename methods [\#175](https://github.com/Flipez/rocket-lang/pull/175) ([Flipez](https://github.com/Flipez))
+- \[language/control-expressions\] Add support for `🚀-range`  syntax [\#174](https://github.com/Flipez/rocket-lang/pull/174) ([Flipez](https://github.com/Flipez))
+- \[errorhandling\] Fix line position, add `file:line:pos` to multiple error messages [\#173](https://github.com/Flipez/rocket-lang/pull/173) ([Flipez](https://github.com/Flipez))
+
+**Fixed bugs:**
+
+- \[evaluator/while\]: Add support for `break` [\#168](https://github.com/Flipez/rocket-lang/pull/168) ([MarkusFreitag](https://github.com/MarkusFreitag))
+
+**Merged pull requests:**
+
+- Bump go version to 1.21 [\#195](https://github.com/Flipez/rocket-lang/pull/195) ([Flipez](https://github.com/Flipez))
+
 ## [v0.21.0](https://github.com/flipez/rocket-lang/tree/v0.21.0) (2022-12-06)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.20.1...v0.21.0)
