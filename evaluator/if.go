@@ -6,16 +6,17 @@ import (
 )
 
 func evalIf(ie *ast.If, env *object.Environment) object.Object {
-	condition := Eval(ie.Condition, env)
-
-	if object.IsError(condition) {
-		return condition
+	for _, pair := range ie.ConConPairs {
+		condition := Eval(pair.Condition, env)
+		if object.IsError(condition) {
+			return condition
+		}
+		if object.IsTruthy(condition) {
+			return Eval(pair.Consequence, env)
+		}
 	}
-	if object.IsTruthy(condition) {
-		return Eval(ie.Consequence, env)
-	} else if ie.Alternative != nil {
+	if ie.Alternative != nil {
 		return Eval(ie.Alternative, env)
-	} else {
-		return object.NIL
 	}
+	return object.NIL
 }
