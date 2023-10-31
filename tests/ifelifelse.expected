@@ -1,4 +1,4 @@
-"if/ef/el: if block"
-"if/ef/el: ef block"
-"if/ef/el: else block"
+"if/elif/el: if block"
+"if/elif/el: elif block"
+"if/elif/el: else block"
 nil

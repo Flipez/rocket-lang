@@ -1,5 +1,5 @@
-"if/ef/el: if block"
-"if/ef/ef/el: first ef block"
-"if/ef/ef/el: second ef block"
-"if/ef/else: else block"
+"if/elif/el: if block"
+"if/elif/elif/el: first elif block"
+"if/elif/elif/el: second elif block"
+"if/elif/else: else block"
 nil
