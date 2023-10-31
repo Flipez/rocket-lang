@@ -11,7 +11,7 @@ func (p *Parser) parseBlock() *ast.Block {
 
 	p.nextToken()
 
-	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.END) && !p.curTokenIs(token.ELSE) && !p.curTokenIs(token.EF) && !p.curTokenIs(token.RESCUE) {
+	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.END) && !p.curTokenIs(token.ELSE) && !p.curTokenIs(token.ELIF) && !p.curTokenIs(token.RESCUE) {
 
 		stmt := p.parseStatement()
 		if stmt != nil {

@@ -20,7 +20,7 @@ func (p *Parser) parseIf() ast.Expression {
 
 	expression.ConConPairs[0].Consequence = p.parseBlock()
 
-	for p.curTokenIs(token.EF) {
+	for p.curTokenIs(token.ELIF) {
 
 		if !p.expectPeek(token.LPAREN) {
 			return nil
