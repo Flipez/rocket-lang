@@ -27,7 +27,7 @@ func (ie *If) String() string {
 	out.WriteString(ie.ConConPairs[0].Consequence.String())
 
 	for _, pair := range ie.ConConPairs[1:] {
-		out.WriteString("ef (")
+		out.WriteString("elif (")
 		out.WriteString(pair.Condition.String())
 		out.WriteString(")\n  ")
 		out.WriteString(pair.Consequence.String())
