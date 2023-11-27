@@ -30,7 +30,7 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 
 - "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
 - "body" needs to be a STRING. Default ""
-- "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}
+- "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is \{"Content-Type": "text/plain"\}
 
 
 ```js
