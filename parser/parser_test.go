@@ -443,17 +443,17 @@ func TestIfExpression(t *testing.T) {
 		t.Fatalf("stmt.Expression is not ast.IfExpression. got=%T", stmt.Expression)
 	}
 
-	if !testInfix(t, exp.Condition, "x", "<", "y") {
+	if !testInfix(t, exp.ConConPairs[0].Condition, "x", "<", "y") {
 		return
 	}
 
-	if len(exp.Consequence.Statements) != 1 {
+	if len(exp.ConConPairs[0].Consequence.Statements) != 1 {
 		t.Errorf("consequence is not 1 statements. got=%d\n", len(program.Statements))
 	}
 
-	consequence, ok := exp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	consequence, ok := exp.ConConPairs[0].Consequence.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", exp.Consequence.Statements[0])
+		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", exp.ConConPairs[0].Consequence.Statements[0])
 	}
 
 	if !testIdentifier(t, consequence.Expression, "x") {

@@ -33,8 +33,8 @@ func TestString(t *testing.T) {
 			"foreach i, e in [1, 2, 3] \n  puts(i)\nend",
 		},
 		{
-			"if (true)\n  return (true)\nelse\n  puts(false)\nend",
-			"if (true)\n  return (true)\nelse\n  puts(false)\nend",
+			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  puts(false)\nend",
+			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  puts(false)\nend",
 		},
 		{
 			"while (true)\n  puts(true)\nend",
