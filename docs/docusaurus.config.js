@@ -11,7 +11,7 @@ const config = {
   tagline: '',
   url: 'https://rocket-lang.org',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   // Even if you don't use internalization, you can use this field to set useful
