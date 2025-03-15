@@ -35,7 +35,7 @@ func init() {
 			file := object.NewFile(path)
 			err := file.Open(mode, perm)
 			if err != nil {
-				return object.NewErrorFormat(err.Error())
+				return object.NewErrorFormat("%s", err.Error())
 			}
 			return (file)
 		})
