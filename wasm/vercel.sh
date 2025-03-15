@@ -1,2 +1,2 @@
-amazon-linux-extras install golang1.11
+dnf install golang1.22
 go build -tags wasm -o main.wasm ../main.go
