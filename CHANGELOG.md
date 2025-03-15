@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.22.1](https://github.com/flipez/rocket-lang/tree/v0.22.1) (2025-03-15)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.22.0...v0.22.1)
+
+**Implemented enhancements:**
+
+- Implement elseif [\#198](https://github.com/Flipez/rocket-lang/pull/198) ([MarkusFreitag](https://github.com/MarkusFreitag))
+
+**Merged pull requests:**
+
+- fix\(release\): Update goreleaser config to v2 [\#210](https://github.com/Flipez/rocket-lang/pull/210) ([Flipez](https://github.com/Flipez))
+- chore\(docs\): Update to Docusaurus 3.7 and React 19 [\#209](https://github.com/Flipez/rocket-lang/pull/209) ([Flipez](https://github.com/Flipez))
+- chore\(go\): Update Go to 1.24 [\#208](https://github.com/Flipez/rocket-lang/pull/208) ([Flipez](https://github.com/Flipez))
+- Bump express from 4.18.1 to 4.19.2 in /docs [\#207](https://github.com/Flipez/rocket-lang/pull/207) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ua-parser-js from 0.7.31 to 0.7.37 in /docs [\#202](https://github.com/Flipez/rocket-lang/pull/202) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @babel/traverse from 7.18.10 to 7.23.4 in /docs [\#201](https://github.com/Flipez/rocket-lang/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
+- feat\(docusaurus\): Update docusaurus to 3.0.0 [\#199](https://github.com/Flipez/rocket-lang/pull/199) ([Flipez](https://github.com/Flipez))
+- Bump json5 from 2.2.1 to 2.2.3 in /docs [\#182](https://github.com/Flipez/rocket-lang/pull/182) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.22.0](https://github.com/flipez/rocket-lang/tree/v0.22.0) (2023-09-30)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.21.0...v0.22.0)
