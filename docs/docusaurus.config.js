@@ -24,6 +24,9 @@ const config = {
 
   future: {
     experimental_faster: true,
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true,
+    }
   },
 
   presets: [
