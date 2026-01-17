@@ -9,7 +9,6 @@
 - Consider dropping braces requirement for control expressions [\#203](https://github.com/Flipez/rocket-lang/issues/203)
 - Support having multiple return values [\#112](https://github.com/Flipez/rocket-lang/issues/112)
 - Implement matrix multiplication [\#64](https://github.com/Flipez/rocket-lang/issues/64)
-- Add support for `array.each()` [\#44](https://github.com/Flipez/rocket-lang/issues/44)
 
 **Fixed bugs:**
 
