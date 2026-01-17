@@ -94,6 +94,12 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"te\"st".size()`, 5},
 		{`'te\"st'.size()`, 6},
 		{`"te\"st" == 'te"st'`, true},
+		{`"te\tst".size()`, 5},
+		{`"te\rst".size()`, 5},
+		{`"te\\st".size()`, 5},
+		{`"a\tb\tc".split("\t")`, `["a", "b", "c"]`},
+		{`"line1\r\nline2".split("\r\n")`, `["line1", "line2"]`},
+		{`"path\\to\\file".count("\\")`, 2},
 		{`"test%d".format(1)`, "test1"},
 		{`"%dtest%d".format(1,2)`, "1test2"},
 		{`"test%5d".format(1)`, "test    1"},
@@ -121,5 +127,28 @@ func TestStringHashKey(t *testing.T) {
 
 	if diff1.HashKey() != diff2.HashKey() {
 		t.Errorf("strings with different content have different hash keys")
+	}
+}
+
+func TestStringInspect(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"test", `"test"`},
+		{"test\nline2", `"test\nline2"`},
+		{"tab\there", `"tab\there"`},
+		{"carriage\rreturn", `"carriage\rreturn"`},
+		{"back\\slash", `"back\\slash"`},
+		{"quote\"test", `"quote\"test"`},
+		{"multi\n\t\r\\\"test", `"multi\n\t\r\\\"test"`},
+	}
+
+	for _, tt := range tests {
+		str := object.NewString(tt.input)
+		result := str.Inspect()
+		if result != tt.expected {
+			t.Errorf("Inspect() for %q: got=%q, want=%q", tt.input, result, tt.expected)
+		}
 	}
 }
