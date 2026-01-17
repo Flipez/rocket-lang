@@ -802,3 +802,46 @@ func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 		t.Errorf("expected error that iterating over a negative number fails")
 	}
 }
+
+func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
+	l := lexer.New("a, 123 = [1, 2]", "test")
+	p := New(l, nil)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected parser error for non-identifier in multiple assignment")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected identifier in multiple assignment") {
+		t.Errorf("expected error about identifier in multiple assignment, got: %q", p.Errors()[0])
+	}
+}
+
+func TestParsingMultipleAssignmentFailsWithoutAssignOperator(t *testing.T) {
+	l := lexer.New("a, b, c", "test")
+	p := New(l, nil)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected parser error for missing assignment operator")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be =") {
+		t.Errorf("expected error about missing = operator, got: %q", p.Errors()[0])
+	}
+}
+
+func TestParsingAssignmentFailsWithInvalidLeftSide(t *testing.T) {
+	// Try to assign to a literal value (not an identifier or index)
+	l := lexer.New("123 = 456", "test")
+	p := New(l, nil)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected parser error for invalid assignment target")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected assign token to be IDENT") {
+		t.Errorf("expected error about invalid assignment target, got: %q", p.Errors()[0])
+	}
+}
