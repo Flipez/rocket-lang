@@ -59,7 +59,7 @@ return 1, 2, 3
 return [1, 2, 3]
 ```
 
-The returned array can be unpacked into multiple variables (see [Multiple Assignment](/specification/local_variables#multiple-assignment-array-unpacking)):
+The returned array can be unpacked into multiple variables (see [Multiple Assignment](./local_variables#multiple-assignment-array-unpacking)):
 
 ```js
 x, y, z = get_coordinates()
