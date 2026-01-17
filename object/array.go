@@ -87,7 +87,7 @@ func init() {
 
 				for i, element := range ao.Elements {
 					if e, ok := element.(Stringable); ok {
-						arr[i] = e.ToStringObj(nil).Value
+						arr[i] = e.ToStringObj().Value
 					} else {
 						return NewErrorFormat("Found non stringable element %s on index %d", element.Type(), i)
 					}
@@ -208,7 +208,7 @@ func init() {
 
 				for i, element := range ao.Elements {
 					if val, ok := element.(Integerable); ok {
-						result += int(val.ToIntegerObj(nil).Value)
+						result += int(val.ToIntegerObj().Value)
 					} else {
 						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
 					}

@@ -42,11 +42,11 @@ func (b *Boolean) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.Value)
 }
 
-func (b *Boolean) ToStringObj(_ *Integer) *String {
+func (b *Boolean) ToStringObj() *String {
 	return NewString(strconv.FormatBool(b.Value))
 }
 
-func (b *Boolean) ToIntegerObj(_ *Integer) *Integer {
+func (b *Boolean) ToIntegerObj() *Integer {
 	if b.Value {
 		return NewInteger(1)
 	}

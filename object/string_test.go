@@ -7,6 +7,7 @@ import (
 )
 
 func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	t.Helper()
 	result, ok := obj.(*object.String)
 	if !ok {
 		t.Errorf("obj is not String. got=%T(%+v)", obj, obj)
@@ -37,12 +38,10 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test".to_i()`, 0},
 		{`"125".to_i()`, 125},
 		{`"test125".to_i()`, 0},
-		{`"0125".to_i()`, 125},
+		{`"0125".to_i()`, 85},
 		{`"1010".to_i()`, 1010},
-		{`"1010".to_i(2)`, 10},
-		{`"0x1022".to_i()`, 530},
-		{`"0x1022".to_i(8)`, 530},
-		{`"1022".to_i(8)`, 530},
+		{`"-1010".to_i()`, -1010},
+		{`"0x1022".to_i()`, 4130},
 		{`"1022".to_f()`, 1022.0},
 		{`"1022".to_s()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},

@@ -7,34 +7,38 @@ import (
 )
 
 func evalIntegerInfix(operator string, left, right object.Object) object.Object {
-	leftVal := left.(*object.Integer).Value
-	rightVal := right.(*object.Integer).Value
+	leftInt := left.(*object.Integer)
+	rightInt := right.(*object.Integer)
+
+	if leftInt.Base != rightInt.Base {
+		return object.NewErrorFormat("infix operation with unequal base not allowed")
+	}
 
 	switch operator {
 	case "+":
-		return object.NewInteger(leftVal + rightVal)
+		return object.NewIntegerWithBase(leftInt.Value+rightInt.Value, leftInt.Base)
 	case "-":
-		return object.NewInteger(leftVal - rightVal)
+		return object.NewIntegerWithBase(leftInt.Value-rightInt.Value, leftInt.Base)
 	case "*":
-		return object.NewInteger(leftVal * rightVal)
+		return object.NewIntegerWithBase(leftInt.Value*rightInt.Value, leftInt.Base)
 	case "/":
-		if rightVal == 0 {
+		if rightInt.Value == 0 {
 			return object.NewErrorFormat("division by zero not allowed")
 		}
-		return object.NewInteger(leftVal / rightVal)
+		return object.NewIntegerWithBase(leftInt.Value/rightInt.Value, leftInt.Base)
 	case "%":
-		if rightVal == 0 {
+		if rightInt.Value == 0 {
 			return object.NewErrorFormat("division by zero not allowed")
 		}
-		return object.NewInteger(leftVal % rightVal)
+		return object.NewIntegerWithBase(leftInt.Value%rightInt.Value, leftInt.Base)
 	case "<":
-		return nativeBoolToBooleanObject(leftVal < rightVal)
+		return nativeBoolToBooleanObject(leftInt.Value < rightInt.Value)
 	case "<=":
-		return nativeBoolToBooleanObject(leftVal <= rightVal)
+		return nativeBoolToBooleanObject(leftInt.Value <= rightInt.Value)
 	case ">":
-		return nativeBoolToBooleanObject(leftVal > rightVal)
+		return nativeBoolToBooleanObject(leftInt.Value > rightInt.Value)
 	case ">=":
-		return nativeBoolToBooleanObject(leftVal >= rightVal)
+		return nativeBoolToBooleanObject(leftInt.Value >= rightInt.Value)
 	default:
 		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}

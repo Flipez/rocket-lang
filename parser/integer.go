@@ -10,7 +10,7 @@ import (
 func (p *Parser) parseInteger() ast.Expression {
 	lit := &ast.Integer{Token: p.curToken}
 
-	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
+	value, err := strconv.ParseInt(p.curToken.Literal, 0, 0)
 	if err != nil {
 		token := p.curToken
 		msg := fmt.Sprintf("%d:%d: could not parse `%q` as integer", token.LineNumber, token.LinePosition, token.Literal)

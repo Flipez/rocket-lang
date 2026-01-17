@@ -35,11 +35,11 @@ type Serializable interface {
 }
 
 type Stringable interface {
-	ToStringObj(*Integer) *String
+	ToStringObj() *String
 }
 
 type Integerable interface {
-	ToIntegerObj(*Integer) *Integer
+	ToIntegerObj() *Integer
 }
 
 type Floatable interface {
@@ -219,16 +219,10 @@ func init() {
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
 				),
-				ArgPattern: Args(
-					OptArg(INTEGER_OBJ),
-				),
 			},
-			method: func(o Object, args []Object, _ Environment) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				if stringable, ok := o.(Stringable); ok {
-					if len(args) == 0 {
-						return stringable.ToStringObj(nil)
-					}
-					return stringable.ToStringObj(args[0].(*Integer))
+					return stringable.ToStringObj()
 				}
 
 				return NewString("")
@@ -239,18 +233,11 @@ func init() {
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
 				),
-				ArgPattern: Args(
-					OptArg(INTEGER_OBJ),
-				),
 			},
-			method: func(o Object, args []Object, _ Environment) Object {
+			method: func(o Object, _ []Object, _ Environment) Object {
 				if integerable, ok := o.(Integerable); ok {
-					if len(args) == 0 {
-						return integerable.ToIntegerObj(nil)
-					}
-					return integerable.ToIntegerObj(args[0].(*Integer))
+					return integerable.ToIntegerObj()
 				}
-
 				return NewInteger(0)
 			},
 		},

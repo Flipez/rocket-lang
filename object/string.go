@@ -317,25 +317,29 @@ func (s *String) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
 }
 
-func (s *String) ToStringObj(_ *Integer) *String {
+func (s *String) ToStringObj() *String {
 	return s
 }
 
-func (s *String) ToIntegerObj(base *Integer) *Integer {
-	defaultBase := 10
-	value := s.Value
+func (s *String) ToIntegerObj() *Integer {
+	base := 10
 
-	if base != nil {
-		defaultBase = int(base.Value)
+	switch {
+	case strings.HasPrefix(s.Value, "0b"):
+		base = 2
+	case strings.HasPrefix(s.Value, "0x"):
+		base = 16
+	case strings.HasPrefix(s.Value, "0"), strings.HasPrefix(s.Value, "0o"):
+		base = 8
 	}
 
-	if strings.HasPrefix(value, "0x") {
-		defaultBase = 8
-		value = strings.TrimPrefix(value, "0x")
-	}
+	i, err := strconv.ParseInt(s.Value, 0, 0)
 
-	i, _ := strconv.ParseInt(value, defaultBase, 64)
-	return NewInteger(int(i))
+	if err != nil {
+		fmt.Println(err)
+		return NewInteger(0)
+	}
+	return NewIntegerWithBase(int(i), base)
 }
 
 func (s *String) ToFloatObj() *Float {

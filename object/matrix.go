@@ -407,6 +407,6 @@ func (m *Matrix) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (m *Matrix) ToStringObj(_ *Integer) *String {
+func (m *Matrix) ToStringObj() *String {
 	return NewString(m.Inspect())
 }

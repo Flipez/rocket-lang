@@ -29,6 +29,8 @@ func testEval(input string) object.Object {
 }
 
 func testInput(t *testing.T, tests []inputTestCase) {
+	t.Helper()
+
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
 

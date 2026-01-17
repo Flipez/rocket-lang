@@ -50,11 +50,11 @@ func (f *Float) MarshalJSON() ([]byte, error) {
 	return json.Marshal(f.Value)
 }
 
-func (f *Float) ToStringObj(_ *Integer) *String {
+func (f *Float) ToStringObj() *String {
 	return NewString(f.toString())
 }
 
-func (f *Float) ToIntegerObj(_ *Integer) *Integer {
+func (f *Float) ToIntegerObj() *Integer {
 	return NewInteger(int(f.Value))
 }
 

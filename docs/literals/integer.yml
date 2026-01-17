@@ -11,17 +11,23 @@ example: |
   is_true = 1 == 1;
   is_false = 1 == 2;
 methods:
+  base:
+    description: "Returns the base of the integer."
+    input: |
+      0b1010".to_i().base()
+    output:
+      2
+  to_base:
+    description: "Converts the integer into a integer with the given base"
+    input: |
+      "0b1010".to_i().to_base(8)
+    output: |
+      0o12
   to_s:
     description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems"
     input: |
       1234.to_s()
-      1234.to_s(2)
-      1234.to_s(8)
-      1234.to_s(10)
     output: |
-      "1234"
-      "10011010010"
-      "2322"
       "1234"
   to_i:
     description: "Returns self"
