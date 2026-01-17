@@ -94,3 +94,13 @@ methods:
       [1, 2, 3]
       nil
       [1, 2, 3, "a"]
+  to_m:
+    description: "Converts a nested array (2D array) to a Matrix object."
+    input: |
+      [[1, 2], [3, 4]].to_m()
+    output: |
+      2x2 matrix
+      ┌          ┐
+      │ 1.0  2.0 │
+      │ 3.0  4.0 │
+      └          ┘

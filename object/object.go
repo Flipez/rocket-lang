@@ -52,6 +52,7 @@ var ANY_OBJ = []string{
 	BOOLEAN_OBJ,
 	ARRAY_OBJ,
 	HASH_OBJ,
+	MATRIX_OBJ,
 	FLOAT_OBJ,
 	ERROR_OBJ,
 	NIL_OBJ,
@@ -75,6 +76,7 @@ const (
 	STRING_OBJ           = "STRING"
 	ARRAY_OBJ            = "ARRAY"
 	HASH_OBJ             = "HASH"
+	MATRIX_OBJ           = "MATRIX"
 	FILE_OBJ             = "FILE"
 	MODULE_OBJ           = "MODULE"
 	HTTP_OBJ             = "HTTP"
