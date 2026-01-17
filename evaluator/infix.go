@@ -126,6 +126,8 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		return evalStringInfixExpression(operator, left, right)
 	case left.Type() == object.ARRAY_OBJ && right.Type() == object.ARRAY_OBJ:
 		return evalArrayInfixExpression(operator, left, right)
+	case left.Type() == object.MATRIX_OBJ && right.Type() == object.MATRIX_OBJ:
+		return evalMatrixInfixExpression(operator, left, right)
 	default:
 		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -154,6 +156,34 @@ func evalArrayInfixExpression(operator string, left, right object.Object) object
 		copy(elements, leftArray.Elements)
 		copy(elements[len(leftArray.Elements):], rightArray.Elements)
 		return object.NewArray(elements)
+	default:
+		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+	}
+}
+
+func evalMatrixInfixExpression(operator string, left, right object.Object) object.Object {
+	leftMatrix := left.(*object.Matrix)
+	rightMatrix := right.(*object.Matrix)
+
+	switch operator {
+	case "*":
+		result, err := leftMatrix.Multiply(rightMatrix)
+		if err != nil {
+			return object.NewErrorFormat("matrix multiplication failed: %s", err.Error())
+		}
+		return result
+	case "+":
+		result, err := leftMatrix.Add(rightMatrix)
+		if err != nil {
+			return object.NewErrorFormat("matrix addition failed: %s", err.Error())
+		}
+		return result
+	case "-":
+		result, err := leftMatrix.Subtract(rightMatrix)
+		if err != nil {
+			return object.NewErrorFormat("matrix subtraction failed: %s", err.Error())
+		}
+		return result
 	default:
 		return object.NewErrorFormat("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}

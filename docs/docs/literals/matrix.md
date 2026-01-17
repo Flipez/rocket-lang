@@ -1,81 +1,46 @@
 import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
-# Hash
+# Matrix
 
+A matrix is a 2-dimensional array of numbers used for linear algebra operations.
+Matrices are created using the Matrix() constructor with nested arrays.
+
+Matrix supports mathematical operations:
+- Matrix multiplication: `m1 * m2`
+- Element-wise addition: `m1 + m2`
+- Element-wise subtraction: `m1 - m2`
 
 
 
 ```js
-people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
+m1 = Matrix([[1, 2], [3, 4]])
+m2 = Matrix([[5, 6], [7, 8]])
 
-// reassign of values
-h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
-h["a"] = 3
-h["b"] = "moo"
-puts(h["a"])
-puts(h["b"])
-puts(h[2])h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
-h["a"] = 3
-h["b"] = "moo"
+result = m1 * m2
+sum = m1 + m2
+diff = m2 - m1
+
+puts(result)
 
 // should output
-1
-true
-3
-"moo"
-true
+Matrix(2x2)[
+  [19, 22],
+  [43, 50]
+]
 
 ```
 
 ## Literal Specific Methods
 
-### get(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL, INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
-
-Returns the value of the given key or the default
-
-
-<CodeBlockSimple input='{"a": "1", "b": "2"}.get("a", 10)
-{"a": "1", "b": "2"}.get("c", 10)
-' output='1
-10
-' />
-
-
-### include?(BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH)
-> Returns `BOOLEAN`
-
-Returns true or false wether the hash contains the given object as key
-
-
-<CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)
-{"a": 1, 1: "b"}.include?("c")
-' output='true false' />
-
-
-### keys()
+### to_a()
 > Returns `ARRAY`
 
-Returns the keys of the hash.
+Converts the matrix back to a nested array representation.
 
 
-<CodeBlockSimple input='{"a": "1", "b": "2"}.keys()
-' output='["a", "b"]
-' />
-
-
-### values()
-> Returns `ARRAY`
-
-Returns the values of the hash.
-
-
-<CodeBlockSimple input='{"a": "1", "b": "2"}.values()
-' output='["1", "2"]
+<CodeBlockSimple input='m = Matrix([[1, 2], [3, 4]])
+m.to_a()
+' output='[[1.0, 2.0], [3.0, 4.0]]
 ' />
 
 
