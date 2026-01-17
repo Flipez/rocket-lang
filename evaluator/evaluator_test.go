@@ -597,6 +597,101 @@ func TestHashIndexExpressions(t *testing.T) {
 	}
 }
 
+func TestMatrixIndexExpressions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[0]",
+			"[1.0, 2.0]",
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[1]",
+			"[3.0, 4.0]",
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[0][0]",
+			1.0,
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[0][1]",
+			2.0,
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[1][0]",
+			3.0,
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[1][1]",
+			4.0,
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[-1]",
+			"[3.0, 4.0]",
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[-1][0]",
+			3.0,
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[-2]",
+			"[1.0, 2.0]",
+		},
+		{
+			"m = [[1, 2, 3], [4, 5, 6]].to_m(); m[0][2]",
+			3.0,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case string:
+			arr, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+			if arr.Inspect() != expected {
+				t.Errorf("array has wrong value. got=%s, want=%s", arr.Inspect(), expected)
+			}
+		case float64:
+			testFloatObject(t, evaluated, expected)
+		default:
+			t.Errorf("unexpected expected type: %T", expected)
+		}
+	}
+}
+
+func TestMatrixIndexOutOfBounds(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[2]",
+			"row index 2 out of bounds [0, 2)",
+		},
+		{
+			"m = [[1, 2], [3, 4]].to_m(); m[-3]",
+			"row index -1 out of bounds [0, 2)",
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		errObj, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("no error object returned. got=%T(%+v)", evaluated, evaluated)
+			continue
+		}
+		if errObj.Message != tt.expected {
+			t.Errorf("wrong error message. expected=%q, got=%q", tt.expected, errObj.Message)
+		}
+	}
+}
+
 func TestNamedFunctionStatements(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -711,6 +806,20 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 	}
 	if result.Value != expected {
 		t.Errorf("object has wrong value. got=%d, want=%d", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
+func testFloatObject(t *testing.T, obj object.Object, expected float64) bool {
+	result, ok := obj.(*object.Float)
+	if !ok {
+		t.Errorf("object is not Float. got=%T (%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%f, want=%f", result.Value, expected)
 		return false
 	}
 
