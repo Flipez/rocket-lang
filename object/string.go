@@ -279,11 +279,20 @@ func (s *String) Inspect() string {
 	var output string
 
 	for _, char := range s.Value {
-		if char == '"' {
-			output += string('\\')
+		switch char {
+		case '"':
+			output += `\"`
+		case '\n':
+			output += `\n`
+		case '\t':
+			output += `\t`
+		case '\r':
+			output += `\r`
+		case '\\':
+			output += `\\`
+		default:
+			output += string(char)
 		}
-
-		output += string(char)
 	}
 
 	return `"` + output + `"`

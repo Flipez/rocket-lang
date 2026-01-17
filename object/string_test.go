@@ -90,7 +90,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`2 * "test"`, "testtest"},
 		{`"test".to_json()`, `"test"`},
 		{`{"test": HTTP.new()}.to_json()`, `Error while marshal value: json: error calling MarshalJSON for type *object.Hash: unable to serialize value: "test"`},
-		{`"te\nst".size()`, 6},
+		{`"te\nst".size()`, 5},
 		{`"te\"st".size()`, 5},
 		{`'te\"st'.size()`, 6},
 		{`"te\"st" == 'te"st'`, true},
