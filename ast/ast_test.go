@@ -46,7 +46,7 @@ func TestString(t *testing.T) {
 		},
 		{
 			"while\n  puts(true)\n",
-			"puts(true)",
+			"while (puts(true))\n  \nend",
 		},
 		{
 			"next",
