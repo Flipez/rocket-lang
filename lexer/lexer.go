@@ -229,13 +229,33 @@ func (l *Lexer) readDoubleQuoteString() string {
 	for {
 		l.readChar()
 
-		if l.ch == '\\' && l.peekChar() == '"' {
-			l.readChar()
+		if l.ch == '\\' {
+			nextCh := l.peekChar()
+			switch nextCh {
+			case '"':
+				l.readChar()
+				escapedString += "\""
+			case 'n':
+				l.readChar()
+				escapedString += "\n"
+			case 't':
+				l.readChar()
+				escapedString += "\t"
+			case 'r':
+				l.readChar()
+				escapedString += "\r"
+			case '\\':
+				l.readChar()
+				escapedString += "\\"
+			default:
+				// If not a recognized escape sequence, keep the backslash
+				escapedString += string(l.ch)
+			}
 		} else if l.ch == '"' || l.ch == 0 {
 			break
+		} else {
+			escapedString += string(l.ch)
 		}
-
-		escapedString += string(l.ch)
 	}
 
 	return escapedString

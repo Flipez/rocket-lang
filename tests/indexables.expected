@@ -1,11 +1,11 @@
-"c"
-"e"
-"ab"
-"abcd"
-"cdef"
-"ef"
-"bcd"
-"abCdEf"
+c
+e
+ab
+abcd
+cdef
+ef
+bcd
+abCdEf
 3
 4
 [1, 2]
@@ -17,6 +17,6 @@
 1
 true
 3
-"moo"
+moo
 true
 nil
