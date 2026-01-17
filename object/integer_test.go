@@ -7,6 +7,7 @@ import (
 )
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
+	t.Helper()
 	result, ok := obj.(*object.Integer)
 	if !ok {
 		t.Errorf("object is not Integer. got=%T (%+v)", obj, obj)
@@ -23,7 +24,6 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 func TestIntegerObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`2.to_s()`, "2"},
-		{`10.to_s(2)`, "1010"},
 		{`2.to_f()`, 2.0},
 		{`2.to_i()`, 2},
 		{`10.type()`, "INTEGER"},

@@ -46,17 +46,11 @@ func (i *Integer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(i.Value)
 }
 
-func (i *Integer) ToStringObj(base *Integer) *String {
-	defaultBase := 10
-
-	if base != nil {
-		defaultBase = int(base.Value)
-	}
-
-	return NewString(strconv.FormatInt(int64(i.Value), defaultBase))
+func (i *Integer) ToStringObj() *String {
+	return NewString(strconv.FormatInt(int64(i.Value), 10))
 }
 
-func (i *Integer) ToIntegerObj(_ *Integer) *Integer {
+func (i *Integer) ToIntegerObj() *Integer {
 	return i
 }
 

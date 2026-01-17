@@ -317,24 +317,17 @@ func (s *String) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
 }
 
-func (s *String) ToStringObj(_ *Integer) *String {
+func (s *String) ToStringObj() *String {
 	return s
 }
 
-func (s *String) ToIntegerObj(base *Integer) *Integer {
-	defaultBase := 10
-	value := s.Value
+func (s *String) ToIntegerObj() *Integer {
 
-	if base != nil {
-		defaultBase = int(base.Value)
+	i, err := strconv.ParseInt(s.Value, 0, 0)
+
+	if err != nil {
+		return NewInteger(0)
 	}
-
-	if strings.HasPrefix(value, "0x") {
-		defaultBase = 8
-		value = strings.TrimPrefix(value, "0x")
-	}
-
-	i, _ := strconv.ParseInt(value, defaultBase, 64)
 	return NewInteger(int(i))
 }
 

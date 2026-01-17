@@ -648,7 +648,7 @@ func TestMatrixMethodCol(t *testing.T) {
 
 func TestMatrixToStringObj(t *testing.T) {
 	m := NewMatrix([][]float64{{1, 2}, {3, 4}})
-	strObj := m.ToStringObj(nil)
+	strObj := m.ToStringObj()
 
 	if strObj.Type() != STRING_OBJ {
 		t.Errorf("ToStringObj() type = %s, want STRING", strObj.Type())
