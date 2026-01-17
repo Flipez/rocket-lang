@@ -238,7 +238,6 @@ func init() {
 				if integerable, ok := o.(Integerable); ok {
 					return integerable.ToIntegerObj()
 				}
-
 				return NewInteger(0)
 			},
 		},

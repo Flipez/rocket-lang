@@ -20,6 +20,27 @@ is_false = 1 == 2;
 
 ## Literal Specific Methods
 
+### base()
+> Returns `INTEGER`
+
+Returns the base of the integer.
+
+
+<CodeBlockSimple input='0b1010".to_i().base()
+' output='2' />
+
+
+### to_base(INTEGER)
+> Returns `INTEGER`
+
+Converts the integer into a integer with the given base
+
+
+<CodeBlockSimple input='"0b1010".to_i().to_base(8)
+' output='0o12
+' />
+
+
 
 ## Generic Literal Methods
 

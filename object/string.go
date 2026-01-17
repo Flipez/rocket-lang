@@ -322,13 +322,24 @@ func (s *String) ToStringObj() *String {
 }
 
 func (s *String) ToIntegerObj() *Integer {
+	base := 10
+
+	switch {
+	case strings.HasPrefix(s.Value, "0b"):
+		base = 2
+	case strings.HasPrefix(s.Value, "0x"):
+		base = 16
+	case strings.HasPrefix(s.Value, "0"), strings.HasPrefix(s.Value, "0o"):
+		base = 8
+	}
 
 	i, err := strconv.ParseInt(s.Value, 0, 0)
 
 	if err != nil {
+		fmt.Println(err)
 		return NewInteger(0)
 	}
-	return NewInteger(int(i))
+	return NewIntegerWithBase(int(i), base)
 }
 
 func (s *String) ToFloatObj() *Float {

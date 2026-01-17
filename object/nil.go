@@ -10,11 +10,11 @@ func (n *Nil) InvokeMethod(method string, env Environment, args ...Object) Objec
 	return objectMethodLookup(n, method, env, args)
 }
 
-func (n *Nil) ToStringObj(_ *Integer) *String {
+func (n *Nil) ToStringObj() *String {
 	return NewString("")
 }
 
-func (n *Nil) ToIntegerObj(_ *Integer) *Integer {
+func (n *Nil) ToIntegerObj() *Integer {
 	return NewInteger(0.0)
 }
 
