@@ -1,5 +1,35 @@
 # Changelog
 
+## [v0.23.0](https://github.com/flipez/rocket-lang/tree/v0.23.0) (2026-01-17)
+
+[Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.22.1...v0.23.0)
+
+**Implemented enhancements:**
+
+- Consider dropping braces requirement for control expressions [\#203](https://github.com/Flipez/rocket-lang/issues/203)
+- Support having multiple return values [\#112](https://github.com/Flipez/rocket-lang/issues/112)
+- Implement matrix multiplication [\#64](https://github.com/Flipez/rocket-lang/issues/64)
+- Add support for `array.each()` [\#44](https://github.com/Flipez/rocket-lang/issues/44)
+
+**Fixed bugs:**
+
+- unique behavior of puts [\#170](https://github.com/Flipez/rocket-lang/issues/170)
+- panic: runtime error: makeslice: len out of range [\#166](https://github.com/Flipez/rocket-lang/issues/166)
+
+**Merged pull requests:**
+
+- fix\(int/string\): prevent int downcast [\#229](https://github.com/Flipez/rocket-lang/pull/229) ([Flipez](https://github.com/Flipez))
+- fix\(deps\): update dependencies [\#228](https://github.com/Flipez/rocket-lang/pull/228) ([Flipez](https://github.com/Flipez))
+- feat\(assign\): add ability to unpack variables on assignment [\#227](https://github.com/Flipez/rocket-lang/pull/227) ([Flipez](https://github.com/Flipez))
+- feat\(control\_flow\): make parentheses optional [\#226](https://github.com/Flipez/rocket-lang/pull/226) ([Flipez](https://github.com/Flipez))
+- feat\(puts\): improve behavior of puts [\#225](https://github.com/Flipez/rocket-lang/pull/225) ([Flipez](https://github.com/Flipez))
+- fix\(array\): fix go panic on .pop\(\) on empty array [\#224](https://github.com/Flipez/rocket-lang/pull/224) ([Flipez](https://github.com/Flipez))
+- feat\(docs\):update docusaurus [\#223](https://github.com/Flipez/rocket-lang/pull/223) ([Flipez](https://github.com/Flipez))
+- feat\(matrix\) add matrix object [\#222](https://github.com/Flipez/rocket-lang/pull/222) ([Flipez](https://github.com/Flipez))
+- chore\(docs\): Update Docusaurus to 3.8 [\#217](https://github.com/Flipez/rocket-lang/pull/217) ([Flipez](https://github.com/Flipez))
+- Bump on-headers and compression in /docs [\#215](https://github.com/Flipez/rocket-lang/pull/215) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump image-size from 1.2.0 to 1.2.1 in /docs [\#212](https://github.com/Flipez/rocket-lang/pull/212) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.22.1](https://github.com/flipez/rocket-lang/tree/v0.22.1) (2025-03-15)
 
 [Full Changelog](https://github.com/flipez/rocket-lang/compare/v0.22.0...v0.22.1)
