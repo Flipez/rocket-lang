@@ -9,7 +9,7 @@ import (
 
 func newAstAssign(name, value ast.Expression) *ast.Assign {
 	return &ast.Assign{
-		Name:  name,
+		Names: []ast.Expression{name},
 		Value: value,
 	}
 }
