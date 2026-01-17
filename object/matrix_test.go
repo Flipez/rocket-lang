@@ -30,6 +30,12 @@ func TestMatrixCreation(t *testing.T) {
 			wantRows: 1,
 			wantCols: 3,
 		},
+		{
+			name:     "empty matrix",
+			data:     [][]float64{},
+			wantRows: 0,
+			wantCols: 0,
+		},
 	}
 
 	for _, tt := range tests {
@@ -88,6 +94,20 @@ func TestNewMatrixFromObjects(t *testing.T) {
 			name: "non-numeric element",
 			input: []Object{
 				NewArray([]Object{NewInteger(1), NewString("bad")}),
+			},
+			wantError: true,
+		},
+		{
+			name: "row with empty array",
+			input: []Object{
+				NewArray([]Object{}),
+			},
+			wantError: true,
+		},
+		{
+			name: "non-array row",
+			input: []Object{
+				NewInteger(1),
 			},
 			wantError: true,
 		},
@@ -476,5 +496,166 @@ func TestMatrixCol(t *testing.T) {
 	_, err = m.Col(3)
 	if err == nil {
 		t.Error("Col(3) should return error for out of bounds")
+	}
+}
+
+func TestMatrixInspectNonIntegerValues(t *testing.T) {
+	// Test that non-integer values are formatted with %.4g
+	m := NewMatrix([][]float64{{1.2345, 2.6789}, {3.14159, 4.0}})
+	inspect := m.Inspect()
+
+	// Should contain formatted values
+	if inspect == "" {
+		t.Error("Inspect() returned empty string")
+	}
+
+	// Check that it contains the dimension header
+	if !contains(inspect, "2x2 matrix") {
+		t.Error("Inspect() should contain dimension header")
+	}
+}
+
+func TestMatrixGetOutOfBoundsColumn(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2}, {3, 4}})
+
+	// Test column out of bounds
+	_, err := m.Get(0, 2)
+	if err == nil {
+		t.Error("Get(0, 2) should return error for column out of bounds")
+	}
+
+	// Test negative column
+	_, err = m.Get(0, -1)
+	if err == nil {
+		t.Error("Get(0, -1) should return error for negative column")
+	}
+}
+
+func TestMatrixSetOutOfBoundsColumn(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2}, {3, 4}})
+
+	// Test column out of bounds
+	err := m.Set(0, 2, 99)
+	if err == nil {
+		t.Error("Set(0, 2, 99) should return error for column out of bounds")
+	}
+}
+
+func TestMatrixMethodGet(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	// Valid get
+	result := m.InvokeMethod("get", *env, NewInteger(0), NewInteger(2))
+	floatResult, ok := result.(*Float)
+	if !ok {
+		t.Fatalf("get method should return Float, got %T", result)
+	}
+	if floatResult.Value != 3.0 {
+		t.Errorf("get(0, 2) = %f, want 3.0", floatResult.Value)
+	}
+
+	// Out of bounds get
+	result = m.InvokeMethod("get", *env, NewInteger(2), NewInteger(0))
+	_, ok = result.(*Error)
+	if !ok {
+		t.Errorf("get method with out of bounds should return Error, got %T", result)
+	}
+}
+
+func TestMatrixMethodSet(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	// Valid set with integer
+	result := m.InvokeMethod("set", *env, NewInteger(0), NewInteger(2), NewInteger(99))
+	if result.Type() != NIL_OBJ {
+		t.Errorf("set method should return NIL, got %s", result.Type())
+	}
+	if m.Data[0][2] != 99.0 {
+		t.Errorf("After set, m[0][2] = %f, want 99.0", m.Data[0][2])
+	}
+
+	// Valid set with float
+	result = m.InvokeMethod("set", *env, NewInteger(1), NewInteger(1), NewFloat(3.14))
+	if result.Type() != NIL_OBJ {
+		t.Errorf("set method should return NIL, got %s", result.Type())
+	}
+	if m.Data[1][1] != 3.14 {
+		t.Errorf("After set, m[1][1] = %f, want 3.14", m.Data[1][1])
+	}
+
+	// Out of bounds set
+	result = m.InvokeMethod("set", *env, NewInteger(2), NewInteger(0), NewInteger(1))
+	_, ok := result.(*Error)
+	if !ok {
+		t.Errorf("set method with out of bounds should return Error, got %T", result)
+	}
+}
+
+func TestMatrixMethodRow(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	// Valid row
+	result := m.InvokeMethod("row", *env, NewInteger(1))
+	arr, ok := result.(*Array)
+	if !ok {
+		t.Fatalf("row method should return Array, got %T", result)
+	}
+	if len(arr.Elements) != 3 {
+		t.Errorf("row(1) length = %d, want 3", len(arr.Elements))
+	}
+	if arr.Elements[0].(*Float).Value != 4.0 {
+		t.Errorf("row(1)[0] = %f, want 4.0", arr.Elements[0].(*Float).Value)
+	}
+
+	// Out of bounds row
+	result = m.InvokeMethod("row", *env, NewInteger(2))
+	_, ok = result.(*Error)
+	if !ok {
+		t.Errorf("row method with out of bounds should return Error, got %T", result)
+	}
+}
+
+func TestMatrixMethodCol(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	// Valid col
+	result := m.InvokeMethod("col", *env, NewInteger(2))
+	arr, ok := result.(*Array)
+	if !ok {
+		t.Fatalf("col method should return Array, got %T", result)
+	}
+	if len(arr.Elements) != 2 {
+		t.Errorf("col(2) length = %d, want 2", len(arr.Elements))
+	}
+	if arr.Elements[0].(*Float).Value != 3.0 {
+		t.Errorf("col(2)[0] = %f, want 3.0", arr.Elements[0].(*Float).Value)
+	}
+	if arr.Elements[1].(*Float).Value != 6.0 {
+		t.Errorf("col(2)[1] = %f, want 6.0", arr.Elements[1].(*Float).Value)
+	}
+
+	// Out of bounds col
+	result = m.InvokeMethod("col", *env, NewInteger(3))
+	_, ok = result.(*Error)
+	if !ok {
+		t.Errorf("col method with out of bounds should return Error, got %T", result)
+	}
+}
+
+func TestMatrixToStringObj(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2}, {3, 4}})
+	strObj := m.ToStringObj(nil)
+
+	if strObj.Type() != STRING_OBJ {
+		t.Errorf("ToStringObj() type = %s, want STRING", strObj.Type())
+	}
+
+	// Should contain the matrix representation
+	if !contains(strObj.Value, "2x2 matrix") {
+		t.Error("ToStringObj() should contain dimension header")
 	}
 }
