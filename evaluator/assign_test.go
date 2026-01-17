@@ -9,7 +9,7 @@ import (
 
 func newAstAssign(name, value ast.Expression) *ast.Assign {
 	return &ast.Assign{
-		Name:  name,
+		Names: []ast.Expression{name},
 		Value: value,
 	}
 }
@@ -262,6 +262,61 @@ func TestEvalAssign(t *testing.T) {
 				&ast.Integer{Value: 4},
 			),
 			expected: object.NewErrorFormat("expected object to be indexable"),
+		},
+		// assignment with empty Names array
+		{
+			a: &ast.Assign{
+				Names: []ast.Expression{},
+				Value: &ast.Integer{Value: 42},
+			},
+			expected: object.NewError("no assignment target specified"),
+		},
+		// multiple assignment with non-array value
+		{
+			a: &ast.Assign{
+				Names: []ast.Expression{
+					&ast.Identifier{Value: "a"},
+					&ast.Identifier{Value: "b"},
+				},
+				Value: &ast.Integer{Value: 42},
+			},
+			expected: object.NewErrorFormat("cannot unpack INTEGER into multiple variables (expected ARRAY)"),
+		},
+		// multiple assignment with too few elements
+		{
+			a: &ast.Assign{
+				Names: []ast.Expression{
+					&ast.Identifier{Value: "a"},
+					&ast.Identifier{Value: "b"},
+					&ast.Identifier{Value: "c"},
+				},
+				Value: &ast.Array{
+					Elements: []ast.Expression{
+						&ast.Integer{Value: 1},
+						&ast.Integer{Value: 2},
+					},
+				},
+			},
+			expected: object.NewErrorFormat("not enough values to unpack (expected 3, got 2)"),
+		},
+		// multiple assignment with non-identifier (e.g., index expression)
+		{
+			a: &ast.Assign{
+				Names: []ast.Expression{
+					&ast.Identifier{Value: "a"},
+					&ast.Index{
+						Left:  &ast.Identifier{Value: "arr"},
+						Index: &ast.Integer{Value: 0},
+					},
+				},
+				Value: &ast.Array{
+					Elements: []ast.Expression{
+						&ast.Integer{Value: 1},
+						&ast.Integer{Value: 2},
+					},
+				},
+			},
+			expected: object.NewErrorFormat("multiple assignment only supports simple identifiers, got *ast.Index"),
 		},
 	}
 

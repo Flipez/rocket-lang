@@ -60,6 +60,10 @@ func TestString(t *testing.T) {
 			"begin\ntrue\nrescue e\nfalse\nend",
 			"begin\ntrue\nrescue e\nfalse\nend",
 		},
+		{
+			"a, b, c = [1, 2, 3]",
+			"a, b, c = [1, 2, 3]",
+		},
 	}
 
 	for _, tt := range tests {
