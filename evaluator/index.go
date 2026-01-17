@@ -12,6 +12,8 @@ func evalIndex(left, index object.Object) object.Object {
 		return evalHashIndexExpression(left, index)
 	case left.Type() == object.STRING_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalStringIndexExpression(left, index)
+	case left.Type() == object.MATRIX_OBJ && index.Type() == object.INTEGER_OBJ:
+		return evalMatrixIndexExpression(left, index)
 	case left.Type() == object.MODULE_OBJ:
 		return evalModuleIndexExpression(left, index)
 	case left.Type() == object.BUILTIN_MODULE_OBJ:
@@ -70,6 +72,27 @@ func evalStringIndexExpression(left, index object.Object) object.Object {
 	}
 
 	return object.NewString(string(obj.Value[idx]))
+}
+
+func evalMatrixIndexExpression(left, index object.Object) object.Object {
+	matrix := left.(*object.Matrix)
+	idx := int(index.(*object.Integer).Value)
+
+	// Support negative indexing
+	if idx < 0 {
+		idx = matrix.Rows + idx
+	}
+
+	if idx < 0 || idx >= matrix.Rows {
+		return object.NewErrorFormat("row index %d out of bounds [0, %d)", idx, matrix.Rows)
+	}
+
+	// Return the row as an array
+	row, err := matrix.Row(idx)
+	if err != nil {
+		return object.NewErrorFormat("%s", err.Error())
+	}
+	return row
 }
 
 func evalStringRangeIndexExpression(left, firstIndex, secondIndex object.Object) object.Object {

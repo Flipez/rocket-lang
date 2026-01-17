@@ -259,3 +259,222 @@ func indexOfSubstring(s, substr string) int {
 	}
 	return -1
 }
+
+func TestMatrixShape(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+	shape := m.InvokeMethod("shape", *env)
+
+	arr, ok := shape.(*Array)
+	if !ok {
+		t.Fatalf("shape() should return Array, got %T", shape)
+	}
+
+	if len(arr.Elements) != 2 {
+		t.Errorf("shape array length = %d, want 2", len(arr.Elements))
+	}
+
+	rows := arr.Elements[0].(*Integer).Value
+	cols := arr.Elements[1].(*Integer).Value
+
+	if rows != 2 {
+		t.Errorf("rows = %d, want 2", rows)
+	}
+	if cols != 3 {
+		t.Errorf("cols = %d, want 3", cols)
+	}
+}
+
+func TestMatrixRows(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+	result := m.InvokeMethod("rows", *env)
+
+	rows, ok := result.(*Integer)
+	if !ok {
+		t.Fatalf("rows() should return Integer, got %T", result)
+	}
+
+	if rows.Value != 2 {
+		t.Errorf("rows = %d, want 2", rows.Value)
+	}
+}
+
+func TestMatrixCols(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+	result := m.InvokeMethod("cols", *env)
+
+	cols, ok := result.(*Integer)
+	if !ok {
+		t.Fatalf("cols() should return Integer, got %T", result)
+	}
+
+	if cols.Value != 3 {
+		t.Errorf("cols = %d, want 3", cols.Value)
+	}
+}
+
+func TestMatrixSize(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+	result := m.InvokeMethod("size", *env)
+
+	size, ok := result.(*Integer)
+	if !ok {
+		t.Fatalf("size() should return Integer, got %T", result)
+	}
+
+	if size.Value != 6 {
+		t.Errorf("size = %d, want 6", size.Value)
+	}
+}
+
+func TestMatrixTranspose(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	transposed := m.Transpose()
+
+	if transposed.Rows != 3 {
+		t.Errorf("transposed.Rows = %d, want 3", transposed.Rows)
+	}
+	if transposed.Cols != 2 {
+		t.Errorf("transposed.Cols = %d, want 2", transposed.Cols)
+	}
+
+	expected := [][]float64{{1, 4}, {2, 5}, {3, 6}}
+	for i := 0; i < transposed.Rows; i++ {
+		for j := 0; j < transposed.Cols; j++ {
+			if transposed.Data[i][j] != expected[i][j] {
+				t.Errorf("transposed[%d][%d] = %f, want %f", i, j, transposed.Data[i][j], expected[i][j])
+			}
+		}
+	}
+}
+
+func TestMatrixTransposeMethod(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2}, {3, 4}})
+	env := NewEnvironment()
+
+	// Test transpose()
+	result := m.InvokeMethod("transpose", *env)
+	transposed, ok := result.(*Matrix)
+	if !ok {
+		t.Fatalf("transpose() should return Matrix, got %T", result)
+	}
+
+	if transposed.Rows != 2 || transposed.Cols != 2 {
+		t.Errorf("transposed shape = %dx%d, want 2x2", transposed.Rows, transposed.Cols)
+	}
+
+	if transposed.Data[0][1] != 3 || transposed.Data[1][0] != 2 {
+		t.Errorf("transpose values incorrect")
+	}
+
+	// Test t() alias
+	result2 := m.InvokeMethod("t", *env)
+	transposed2, ok := result2.(*Matrix)
+	if !ok {
+		t.Fatalf("t() should return Matrix, got %T", result2)
+	}
+
+	if transposed2.Rows != 2 || transposed2.Cols != 2 {
+		t.Errorf("t() shape = %dx%d, want 2x2", transposed2.Rows, transposed2.Cols)
+	}
+}
+
+func TestMatrixGet(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+
+	// Valid get
+	val, err := m.Get(0, 2)
+	if err != nil {
+		t.Errorf("Get(0, 2) unexpected error: %v", err)
+	}
+	if val != 3 {
+		t.Errorf("Get(0, 2) = %f, want 3", val)
+	}
+
+	// Out of bounds row
+	_, err = m.Get(2, 0)
+	if err == nil {
+		t.Error("Get(2, 0) should return error for out of bounds row")
+	}
+
+	// Out of bounds col
+	_, err = m.Get(0, 3)
+	if err == nil {
+		t.Error("Get(0, 3) should return error for out of bounds col")
+	}
+
+	// Negative indices
+	_, err = m.Get(-1, 0)
+	if err == nil {
+		t.Error("Get(-1, 0) should return error for negative row")
+	}
+}
+
+func TestMatrixSet(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+
+	// Valid set
+	err := m.Set(0, 2, 99)
+	if err != nil {
+		t.Errorf("Set(0, 2, 99) unexpected error: %v", err)
+	}
+	if m.Data[0][2] != 99 {
+		t.Errorf("After Set, m[0][2] = %f, want 99", m.Data[0][2])
+	}
+
+	// Out of bounds
+	err = m.Set(2, 0, 1)
+	if err == nil {
+		t.Error("Set(2, 0, 1) should return error for out of bounds")
+	}
+}
+
+func TestMatrixRow(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+
+	// Valid row
+	row, err := m.Row(0)
+	if err != nil {
+		t.Errorf("Row(0) unexpected error: %v", err)
+	}
+	if len(row.Elements) != 3 {
+		t.Errorf("Row(0) length = %d, want 3", len(row.Elements))
+	}
+	if row.Elements[0].(*Float).Value != 1 {
+		t.Errorf("Row(0)[0] = %f, want 1", row.Elements[0].(*Float).Value)
+	}
+
+	// Out of bounds
+	_, err = m.Row(2)
+	if err == nil {
+		t.Error("Row(2) should return error for out of bounds")
+	}
+}
+
+func TestMatrixCol(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+
+	// Valid col
+	col, err := m.Col(1)
+	if err != nil {
+		t.Errorf("Col(1) unexpected error: %v", err)
+	}
+	if len(col.Elements) != 2 {
+		t.Errorf("Col(1) length = %d, want 2", len(col.Elements))
+	}
+	if col.Elements[0].(*Float).Value != 2 {
+		t.Errorf("Col(1)[0] = %f, want 2", col.Elements[0].(*Float).Value)
+	}
+	if col.Elements[1].(*Float).Value != 5 {
+		t.Errorf("Col(1)[1] = %f, want 5", col.Elements[1].(*Float).Value)
+	}
+
+	// Out of bounds
+	_, err = m.Col(3)
+	if err == nil {
+		t.Error("Col(3) should return error for out of bounds")
+	}
+}

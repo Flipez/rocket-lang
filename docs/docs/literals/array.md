@@ -172,10 +172,11 @@ Converts a nested array (2D array) to a Matrix object.
 
 
 <CodeBlockSimple input='[[1, 2], [3, 4]].to_m()
-' output='Matrix(2x2)[
-  [1, 2],
-  [3, 4]
-]
+' output='2x2 matrix
+┌          ┐
+│ 1.0  2.0 │
+│ 3.0  4.0 │
+└          ┘
 ' />
 
 

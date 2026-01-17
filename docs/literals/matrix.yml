@@ -7,6 +7,11 @@ description: |
   - Matrix multiplication: `m1 * m2`
   - Element-wise addition: `m1 + m2`
   - Element-wise subtraction: `m1 - m2`
+
+  Matrix indexing:
+  - `m[i]` returns row i as an array
+  - `m[i][j]` returns the element at row i, column j
+  - Negative indices are supported: `m[-1]` returns the last row
 example: |
   m1 = [[1, 2], [3, 4]].to_m()
   m2 = [[5, 6], [7, 8]].to_m()
@@ -18,10 +23,11 @@ example: |
   puts(result)
 
   // should output
-  Matrix(2x2)[
-    [19, 22],
-    [43, 50]
-  ]
+  2x2 matrix
+  ┌            ┐
+  │ 19.0  22.0 │
+  │ 43.0  50.0 │
+  └            ┘
 methods:
   to_a:
     description: "Converts the matrix back to a nested array representation."
@@ -37,3 +43,93 @@ methods:
       m.to_json()
     output: |
       "{\"cols\":2,\"data\":[[1,2],[3,4]],\"rows\":2}"
+  shape:
+    description: "Returns an array containing the dimensions [rows, cols] of the matrix."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.shape()
+    output: |
+      [2, 3]
+  rows:
+    description: "Returns the number of rows in the matrix."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.rows()
+    output: |
+      2
+  cols:
+    description: "Returns the number of columns in the matrix."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.cols()
+    output: |
+      3
+  size:
+    description: "Returns the total number of elements in the matrix (rows * cols)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.size()
+    output: |
+      6
+  transpose:
+    description: "Returns the transposed matrix (rows and columns swapped)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.transpose()
+    output: |
+      3x2 matrix
+      ┌          ┐
+      │ 1.0  4.0 │
+      │ 2.0  5.0 │
+      │ 3.0  6.0 │
+      └          ┘
+  t:
+    description: "Alias for transpose(). Returns the transposed matrix."
+    input: |
+      m = [[1, 2], [3, 4]].to_m()
+      m.t()
+    output: |
+      2x2 matrix
+      ┌          ┐
+      │ 1.0  3.0 │
+      │ 2.0  4.0 │
+      └          ┘
+  get:
+    description: "Returns the element at the specified row and column (0-indexed)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.get(0, 2)
+    output: |
+      3.0
+  set:
+    description: "Sets the element at the specified row and column (0-indexed)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.set(0, 2, 99)
+      m
+    output: |
+      2x3 matrix
+      ┌               ┐
+      │ 1.0  2.0  3.0 │
+      │ 4.0  5.0  6.0 │
+      └               ┘
+      nil
+      2x3 matrix
+      ┌                ┐
+      │ 1.0   2.0  99.0 │
+      │ 4.0   5.0   6.0 │
+      └                ┘
+  row:
+    description: "Returns the specified row as an array (0-indexed)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.row(0)
+    output: |
+      [1.0, 2.0, 3.0]
+  col:
+    description: "Returns the specified column as an array (0-indexed)."
+    input: |
+      m = [[1, 2, 3], [4, 5, 6]].to_m()
+      m.col(1)
+    output: |
+      [2.0, 5.0]

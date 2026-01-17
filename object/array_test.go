@@ -74,7 +74,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{"[1,2,3].join('-')", "1-2-3"},
 		{"['1',2, 2.5,{}].sum()", "Found non number element HASH on index 3"},
 		{"['1', 2, 2.5].sum()", 5},
-		{`[[1, 2], [3, 4]].to_m()`, "Matrix(2x2)[\n  [1, 2],\n  [3, 4]\n]"},
+		{`[[1, 2], [3, 4]].to_m()`, "2x2 matrix\n┌          ┐\n│ 1.0  2.0 │\n│ 3.0  4.0 │\n└          ┘"},
 		{`[[1, 2], [3, 4]].to_m().to_a()`, "[[1.0, 2.0], [3.0, 4.0]]"},
 		{`[1, 2].to_m()`, "failed to convert array to matrix: matrix must be created from 2D array"},
 		{`[[1, 2], [3]].to_m()`, "failed to convert array to matrix: row 1 has inconsistent length (expected 2, got 1)"},
