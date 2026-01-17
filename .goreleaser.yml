@@ -34,7 +34,7 @@ checksum:
 nfpms:
   - vendor: Flipez
     homepage: https://rocket-lang.org
-    maintainer: Flipez <code@brauser.io>
+    maintainer: Flipez <gh@flipez.net>
     description: Implementation of the monkey lang
     license: MIT
     formats:
@@ -56,7 +56,7 @@ brews:
     # Defaults are shown.
     commit_author:
       name: Flipez
-      email: code@brauser.io
+      email: gh@flipez.net
 
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
 
