@@ -14,12 +14,10 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 		return evaluated
 	}
 
-	// Handle multiple assignment (array unpacking)
 	if len(a.Names) > 1 {
 		return evalMultipleAssign(a.Names, evaluated, env)
 	}
 
-	// Single assignment
 	if len(a.Names) == 0 {
 		return object.NewError("no assignment target specified")
 	}
@@ -27,20 +25,16 @@ func evalAssign(a *ast.Assign, env *object.Environment) (val object.Object) {
 	return evalSingleAssign(a.Names[0], evaluated, env)
 }
 
-// evalMultipleAssign handles a, b, c = [1, 2, 3]
 func evalMultipleAssign(names []ast.Expression, value object.Object, env *object.Environment) object.Object {
-	// Check if value is an array
 	arr, ok := value.(*object.Array)
 	if !ok {
 		return object.NewErrorFormat("cannot unpack %s into multiple variables (expected ARRAY)", value.Type())
 	}
 
-	// Check if array has enough elements
 	if len(arr.Elements) < len(names) {
 		return object.NewErrorFormat("not enough values to unpack (expected %d, got %d)", len(names), len(arr.Elements))
 	}
 
-	// Assign each element to the corresponding variable
 	for i, name := range names {
 		ident, ok := name.(*ast.Identifier)
 		if !ok {
@@ -53,7 +47,6 @@ func evalMultipleAssign(names []ast.Expression, value object.Object, env *object
 	return value
 }
 
-// evalSingleAssign handles single assignment including indexed assignments
 func evalSingleAssign(name ast.Expression, evaluated object.Object, env *object.Environment) object.Object {
 	switch v := name.(type) {
 	case *ast.Identifier:

@@ -9,7 +9,6 @@ import (
 func (p *Parser) parseAssignExpression(name ast.Expression) ast.Expression {
 	stmt := &ast.Assign{Token: p.curToken}
 
-	// Single assignment - store in Names slice for consistency
 	if n, ok := name.(*ast.Identifier); ok {
 		stmt.Names = []ast.Expression{n}
 	} else if index, ok := name.(*ast.Index); ok {
