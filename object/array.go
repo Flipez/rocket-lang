@@ -297,6 +297,10 @@ func init() {
 				ao := o.(*Array)
 				length := len(ao.Elements)
 
+				if length == 0 {
+					return NIL
+				}
+
 				newElements := make([]Object, length-1)
 				copy(newElements, ao.Elements[:(length-1)])
 
