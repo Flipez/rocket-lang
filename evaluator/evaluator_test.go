@@ -225,10 +225,10 @@ func TestErrorHandling(t *testing.T) {
 		{"foreach i in 'test' -> 3 \nputs(i)\nend", "test:1:8: range rocket start has to be an integer, got STRING"},
 		{"foreach i in 0 -> 'test' \nputs(i)\nend", "test:1:8: unsupported range rocket value, got STRING"},
 		{"foreach i in 0 -> 5 ^ 'test' \nputs(i)\nend", "test:1:8: range rocket step has to be an integer, got STRING"},
-		{"Matrix([[1, 2]]) + Matrix([[1], [2]])", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
-		{"Matrix([[1, 2]]) - Matrix([[1], [2]])", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
-		{"Matrix([[1, 2]]) * Matrix([[1, 2]])", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
-		{"Matrix([[1, 2]]) % Matrix([[1, 2]])", "unknown operator: MATRIX % MATRIX"},
+		{"[[1, 2]].to_m() + [[1], [2]].to_m()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_m() - [[1], [2]].to_m()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_m() * [[1, 2]].to_m()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
+		{"[[1, 2]].to_m() % [[1, 2]].to_m()", "unknown operator: MATRIX % MATRIX"},
 	}
 
 	for _, tt := range tests {

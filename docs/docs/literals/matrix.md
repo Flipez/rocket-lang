@@ -3,7 +3,7 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 # Matrix
 
 A matrix is a 2-dimensional array of numbers used for linear algebra operations.
-Matrices are created using the Matrix() constructor with nested arrays.
+Matrices are created by calling the to_m() method on nested arrays.
 
 Matrix supports mathematical operations:
 - Matrix multiplication: `m1 * m2`
@@ -13,8 +13,8 @@ Matrix supports mathematical operations:
 
 
 ```js
-m1 = Matrix([[1, 2], [3, 4]])
-m2 = Matrix([[5, 6], [7, 8]])
+m1 = [[1, 2], [3, 4]].to_m()
+m2 = [[5, 6], [7, 8]].to_m()
 
 result = m1 * m2
 sum = m1 + m2
@@ -38,7 +38,7 @@ Matrix(2x2)[
 Converts the matrix back to a nested array representation.
 
 
-<CodeBlockSimple input='m = Matrix([[1, 2], [3, 4]])
+<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_m()
 m.to_a()
 ' output='[[1.0, 2.0], [3.0, 4.0]]
 ' />

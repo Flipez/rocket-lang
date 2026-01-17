@@ -1,7 +1,7 @@
-m1 = Matrix([[1, 2], [3, 4]])
+m1 = [[1, 2], [3, 4]].to_m()
 puts(m1)
 
-m2 = Matrix([[5, 6], [7, 8]])
+m2 = [[5, 6], [7, 8]].to_m()
 result = m1 * m2
 puts(result)
 

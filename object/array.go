@@ -369,6 +369,21 @@ func init() {
 				return slices
 			},
 		},
+		"to_m": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(MATRIX_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+				matrix, err := NewMatrixFromObjects(ao.Elements)
+				if err != nil {
+					return NewErrorFormat("failed to convert array to matrix: %s", err.Error())
+				}
+				return matrix
+			},
+		},
 	}
 }
 

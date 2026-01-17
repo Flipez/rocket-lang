@@ -43,6 +43,11 @@ func testInput(t *testing.T, tests []inputTestCase) {
 				testStringObject(t, object.NewString(arrObj.Inspect()), expected)
 				continue
 			}
+			matObj, ok := evaluated.(*object.Matrix)
+			if ok {
+				testStringObject(t, object.NewString(matObj.Inspect()), expected)
+				continue
+			}
 			strObj, ok := evaluated.(*object.String)
 			if ok {
 				testStringObject(t, strObj, expected)

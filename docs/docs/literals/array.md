@@ -165,6 +165,20 @@ Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
 
 
 
+### to_m()
+> Returns `MATRIX|ERROR`
+
+Converts a nested array (2D array) to a Matrix object.
+
+
+<CodeBlockSimple input='[[1, 2], [3, 4]].to_m()
+' output='Matrix(2x2)[
+  [1, 2],
+  [3, 4]
+]
+' />
+
+
 ### uniq()
 > Returns `ARRAY|ERROR`
 
