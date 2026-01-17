@@ -9,7 +9,7 @@ import (
 
 type Assign struct {
 	Token token.Token
-	Names []Expression // Support multiple assignment targets
+	Names []Expression
 	Value Expression
 }
 
@@ -17,7 +17,6 @@ func (as *Assign) TokenLiteral() string { return as.Token.Literal }
 func (as *Assign) String() string {
 	var out bytes.Buffer
 
-	// Handle multiple names
 	if len(as.Names) > 1 {
 		names := make([]string, len(as.Names))
 		for i, name := range as.Names {
