@@ -19,7 +19,7 @@ jobs:
       - name: Test
         run: ./coverage.sh
       - name: Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v3
         with:
-          files: ./coverage.txt
+          file: ./coverage.txt
           token: ${{ secrets.CODECOV_TOKEN }}
