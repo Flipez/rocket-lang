@@ -167,6 +167,10 @@ importing, so a module can import its neighbours:
 import "../util" as util
 ```
 
+In the REPL and under `rocket-lang -e` there is no importing file, so a
+relative path resolves against the working directory instead — the same place
+a bare module name is found.
+
 Any other path is looked up in the search paths: each entry of the
 `ROCKETLANGPATH` environment variable in order, followed by the working
 directory. Entries are separated by the platform's path list separator, `:` on

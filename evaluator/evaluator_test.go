@@ -1175,3 +1175,24 @@ module.Sum(2, 3)
 
 	testIntegerObject(t, evaluated, 5)
 }
+
+// testEvalWithoutFile evaluates input with no source filename, which is what
+// the REPL and `rocket-lang -e` both do.
+func testEvalWithoutFile(input string) object.Object {
+	l := lexer.New(input, "")
+	p := parser.New(l)
+	program := p.ParseProgram()
+	env := object.NewEnvironment()
+
+	return Eval(program, env)
+}
+
+// TestRelativeImportWithoutSourceFile covers the REPL and `-e`, where there is
+// no importing file to resolve `./` and `../` against. Those anchor on the
+// working directory instead, so that the explicit spelling of an import
+// resolves wherever the bare name already does.
+func TestRelativeImportWithoutSourceFile(t *testing.T) {
+	evaluated := testEvalWithoutFile(`import "../fixtures/module"; module.A`)
+
+	testIntegerObject(t, evaluated, 5)
+}
