@@ -206,24 +206,26 @@ Returns an array of all supported methods names.
 
 
 ### to_f()
-> Returns `FLOAT`
+> Returns `FLOAT|NIL`
 
-If possible converts an object to its float representation. If not 0.0 is returned.
+Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
 <CodeBlockSimple input='1.to_f()
 "1.4".to_f()
+"abc".to_f()
 nil.to_f()
 ' output='1.0
 1.4
-0.0
+nil
+nil
 ' />
 
 
 ### to_i()
-> Returns `INTEGER`
+> Returns `INTEGER|NIL`
 
-Converts an object to its integer representation, or `0` when it cannot. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
+Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
 <CodeBlockSimple input='true.to_i()
@@ -243,7 +245,7 @@ false.to_i()
 0o125
 0x2322
 0b1010
-0
+nil
 ' />
 
 

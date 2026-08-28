@@ -18,7 +18,7 @@ methods:
       "test"
       "1.4"
   to_i:
-    description: "Converts an object to its integer representation, or `0` when it cannot. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly."
+    description: "Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly."
     input: |
       true.to_i()
       false.to_i()
@@ -38,17 +38,19 @@ methods:
       0o125
       0x2322
       0b1010
-      0
+      nil
   to_f:
-    description: "If possible converts an object to its float representation. If not 0.0 is returned."
+    description: "Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`."
     input: |
       1.to_f()
       "1.4".to_f()
+      "abc".to_f()
       nil.to_f()
     output: |
       1.0
       1.4
-      0.0
+      nil
+      nil
   to_json:
     description: "Returns the object as json notation."
     input: |

@@ -38,12 +38,16 @@ type Stringable interface {
 	ToStringObj() *String
 }
 
+// Integerable is implemented by objects that can attempt an integer
+// conversion. The result is NIL when the value cannot be converted.
 type Integerable interface {
-	ToIntegerObj() *Integer
+	ToIntegerObj() Object
 }
 
+// Floatable is implemented by objects that can attempt a float
+// conversion. The result is NIL when the value cannot be converted.
 type Floatable interface {
-	ToFloatObj() *Float
+	ToFloatObj() Object
 }
 
 var ANY_OBJ = []string{
@@ -231,20 +235,21 @@ func init() {
 		"to_i": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
+					Arg(INTEGER_OBJ, NIL_OBJ),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				if integerable, ok := o.(Integerable); ok {
 					return integerable.ToIntegerObj()
 				}
-				return NewInteger(0)
+
+				return NIL
 			},
 		},
 		"to_f": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(FLOAT_OBJ),
+					Arg(FLOAT_OBJ, NIL_OBJ),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -252,7 +257,7 @@ func init() {
 					return floatable.ToFloatObj()
 				}
 
-				return NewFloat(0.0)
+				return NIL
 			},
 		},
 		"to_json": ObjectMethod{

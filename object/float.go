@@ -54,10 +54,10 @@ func (f *Float) ToStringObj() *String {
 	return NewString(f.toString())
 }
 
-func (f *Float) ToIntegerObj() *Integer {
+func (f *Float) ToIntegerObj() Object {
 	return NewInteger(int(f.Value))
 }
 
-func (f *Float) ToFloatObj() *Float {
+func (f *Float) ToFloatObj() Object {
 	return f
 }

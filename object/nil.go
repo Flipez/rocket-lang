@@ -14,14 +14,6 @@ func (n *Nil) ToStringObj() *String {
 	return NewString("")
 }
 
-func (n *Nil) ToIntegerObj() *Integer {
-	return NewInteger(0.0)
-}
-
-func (n *Nil) ToFloatObj() *Float {
-	return NewFloat(0.0)
-}
-
 func init() {
 	objectMethods[NIL_OBJ] = map[string]ObjectMethod{}
 }

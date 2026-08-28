@@ -321,7 +321,7 @@ func (s *String) ToStringObj() *String {
 	return s
 }
 
-func (s *String) ToIntegerObj() *Integer {
+func (s *String) ToIntegerObj() Object {
 	base := 10
 	digits := s.Value
 
@@ -346,10 +346,7 @@ func (s *String) ToIntegerObj() *Integer {
 	i, err := strconv.ParseInt(sign+digits, base, 64)
 
 	if err != nil {
-		// Returning 0 on a failed conversion is the long-standing behaviour,
-		// tracked separately in #232. Do not print the Go error: it lands on
-		// stdout and corrupts the program's own output.
-		return NewInteger(0)
+		return NIL
 	}
 
 	return NewIntegerWithBase(int(i), base)
@@ -373,8 +370,13 @@ func isLegacyOctal(digits string) bool {
 	return true
 }
 
-func (s *String) ToFloatObj() *Float {
-	f, _ := strconv.ParseFloat(s.Value, 64)
+func (s *String) ToFloatObj() Object {
+	f, err := strconv.ParseFloat(s.Value, 64)
+
+	if err != nil {
+		return NIL
+	}
+
 	return NewFloat(f)
 }
 
