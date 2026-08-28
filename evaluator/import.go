@@ -82,13 +82,16 @@ func bindModule(ie *ast.Import, env *object.Environment, name string, mod *objec
 	if nameInUse(env, name) {
 		existing, _ := env.Get(name)
 		existingMod, isModule := existing.(*object.Module)
-		// Only a plain (non-`only`) re-import of the exact same cached
-		// module instance is a no-op; an `only` import always constructs a
-		// fresh *object.Module and can never be pointer-identical, so it is
-		// correctly rejected below.
-		sameModule := isModule && len(ie.Only) == 0 && existingMod == mod
+		// A re-import is a no-op only if it would bind the exact same
+		// namespace that's already bound: same resolved module, and the
+		// same narrowing. A plain (non-`only`) import must be
+		// pointer-identical to the cached instance (the module cache's
+		// "same instance" contract); an `only` import always constructs a
+		// fresh *object.Module, so it is compared by its resulting
+		// attribute keys instead.
+		sameBinding := isModule && sameNarrowing(ie, existingMod, mod)
 
-		if !(env.RebindAllowed() && sameModule) {
+		if !(env.RebindAllowed() && sameBinding) {
 			return object.NewErrorFormat("%s:%d:%d: Import Error: cannot bind module as '%s', name already in use", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, name)
 		}
 	}
@@ -107,6 +110,42 @@ func bindModule(ie *ast.Import, env *object.Environment, name string, mod *objec
 	env.Set(name, mod)
 
 	return object.NIL
+}
+
+// sameNarrowing reports whether re-running this import would bind the exact
+// same namespace as what's already bound under name: same resolved module
+// (mod is always the freshly resolved/cached instance for this import) and
+// the same narrowing as the existing binding. A no-`only` import must be
+// pointer-identical to the cached module instance; an `only` import must
+// match the existing binding's attribute keys exactly.
+func sameNarrowing(ie *ast.Import, existing *object.Module, mod *object.Module) bool {
+	if len(ie.Only) == 0 {
+		return existing == mod
+	}
+
+	return sameExportedKeys(existing.Attributes, ie.Only)
+}
+
+// sameExportedKeys reports whether attrs (an *object.Hash of exported
+// members) has exactly the keys named in only, no more and no fewer.
+func sameExportedKeys(attrs object.Object, only []string) bool {
+	hash, ok := attrs.(*object.Hash)
+	if !ok {
+		return false
+	}
+
+	if len(hash.Pairs) != len(only) {
+		return false
+	}
+
+	for _, want := range only {
+		key := object.NewString(want)
+		if _, found := hash.Pairs[key.HashKey()]; !found {
+			return false
+		}
+	}
+
+	return true
 }
 
 // filterExports narrows a module's attribute hash to the names listed in

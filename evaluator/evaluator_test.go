@@ -910,28 +910,57 @@ func TestModuleStrictness(t *testing.T) {
 	}
 }
 
+// TestModuleMemberCallArgumentError is a regression test: when an argument
+// to a module member call itself errors, evalExpressions returns a
+// one-element slice holding just that error object. evalObjectCall must
+// return it immediately -- mirroring the guard *ast.Call uses -- instead of
+// letting applyFunction index straight into the slice by parameter
+// position, which panics (or, for single-parameter functions, silently
+// discards the error and returns a normal value).
+func TestModuleMemberCallArgumentError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/module" as m; m.Sum(5%0, 1)`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "division by zero not allowed") {
+		t.Errorf("expected message containing %q, got=%q", "division by zero not allowed", err.Message)
+	}
+}
+
+// TestImportSearchPaths proves that a module reachable only through a
+// SearchPaths entry -- not through the importer-relative "./"/"../" branch
+// -- can be imported by its plain name. The fixture lives in its own
+// directory so it cannot be found any other way; if the AddPath call below
+// is removed, FindModule has nowhere else to look and this import fails.
 func TestImportSearchPaths(t *testing.T) {
-	if err := utilities.AddPath("../stubs"); err != nil {
-		t.Errorf("error adding the stubs path: %s", err)
+	if err := utilities.AddPath("../fixtures/searchpath_only"); err != nil {
+		t.Errorf("error adding the search path: %s", err)
 		return
 	}
 
-	tests := []struct {
-		input    string
-		expected interface{}
-	}{
-		{
-			`import "../fixtures/module"; module.A`,
-			5,
-		},
+	evaluated := testEval(`import "only_via_searchpath"; only_via_searchpath.Marker`)
+	testIntegerObject(t, evaluated, 99)
+}
+
+// TestImportOnlyDoesNotLeakNames proves that `only` binds solely the
+// namespace name -- the imported members never become bare identifiers in
+// the importing scope.
+func TestImportOnlyDoesNotLeakNames(t *testing.T) {
+	leaked := testEval(`import "../fixtures/module" only Sum; Sum`)
+
+	err, ok := leaked.(*object.Error)
+	if !ok {
+		t.Fatalf("expected `Sum` to be unbound, got=%T (%+v)", leaked, leaked)
+	}
+	if !strings.Contains(err.Message, "identifier not found") {
+		t.Errorf("expected message containing %q, got=%q", "identifier not found", err.Message)
 	}
 
-	for _, tt := range tests {
-		evaluated := testEval(tt.input)
-		number, _ := tt.expected.(int)
-
-		testIntegerObject(t, evaluated, number)
-	}
+	scoped := testEval(`import "../fixtures/module" only Sum; module.Sum(2, 3)`)
+	testIntegerObject(t, scoped, 5)
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {

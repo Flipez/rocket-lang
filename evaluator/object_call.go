@@ -14,6 +14,9 @@ func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object
 	}
 
 	args := evalExpressions(method.Arguments, env)
+	if len(args) == 1 && object.IsError(args[0]) {
+		return args[0]
+	}
 
 	// A user module is a namespace, not a method receiver. Resolve the
 	// member from its attributes and apply it as a function. Builtin
