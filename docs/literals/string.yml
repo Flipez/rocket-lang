@@ -61,12 +61,14 @@ example: |
   "te\"st" == 'te"st'
 methods:
   ascii:
-    description: "Returns the ascii representation of a char or string"
+    description: "Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use."
     input: |
+      "".ascii()
       "a".ascii()
       "abc".ascii()
     output: |
-      97
+      []
+      [97]
       [97, 98, 99]
   count:
     description: "Counts how often a given substring occurs in the string."

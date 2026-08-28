@@ -249,26 +249,23 @@ func init() {
 		"ascii": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(INTEGER_OBJ, ARRAY_OBJ),
+					Arg(ARRAY_OBJ),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
-				length := len(s.Value)
-				var result Object
-				switch length {
-				case 0:
-					result = NewInteger(-1)
-				case 1:
-					result = NewInteger(int(s.Value[0]))
-				default:
-					arr := make([]Object, length)
-					for idx, char := range s.Value {
-						arr[idx] = NewInteger(int(char))
-					}
-					result = NewArray(arr)
+
+				// One entry per rune, so ascii().size() matches size() and
+				// reverse(), which both count runes rather than bytes. Sizing
+				// this by len() instead used to leave the trailing slots of a
+				// multi-byte string nil, and Inspect then dereferenced them.
+				runes := []rune(s.Value)
+				arr := make([]Object, len(runes))
+				for idx, char := range runes {
+					arr[idx] = NewInteger(int(char))
 				}
-				return result
+
+				return NewArray(arr)
 			},
 		},
 	}
