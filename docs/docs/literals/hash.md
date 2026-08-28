@@ -2,6 +2,25 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 # Hash
 
+Hash keys are not restricted to strings. Any hashable value works, and a
+single hash may mix key types freely: `STRING`, `INTEGER`, `FLOAT`,
+`BOOLEAN`, `ARRAY` and `HASH`.
+
+```js
+h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
+
+puts(h["a"])     // 1
+puts(h[2])       // true
+puts(h[3.5])     // "float"
+puts(h[true])    // "bool"
+puts(h[[1, 2]])  // "array"
+```
+
+`NIL` and functions are not hashable and are rejected as keys, with
+`unusable as hash key: NIL` and `expected index to be hashable`
+respectively.
+
+Reading a key that is not present returns `nil`.
 
 
 
@@ -85,11 +104,13 @@ Returns the values of the hash.
 ### methods()
 > Returns `ARRAY`
 
-Returns an array of all supported methods names.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods()
-' output='["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "strip", "downcase"]
+<CodeBlockSimple input='"test".methods().sort()
+true.methods()
+' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+[]
 ' />
 
 
@@ -153,23 +174,21 @@ a.to_json()
 ### to_s()
 > Returns `STRING`
 
-If possible converts an object to its string representation. If not empty string is returned.
+Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
 <CodeBlockSimple input='true.to_s()
 1234.to_s()
-1234.to_s(2)
-1234.to_s(8)
-1234.to_s(10)
 "test".to_s()
 1.4.to_s()
+nil.to_s()
+"0b1010".to_i().to_s()
 ' output='"true"
-"1234"
-"10011010010"
-"2322"
 "1234"
 "test"
 "1.4"
+""
+"0b1010"
 ' />
 
 
@@ -187,12 +206,11 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the supported methods with usage information.
+Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()
-' output='"BOOLEAN supports the following methods:
-  to_s()"
+' output='"BOOLEAN supports the following methods:\n"
 ' />
 
 

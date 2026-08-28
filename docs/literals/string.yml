@@ -1,5 +1,28 @@
 title: "String"
-description:
+description: |
+  Strings can be written with double or single quotes, and the two differ in
+  how they treat escapes.
+
+  A **double-quoted** string processes escape sequences: `\"` for a quote,
+  `\n` for a newline, `\t` for a tab, `\r` for a carriage return.
+
+  ```js
+  puts("test\"string")   // test"string
+  puts("a\tb")           // a<tab>b
+  ```
+
+  A **single-quoted** string is raw: nothing is escaped and a backslash is an
+  ordinary character. This makes it convenient for text containing double
+  quotes.
+
+  ```js
+  puts('test "string"')  // test "string"
+  puts('a\tb')           // a\tb, a literal backslash and t
+  ```
+
+  Because a single-quoted string performs no escaping, it cannot contain a
+  single quote at all -- `'test \'string'` is a parse error. Use a
+  double-quoted string when you need one.
 example: |
   a = "test_string";
 
