@@ -207,11 +207,19 @@ func init() {
 				var result int
 
 				for i, element := range ao.Elements {
-					if val, ok := element.(Integerable); ok {
-						result += int(val.ToIntegerObj().Value)
-					} else {
+					val, ok := element.(Integerable)
+					if !ok {
 						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
 					}
+
+					// A convertible type can still fail to convert, for
+					// instance a string that does not parse as a number.
+					integer, ok := val.ToIntegerObj().(*Integer)
+					if !ok {
+						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
+					}
+
+					result += int(integer.Value)
 				}
 				return NewInteger(result)
 			},

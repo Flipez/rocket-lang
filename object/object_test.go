@@ -69,6 +69,13 @@ func testInput(t *testing.T, tests []inputTestCase) {
 			}
 		case bool:
 			testBooleanObject(t, evaluated, expected)
+		case nil:
+			// A nil expectation means the conversion could not be performed.
+			// Without this case the type switch matched nothing and the
+			// assertion silently passed whatever it was given.
+			if _, ok := evaluated.(*object.Nil); !ok {
+				t.Errorf("input %q: object is not Nil. got=%T (%+v)", tt.input, evaluated, evaluated)
+			}
 		}
 	}
 }

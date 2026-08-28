@@ -46,14 +46,14 @@ func (b *Boolean) ToStringObj() *String {
 	return NewString(strconv.FormatBool(b.Value))
 }
 
-func (b *Boolean) ToIntegerObj() *Integer {
+func (b *Boolean) ToIntegerObj() Object {
 	if b.Value {
 		return NewInteger(1)
 	}
 	return NewInteger(0)
 }
 
-func (b *Boolean) ToFloatObj() *Float {
+func (b *Boolean) ToFloatObj() Object {
 	if b.Value {
 		return NewFloat(1.0)
 	}

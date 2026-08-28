@@ -88,11 +88,11 @@ func (i *Integer) ToStringObj() *String {
 	return NewString(i.Inspect())
 }
 
-func (i *Integer) ToIntegerObj() *Integer {
+func (i *Integer) ToIntegerObj() Object {
 	return i
 }
 
-func (i *Integer) ToFloatObj() *Float {
+func (i *Integer) ToFloatObj() Object {
 	return NewFloat(float64(i.Value))
 }
 

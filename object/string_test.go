@@ -35,9 +35,9 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test".find("e")`, 1},
 		{`"test".find()`, "to few arguments: got=0, want=1"},
 		{`"test".size()`, 4},
-		{`"test".to_i()`, 0},
+		{`"test".to_i()`, nil},
 		{`"125".to_i()`, 125},
-		{`"test125".to_i()`, 0},
+		{`"test125".to_i()`, nil},
 		{`"0125".to_i()`, 85},
 		{`"1010".to_i()`, 1010},
 		{`"-1010".to_i()`, -1010},
@@ -174,4 +174,23 @@ func TestStringInspect(t *testing.T) {
 			t.Errorf("Inspect() for %q: got=%q, want=%q", tt.input, result, tt.expected)
 		}
 	}
+}
+
+// TestStringConversionFailureIsNil covers the change from silent zeros to nil:
+// a failed conversion has to be distinguishable from a successful one that
+// happens to produce 0.
+func TestStringConversionFailureIsNil(t *testing.T) {
+	tests := []inputTestCase{
+		{`"0".to_i()`, 0},
+		{`"abc".to_i()`, nil},
+		{`"".to_i()`, nil},
+		{`"12abc".to_i()`, nil},
+		{`"0.0".to_f()`, 0.0},
+		{`"abc".to_f()`, nil},
+		{`"".to_f()`, nil},
+		// to_s never fails, so nil keeps rendering as the empty string.
+		{`nil.to_s()`, ""},
+	}
+
+	testInput(t, tests)
 }
