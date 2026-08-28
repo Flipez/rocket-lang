@@ -15,8 +15,8 @@ func NewEnvironment() *Environment {
 }
 
 // NewModuleEnvironment creates the isolated top-level environment a module
-// body is evaluated in. It shares the importer's registry so nested imports
-// see the same cache and the same in-progress set.
+// body is evaluated in. It shares the importer's registry so a module's own
+// imports see the same cache and the same in-progress set.
 func NewModuleEnvironment(reg *ModuleRegistry) *Environment {
 	env := NewEnvironment()
 	env.registry = reg

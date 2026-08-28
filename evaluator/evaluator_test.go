@@ -758,7 +758,7 @@ func TestImportExpression(t *testing.T) {
 			5,
 		},
 		{
-			`import "../fixtures/nested"; nested.SumViaInner(2, 3)`,
+			`import "../fixtures/wrapper"; wrapper.SumViaBase(2, 3)`,
 			5,
 		},
 	}
