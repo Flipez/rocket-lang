@@ -25,7 +25,8 @@ input = a
 ```
 
 ## Return Value
-Loops do return the variable they are iterating after the last loop.
+Loops evaluate to `nil`, whether they run to completion or exit early through
+`break`.
 
 ```js
 def iterate(items)
@@ -34,12 +35,29 @@ def iterate(items)
   end
 end
 
-a = [1,2,3,4,5]
+a = [1, 2, 3, 4, 5]
 
 b = iterate(a)
 
-// b is now [1,2,3,4,5]
+// b is nil
 ```
+
+Build up a value explicitly if you need one out of a loop:
+
+```js
+def doubled(items)
+  result = []
+  foreach item in items
+    result.push(item * 2)
+  end
+  return result
+end
+```
+
+Until `0.24`, `foreach` returned the value it was iterating, so `b` above was
+`[1, 2, 3, 4, 5]` — the same array that went in. That did not hold once the
+loop hit a `break`, which produced `nil` instead, and `while` never returned
+anything but `nil`.
 
 ## Scope of the loop variable
 

@@ -1,7 +1,7 @@
 a = if (false)
   puts("true1")
 else
-  break("test")
+  break
   puts("false1")
 end
 
