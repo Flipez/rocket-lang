@@ -38,6 +38,10 @@ export Square
 import "fixtures/module"
 ```
 
+`import` is a statement, not an expression: it binds a name as a side effect
+and cannot be used where a value is expected, so `x = import "lib"` is a parse
+error.
+
 This binds a variable named after the path's last segment:
 
 ```js

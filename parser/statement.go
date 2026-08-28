@@ -15,6 +15,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseNext()
 	case token.EXPORT:
 		return p.parseExport()
+	case token.IMPORT:
+		return p.parseImport()
 	case token.IDENT:
 		if p.isMultipleAssignment() {
 			return p.parseMultipleAssignment()
