@@ -130,9 +130,16 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test%1.1f".format(1.3)`, "test1.3"},
 		{`"test%s".format("test")`, "testtest"},
 		{`"test%t".format(true)`, "testtrue"},
-		{`"".ascii()`, -1},
-		{`"a".ascii()`, 97},
+		// ascii always returns an ARRAY. It used to return a bare INTEGER for
+		// a one-character string and -1 for an empty one, so callers had to
+		// branch on the length of their own input.
+		{`"".ascii()`, `[]`},
+		{`"a".ascii()`, `[97]`},
 		{`"abc".ascii()`, `[97, 98, 99]`},
+		{`"abc".ascii().size() == "abc".size()`, true},
+		// Sizing the result by byte length left the trailing slots of a
+		// multi-character string nil, which segfaulted on Inspect.
+		{`"\xc3\xa9".ascii().size() == "\xc3\xa9".size()`, true},
 	}
 
 	testInput(t, tests)

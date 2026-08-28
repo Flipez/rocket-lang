@@ -70,14 +70,16 @@ puts(s)
 ## Literal Specific Methods
 
 ### ascii()
-> Returns `INTEGER|ARRAY`
+> Returns `ARRAY`
 
-Returns the ascii representation of a char or string
+Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use.
 
 
-<CodeBlockSimple input='"a".ascii()
+<CodeBlockSimple input='"".ascii()
+"a".ascii()
 "abc".ascii()
-' output='97
+' output='[]
+[97]
 [97, 98, 99]
 ' />
 
