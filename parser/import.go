@@ -8,12 +8,10 @@ import (
 func (p *Parser) parseImport() ast.Expression {
 	expression := &ast.Import{Token: p.curToken}
 
-	p.nextToken()
-
-	expression.Location = p.parseExpression(LOWEST)
-	if expression.Location == nil {
+	if !p.expectPeek(token.STRING) {
 		return nil
 	}
+	expression.Path = p.curToken.Literal
 
 	if p.peekTokenIs(token.AS) {
 		p.nextToken()

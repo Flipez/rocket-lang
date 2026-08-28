@@ -9,10 +9,10 @@ import (
 )
 
 type Import struct {
-	Token    token.Token
-	Location Expression
-	Alias    string
-	Only     []string
+	Token token.Token
+	Path  string
+	Alias string
+	Only  []string
 }
 
 func (ie *Import) TokenLiteral() string { return ie.Token.Literal }
@@ -21,13 +21,7 @@ func (ie *Import) String() string {
 
 	out.WriteString(ie.TokenLiteral())
 	out.WriteString(" ")
-
-	// If Location is a string literal, render it quoted; otherwise bare.
-	if stringLit, ok := ie.Location.(*String); ok {
-		out.WriteString(strconv.Quote(stringLit.Value))
-	} else {
-		out.WriteString(ie.Location.String())
-	}
+	out.WriteString(strconv.Quote(ie.Path))
 
 	if ie.Alias != "" {
 		out.WriteString(" as ")

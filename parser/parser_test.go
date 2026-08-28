@@ -812,22 +812,64 @@ func TestImportCallFormWithTwoArgumentsIsAParseError(t *testing.T) {
 		t.Fatalf("expected a parser error for the two-argument call form")
 	}
 
-	if !strings.Contains(p.Errors()[0], "expected next token to be )") {
-		t.Errorf("expected an error about the unclosed group, got: %q", p.Errors()[0])
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
 	}
 }
 
-func TestImportWithParenthesizedPathStillParses(t *testing.T) {
+func TestImportWithParenthesizedPathIsAParseError(t *testing.T) {
 	l := lexer.New(`import("foobar")`, "test")
 	p := New(l)
-	program := p.ParseProgram()
+	p.ParseProgram()
 
-	if len(p.Errors()) != 0 {
-		t.Fatalf("expected no parser errors, got: %v", p.Errors())
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for the parenthesized path")
 	}
 
-	if program.String() != `import "foobar"` {
-		t.Errorf("expected the parenthesized path to parse as a plain import, got: %q", program.String())
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithNonLiteralPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import someVar`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a non-literal import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithBooleanPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import true`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a boolean import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithIntegerExpressionPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import 5%0`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a computed import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
 	}
 }
 

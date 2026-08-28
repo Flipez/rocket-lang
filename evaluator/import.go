@@ -12,17 +12,6 @@ import (
 )
 
 func evalImport(ie *ast.Import, env *object.Environment) object.Object {
-	location := Eval(ie.Location, env)
-
-	if object.IsError(location) {
-		return location
-	}
-
-	s, ok := location.(*object.String)
-	if !ok {
-		return object.NewErrorFormat("%s:%d:%d: Import Error: invalid import path '%s'", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, location.Inspect())
-	}
-
 	reg := env.Registry()
 
 	importerDir := ""
@@ -30,18 +19,18 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		importerDir = filepath.Dir(ie.Token.File)
 	}
 
-	filename := utilities.FindModuleFrom(s.Value, importerDir)
+	filename := utilities.FindModuleFrom(ie.Path, importerDir)
 	if filename == "" {
-		return object.NewErrorFormat("%s:%d:%d: Import Error: no module named '%s' found", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, s.Value)
+		return object.NewErrorFormat("%s:%d:%d: Import Error: no module named '%s' found", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, ie.Path)
 	}
 
 	name := ie.Alias
 	if name == "" {
-		name = filepath.Base(s.Value)
+		name = filepath.Base(ie.Path)
 	}
 
 	if cached, ok := reg.Get(filename); ok {
-		return bindModule(ie, env, name, cached, s.Value)
+		return bindModule(ie, env, name, cached, ie.Path)
 	}
 
 	if reg.InProgress(filename) {
@@ -54,10 +43,10 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		return attributes
 	}
 
-	mod := object.NewModule(s.Value, attributes)
+	mod := object.NewModule(ie.Path, attributes)
 	reg.Put(filename, mod)
 
-	return bindModule(ie, env, name, mod, s.Value)
+	return bindModule(ie, env, name, mod, ie.Path)
 }
 
 // evalModuleOnce evaluates a module file, bracketing the evaluation with

@@ -207,8 +207,6 @@ func TestErrorHandling(t *testing.T) {
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
 		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
-		{"import true", "test:1:7: Import Error: invalid import path 'true'"},
-		{"import 5%0", "division by zero not allowed"},
 		{`import "fixtures/nope"`, "test:1:7: Import Error: no module named 'fixtures/nope' found"},
 		{
 			`import "../fixtures/parser_error"`,
@@ -760,11 +758,7 @@ func TestImportExpression(t *testing.T) {
 			5,
 		},
 		{
-			`p = "../fixtures/module"; import p; module.Sum(2, 3)`,
-			5,
-		},
-		{
-			`import "../fixtures/nested"; nested.Inner.Sum(2, 3)`,
+			`import "../fixtures/nested"; nested.SumViaInner(2, 3)`,
 			5,
 		},
 	}
@@ -971,9 +965,22 @@ func TestCircularImport(t *testing.T) {
 }
 
 func TestRelativeImport(t *testing.T) {
-	evaluated := testEval(`import "../fixtures/sibling/parent"; parent.Leaf.Leaf`)
+	evaluated := testEval(`import "../fixtures/sibling/parent"; parent.LeafValue()`)
 
 	testIntegerObject(t, evaluated, 3)
+}
+
+func TestExportingAModuleIsAnError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/export_module"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "Export Error: cannot export 'Inner': a module cannot be exported") {
+		t.Errorf("expected message about exporting a module, got=%q", err.Message)
+	}
 }
 
 func TestModuleCachedAcrossImports(t *testing.T) {

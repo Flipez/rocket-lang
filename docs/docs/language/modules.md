@@ -91,22 +91,33 @@ Every `Import Error` carries a `file:line:column:` prefix locating the failing
 begins with a bare `:1:7:`. When the same import fails inside a script, the
 script's path appears there instead.
 
-### Nested namespaces
+### A module cannot be exported
 
-A module can re-export another module, which nests the namespace:
+`export` refuses a value that is a module, whether it names an already-bound
+module or evaluates to one:
+
+```js
+🚀 > import "fixtures/module" as Inner
+=> nil
+🚀 > export Inner
+=> ERROR: :1:7: Export Error: cannot export 'Inner': a module cannot be exported
+```
+
+To build on an imported module, export a function that calls through it
+instead of trying to re-export the module itself:
 
 ```js
 // math.rl
 import "./stats" as Stats
-export Stats
 
 export def Sum(a, b) return a + b end
+export def Mean(numbers) return Stats.Mean(numbers) end
 ```
 
 ```js
 import "./math"
 math.Sum(1, 2)          // 3
-math.Stats.Mean([1, 2]) // reaches into the nested module
+math.Mean([1, 2])       // reaches Stats through the wrapper function
 ```
 
 ## Finding modules
@@ -123,12 +134,8 @@ Any other path is looked up in the search paths, which come from the
 `ROCKETLANGPATH` environment variable, or the current working directory when
 that variable is not set.
 
-The path can be any expression, so it may be computed at runtime:
-
-```js
-name = "fixtures/" + which
-import name as m
-```
+The path must be a string literal; it cannot be a variable or a computed
+expression.
 
 ## Loading rules
 
