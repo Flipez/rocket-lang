@@ -21,24 +21,6 @@ methods:
       3
       5
       0x10
-  ceil:
-    description: "Returns the integer unchanged. An integer is already whole; this exists so numeric code does not have to branch on whether it holds an integer or a float."
-    input: |
-      3.ceil()
-    output: |
-      3
-  floor:
-    description: "Returns the integer unchanged, for the same reason as `ceil`."
-    input: |
-      3.floor()
-    output: |
-      3
-  round:
-    description: "Returns the integer unchanged, for the same reason as `ceil`."
-    input: |
-      3.round()
-    output: |
-      3
   base:
     description: "Returns the base of the integer."
     input: |

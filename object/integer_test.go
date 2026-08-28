@@ -23,11 +23,6 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 
 func TestIntegerObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		// A whole number is already rounded, so round, ceil and floor return
-		// the receiver. They exist so numeric code need not branch on type.
-		{`3.round()`, 3},
-		{`3.ceil()`, 3},
-		{`3.floor()`, 3},
 		{`3.abs()`, 3},
 		{`(0 - 5).abs()`, 5},
 		{`0.abs()`, 0},

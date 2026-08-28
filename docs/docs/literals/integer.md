@@ -45,39 +45,6 @@ Returns the base of the integer.
 ' output='2' />
 
 
-### ceil()
-> Returns `INTEGER`
-
-Returns the integer unchanged. An integer is already whole; this exists so numeric code does not have to branch on whether it holds an integer or a float.
-
-
-<CodeBlockSimple input='3.ceil()
-' output='3
-' />
-
-
-### floor()
-> Returns `INTEGER`
-
-Returns the integer unchanged, for the same reason as `ceil`.
-
-
-<CodeBlockSimple input='3.floor()
-' output='3
-' />
-
-
-### round()
-> Returns `INTEGER`
-
-Returns the integer unchanged, for the same reason as `ceil`.
-
-
-<CodeBlockSimple input='3.round()
-' output='3
-' />
-
-
 ### to_base(INTEGER)
 > Returns `INTEGER`
 

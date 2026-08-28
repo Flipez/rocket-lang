@@ -51,39 +51,6 @@ func init() {
 				return i
 			},
 		},
-		// round, ceil and floor exist on INTEGER so that numeric code can be
-		// written without first checking which of the two number types it
-		// holds. An integer is already whole, so each returns the receiver.
-		"ceil": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return o
-			},
-		},
-		"floor": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return o
-			},
-		},
-		"round": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return o
-			},
-		},
 		"base": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(

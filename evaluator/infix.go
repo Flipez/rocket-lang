@@ -90,7 +90,10 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 	case operator == "!=":
 		return nativeBoolToBooleanObject(!object.CompareObjects(left, right))
 	case object.IsNumber(left) && object.IsNumber(right):
-		if left.Type() == right.Type() && operator != "/" {
+		// Same-type arithmetic stays in that type, so dividing two integers
+		// yields an integer as it does in Ruby. Mixing an integer and a float
+		// promotes to float below.
+		if left.Type() == right.Type() {
 			if left.Type() == object.INTEGER_OBJ {
 				return evalIntegerInfix(operator, left, right)
 			} else if left.Type() == object.FLOAT_OBJ {
@@ -98,7 +101,6 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 			}
 		}
 
-		leftOrig, rightOrig := left, right
 		if left.Type() == object.INTEGER_OBJ {
 			left = left.(*object.Integer).ToFloatObj()
 		}
@@ -106,12 +108,7 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 			right = right.(*object.Integer).ToFloatObj()
 		}
 
-		result := evalFloatInfix(operator, left, right)
-
-		if object.IsNumber(result) && leftOrig.Type() == object.INTEGER_OBJ && rightOrig.Type() == object.INTEGER_OBJ {
-			return result.(*object.Float).TryInteger()
-		}
-		return result
+		return evalFloatInfix(operator, left, right)
 	case ((left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ) || (right.Type() == object.STRING_OBJ && left.Type() == object.INTEGER_OBJ)) && operator == "*":
 		var stringObj string
 		var intObj int

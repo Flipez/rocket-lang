@@ -34,8 +34,20 @@ func TestNumberObjects(t *testing.T) {
 		{"0*1", 0},
 
 		{"1/1", 1},
-		{"1/2", 0.5},
+		// Dividing two integers yields an integer, as in Ruby. The result is
+		// truncated toward zero, which keeps it consistent with %, whose sign
+		// follows the dividend.
+		{"1/2", 0},
 		{"2/1", 2},
+		{"5/2", 2},
+		{"4/2", 2},
+		{"0-5", -5},
+		{"(0-5)/2", -2},
+		{"(0-5)%2", -1},
+		// Mixing the two promotes to float.
+		{"4.0/2", 2.0},
+		{"4/2.0", 2.0},
+		{"5/2.0", 2.5},
 
 		// float | float
 		{"1.0 == 1.0", true},

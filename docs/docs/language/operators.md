@@ -22,6 +22,31 @@
 keep to it within a file; the word forms read more naturally in conditions,
 and the symbol forms are shorter in dense expressions.
 
+## Division
+
+Dividing two integers gives an integer, as in Ruby. The result is truncated
+toward zero rather than rounded.
+
+```js
+puts(4 / 2)   // 2
+puts(5 / 2)   // 2, not 2.5
+```
+
+Mixing an integer with a float promotes the result to a float, so make one
+side a float when you want the fractional part:
+
+```js
+puts(4.0 / 2)   // 2.0
+puts(4 / 2.0)   // 2.0
+puts(5 / 2.0)   // 2.5
+```
+
+Truncation means a negative quotient rounds toward zero: `-5 / 2` is `-2`, not
+`-3`. This keeps division consistent with `%`, whose sign follows the
+dividend, so `(a / b) * b + a % b` always gives back `a`.
+
+Dividing by zero is an error in both forms.
+
 ## Precedence
 
 Operators lower in this table bind more tightly, so they are applied first.
