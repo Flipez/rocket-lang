@@ -7,6 +7,7 @@ import (
 
 	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/utilities"
 )
 
 func evalImport(ie *ast.Import, env *object.Environment) object.Object {
@@ -21,17 +22,11 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		return object.NewErrorFormat("%s:%d:%d: Import Error: invalid import path '%s'", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, location.Inspect())
 	}
 
-	attributes := EvalModule(s.Value)
-	if object.IsError(attributes) {
-		return attributes
-	}
+	reg := env.Registry()
 
-	if len(ie.Only) > 0 {
-		filtered := filterExports(ie, attributes, s.Value)
-		if object.IsError(filtered) {
-			return filtered
-		}
-		attributes = filtered
+	filename := utilities.FindModule(s.Value)
+	if filename == "" {
+		return object.NewErrorFormat("%s:%d:%d: Import Error: no module named '%s' found", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, s.Value)
 	}
 
 	name := ie.Alias
@@ -39,7 +34,39 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 		name = filepath.Base(s.Value)
 	}
 
-	env.Set(name, object.NewModule(s.Value, attributes))
+	if cached, ok := reg.Get(filename); ok {
+		return bindModule(ie, env, name, cached.Attributes, s.Value)
+	}
+
+	if reg.InProgress(filename) {
+		return object.NewErrorFormat("%s:%d:%d: Import Error: circular import\n  %s", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, reg.Chain(filename))
+	}
+
+	reg.Begin(filename)
+	attributes := EvalModuleFile(filename, reg)
+	reg.End(filename)
+
+	if object.IsError(attributes) {
+		return attributes
+	}
+
+	reg.Put(filename, object.NewModule(s.Value, attributes))
+
+	return bindModule(ie, env, name, attributes, s.Value)
+}
+
+// bindModule applies the import's `only` filter and binds the resulting
+// namespace object into env.
+func bindModule(ie *ast.Import, env *object.Environment, name string, attributes object.Object, path string) object.Object {
+	if len(ie.Only) > 0 {
+		filtered := filterExports(ie, attributes, path)
+		if object.IsError(filtered) {
+			return filtered
+		}
+		attributes = filtered
+	}
+
+	env.Set(name, object.NewModule(path, attributes))
 
 	return object.NIL
 }

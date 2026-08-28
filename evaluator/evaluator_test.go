@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/flipez/rocket-lang/lexer"
@@ -208,7 +209,7 @@ func TestErrorHandling(t *testing.T) {
 		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
 		{"import true", "test:1:7: Import Error: invalid import path 'true'"},
 		{"import 5%0", "division by zero not allowed"},
-		{`import "fixtures/nope"`, "Import Error: no module named 'fixtures/nope' found"},
+		{`import "fixtures/nope"`, "test:1:7: Import Error: no module named 'fixtures/nope' found"},
 		{
 			`import "../fixtures/parser_error"`,
 			"Parse Error: [1:10: expected next token to be ), got EOF instead]",
@@ -884,4 +885,23 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	}
 
 	return true
+}
+
+func TestCircularImport(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/cycle_a"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "circular import") {
+		t.Errorf("expected a circular import error, got=%q", err.Message)
+	}
+}
+
+func TestModuleCachedAcrossImports(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/module"; import "../fixtures/module" as m2; module.A + m2.A`)
+
+	testIntegerObject(t, evaluated, 10)
 }

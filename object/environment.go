@@ -6,13 +6,35 @@ import (
 
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
-	return &Environment{store: s, outer: nil, exports: make(map[string]struct{})}
+	return &Environment{
+		store:    s,
+		outer:    nil,
+		exports:  make(map[string]struct{}),
+		registry: NewModuleRegistry(),
+	}
+}
+
+// NewModuleEnvironment creates the isolated top-level environment a module
+// body is evaluated in. It shares the importer's registry so nested imports
+// see the same cache and the same in-progress set.
+func NewModuleEnvironment(reg *ModuleRegistry) *Environment {
+	env := NewEnvironment()
+	env.registry = reg
+	return env
 }
 
 type Environment struct {
-	store   map[string]Object
-	outer   *Environment
-	exports map[string]struct{}
+	store    map[string]Object
+	outer    *Environment
+	exports  map[string]struct{}
+	registry *ModuleRegistry
+}
+
+func (e *Environment) Registry() *ModuleRegistry {
+	if e.outer != nil {
+		return e.outer.Registry()
+	}
+	return e.registry
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
