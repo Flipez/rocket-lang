@@ -1,4 +1,24 @@
 title: "Hash"
+description: |
+  Hash keys are not restricted to strings. Any hashable value works, and a
+  single hash may mix key types freely: `STRING`, `INTEGER`, `FLOAT`,
+  `BOOLEAN`, `ARRAY` and `HASH`.
+
+  ```js
+  h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
+
+  puts(h["a"])     // 1
+  puts(h[2])       // true
+  puts(h[3.5])     // "float"
+  puts(h[true])    // "bool"
+  puts(h[[1, 2]])  // "array"
+  ```
+
+  `NIL` and functions are not hashable and are rejected as keys, with
+  `unusable as hash key: NIL` and `expected index to be hashable`
+  respectively.
+
+  Reading a key that is not present returns `nil`.
 example: |
   people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
 

@@ -41,6 +41,36 @@ b = iterate(a)
 // b is now [1,2,3,4,5]
 ```
 
+## Scope of the loop variable
+
+The loop variable is created in the loop's own scope, so it does not exist
+after the loop finishes:
+
+```js
+foreach j in [1, 2, 3]
+end
+
+puts(j)  // ERROR: identifier not found: j
+```
+
+If a variable of that name already exists outside the loop, though, the loop
+assigns to *that* variable rather than creating a new one, and it keeps the
+last value the loop gave it:
+
+```js
+i = 100
+
+foreach i in [1, 2, 3]
+end
+
+puts(i)  // 3, not 100
+```
+
+This follows from how assignment works generally: assigning to a name that
+already exists further out updates it in place instead of shadowing it. Use a
+loop variable name that is not already taken if you need to keep the outer
+value.
+
 ## Using an integer
 Count form zero to a given number (excluding):
 

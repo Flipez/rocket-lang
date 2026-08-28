@@ -1,22 +1,20 @@
 methods:
   to_s:
-    description: "If possible converts an object to its string representation. If not empty string is returned."
+    description: "Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it."
     input: |
       true.to_s()
       1234.to_s()
-      1234.to_s(2)
-      1234.to_s(8)
-      1234.to_s(10)
       "test".to_s()
       1.4.to_s()
+      nil.to_s()
+      "0b1010".to_i().to_s()
     output: |
       "true"
       "1234"
-      "10011010010"
-      "2322"
-      "1234"
       "test"
       "1.4"
+      ""
+      "0b1010"
   to_i:
     description: "Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly."
     input: |
@@ -60,18 +58,19 @@ methods:
       {"test": 1234}
       "{\"test\":1234}"
   methods:
-    description: "Returns an array of all supported methods names."
+    description: "Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array."
     input: |
-      "test".methods()
+      "test".methods().sort()
+      true.methods()
     output: |
-      ["upcase", "find", "format", "reverse", "split", "replace", "strip!", "count", "reverse!", "lines", "downcase!", "upcase!", "size", "strip", "downcase"]
+      ["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+      []
   wat:
-    description: "Returns the supported methods with usage information."
+    description: "Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none."
     input: |
       true.wat()
     output: |
-      "BOOLEAN supports the following methods:
-        to_s()"
+      "BOOLEAN supports the following methods:\n"
   type:
     description: "Returns the type of the object."
     input: |
