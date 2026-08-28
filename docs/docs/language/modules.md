@@ -167,9 +167,14 @@ importing, so a module can import its neighbours:
 import "../util" as util
 ```
 
-Any other path is looked up in the search paths, which come from the
-`ROCKETLANGPATH` environment variable, or the current working directory when
-that variable is not set.
+Any other path is looked up in the search paths: each entry of the
+`ROCKETLANGPATH` environment variable in order, followed by the working
+directory. Entries are separated by the platform's path list separator, `:` on
+Unix and `;` on Windows.
+
+The working directory is always searched, so setting `ROCKETLANGPATH` adds
+places to look rather than replacing the default. Configured entries are tried
+first, so they win when the same module name exists in both.
 
 The path must be a string literal; it cannot be a variable or a computed
 expression.
