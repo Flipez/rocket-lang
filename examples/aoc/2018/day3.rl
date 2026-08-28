@@ -1,4 +1,4 @@
-import("util")
+import "../util" as util
 
 def add(a, b)
   c = []

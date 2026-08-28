@@ -1,4 +1,4 @@
-import("util")
+import "../util" as util
 
 def part1(lines)
   expenses = []

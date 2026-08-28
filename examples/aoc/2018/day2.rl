@@ -1,4 +1,4 @@
-import("util")
+import "../util" as util
 def countLetters(line)
   return [doubleLetters, trippleLetters]
 end

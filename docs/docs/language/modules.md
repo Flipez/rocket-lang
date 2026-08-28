@@ -1,46 +1,146 @@
 # Modules
 > 👉 Modules were introduced in `0.11`
+>
+> 👉 The `import` syntax changed in `0.24` and `export` became required
 
-Modules are seperate RocketLang files can be imported using the `import` statement.
-Functions and <mark>variables starting with a uppercase</mark> name are then available in the imported module.
+Modules are separate RocketLang files. A module makes a value public with
+`export`; everything else stays private to the file.
 
-For example take this module:
+## Exporting
+
+`export` works in three forms and is only valid at the top level of a file:
 
 ```js
 // fixtures/module.rl
 a = 1
-A = 5
+export A = 5
+export lower = 7
+Private = 99
 
-Sum = def (a, b)
+export def Sum(a, b)
     return a + b
 end
 ```
 
-You can import it with:
+`a` and `Private` are both private. Capitalization means nothing — before
+`0.24` an uppercase name was exported automatically, and that rule is gone.
+
+You can also export a name that is already bound:
 
 ```js
-import("fixtures/module")
+Square = def(x) return x * x end
+export Square
 ```
 
-This results in a variable `module` implicitly being assigned.
-You can use it like so:
+## Importing
 
 ```js
-🚀 > import("fixtures/module")
-=> nil
-🚀 > module.a
+import "fixtures/module"
+```
+
+This binds a variable named after the path's last segment:
+
+```js
+🚀 > import "fixtures/module"
 => nil
 🚀 > module.A
 => 5
 🚀 > module.Sum(module.A, 2)
 => 7
+🚀 > module.a
+=> ERROR: module 'fixtures/module' has no export 'a'
 ```
 
-You can also define a name for the variable in which the module will be available:
+Accessing something the module does not export is an error, not `nil`.
+
+### Choosing the name with `as`
 
 ```js
-🚀 > import("fixtures/module", "anotherModule")
+🚀 > import "fixtures/module" as anotherModule
 => nil
 🚀 > anotherModule.A
 => 5
+```
+
+An import fails if its name is already taken, whether by a variable, an
+earlier import, or a builtin module such as `Math`.
+
+### Narrowing with `only`
+
+`only` restricts what the namespace contains. It never puts names into the
+current scope:
+
+```js
+🚀 > import "fixtures/module" as narrow only Sum
+=> nil
+🚀 > narrow.Sum(1, 2)
+=> 3
+🚀 > narrow.A
+=> ERROR: module 'fixtures/module' has no export 'A'
+```
+
+Naming something the module does not export is an error:
+
+```js
+🚀 > import "fixtures/module" only Nope
+=> ERROR: Import Error: 'fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'
+```
+
+### Nested namespaces
+
+A module can re-export another module, which nests the namespace:
+
+```js
+// math.rl
+import "./stats" as Stats
+export Stats
+
+export def Sum(a, b) return a + b end
+```
+
+```js
+import "./math"
+math.Sum(1, 2)          // 3
+math.Stats.Mean([1, 2]) // reaches into the nested module
+```
+
+## Finding modules
+
+A path starting with `./` or `../` resolves relative to the file doing the
+importing, so a module can import its neighbours:
+
+```js
+// examples/aoc/2018/day2.rl
+import "../util" as util
+```
+
+Any other path is looked up in the search paths, which come from the
+`ROCKETLANGPATH` environment variable, or the current working directory when
+that variable is not set.
+
+The path can be any expression, so it may be computed at runtime:
+
+```js
+name = "fixtures/" + which
+import name as m
+```
+
+## Loading rules
+
+A module file is evaluated **once**. Importing it again reuses the result, so
+its side effects do not run a second time:
+
+```js
+import "fixtures/module"
+import "fixtures/module" as sameThing
+// the file was read and evaluated one time
+```
+
+Circular imports are an error rather than a hang. Each hop in the chain is
+shown relative to the current working directory:
+
+```js
+🚀 > import "fixtures/cycle_a"
+=> ERROR: Import Error: circular import
+  fixtures/cycle_a.rl -> fixtures/cycle_b.rl -> fixtures/cycle_a.rl
 ```

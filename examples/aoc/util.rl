@@ -1,10 +1,10 @@
-def Swap(a, i, j)
+export def Swap(a, i, j)
   buf = a[i]
   a[i] = a[j]
   a[j] = buf
 end
 
-def Make(type, size)
+export def Make(type, size)
   a = []
   if (size > 0)
     foreach i in size
@@ -26,7 +26,7 @@ def Make(type, size)
   return a
 end
 
-def Contains(a, i)
+export def Contains(a, i)
   foreach b in a
     if (b == i)
       return true
@@ -35,7 +35,7 @@ def Contains(a, i)
   return false
 end
 
-def Format(a, b)
+export def Format(a, b)
   foreach idx, item in b
     val = ""
     if (item.type() == "STRING")
