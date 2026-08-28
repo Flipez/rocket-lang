@@ -1196,3 +1196,39 @@ func TestRelativeImportWithoutSourceFile(t *testing.T) {
 
 	testIntegerObject(t, evaluated, 5)
 }
+
+// TestLoopsReturnNil covers the change from foreach handing back the value it
+// was iterating. That value was the caller's own input, and it silently became
+// nil as soon as the loop broke early, so the two loop forms disagreed with
+// each other and foreach disagreed with itself.
+func TestLoopsReturnNil(t *testing.T) {
+	inputs := []string{
+		`foreach i in 5 end`,
+		`foreach i in [7, 8] end`,
+		`foreach i in "hi" end`,
+		`foreach i in 5
+			if i == 2
+				break
+			end
+		end`,
+		`x = 0
+		while x < 2
+			x = x + 1
+		end`,
+		`x = 0
+		while x < 5
+			x = x + 1
+			if x == 2
+				break
+			end
+		end`,
+	}
+
+	for _, input := range inputs {
+		evaluated := testEval(input)
+
+		if _, ok := evaluated.(*object.Nil); !ok {
+			t.Errorf("input %q: expected nil, got=%T (%+v)", input, evaluated, evaluated)
+		}
+	}
+}

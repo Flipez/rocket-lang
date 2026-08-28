@@ -16,7 +16,7 @@ func evalWhile(w *ast.While, env *object.Environment) object.Object {
 		}
 
 		if rt != nil && rt.Type() == object.BREAK_VALUE_OBJ {
-			return rt.(*object.BreakValue).Value
+			return object.NIL
 		}
 
 		v = Eval(w.Condition, env)

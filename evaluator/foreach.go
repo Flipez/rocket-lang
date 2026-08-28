@@ -64,11 +64,14 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 		}
 
 		if rt != nil && rt.Type() == object.BREAK_VALUE_OBJ {
-			return rt.(*object.BreakValue).Value
+			return object.NIL
 		}
 
 		ret, idx, ok = iterator.Next()
 	}
 
-	return val
+	// Loops evaluate to nil. foreach used to hand back the value it was
+	// iterating, which was the caller's own input and became nil the moment
+	// the loop broke early.
+	return object.NIL
 }

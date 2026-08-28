@@ -33,7 +33,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return object.NewReturnValue(val)
 	case *ast.Break:
-		return object.NewBreakValue(object.NIL)
+		return object.NewBreakValue()
 	case *ast.Next:
 		return object.NewNextValue(object.NIL)
 

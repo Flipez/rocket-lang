@@ -7,12 +7,12 @@ import (
 )
 
 func TestBreakValue(t *testing.T) {
-	bv := object.NewBreakValue(object.NewString("a"))
+	bv := object.NewBreakValue()
 
 	if bv.Type() != object.BREAK_VALUE_OBJ {
 		t.Errorf("breakValue.Type() returns wrong type")
 	}
-	if bv.Inspect() != `"a"` {
+	if bv.Inspect() != "break" {
 		t.Errorf("breakValue.Inspect() returns wrong string")
 	}
 }
