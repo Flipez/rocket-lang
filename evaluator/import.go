@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -14,9 +15,15 @@ import (
 func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 	reg := env.Registry()
 
+	// A `./` or `../` path resolves against the directory of the file doing
+	// the importing. The REPL and `rocket-lang -e` have no such file, so they
+	// anchor on the working directory: that is where their source effectively
+	// lives, and it is already where a bare module name resolves from.
 	importerDir := ""
 	if ie.Token.File != "" {
 		importerDir = filepath.Dir(ie.Token.File)
+	} else if wd, err := os.Getwd(); err == nil {
+		importerDir = wd
 	}
 
 	filename := utilities.FindModuleFrom(ie.Path, importerDir)
