@@ -323,23 +323,54 @@ func (s *String) ToStringObj() *String {
 
 func (s *String) ToIntegerObj() *Integer {
 	base := 10
+	digits := s.Value
+
+	sign := ""
+	if strings.HasPrefix(digits, "-") || strings.HasPrefix(digits, "+") {
+		sign, digits = digits[:1], digits[1:]
+	}
+
+	lower := strings.ToLower(digits)
 
 	switch {
-	case strings.HasPrefix(s.Value, "0b"):
-		base = 2
-	case strings.HasPrefix(s.Value, "0x"):
-		base = 16
-	case strings.HasPrefix(s.Value, "0"), strings.HasPrefix(s.Value, "0o"):
-		base = 8
+	case strings.HasPrefix(lower, "0b"):
+		base, digits = 2, digits[2:]
+	case strings.HasPrefix(lower, "0o"):
+		base, digits = 8, digits[2:]
+	case strings.HasPrefix(lower, "0x"):
+		base, digits = 16, digits[2:]
+	case isLegacyOctal(digits):
+		base, digits = 8, digits[1:]
 	}
 
-	i, err := strconv.ParseInt(s.Value, 0, 0)
+	i, err := strconv.ParseInt(sign+digits, base, 64)
 
 	if err != nil {
-		fmt.Println(err)
+		// Returning 0 on a failed conversion is the long-standing behaviour,
+		// tracked separately in #232. Do not print the Go error: it lands on
+		// stdout and corrupts the program's own output.
 		return NewInteger(0)
 	}
+
 	return NewIntegerWithBase(int(i), base)
+}
+
+// isLegacyOctal reports whether digits is a leading-zero octal literal such
+// as "0125". A bare "0" is decimal zero rather than an octal prefix with
+// nothing following it, and a leading zero followed by a non-octal digit
+// ("08") is a zero-padded decimal.
+func isLegacyOctal(digits string) bool {
+	if len(digits) < 2 || digits[0] != '0' {
+		return false
+	}
+
+	for _, c := range digits[1:] {
+		if c < '0' || c > '7' {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (s *String) ToFloatObj() *Float {

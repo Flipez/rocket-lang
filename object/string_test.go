@@ -42,6 +42,27 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"1010".to_i()`, 1010},
 		{`"-1010".to_i()`, -1010},
 		{`"0x1022".to_i()`, 4130},
+		// A bare "0" is decimal zero, not a leading-zero octal prefix with
+		// nothing after it. Getting this wrong gave it base 8, so adding it to
+		// any ordinary integer failed with "unequal base".
+		{`"0".to_i()`, 0},
+		{`"0".to_i().base()`, 10},
+		{`"0".to_i() + 1`, 1},
+		{`"-0".to_i() + 1`, 1},
+		// A leading zero followed by a non-octal digit is a zero-padded
+		// decimal, not a malformed octal literal.
+		{`"08".to_i()`, 8},
+		{`"09".to_i().base()`, 10},
+		// Base prefixes are case insensitive; uppercase ones used to fall
+		// through to the legacy-octal branch and be tagged base 8.
+		{`"0X1022".to_i()`, 4130},
+		{`"0X1022".to_i().base()`, 16},
+		{`"0B101".to_i()`, 5},
+		{`"0B101".to_i().base()`, 2},
+		{`"0o17".to_i()`, 15},
+		{`"0O17".to_i().base()`, 8},
+		// Legacy leading-zero octal keeps working.
+		{`"0125".to_i().base()`, 8},
 		{`"1022".to_f()`, 1022.0},
 		{`"1022".to_s()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},
