@@ -898,10 +898,42 @@ func TestCircularImport(t *testing.T) {
 	if !strings.Contains(err.Message, "circular import") {
 		t.Errorf("expected a circular import error, got=%q", err.Message)
 	}
+
+	if !strings.Contains(err.Message, "../fixtures/cycle_a.rl -> ../fixtures/cycle_b.rl -> ../fixtures/cycle_a.rl") {
+		t.Errorf("expected chain cycle_a -> cycle_b -> cycle_a (in order), got=%q", err.Message)
+	}
 }
 
 func TestModuleCachedAcrossImports(t *testing.T) {
-	evaluated := testEval(`import "../fixtures/module"; import "../fixtures/module" as m2; module.A + m2.A`)
+	l := lexer.New(`import "../fixtures/module"; import "../fixtures/module" as m2`, "test")
+	p := parser.New(l)
+	program := p.ParseProgram()
+	env := object.NewEnvironment()
 
-	testIntegerObject(t, evaluated, 10)
+	evaluated := Eval(program, env)
+	if object.IsError(evaluated) {
+		t.Fatalf("unexpected error evaluating program: %+v", evaluated)
+	}
+
+	first, ok := env.Get("module")
+	if !ok {
+		t.Fatalf("expected 'module' to be bound in env")
+	}
+	firstMod, ok := first.(*object.Module)
+	if !ok {
+		t.Fatalf("expected 'module' to be *object.Module, got=%T", first)
+	}
+
+	second, ok := env.Get("m2")
+	if !ok {
+		t.Fatalf("expected 'm2' to be bound in env")
+	}
+	secondMod, ok := second.(*object.Module)
+	if !ok {
+		t.Fatalf("expected 'm2' to be *object.Module, got=%T", second)
+	}
+
+	if firstMod != secondMod {
+		t.Errorf("expected both imports of the same file to bind the same *object.Module instance, got distinct pointers %p and %p", firstMod, secondMod)
+	}
 }

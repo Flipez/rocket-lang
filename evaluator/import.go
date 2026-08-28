@@ -35,38 +35,56 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 	}
 
 	if cached, ok := reg.Get(filename); ok {
-		return bindModule(ie, env, name, cached.Attributes, s.Value)
+		return bindModule(ie, env, name, cached, s.Value)
 	}
 
 	if reg.InProgress(filename) {
 		return object.NewErrorFormat("%s:%d:%d: Import Error: circular import\n  %s", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, reg.Chain(filename))
 	}
 
-	reg.Begin(filename)
-	attributes := EvalModuleFile(filename, reg)
-	reg.End(filename)
+	attributes := evalModuleOnce(filename, reg)
 
 	if object.IsError(attributes) {
 		return attributes
 	}
 
-	reg.Put(filename, object.NewModule(s.Value, attributes))
+	mod := object.NewModule(s.Value, attributes)
+	reg.Put(filename, mod)
 
-	return bindModule(ie, env, name, attributes, s.Value)
+	return bindModule(ie, env, name, mod, s.Value)
+}
+
+// evalModuleOnce evaluates a module file, bracketing the evaluation with
+// reg.Begin/reg.End so the in-progress entry is always cleared as soon as
+// evaluation finishes -- including on any early return inside
+// EvalModuleFile -- without delaying the End past other imports handled by
+// the caller.
+func evalModuleOnce(filename string, reg *object.ModuleRegistry) object.Object {
+	reg.Begin(filename)
+	defer reg.End(filename)
+
+	return EvalModuleFile(filename, reg)
 }
 
 // bindModule applies the import's `only` filter and binds the resulting
-// namespace object into env.
-func bindModule(ie *ast.Import, env *object.Environment, name string, attributes object.Object, path string) object.Object {
+// namespace object into env. When the import has no `only` clause, the
+// cached module instance itself is bound so that repeated imports of the
+// same file share one *object.Module (per the module cache's "same
+// instance" contract). A narrowed `only` import always gets its own
+// *object.Module wrapping a filtered attributes hash.
+func bindModule(ie *ast.Import, env *object.Environment, name string, mod *object.Module, path string) object.Object {
 	if len(ie.Only) > 0 {
-		filtered := filterExports(ie, attributes, path)
+		filtered := filterExports(ie, mod.Attributes, path)
 		if object.IsError(filtered) {
 			return filtered
 		}
-		attributes = filtered
+
+		env.Set(name, object.NewModule(path, filtered))
+
+		return object.NIL
 	}
 
-	env.Set(name, object.NewModule(path, attributes))
+	env.Set(name, mod)
 
 	return object.NIL
 }
