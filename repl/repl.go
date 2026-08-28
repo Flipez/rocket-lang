@@ -41,6 +41,7 @@ func Start(in io.Reader, out io.Writer) {
 	defer rl.Close()
 
 	env := object.NewEnvironment()
+	env.AllowRebind()
 
 	fmt.Println(SplashScreen())
 

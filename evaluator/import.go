@@ -7,6 +7,7 @@ import (
 
 	"github.com/flipez/rocket-lang/ast"
 	"github.com/flipez/rocket-lang/object"
+	"github.com/flipez/rocket-lang/stdlib"
 	"github.com/flipez/rocket-lang/utilities"
 )
 
@@ -78,6 +79,16 @@ func evalModuleOnce(filename string, reg *object.ModuleRegistry) object.Object {
 // instance" contract). A narrowed `only` import always gets its own
 // *object.Module wrapping a filtered attributes hash.
 func bindModule(ie *ast.Import, env *object.Environment, name string, mod *object.Module, path string) object.Object {
+	if nameInUse(env, name) {
+		existing, _ := env.Get(name)
+		existingMod, isModule := existing.(*object.Module)
+		sameModule := isModule && existingMod.Name == path
+
+		if !(env.RebindAllowed() && sameModule) {
+			return object.NewErrorFormat("%s:%d:%d: Import Error: cannot bind module as '%s', name already in use", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, name)
+		}
+	}
+
 	if len(ie.Only) > 0 {
 		filtered := filterExports(ie, mod.Attributes, path)
 		if object.IsError(filtered) {
@@ -114,6 +125,21 @@ func filterExports(ie *ast.Import, attributes object.Object, path string) object
 	}
 
 	return object.NewHash(pairs)
+}
+
+// nameInUse reports whether name is already bound in scope or shadows a
+// builtin function or module.
+func nameInUse(env *object.Environment, name string) bool {
+	if _, ok := env.Get(name); ok {
+		return true
+	}
+	if _, ok := stdlib.Functions[name]; ok {
+		return true
+	}
+	if _, ok := stdlib.Modules[name]; ok {
+		return true
+	}
+	return false
 }
 
 // exportNames renders a module's export list for error messages, sorted so

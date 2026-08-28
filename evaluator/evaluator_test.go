@@ -720,7 +720,6 @@ func TestExport(t *testing.T) {
 		{`import "../fixtures/module"; module.Sum(2, 3)`, 5},
 		{`import "../fixtures/module"; module.A`, 5},
 		{`import "../fixtures/module"; module.lower`, 7},
-		{`import "../fixtures/module"; module.Private`, nil},
 	}
 
 	for _, tt := range tests {
@@ -749,20 +748,12 @@ func TestImportExpression(t *testing.T) {
 			5,
 		},
 		{
-			`import "../fixtures/module"; module.a`,
-			nil,
-		},
-		{
 			`import "../fixtures/module" as module2; module2.A`,
 			5,
 		},
 		{
 			`import "../fixtures/module" only A; module.A`,
 			5,
-		},
-		{
-			`import "../fixtures/module" only Sum; module.A`,
-			nil,
 		},
 		{
 			`import "../fixtures/module"; m = module; m.Sum(2, 3)`,
@@ -786,6 +777,52 @@ func TestImportExpression(t *testing.T) {
 			testIntegerObject(t, evaluated, number)
 		} else {
 			testNullObject(t, evaluated)
+		}
+	}
+}
+
+func TestModuleStrictness(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			`import "../fixtures/module"; module.a`,
+			"module '../fixtures/module' has no export 'a'",
+		},
+		{
+			`import "../fixtures/module"; module.nope()`,
+			"module '../fixtures/module' has no export 'nope'",
+		},
+		{
+			`import "../fixtures/module"; module.Private`,
+			"module '../fixtures/module' has no export 'Private'",
+		},
+		{
+			`import "../fixtures/module" only Sum; module.A`,
+			"module '../fixtures/module' has no export 'A'",
+		},
+		{
+			`math = 5; import "../fixtures/module" as math`,
+			"Import Error: cannot bind module as 'math', name already in use",
+		},
+		{
+			`import "../fixtures/module" as Math`,
+			"Import Error: cannot bind module as 'Math', name already in use",
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		err, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("input %q: expected an error, got=%T (%+v)", tt.input, evaluated, evaluated)
+			continue
+		}
+
+		if !strings.Contains(err.Message, tt.expected) {
+			t.Errorf("input %q: expected message containing %q, got=%q", tt.input, tt.expected, err.Message)
 		}
 	}
 }

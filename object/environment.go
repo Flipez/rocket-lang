@@ -24,11 +24,18 @@ func NewModuleEnvironment(reg *ModuleRegistry) *Environment {
 }
 
 type Environment struct {
-	store    map[string]Object
-	outer    *Environment
-	exports  map[string]struct{}
-	registry *ModuleRegistry
+	store       map[string]Object
+	outer       *Environment
+	exports     map[string]struct{}
+	registry    *ModuleRegistry
+	allowRebind bool
 }
+
+// AllowRebind relaxes the import shadowing check, for the REPL where
+// re-entering the same import line is expected.
+func (e *Environment) AllowRebind() { e.allowRebind = true }
+
+func (e *Environment) RebindAllowed() bool { return e.allowRebind }
 
 func (e *Environment) Registry() *ModuleRegistry {
 	if e.outer != nil {
