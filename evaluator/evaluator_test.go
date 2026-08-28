@@ -891,6 +891,19 @@ func testEval(input string) object.Object {
 	return Eval(program, env)
 }
 
+// testEvalWithRebind mirrors testEval but enables the REPL's import-rebind
+// relaxation on the top-level environment, the way repl.go does before
+// evaluating each entered line.
+func testEvalWithRebind(input string) object.Object {
+	l := lexer.New(input, "test")
+	p := parser.New(l)
+	program := p.ParseProgram()
+	env := object.NewEnvironment()
+	env.AllowRebind()
+
+	return Eval(program, env)
+}
+
 func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	result, ok := obj.(*object.String)
 	if !ok {
@@ -983,6 +996,50 @@ func TestExportingAModuleIsAnError(t *testing.T) {
 	}
 }
 
+// TestExportPropagatesValueError proves that `export Name = <expr>` returns
+// the underlying evaluation error unchanged when <expr> itself errors,
+// instead of masking it or continuing on to mark the export.
+func TestExportPropagatesValueError(t *testing.T) {
+	evaluated := testEval(`export Foo = 5 % 0`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "division by zero not allowed") {
+		t.Errorf("expected message containing %q, got=%q", "division by zero not allowed", err.Message)
+	}
+}
+
+// TestExportAssignedModuleIsAnError covers the `export Name = <expr>` form
+// where <expr> evaluates to a module, as distinct from the bare `export
+// Name` form already covered by TestExportingAModuleIsAnError.
+func TestExportAssignedModuleIsAnError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/module" as Inner; export Alias = Inner`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "Export Error: cannot export 'Alias': a module cannot be exported") {
+		t.Errorf("expected message about exporting a module, got=%q", err.Message)
+	}
+}
+
+// TestExportUndefinedNameIsAnError covers the bare `export Name` form when
+// Name was never defined in scope.
+func TestExportUndefinedNameIsAnError(t *testing.T) {
+	evaluated := testEval(`export NeverDefined`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "Export Error: 'NeverDefined' is not defined") {
+		t.Errorf("expected message about the name not being defined, got=%q", err.Message)
+	}
+}
+
 func TestModuleCachedAcrossImports(t *testing.T) {
 	l := lexer.New(`import "../fixtures/module"; import "../fixtures/module" as m2`, "test")
 	p := parser.New(l)
@@ -1015,4 +1072,106 @@ func TestModuleCachedAcrossImports(t *testing.T) {
 	if firstMod != secondMod {
 		t.Errorf("expected both imports of the same file to bind the same *object.Module instance, got distinct pointers %p and %p", firstMod, secondMod)
 	}
+}
+
+// TestImportRebindNoOpWhenIdentical proves that re-entering the exact same
+// (non-`only`) import line under RebindAllowed is a silent no-op, and the
+// module is still fully usable afterwards.
+func TestImportRebindNoOpWhenIdentical(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module"; import "../fixtures/module"; module.Sum(2, 3)`)
+
+	testIntegerObject(t, evaluated, 5)
+}
+
+// TestImportRebindNoOpWhenIdenticalOnly is a regression test: re-entering an
+// `only` import with the exact same narrowing must also be treated as a
+// no-op, not as "name already in use". This case regressed once already
+// because a naive rebind check compared the *object.Module pointers
+// directly, and an `only` import always constructs a fresh *object.Module,
+// so it never pointer-matched the existing binding.
+func TestImportRebindNoOpWhenIdenticalOnly(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module" only Sum; import "../fixtures/module" only Sum; module.Sum(2, 3)`)
+
+	testIntegerObject(t, evaluated, 5)
+}
+
+// TestImportRebindStillErrorsOnNarrowingChange proves that RebindAllowed
+// only relaxes the check for an import that would bind the exact same
+// namespace as what's already bound. Any change to the narrowing --
+// widening, narrowing, or swapping to a different `only` set -- must still
+// error.
+func TestImportRebindStillErrorsOnNarrowingChange(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{
+			"full import then only",
+			`import "../fixtures/module"; import "../fixtures/module" only Sum`,
+		},
+		{
+			"only then full import",
+			`import "../fixtures/module" only Sum; import "../fixtures/module"`,
+		},
+		{
+			"different only lists",
+			`import "../fixtures/module" only Sum; import "../fixtures/module" only A`,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEvalWithRebind(tt.input)
+
+		err, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("%s: expected an error, got=%T (%+v)", tt.name, evaluated, evaluated)
+			continue
+		}
+		if !strings.Contains(err.Message, "name already in use") {
+			t.Errorf("%s: expected message containing %q, got=%q", tt.name, "name already in use", err.Message)
+		}
+	}
+}
+
+// TestImportRebindStillErrorsOnNonModuleName proves that RebindAllowed does
+// not relax the check when the binding name is already held by a plain
+// (non-module) value -- there is no "same binding" to compare against.
+func TestImportRebindStillErrorsOnNonModuleName(t *testing.T) {
+	evaluated := testEvalWithRebind(`module = 5; import "../fixtures/module"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "name already in use") {
+		t.Errorf("expected message containing %q, got=%q", "name already in use", err.Message)
+	}
+}
+
+// TestImportRebindDifferentNamesBothUsable proves that importing the same
+// path twice under two different names is not a rebind case at all -- both
+// bindings are independent and both remain usable.
+func TestImportRebindDifferentNamesBothUsable(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module"; import "../fixtures/module" as m2; module.Sum(2, 3) + m2.Sum(1, 1)`)
+
+	testIntegerObject(t, evaluated, 7)
+}
+
+// TestImportRebindReachesNestedScope proves that the rebind relaxation
+// enabled on the top-level (REPL) environment is visible from an enclosed
+// scope, the way a while-loop body inherits it in the real REPL. This
+// exercises RebindAllowed's outer-delegation branch, mirroring how
+// Registry() delegates to outer.
+func TestImportRebindReachesNestedScope(t *testing.T) {
+	evaluated := testEvalWithRebind(`
+import "../fixtures/module"
+i = 0
+while i < 2
+	import "../fixtures/module"
+	i = i + 1
+end
+module.Sum(2, 3)
+`)
+
+	testIntegerObject(t, evaluated, 5)
 }

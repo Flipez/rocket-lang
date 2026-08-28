@@ -140,3 +140,45 @@ func TestEnvironment(t *testing.T) {
 		t.Errorf(`v, ok := child.Get("b"): expected 'ok' to be true, but got %t`, ok)
 	}
 }
+
+// TestRebindAllowedDefaultsToFalse proves a fresh environment does not allow
+// import rebinding until AllowRebind is explicitly called.
+func TestRebindAllowedDefaultsToFalse(t *testing.T) {
+	env := object.NewEnvironment()
+
+	if env.RebindAllowed() {
+		t.Errorf("expected RebindAllowed() to be false by default, got true")
+	}
+}
+
+// TestAllowRebindEnablesRebindAllowed proves AllowRebind flips
+// RebindAllowed() to true on the environment it's called on.
+func TestAllowRebindEnablesRebindAllowed(t *testing.T) {
+	env := object.NewEnvironment()
+	env.AllowRebind()
+
+	if !env.RebindAllowed() {
+		t.Errorf("expected RebindAllowed() to be true after AllowRebind(), got false")
+	}
+}
+
+// TestRebindAllowedInheritedByEnclosedEnvironment proves RebindAllowed
+// delegates to outer the same way Registry() does, so an enclosed
+// environment (e.g. a loop body or block) inherits the relaxation enabled
+// on its outer/top-level environment.
+func TestRebindAllowedInheritedByEnclosedEnvironment(t *testing.T) {
+	outer := object.NewEnvironment()
+	outer.AllowRebind()
+	child := object.NewEnclosedEnvironment(outer)
+
+	if !child.RebindAllowed() {
+		t.Errorf("expected enclosed environment to inherit RebindAllowed() from outer, got false")
+	}
+
+	// An enclosed environment created from an outer environment that never
+	// called AllowRebind must not report true on its own.
+	other := object.NewEnclosedEnvironment(object.NewEnvironment())
+	if other.RebindAllowed() {
+		t.Errorf("expected enclosed environment to report false when outer never called AllowRebind(), got true")
+	}
+}
