@@ -226,23 +226,27 @@ nil.to_f()
 ### to_i()
 > Returns `INTEGER`
 
-If possible converts an object to its integer representation. If not 0 is returned.
+Converts an object to its integer representation, or `0` when it cannot. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
 <CodeBlockSimple input='true.to_i()
 false.to_i()
 1234.to_i()
 "4".to_i()
-"10011010010"to_i(2)
-"2322".to_i(8)
+"0".to_i()
+"0125".to_i()
 "0x2322".to_i()
+"0b1010".to_i()
+"test".to_i()
 ' output='1
 0
 1234
 4
-1234
-1234
-1234
+0
+0o125
+0x2322
+0b1010
+0
 ' />
 
 

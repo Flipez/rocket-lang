@@ -73,19 +73,6 @@ methods:
     example: |
       🚀 » "test".size()
       » 4
-  to_i:
-    description: "Interprets the string as an integer with an optional given base. The default base is `10` and switched to `8` if the string starts with `0x`."
-    example: |
-      🚀 » "1234".to_i()
-      » 1234
-      🚀 » "1234".to_i(8)
-      » 668
-      🚀 » "0x1234".to_i(8)
-      » 668
-      🚀 » "0x1234".to_i()
-      » 668
-      🚀 » "0x1234".to_i(10)
-      » 0
   replace:
     description: "Replaces the first string with the second string in the given string."
     example: |
