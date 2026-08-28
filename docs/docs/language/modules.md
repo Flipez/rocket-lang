@@ -83,8 +83,13 @@ Naming something the module does not export is an error:
 
 ```js
 🚀 > import "fixtures/module" only Nope
-=> ERROR: Import Error: 'fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'
+=> ERROR: :1:7: Import Error: 'fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'
 ```
+
+Every `Import Error` carries a `file:line:column:` prefix locating the failing
+`import`. At the REPL there is no file, so that part is empty and the message
+begins with a bare `:1:7:`. When the same import fails inside a script, the
+script's path appears there instead.
 
 ### Nested namespaces
 
@@ -141,6 +146,10 @@ shown relative to the current working directory:
 
 ```js
 🚀 > import "fixtures/cycle_a"
-=> ERROR: Import Error: circular import
+=> ERROR: .../fixtures/cycle_b.rl:1:7: Import Error: circular import
   fixtures/cycle_a.rl -> fixtures/cycle_b.rl -> fixtures/cycle_a.rl
 ```
+
+The prefix names the module that closed the loop, and is shown here with its
+leading directories elided. Note that the prefix is an absolute path while the
+chain below it is relative.
