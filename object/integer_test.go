@@ -23,6 +23,12 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int) bool {
 
 func TestIntegerObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
+		{`3.abs()`, 3},
+		{`(0 - 5).abs()`, 5},
+		{`0.abs()`, 0},
+		// abs keeps the integer's base.
+		{`"-0x10".to_i().abs().base()`, 16},
+		{`"0x10".to_i().abs().to_s()`, "0x10"},
 		{`2.to_s()`, "2"},
 		{`2.to_f()`, 2.0},
 		{`2.to_i()`, 2},

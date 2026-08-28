@@ -20,6 +20,21 @@ is_false = 1 == 2;
 
 ## Literal Specific Methods
 
+### abs()
+> Returns `INTEGER`
+
+Returns the absolute value, as an integer, keeping the base.
+
+
+<CodeBlockSimple input='3.abs()
+(0 - 5).abs()
+"-0x10".to_i().abs()
+' output='3
+5
+0x10
+' />
+
+
 ### base()
 > Returns `INTEGER`
 

@@ -11,6 +11,16 @@ example: |
   is_true = 1 == 1;
   is_false = 1 == 2;
 methods:
+  abs:
+    description: "Returns the absolute value, as an integer, keeping the base."
+    input: |
+      3.abs()
+      (0 - 5).abs()
+      "-0x10".to_i().abs()
+    output: |
+      3
+      5
+      0x10
   base:
     description: "Returns the base of the integer."
     input: |

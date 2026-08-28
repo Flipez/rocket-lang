@@ -36,6 +36,21 @@ func (i *Integer) HashKey() HashKey {
 
 func init() {
 	objectMethods[INTEGER_OBJ] = map[string]ObjectMethod{
+		"abs": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				i := o.(*Integer)
+				if i.Value < 0 {
+					return NewIntegerWithBase(-i.Value, i.Base)
+				}
+
+				return i
+			},
+		},
 		"base": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(

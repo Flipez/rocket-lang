@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hash/fnv"
+	"math"
 	"strconv"
 )
 
@@ -25,7 +26,48 @@ func (f *Float) HashKey() HashKey {
 }
 
 func init() {
-	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{}
+	objectMethods[FLOAT_OBJ] = map[string]ObjectMethod{
+		"abs": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewFloat(math.Abs(o.(*Float).Value))
+			},
+		},
+		"ceil": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewFloat(math.Ceil(o.(*Float).Value))
+			},
+		},
+		"floor": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewFloat(math.Floor(o.(*Float).Value))
+			},
+		},
+		"round": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewFloat(math.Round(o.(*Float).Value))
+			},
+		},
+	}
 }
 
 func (f *Float) InvokeMethod(method string, env Environment, args ...Object) Object {
