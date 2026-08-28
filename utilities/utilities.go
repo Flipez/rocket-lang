@@ -11,6 +11,29 @@ import (
 var SearchPaths []string
 var once sync.Once
 
+// searchPathList builds the raw module search path from the ROCKETLANGPATH
+// value and the working directory. Entries are split on the platform's path
+// list separator, empty entries are dropped, and the working directory is
+// appended rather than substituted: setting ROCKETLANGPATH should add
+// somewhere to look, not silently stop imports resolving against the
+// directory the program was started in. Explicit entries come first, so
+// configuration still wins over the working directory.
+func searchPathList(env, cwd string) []string {
+	var paths []string
+
+	for _, entry := range filepath.SplitList(env) {
+		if entry != "" {
+			paths = append(paths, entry)
+		}
+	}
+
+	if cwd != "" {
+		paths = append(paths, cwd)
+	}
+
+	return paths
+}
+
 func AddPath(path string) error {
 	path = os.ExpandEnv(filepath.Clean(path))
 	absolutePath, err := filepath.Abs(path)

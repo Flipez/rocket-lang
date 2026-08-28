@@ -153,3 +153,75 @@ func TestFindModule_CanonicalizesSymlinks(t *testing.T) {
 		t.Fatalf("resolutions via symlinked and real routes differ: viaSymlink=%q viaReal=%q, want identical strings", viaSymlink, viaReal)
 	}
 }
+
+// TestSearchPathList covers the three defects the old initSearchPaths had:
+// it substituted the working directory instead of adding to it, it split on a
+// hardcoded ":", and it treated a bad entry as fatal.
+func TestSearchPathList(t *testing.T) {
+	sep := string(os.PathListSeparator)
+	cwd := "/work"
+
+	tests := []struct {
+		name     string
+		env      string
+		cwd      string
+		expected []string
+	}{
+		{
+			name:     "unset falls back to the working directory",
+			env:      "",
+			cwd:      cwd,
+			expected: []string{cwd},
+		},
+		{
+			// The old behaviour dropped cwd entirely here, so setting the
+			// variable silently broke every working-directory-relative import.
+			name:     "entries come first and the working directory is kept",
+			env:      "/opt/rl",
+			cwd:      cwd,
+			expected: []string{"/opt/rl", cwd},
+		},
+		{
+			name:     "multiple entries keep their order",
+			env:      "/a" + sep + "/b",
+			cwd:      cwd,
+			expected: []string{"/a", "/b", cwd},
+		},
+		{
+			// Split on a hardcoded ":" turned an empty leading entry into "",
+			// which AddPath then resolved to the working directory.
+			name:     "empty entries are dropped",
+			env:      sep + "/a" + sep + sep + "/b" + sep,
+			cwd:      cwd,
+			expected: []string{"/a", "/b", cwd},
+		},
+		{
+			name:     "no working directory yields only the configured entries",
+			env:      "/a",
+			cwd:      "",
+			expected: []string{"/a"},
+		},
+		{
+			name:     "nothing configured and no working directory yields nothing",
+			env:      "",
+			cwd:      "",
+			expected: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		got := searchPathList(tt.env, tt.cwd)
+
+		if len(got) != len(tt.expected) {
+			t.Errorf("%s: expected %v, got %v", tt.name, tt.expected, got)
+			continue
+		}
+
+		for i := range got {
+			if got[i] != tt.expected[i] {
+				t.Errorf("%s: expected %v, got %v", tt.name, tt.expected, got)
+				break
+			}
+		}
+	}
+}
