@@ -26,6 +26,6 @@ methods:
 
       - "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
       - "body" needs to be a STRING. Default ""
-      - "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is {"Content-Type": "text/plain"}
+      - "headers" needs to be a HASH(STRING:STRING) eg. headers["Content-Type"] = "text/plain". Default is \{"Content-Type": "text/plain"\}
     input: |
       HTTP.handle("/", callback_func)

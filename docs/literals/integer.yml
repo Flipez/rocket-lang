@@ -14,7 +14,7 @@ methods:
   base:
     description: "Returns the base of the integer."
     input: |
-      0b1010".to_i().base()
+      "0b1010".to_i().base()
     output:
       2
   to_base:
@@ -24,7 +24,7 @@ methods:
     output: |
       0o12
   to_s:
-    description: "Returns a string representation of the integer. Also takes an argument which represents the integer base to convert between different number systems"
+    description: "Returns a string representation of the integer, rendered in the integer's own base."
     input: |
       1234.to_s()
     output: |
