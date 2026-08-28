@@ -68,9 +68,9 @@ func TestString(t *testing.T) {
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input, "test")
-		p := parser.New(l, make(map[string]struct{}))
+		p := parser.New(l)
 
-		program, _ := p.ParseProgram()
+		program := p.ParseProgram()
 
 		if program.String() != tt.expected {
 			t.Errorf("program.String() wrong.\ngot=\t\t`%q`,\nexpected=\t`%q`",

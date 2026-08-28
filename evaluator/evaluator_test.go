@@ -728,6 +728,18 @@ func TestImportExpression(t *testing.T) {
 			`import("../fixtures/module", "module2"); module2.A`,
 			5,
 		},
+		{
+			`import("../fixtures/module"); m = module; m.Sum(2, 3)`,
+			5,
+		},
+		{
+			`p = "../fixtures/module"; import(p); module.Sum(2, 3)`,
+			5,
+		},
+		{
+			`import("../fixtures/nested"); nested.Inner.Sum(2, 3)`,
+			5,
+		},
 	}
 
 	for _, tt := range tests {
@@ -776,9 +788,8 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input, "test")
-	imports := make(map[string]struct{})
-	p := parser.New(l, imports)
-	program, _ := p.ParseProgram()
+	p := parser.New(l)
+	program := p.ParseProgram()
 	env := object.NewEnvironment()
 
 	return Eval(program, env)

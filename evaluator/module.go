@@ -23,10 +23,9 @@ func EvalModule(name string) object.Object {
 	}
 
 	l := lexer.New(string(b), filename)
-	imports := make(map[string]struct{})
-	p := parser.New(l, imports)
+	p := parser.New(l)
 
-	module, _ := p.ParseProgram()
+	module := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
 		return object.NewErrorFormat("Parse Error: %s", p.Errors())

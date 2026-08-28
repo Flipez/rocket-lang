@@ -11,9 +11,8 @@ import (
 
 func createProgram(input string) (*ast.Program, *Parser) {
 	l := lexer.New(input, "test")
-	imports := make(map[string]struct{})
-	p := New(l, imports)
-	program, _ := p.ParseProgram()
+	p := New(l)
+	program := p.ParseProgram()
 
 	return program, p
 }
@@ -779,9 +778,8 @@ func TestParsingImportExpressions(t *testing.T) {
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input, "test")
-		imports := make(map[string]struct{})
-		p := New(l, imports)
-		program, _ := p.ParseProgram()
+		p := New(l)
+		program := p.ParseProgram()
 
 		checkParserErrors(t, p)
 
@@ -795,7 +793,7 @@ func TestParsingImportExpressions(t *testing.T) {
 
 func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 	l := lexer.New(`foreach i in -5 { puts(i)}`, "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if !strings.Contains(p.Errors()[0], "expected positive value got (-5)") {
@@ -805,7 +803,7 @@ func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 
 func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
 	l := lexer.New("a, 123 = [1, 2]", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {
@@ -819,7 +817,7 @@ func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
 
 func TestParsingMultipleAssignmentFailsWithoutAssignOperator(t *testing.T) {
 	l := lexer.New("a, b, c", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {
@@ -834,7 +832,7 @@ func TestParsingMultipleAssignmentFailsWithoutAssignOperator(t *testing.T) {
 func TestParsingAssignmentFailsWithInvalidLeftSide(t *testing.T) {
 	// Try to assign to a literal value (not an identifier or index)
 	l := lexer.New("123 = 456", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {
