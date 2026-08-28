@@ -216,7 +216,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`import "../fixtures/module" only Nope`,
-			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: "A", "Sum", "lower"`,
+			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'`,
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},

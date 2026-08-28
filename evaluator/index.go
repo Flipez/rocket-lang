@@ -60,20 +60,18 @@ func evalModuleIndexExpression(module, index object.Object) object.Object {
 
 	pair, ok := hash.Pairs[key.HashKey()]
 	if !ok {
-		return object.NewErrorFormat("module '%s' has no export '%s'", moduleObject.Name, moduleMemberName(index))
+		// Member lookups are always by name, so a *object.String is
+		// unwrapped to its bare value; anything else falls back to
+		// Inspect(). Either way the format string below supplies the
+		// single-quote wrapping.
+		memberName := index.Inspect()
+		if s, ok := index.(*object.String); ok {
+			memberName = s.Value
+		}
+		return object.NewErrorFormat("module '%s' has no export '%s'", moduleObject.Name, memberName)
 	}
 
 	return pair.Value
-}
-
-// moduleMemberName renders an index value for the "no export" error message.
-// Member lookups are always by name, so a *object.String is unwrapped to its
-// bare value; anything else falls back to Inspect().
-func moduleMemberName(index object.Object) string {
-	if s, ok := index.(*object.String); ok {
-		return s.Value
-	}
-	return index.Inspect()
 }
 
 func evalBuiltinModuleIndexExpression(module, index object.Object) object.Object {

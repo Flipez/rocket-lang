@@ -35,7 +35,12 @@ type Environment struct {
 // re-entering the same import line is expected.
 func (e *Environment) AllowRebind() { e.allowRebind = true }
 
-func (e *Environment) RebindAllowed() bool { return e.allowRebind }
+func (e *Environment) RebindAllowed() bool {
+	if e.outer != nil {
+		return e.outer.RebindAllowed()
+	}
+	return e.allowRebind
+}
 
 func (e *Environment) Registry() *ModuleRegistry {
 	if e.outer != nil {

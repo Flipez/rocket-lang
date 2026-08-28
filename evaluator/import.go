@@ -82,7 +82,11 @@ func bindModule(ie *ast.Import, env *object.Environment, name string, mod *objec
 	if nameInUse(env, name) {
 		existing, _ := env.Get(name)
 		existingMod, isModule := existing.(*object.Module)
-		sameModule := isModule && existingMod.Name == path
+		// Only a plain (non-`only`) re-import of the exact same cached
+		// module instance is a no-op; an `only` import always constructs a
+		// fresh *object.Module and can never be pointer-identical, so it is
+		// correctly rejected below.
+		sameModule := isModule && len(ie.Only) == 0 && existingMod == mod
 
 		if !(env.RebindAllowed() && sameModule) {
 			return object.NewErrorFormat("%s:%d:%d: Import Error: cannot bind module as '%s', name already in use", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, name)
@@ -147,7 +151,11 @@ func nameInUse(env *object.Environment, name string) bool {
 func exportNames(hash *object.Hash) string {
 	names := make([]string, 0, len(hash.Pairs))
 	for _, pair := range hash.Pairs {
-		names = append(names, pair.Key.Inspect())
+		name := pair.Key.Inspect()
+		if s, ok := pair.Key.(*object.String); ok {
+			name = s.Value
+		}
+		names = append(names, "'"+name+"'")
 	}
 	sort.Strings(names)
 
