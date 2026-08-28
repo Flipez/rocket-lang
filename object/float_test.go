@@ -29,6 +29,21 @@ func TestFloatObjectMethods(t *testing.T) {
 		{`2.2.nope()`, "test:1:4: undefined method `.nope()` for FLOAT"},
 		{"1.1.to_json()", "1.1"},
 		{"3.123456.to_json()", "3.123456"},
+		// round, ceil, floor and abs preserve the receiver's type, so a
+		// FLOAT stays a FLOAT rather than collapsing to an INTEGER.
+		{`3.14.round()`, 3.0},
+		{`3.14.ceil()`, 4.0},
+		{`3.14.floor()`, 3.0},
+		{`3.14.abs()`, 3.14},
+		{`(0.0 - 3.14).abs()`, 3.14},
+		{`0.0.abs()`, 0.0},
+		// math.Round rounds halves away from zero.
+		{`2.5.round()`, 3.0},
+		{`(0.0 - 2.5).round()`, -3.0},
+		{`(0.0 - 3.7).ceil()`, -3.0},
+		{`(0.0 - 3.2).floor()`, -4.0},
+		// The method form agrees with the Math module form.
+		{`3.14.round().to_s() == Math.round(3.14).to_s()`, true},
 	}
 
 	testInput(t, tests)

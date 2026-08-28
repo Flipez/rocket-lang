@@ -20,6 +20,21 @@ is_false = 1 == 2;
 
 ## Literal Specific Methods
 
+### abs()
+> Returns `INTEGER`
+
+Returns the absolute value, as an integer, keeping the base.
+
+
+<CodeBlockSimple input='3.abs()
+(0 - 5).abs()
+"-0x10".to_i().abs()
+' output='3
+5
+0x10
+' />
+
+
 ### base()
 > Returns `INTEGER`
 
@@ -28,6 +43,39 @@ Returns the base of the integer.
 
 <CodeBlockSimple input='"0b1010".to_i().base()
 ' output='2' />
+
+
+### ceil()
+> Returns `INTEGER`
+
+Returns the integer unchanged. An integer is already whole; this exists so numeric code does not have to branch on whether it holds an integer or a float.
+
+
+<CodeBlockSimple input='3.ceil()
+' output='3
+' />
+
+
+### floor()
+> Returns `INTEGER`
+
+Returns the integer unchanged, for the same reason as `ceil`.
+
+
+<CodeBlockSimple input='3.floor()
+' output='3
+' />
+
+
+### round()
+> Returns `INTEGER`
+
+Returns the integer unchanged, for the same reason as `ceil`.
+
+
+<CodeBlockSimple input='3.round()
+' output='3
+' />
 
 
 ### to_base(INTEGER)

@@ -7,6 +7,62 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 ## Literal Specific Methods
 
+### abs()
+> Returns `FLOAT`
+
+Returns the absolute value, as a float.
+
+
+<CodeBlockSimple input='3.14.abs()
+(0.0 - 3.14).abs()
+' output='3.14
+3.14
+' />
+
+
+### ceil()
+> Returns `FLOAT`
+
+Rounds up to the nearest whole number, as a float.
+
+
+<CodeBlockSimple input='3.14.ceil()
+(0.0 - 3.7).ceil()
+' output='4.0
+-3.0
+' />
+
+
+### floor()
+> Returns `FLOAT`
+
+Rounds down to the nearest whole number, as a float.
+
+
+<CodeBlockSimple input='3.14.floor()
+(0.0 - 3.2).floor()
+' output='3.0
+-4.0
+' />
+
+
+### round()
+> Returns `FLOAT`
+
+Rounds to the nearest whole number, as a float. Halves round away from zero. The result stays a float, matching `Math.round`; chain `to_i` for an integer.
+
+
+<CodeBlockSimple input='3.14.round()
+2.5.round()
+(0.0 - 2.5).round()
+3.7.round().to_i()
+' output='3.0
+3.0
+-3.0
+4
+' />
+
+
 
 ## Generic Literal Methods
 
