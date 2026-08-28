@@ -8,6 +8,7 @@ import (
 func (p *Parser) parseBlock() *ast.Block {
 	block := &ast.Block{Token: p.curToken}
 	block.Statements = []ast.Statement{}
+	p.blockDepth++
 
 	p.nextToken()
 
@@ -20,6 +21,8 @@ func (p *Parser) parseBlock() *ast.Block {
 
 		p.nextToken()
 	}
+
+	p.blockDepth--
 
 	if p.curTokenIs(token.RESCUE) {
 		block.Rescue = &ast.Rescue{Token: p.curToken}

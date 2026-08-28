@@ -2,17 +2,17 @@ package object
 
 import (
 	"strings"
-	"unicode"
 )
 
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
-	return &Environment{store: s, outer: nil}
+	return &Environment{store: s, outer: nil, exports: make(map[string]struct{})}
 }
 
 type Environment struct {
-	store map[string]Object
-	outer *Environment
+	store   map[string]Object
+	outer   *Environment
+	exports map[string]struct{}
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
@@ -41,6 +41,11 @@ func NewEnclosedEnvironment(outer *Environment) *Environment {
 	return env
 }
 
+// MarkExport records name as part of this environment's public surface.
+func (e *Environment) MarkExport(name string) {
+	e.exports[name] = struct{}{}
+}
+
 func (e *Environment) Names(prefix string) []string {
 	var ret []string
 
@@ -61,12 +66,14 @@ func (e *Environment) Names(prefix string) []string {
 func (e *Environment) Exported() *Hash {
 	pairs := make(map[HashKey]HashPair)
 
-	for k, v := range e.store {
-		// Replace this with checking for "Import" token
-		if unicode.IsUpper(rune(k[0])) {
-			s := NewString(k)
-			pairs[s.HashKey()] = HashPair{Key: s, Value: v}
+	for name := range e.exports {
+		val, ok := e.store[name]
+		if !ok {
+			continue
 		}
+
+		s := NewString(name)
+		pairs[s.HashKey()] = HashPair{Key: s, Value: val}
 	}
 
 	return NewHash(pairs)

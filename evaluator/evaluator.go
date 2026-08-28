@@ -16,6 +16,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return Eval(node.Expression, env)
 	case *ast.Block:
 		return evalBlock(node, env)
+	case *ast.Export:
+		return evalExport(node, env)
 	case *ast.Begin:
 		return evalBlock(node.Block, env)
 	case *ast.Foreach:

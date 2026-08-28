@@ -1,6 +1,8 @@
 a = 1
-A = 5
+export A = 5
+export lower = 7
+Private = 99
 
-Sum = def (a, b)
+export def Sum(a, b)
     return a + b
 end

@@ -57,6 +57,8 @@ type Parser struct {
 
 	lines []string
 
+	blockDepth int
+
 	curToken  token.Token
 	peekToken token.Token
 

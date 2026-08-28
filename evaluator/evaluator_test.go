@@ -215,7 +215,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`import "../fixtures/module" only Nope`,
-			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: "A", "Sum"`,
+			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: "A", "Sum", "lower"`,
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
@@ -708,6 +708,29 @@ func TestNamedFunctionStatements(t *testing.T) {
 
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestExport(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`import "../fixtures/module"; module.Sum(2, 3)`, 5},
+		{`import "../fixtures/module"; module.A`, 5},
+		{`import "../fixtures/module"; module.lower`, 7},
+		{`import "../fixtures/module"; module.Private`, nil},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, ok := tt.expected.(int)
+
+		if ok {
+			testIntegerObject(t, evaluated, number)
+		} else {
+			testNullObject(t, evaluated)
+		}
 	}
 }
 

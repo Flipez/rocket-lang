@@ -841,6 +841,34 @@ func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 	}
 }
 
+func TestExportBelowTopLevelIsAParseError(t *testing.T) {
+	l := lexer.New("if true \n export A = 1 \n end", "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for export inside a block")
+	}
+
+	if !strings.Contains(p.Errors()[0], "`export` is only valid at the top level of a module") {
+		t.Errorf("expected an error about export placement, got: %q", p.Errors()[0])
+	}
+}
+
+func TestExportAtTopLevelParses(t *testing.T) {
+	l := lexer.New("export A = 1", "test")
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		t.Fatalf("expected no parser errors, got: %v", p.Errors())
+	}
+
+	if program.String() != "export A = 1" {
+		t.Errorf("expected \"export A = 1\", got: %q", program.String())
+	}
+}
+
 func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
 	l := lexer.New("a, 123 = [1, 2]", "test")
 	p := New(l)
