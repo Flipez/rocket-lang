@@ -7,13 +7,32 @@ import (
 
 func evalObjectCall(call *ast.ObjectCall, env *object.Environment) object.Object {
 	obj := Eval(call.Object, env)
-	if method, ok := call.Call.(*ast.Call); ok {
-		args := evalExpressions(call.Call.(*ast.Call).Arguments, env)
-		ret := obj.InvokeMethod(method.Callable.String(), *env, args...)
-		if ret != nil {
-			return ret
-		}
+
+	method, ok := call.Call.(*ast.Call)
+	if !ok {
+		return object.NewErrorFormat("%s:%d:%d: undefined method `.%s()` for %s", call.StartToken.File, call.StartToken.LineNumber, call.StartToken.LinePosition, call.Call.String(), obj.Type())
 	}
 
-	return object.NewErrorFormat("%s:%d:%d: undefined method `.%s()` for %s", call.StartToken.File, call.StartToken.LineNumber, call.StartToken.LinePosition, call.Call.(*ast.Call).Callable.String(), obj.Type())
+	args := evalExpressions(method.Arguments, env)
+	if len(args) == 1 && object.IsError(args[0]) {
+		return args[0]
+	}
+
+	// A user module is a namespace, not a method receiver. Resolve the
+	// member from its attributes and apply it as a function. Builtin
+	// modules keep using InvokeMethod, which dispatches via their own
+	// Functions map.
+	if obj.Type() == object.MODULE_OBJ {
+		member := evalModuleIndexExpression(obj, object.NewString(method.Callable.String()))
+		if object.IsError(member) {
+			return member
+		}
+		return applyFunction(member, args, env)
+	}
+
+	if ret := obj.InvokeMethod(method.Callable.String(), *env, args...); ret != nil {
+		return ret
+	}
+
+	return object.NewErrorFormat("%s:%d:%d: undefined method `.%s()` for %s", call.StartToken.File, call.StartToken.LineNumber, call.StartToken.LinePosition, method.Callable.String(), obj.Type())
 }

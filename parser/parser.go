@@ -57,20 +57,19 @@ type Parser struct {
 
 	lines []string
 
+	blockDepth int
+
 	curToken  token.Token
 	peekToken token.Token
 
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
-
-	imports map[string]struct{}
 }
 
-func New(l *lexer.Lexer, imports map[string]struct{}) *Parser {
+func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
-		l:       l,
-		errors:  []string{},
-		imports: imports,
+		l:      l,
+		errors: []string{},
 	}
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)

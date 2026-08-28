@@ -41,7 +41,7 @@ func Start(in io.Reader, out io.Writer) {
 	defer rl.Close()
 
 	env := object.NewEnvironment()
-	imports := make(map[string]struct{})
+	env.AllowRebind()
 
 	fmt.Println(SplashScreen())
 
@@ -61,13 +61,13 @@ func Start(in io.Reader, out io.Writer) {
 		rl.SaveHistory(line)
 
 		l := lexer.New(line, "")
-		p := parser.New(l, imports)
+		p := parser.New(l)
 
 		object.AddEvaluator(evaluator.Eval)
 
 		var program *ast.Program
 
-		program, imports = p.ParseProgram()
+		program = p.ParseProgram()
 		if len(p.Errors()) > 0 {
 			printParserErrors(p.Errors())
 			return

@@ -48,11 +48,11 @@ func main() {
 func runProgram(input string, file string) {
 	env := object.NewEnvironment()
 	l := lexer.New(input, file)
-	p := parser.New(l, make(map[string]struct{}))
+	p := parser.New(l)
 
 	object.AddEvaluator(evaluator.Eval)
 
-	program, _ := p.ParseProgram()
+	program := p.ParseProgram()
 	if len(p.Errors()) > 0 {
 		printParserErrors(p.Errors())
 		return

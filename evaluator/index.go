@@ -48,7 +48,30 @@ func evalRangeIndex(left, firstIndex, secondIndex object.Object) object.Object {
 func evalModuleIndexExpression(module, index object.Object) object.Object {
 	moduleObject := module.(*object.Module)
 
-	return evalHashIndexExpression(moduleObject.Attributes, index)
+	hash, ok := moduleObject.Attributes.(*object.Hash)
+	if !ok {
+		return object.NewErrorFormat("module '%s' has no exports", moduleObject.Name)
+	}
+
+	key, ok := index.(object.Hashable)
+	if !ok {
+		return object.NewErrorFormat("unusable as module member: %s", index.Type())
+	}
+
+	pair, ok := hash.Pairs[key.HashKey()]
+	if !ok {
+		// Member lookups are always by name, so a *object.String is
+		// unwrapped to its bare value; anything else falls back to
+		// Inspect(). Either way the format string below supplies the
+		// single-quote wrapping.
+		memberName := index.Inspect()
+		if s, ok := index.(*object.String); ok {
+			memberName = s.Value
+		}
+		return object.NewErrorFormat("module '%s' has no export '%s'", moduleObject.Name, memberName)
+	}
+
+	return pair.Value
 }
 
 func evalBuiltinModuleIndexExpression(module, index object.Object) object.Object {

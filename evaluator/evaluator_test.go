@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/flipez/rocket-lang/lexer"
@@ -206,12 +207,14 @@ func TestErrorHandling(t *testing.T) {
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
 		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
-		{"import(true)", "test:1:7: Import Error: invalid import path '&{%!s(bool=true)}'"},
-		{"import(5%0)", "division by zero not allowed"},
-		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
+		{`import "fixtures/nope"`, "test:1:7: Import Error: no module named 'fixtures/nope' found"},
 		{
-			`import("../fixtures/parser_error")`,
+			`import "../fixtures/parser_error"`,
 			"Parse Error: [1:10: expected next token to be ), got EOF instead]",
+		},
+		{
+			`import "../fixtures/module" only Nope`,
+			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'`,
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
@@ -707,25 +710,55 @@ func TestNamedFunctionStatements(t *testing.T) {
 	}
 }
 
+func TestExport(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`import "../fixtures/module"; module.Sum(2, 3)`, 5},
+		{`import "../fixtures/module"; module.A`, 5},
+		{`import "../fixtures/module"; module.lower`, 7},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		number, ok := tt.expected.(int)
+
+		if ok {
+			testIntegerObject(t, evaluated, number)
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
 func TestImportExpression(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected interface{}
 	}{
 		{
-			`import("../fixtures/module"); module.A`,
+			`import "../fixtures/module"; module.A`,
 			5,
 		},
 		{
-			`import("../fixtures/module"); module.Sum(2, 3)`,
+			`import "../fixtures/module"; module.Sum(2, 3)`,
 			5,
 		},
 		{
-			`import("../fixtures/module"); module.a`,
-			nil,
+			`import "../fixtures/module" as module2; module2.A`,
+			5,
 		},
 		{
-			`import("../fixtures/module", "module2"); module2.A`,
+			`import "../fixtures/module" only A; module.A`,
+			5,
+		},
+		{
+			`import "../fixtures/module"; m = module; m.Sum(2, 3)`,
+			5,
+		},
+		{
+			`import "../fixtures/wrapper"; wrapper.SumViaBase(2, 3)`,
 			5,
 		},
 	}
@@ -742,28 +775,103 @@ func TestImportExpression(t *testing.T) {
 	}
 }
 
-func TestImportSearchPaths(t *testing.T) {
-	if err := utilities.AddPath("../stubs"); err != nil {
-		t.Errorf("error adding the stubs path: %s", err)
-		return
-	}
-
+func TestModuleStrictness(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected interface{}
+		expected string
 	}{
 		{
-			`import("../fixtures/module"); module.A`,
-			5,
+			`import "../fixtures/module"; module.a`,
+			"module '../fixtures/module' has no export 'a'",
+		},
+		{
+			`import "../fixtures/module"; module.nope()`,
+			"module '../fixtures/module' has no export 'nope'",
+		},
+		{
+			`import "../fixtures/module"; module.Private`,
+			"module '../fixtures/module' has no export 'Private'",
+		},
+		{
+			`import "../fixtures/module" only Sum; module.A`,
+			"module '../fixtures/module' has no export 'A'",
+		},
+		{
+			`math = 5; import "../fixtures/module" as math`,
+			"Import Error: cannot bind module as 'math', name already in use",
+		},
+		{
+			`import "../fixtures/module" as Math`,
+			"Import Error: cannot bind module as 'Math', name already in use",
 		},
 	}
 
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
-		number, _ := tt.expected.(int)
 
-		testIntegerObject(t, evaluated, number)
+		err, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("input %q: expected an error, got=%T (%+v)", tt.input, evaluated, evaluated)
+			continue
+		}
+
+		if !strings.Contains(err.Message, tt.expected) {
+			t.Errorf("input %q: expected message containing %q, got=%q", tt.input, tt.expected, err.Message)
+		}
 	}
+}
+
+// TestModuleMemberCallArgumentError is a regression test: when an argument
+// to a module member call itself errors, evalExpressions returns a
+// one-element slice holding just that error object. evalObjectCall must
+// return it immediately -- mirroring the guard *ast.Call uses -- instead of
+// letting applyFunction index straight into the slice by parameter
+// position, which panics (or, for single-parameter functions, silently
+// discards the error and returns a normal value).
+func TestModuleMemberCallArgumentError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/module" as m; m.Sum(5%0, 1)`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "division by zero not allowed") {
+		t.Errorf("expected message containing %q, got=%q", "division by zero not allowed", err.Message)
+	}
+}
+
+// TestImportSearchPaths proves that a module reachable only through a
+// SearchPaths entry -- not through the importer-relative "./"/"../" branch
+// -- can be imported by its plain name. The fixture lives in its own
+// directory so it cannot be found any other way; if the AddPath call below
+// is removed, FindModule has nowhere else to look and this import fails.
+func TestImportSearchPaths(t *testing.T) {
+	if err := utilities.AddPath("../fixtures/searchpath_only"); err != nil {
+		t.Errorf("error adding the search path: %s", err)
+		return
+	}
+
+	evaluated := testEval(`import "only_via_searchpath"; only_via_searchpath.Marker`)
+	testIntegerObject(t, evaluated, 99)
+}
+
+// TestImportOnlyDoesNotLeakNames proves that `only` binds solely the
+// namespace name -- the imported members never become bare identifiers in
+// the importing scope.
+func TestImportOnlyDoesNotLeakNames(t *testing.T) {
+	leaked := testEval(`import "../fixtures/module" only Sum; Sum`)
+
+	err, ok := leaked.(*object.Error)
+	if !ok {
+		t.Fatalf("expected `Sum` to be unbound, got=%T (%+v)", leaked, leaked)
+	}
+	if !strings.Contains(err.Message, "identifier not found") {
+		t.Errorf("expected message containing %q, got=%q", "identifier not found", err.Message)
+	}
+
+	scoped := testEval(`import "../fixtures/module" only Sum; module.Sum(2, 3)`)
+	testIntegerObject(t, scoped, 5)
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
@@ -776,10 +884,22 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input, "test")
-	imports := make(map[string]struct{})
-	p := parser.New(l, imports)
-	program, _ := p.ParseProgram()
+	p := parser.New(l)
+	program := p.ParseProgram()
 	env := object.NewEnvironment()
+
+	return Eval(program, env)
+}
+
+// testEvalWithRebind mirrors testEval but enables the REPL's import-rebind
+// relaxation on the top-level environment, the way repl.go does before
+// evaluating each entered line.
+func testEvalWithRebind(input string) object.Object {
+	l := lexer.New(input, "test")
+	p := parser.New(l)
+	program := p.ParseProgram()
+	env := object.NewEnvironment()
+	env.AllowRebind()
 
 	return Eval(program, env)
 }
@@ -838,4 +958,220 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	}
 
 	return true
+}
+
+func TestCircularImport(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/cycle_a"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "circular import") {
+		t.Errorf("expected a circular import error, got=%q", err.Message)
+	}
+
+	if !strings.Contains(err.Message, "../fixtures/cycle_a.rl -> ../fixtures/cycle_b.rl -> ../fixtures/cycle_a.rl") {
+		t.Errorf("expected chain cycle_a -> cycle_b -> cycle_a (in order), got=%q", err.Message)
+	}
+}
+
+func TestRelativeImport(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/sibling/parent"; parent.LeafValue()`)
+
+	testIntegerObject(t, evaluated, 3)
+}
+
+func TestExportingAModuleIsAnError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/export_module"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if !strings.Contains(err.Message, "Export Error: cannot export 'Inner': a module cannot be exported") {
+		t.Errorf("expected message about exporting a module, got=%q", err.Message)
+	}
+}
+
+// TestExportPropagatesValueError proves that `export Name = <expr>` returns
+// the underlying evaluation error unchanged when <expr> itself errors,
+// instead of masking it or continuing on to mark the export.
+func TestExportPropagatesValueError(t *testing.T) {
+	evaluated := testEval(`export Foo = 5 % 0`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "division by zero not allowed") {
+		t.Errorf("expected message containing %q, got=%q", "division by zero not allowed", err.Message)
+	}
+}
+
+// TestExportAssignedModuleIsAnError covers the `export Name = <expr>` form
+// where <expr> evaluates to a module, as distinct from the bare `export
+// Name` form already covered by TestExportingAModuleIsAnError.
+func TestExportAssignedModuleIsAnError(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/module" as Inner; export Alias = Inner`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "Export Error: cannot export 'Alias': a module cannot be exported") {
+		t.Errorf("expected message about exporting a module, got=%q", err.Message)
+	}
+}
+
+// TestExportUndefinedNameIsAnError covers the bare `export Name` form when
+// Name was never defined in scope.
+func TestExportUndefinedNameIsAnError(t *testing.T) {
+	evaluated := testEval(`export NeverDefined`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error object, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "Export Error: 'NeverDefined' is not defined") {
+		t.Errorf("expected message about the name not being defined, got=%q", err.Message)
+	}
+}
+
+func TestModuleCachedAcrossImports(t *testing.T) {
+	l := lexer.New(`import "../fixtures/module"; import "../fixtures/module" as m2`, "test")
+	p := parser.New(l)
+	program := p.ParseProgram()
+	env := object.NewEnvironment()
+
+	evaluated := Eval(program, env)
+	if object.IsError(evaluated) {
+		t.Fatalf("unexpected error evaluating program: %+v", evaluated)
+	}
+
+	first, ok := env.Get("module")
+	if !ok {
+		t.Fatalf("expected 'module' to be bound in env")
+	}
+	firstMod, ok := first.(*object.Module)
+	if !ok {
+		t.Fatalf("expected 'module' to be *object.Module, got=%T", first)
+	}
+
+	second, ok := env.Get("m2")
+	if !ok {
+		t.Fatalf("expected 'm2' to be bound in env")
+	}
+	secondMod, ok := second.(*object.Module)
+	if !ok {
+		t.Fatalf("expected 'm2' to be *object.Module, got=%T", second)
+	}
+
+	if firstMod != secondMod {
+		t.Errorf("expected both imports of the same file to bind the same *object.Module instance, got distinct pointers %p and %p", firstMod, secondMod)
+	}
+}
+
+// TestImportRebindNoOpWhenIdentical proves that re-entering the exact same
+// (non-`only`) import line under RebindAllowed is a silent no-op, and the
+// module is still fully usable afterwards.
+func TestImportRebindNoOpWhenIdentical(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module"; import "../fixtures/module"; module.Sum(2, 3)`)
+
+	testIntegerObject(t, evaluated, 5)
+}
+
+// TestImportRebindNoOpWhenIdenticalOnly is a regression test: re-entering an
+// `only` import with the exact same narrowing must also be treated as a
+// no-op, not as "name already in use". This case regressed once already
+// because a naive rebind check compared the *object.Module pointers
+// directly, and an `only` import always constructs a fresh *object.Module,
+// so it never pointer-matched the existing binding.
+func TestImportRebindNoOpWhenIdenticalOnly(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module" only Sum; import "../fixtures/module" only Sum; module.Sum(2, 3)`)
+
+	testIntegerObject(t, evaluated, 5)
+}
+
+// TestImportRebindStillErrorsOnNarrowingChange proves that RebindAllowed
+// only relaxes the check for an import that would bind the exact same
+// namespace as what's already bound. Any change to the narrowing --
+// widening, narrowing, or swapping to a different `only` set -- must still
+// error.
+func TestImportRebindStillErrorsOnNarrowingChange(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{
+			"full import then only",
+			`import "../fixtures/module"; import "../fixtures/module" only Sum`,
+		},
+		{
+			"only then full import",
+			`import "../fixtures/module" only Sum; import "../fixtures/module"`,
+		},
+		{
+			"different only lists",
+			`import "../fixtures/module" only Sum; import "../fixtures/module" only A`,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEvalWithRebind(tt.input)
+
+		err, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("%s: expected an error, got=%T (%+v)", tt.name, evaluated, evaluated)
+			continue
+		}
+		if !strings.Contains(err.Message, "name already in use") {
+			t.Errorf("%s: expected message containing %q, got=%q", tt.name, "name already in use", err.Message)
+		}
+	}
+}
+
+// TestImportRebindStillErrorsOnNonModuleName proves that RebindAllowed does
+// not relax the check when the binding name is already held by a plain
+// (non-module) value -- there is no "same binding" to compare against.
+func TestImportRebindStillErrorsOnNonModuleName(t *testing.T) {
+	evaluated := testEvalWithRebind(`module = 5; import "../fixtures/module"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "name already in use") {
+		t.Errorf("expected message containing %q, got=%q", "name already in use", err.Message)
+	}
+}
+
+// TestImportRebindDifferentNamesBothUsable proves that importing the same
+// path twice under two different names is not a rebind case at all -- both
+// bindings are independent and both remain usable.
+func TestImportRebindDifferentNamesBothUsable(t *testing.T) {
+	evaluated := testEvalWithRebind(`import "../fixtures/module"; import "../fixtures/module" as m2; module.Sum(2, 3) + m2.Sum(1, 1)`)
+
+	testIntegerObject(t, evaluated, 7)
+}
+
+// TestImportRebindReachesNestedScope proves that the rebind relaxation
+// enabled on the top-level (REPL) environment is visible from an enclosed
+// scope, the way a while-loop body inherits it in the real REPL. This
+// exercises RebindAllowed's outer-delegation branch, mirroring how
+// Registry() delegates to outer.
+func TestImportRebindReachesNestedScope(t *testing.T) {
+	evaluated := testEvalWithRebind(`
+import "../fixtures/module"
+i = 0
+while i < 2
+	import "../fixtures/module"
+	i = i + 1
+end
+module.Sum(2, 3)
+`)
+
+	testIntegerObject(t, evaluated, 5)
 }

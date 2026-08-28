@@ -11,9 +11,8 @@ import (
 
 func createProgram(input string) (*ast.Program, *Parser) {
 	l := lexer.New(input, "test")
-	imports := make(map[string]struct{})
-	p := New(l, imports)
-	program, _ := p.ParseProgram()
+	p := New(l)
+	program := p.ParseProgram()
 
 	return program, p
 }
@@ -772,16 +771,27 @@ func TestParsingImportExpressions(t *testing.T) {
 		expected string
 	}{
 		{
-			`import("foobar")`,
-			`import("foobar")`,
+			`import "foobar"`,
+			`import "foobar"`,
+		},
+		{
+			`import "foobar" as f`,
+			`import "foobar" as f`,
+		},
+		{
+			`import "foobar" only Sum`,
+			`import "foobar" only Sum`,
+		},
+		{
+			`import "foobar" as f only Sum, Square`,
+			`import "foobar" as f only Sum, Square`,
 		},
 	}
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input, "test")
-		imports := make(map[string]struct{})
-		p := New(l, imports)
-		program, _ := p.ParseProgram()
+		p := New(l)
+		program := p.ParseProgram()
 
 		checkParserErrors(t, p)
 
@@ -793,9 +803,79 @@ func TestParsingImportExpressions(t *testing.T) {
 	}
 }
 
+func TestImportCallFormWithTwoArgumentsIsAParseError(t *testing.T) {
+	l := lexer.New(`import("foobar", "alias")`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for the two-argument call form")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithParenthesizedPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import("foobar")`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for the parenthesized path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithNonLiteralPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import someVar`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a non-literal import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithBooleanPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import true`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a boolean import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithIntegerExpressionPathIsAParseError(t *testing.T) {
+	l := lexer.New(`import 5%0`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for a computed import path")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be STRING") {
+		t.Errorf("expected an error about the missing string path, got: %q", p.Errors()[0])
+	}
+}
+
 func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 	l := lexer.New(`foreach i in -5 { puts(i)}`, "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if !strings.Contains(p.Errors()[0], "expected positive value got (-5)") {
@@ -803,9 +883,37 @@ func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
 	}
 }
 
+func TestExportBelowTopLevelIsAParseError(t *testing.T) {
+	l := lexer.New("if true \n export A = 1 \n end", "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for export inside a block")
+	}
+
+	if !strings.Contains(p.Errors()[0], "`export` is only valid at the top level of a module") {
+		t.Errorf("expected an error about export placement, got: %q", p.Errors()[0])
+	}
+}
+
+func TestExportAtTopLevelParses(t *testing.T) {
+	l := lexer.New("export A = 1", "test")
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		t.Fatalf("expected no parser errors, got: %v", p.Errors())
+	}
+
+	if program.String() != "export A = 1" {
+		t.Errorf("expected \"export A = 1\", got: %q", program.String())
+	}
+}
+
 func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
 	l := lexer.New("a, 123 = [1, 2]", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {
@@ -819,7 +927,7 @@ func TestParsingMultipleAssignmentFailsWithNonIdentifier(t *testing.T) {
 
 func TestParsingMultipleAssignmentFailsWithoutAssignOperator(t *testing.T) {
 	l := lexer.New("a, b, c", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {
@@ -834,7 +942,7 @@ func TestParsingMultipleAssignmentFailsWithoutAssignOperator(t *testing.T) {
 func TestParsingAssignmentFailsWithInvalidLeftSide(t *testing.T) {
 	// Try to assign to a literal value (not an identifier or index)
 	l := lexer.New("123 = 456", "test")
-	p := New(l, nil)
+	p := New(l)
 	p.ParseProgram()
 
 	if len(p.Errors()) == 0 {

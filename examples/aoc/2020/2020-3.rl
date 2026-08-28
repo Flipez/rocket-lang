@@ -1,4 +1,4 @@
-import("util")
+import "../util" as util
 
 def countTrees(rows, right, down)
   row = 0

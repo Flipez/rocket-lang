@@ -13,6 +13,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseBreak()
 	case token.NEXT:
 		return p.parseNext()
+	case token.EXPORT:
+		return p.parseExport()
 	case token.IDENT:
 		if p.isMultipleAssignment() {
 			return p.parseMultipleAssignment()

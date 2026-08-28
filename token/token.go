@@ -75,6 +75,8 @@ const (
 
 	EXPORT = "EXPORT"
 	IMPORT = "IMPORT"
+	AS     = "AS"
+	ONLY   = "ONLY"
 
 	NIL = "NIL"
 
@@ -102,6 +104,8 @@ var keywords = map[string]TokenType{
 	"while":   WHILE,
 	"export":  EXPORT,
 	"import":  IMPORT,
+	"as":      AS,
+	"only":    ONLY,
 	"nil":     NIL,
 	"and":     AND,
 	"or":      OR,
