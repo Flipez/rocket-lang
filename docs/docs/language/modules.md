@@ -124,6 +124,39 @@ math.Sum(1, 2)          // 3
 math.Mean([1, 2])       // reaches Stats through the wrapper function
 ```
 
+### Where an import may appear
+
+An import is a statement, so it can go anywhere a statement can: at the top
+level, inside a function body, or inside a branch. Importing conditionally is
+the supported way to pick between implementations:
+
+```js
+if env == "prod"
+  import "./config_prod" as config
+else
+  import "./config_stage" as config
+end
+
+puts(config.Url)
+```
+
+Only one branch runs, so only one binding is made, and it is visible after the
+`if` ends.
+
+An import inside a **loop body** does not work. Loops reuse one scope across
+iterations, so the second iteration finds the name already bound:
+
+```js
+foreach name in ["a", "b"]
+  import "./plugin" as p     // Import Error on the second iteration:
+end                          // cannot bind module as 'p', name already in use
+```
+
+This is not a useful thing to write in any case. A path must be a string
+literal, so every iteration would import the same module, and a module is
+evaluated only once no matter how many times it is imported. Import what you
+need once, outside the loop.
+
 ## Finding modules
 
 A path starting with `./` or `../` resolves relative to the file doing the
