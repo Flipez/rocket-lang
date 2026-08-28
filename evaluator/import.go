@@ -24,7 +24,12 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 
 	reg := env.Registry()
 
-	filename := utilities.FindModule(s.Value)
+	importerDir := ""
+	if ie.Token.File != "" {
+		importerDir = filepath.Dir(ie.Token.File)
+	}
+
+	filename := utilities.FindModuleFrom(s.Value, importerDir)
 	if filename == "" {
 		return object.NewErrorFormat("%s:%d:%d: Import Error: no module named '%s' found", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, s.Value)
 	}

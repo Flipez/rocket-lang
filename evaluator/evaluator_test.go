@@ -904,6 +904,12 @@ func TestCircularImport(t *testing.T) {
 	}
 }
 
+func TestRelativeImport(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/sibling/parent"; parent.Leaf.Leaf`)
+
+	testIntegerObject(t, evaluated, 3)
+}
+
 func TestModuleCachedAcrossImports(t *testing.T) {
 	l := lexer.New(`import "../fixtures/module"; import "../fixtures/module" as m2`, "test")
 	p := parser.New(l)

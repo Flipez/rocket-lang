@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -43,4 +44,30 @@ func FindModule(name string) string {
 	}
 
 	return ""
+}
+
+// FindModuleFrom resolves a module path. Paths beginning with "./" or "../"
+// resolve against importerDir, the directory of the file doing the
+// importing. Every other path goes through the search paths.
+func FindModuleFrom(name string, importerDir string) string {
+	if !strings.HasPrefix(name, "./") && !strings.HasPrefix(name, "../") {
+		return FindModule(name)
+	}
+
+	if importerDir == "" {
+		return ""
+	}
+
+	candidate := filepath.Join(importerDir, name+".rl")
+
+	if !Exists(candidate) {
+		return ""
+	}
+
+	absolutePath, err := filepath.Abs(candidate)
+	if err != nil {
+		return ""
+	}
+
+	return absolutePath
 }
