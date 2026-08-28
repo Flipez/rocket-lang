@@ -772,19 +772,19 @@ func TestParsingImportExpressions(t *testing.T) {
 	}{
 		{
 			`import "foobar"`,
-			`import foobar`,
+			`import "foobar"`,
 		},
 		{
 			`import "foobar" as f`,
-			`import foobar as f`,
+			`import "foobar" as f`,
 		},
 		{
 			`import "foobar" only Sum`,
-			`import foobar only Sum`,
+			`import "foobar" only Sum`,
 		},
 		{
 			`import "foobar" as f only Sum, Square`,
-			`import foobar as f only Sum, Square`,
+			`import "foobar" as f only Sum, Square`,
 		},
 	}
 
@@ -826,7 +826,7 @@ func TestImportWithParenthesizedPathStillParses(t *testing.T) {
 		t.Fatalf("expected no parser errors, got: %v", p.Errors())
 	}
 
-	if program.String() != `import foobar` {
+	if program.String() != `import "foobar"` {
 		t.Errorf("expected the parenthesized path to parse as a plain import, got: %q", program.String())
 	}
 }

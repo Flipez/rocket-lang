@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strconv"
 	"strings"
 
 	"github.com/flipez/rocket-lang/token"
@@ -20,7 +21,13 @@ func (ie *Import) String() string {
 
 	out.WriteString(ie.TokenLiteral())
 	out.WriteString(" ")
-	out.WriteString(ie.Location.String())
+
+	// If Location is a string literal, render it quoted; otherwise bare.
+	if stringLit, ok := ie.Location.(*String); ok {
+		out.WriteString(strconv.Quote(stringLit.Value))
+	} else {
+		out.WriteString(ie.Location.String())
+	}
 
 	if ie.Alias != "" {
 		out.WriteString(" as ")
