@@ -30,6 +30,19 @@ func Exists(path string) bool {
 	return err == nil
 }
 
+// canonicalize resolves symlinks in path so the same on-disk file always
+// produces the same string, regardless of which symlinked or real route was
+// used to reach it. It falls back to the input path unchanged if the
+// filesystem lookup fails.
+func canonicalize(path string) string {
+	resolved, err := filepath.EvalSymlinks(path)
+	if err != nil {
+		return path
+	}
+
+	return resolved
+}
+
 func FindModule(name string) string {
 	once.Do(initSearchPaths)
 
@@ -39,7 +52,7 @@ func FindModule(name string) string {
 		filename := filepath.Join(p, basename)
 
 		if Exists(filename) {
-			return filename
+			return canonicalize(filename)
 		}
 	}
 
@@ -69,5 +82,5 @@ func FindModuleFrom(name string, importerDir string) string {
 		return ""
 	}
 
-	return absolutePath
+	return canonicalize(absolutePath)
 }
