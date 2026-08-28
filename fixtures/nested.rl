@@ -1,1 +1,1 @@
-import("../fixtures/module", "Inner")
+import "../fixtures/module" as Inner

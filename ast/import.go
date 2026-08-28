@@ -2,7 +2,7 @@ package ast
 
 import (
 	"bytes"
-	"fmt"
+	"strings"
 
 	"github.com/flipez/rocket-lang/token"
 )
@@ -10,7 +10,8 @@ import (
 type Import struct {
 	Token    token.Token
 	Location Expression
-	Name     Expression
+	Alias    string
+	Only     []string
 }
 
 func (ie *Import) TokenLiteral() string { return ie.Token.Literal }
@@ -18,13 +19,18 @@ func (ie *Import) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(ie.TokenLiteral())
-	out.WriteString("(")
-	out.WriteString(fmt.Sprintf("\"%s\"", ie.Location))
-	if ie.Name != nil {
-		out.WriteString(", ")
-		out.WriteString(fmt.Sprintf("\"%s\"", ie.Name))
+	out.WriteString(" ")
+	out.WriteString(ie.Location.String())
+
+	if ie.Alias != "" {
+		out.WriteString(" as ")
+		out.WriteString(ie.Alias)
 	}
-	out.WriteString(")")
+
+	if len(ie.Only) > 0 {
+		out.WriteString(" only ")
+		out.WriteString(strings.Join(ie.Only, ", "))
+	}
 
 	return out.String()
 }

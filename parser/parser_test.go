@@ -771,8 +771,20 @@ func TestParsingImportExpressions(t *testing.T) {
 		expected string
 	}{
 		{
-			`import("foobar")`,
-			`import("foobar")`,
+			`import "foobar"`,
+			`import foobar`,
+		},
+		{
+			`import "foobar" as f`,
+			`import foobar as f`,
+		},
+		{
+			`import "foobar" only Sum`,
+			`import foobar only Sum`,
+		},
+		{
+			`import "foobar" as f only Sum, Square`,
+			`import foobar as f only Sum, Square`,
 		},
 	}
 
@@ -788,6 +800,34 @@ func TestParsingImportExpressions(t *testing.T) {
 		if actual != tt.expected {
 			t.Errorf("expected=%q, got=%q", tt.expected, actual)
 		}
+	}
+}
+
+func TestImportCallFormWithTwoArgumentsIsAParseError(t *testing.T) {
+	l := lexer.New(`import("foobar", "alias")`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) == 0 {
+		t.Fatalf("expected a parser error for the two-argument call form")
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be )") {
+		t.Errorf("expected an error about the unclosed group, got: %q", p.Errors()[0])
+	}
+}
+
+func TestImportWithParenthesizedPathStillParses(t *testing.T) {
+	l := lexer.New(`import("foobar")`, "test")
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		t.Fatalf("expected no parser errors, got: %v", p.Errors())
+	}
+
+	if program.String() != `import foobar` {
+		t.Errorf("expected the parenthesized path to parse as a plain import, got: %q", program.String())
 	}
 }
 

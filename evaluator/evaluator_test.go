@@ -206,12 +206,16 @@ func TestErrorHandling(t *testing.T) {
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
 		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
-		{"import(true)", "test:1:7: Import Error: invalid import path '&{%!s(bool=true)}'"},
-		{"import(5%0)", "division by zero not allowed"},
-		{`import("fixtures/nope")`, "Import Error: no module named 'fixtures/nope' found"},
+		{"import true", "test:1:7: Import Error: invalid import path 'true'"},
+		{"import 5%0", "division by zero not allowed"},
+		{`import "fixtures/nope"`, "Import Error: no module named 'fixtures/nope' found"},
 		{
-			`import("../fixtures/parser_error")`,
+			`import "../fixtures/parser_error"`,
 			"Parse Error: [1:10: expected next token to be ), got EOF instead]",
+		},
+		{
+			`import "../fixtures/module" only Nope`,
+			`test:1:7: Import Error: '../fixtures/module' does not export 'Nope'; exported: "A", "Sum"`,
 		},
 		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
@@ -713,31 +717,39 @@ func TestImportExpression(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			`import("../fixtures/module"); module.A`,
+			`import "../fixtures/module"; module.A`,
 			5,
 		},
 		{
-			`import("../fixtures/module"); module.Sum(2, 3)`,
+			`import "../fixtures/module"; module.Sum(2, 3)`,
 			5,
 		},
 		{
-			`import("../fixtures/module"); module.a`,
+			`import "../fixtures/module"; module.a`,
 			nil,
 		},
 		{
-			`import("../fixtures/module", "module2"); module2.A`,
+			`import "../fixtures/module" as module2; module2.A`,
 			5,
 		},
 		{
-			`import("../fixtures/module"); m = module; m.Sum(2, 3)`,
+			`import "../fixtures/module" only A; module.A`,
 			5,
 		},
 		{
-			`p = "../fixtures/module"; import(p); module.Sum(2, 3)`,
+			`import "../fixtures/module" only Sum; module.A`,
+			nil,
+		},
+		{
+			`import "../fixtures/module"; m = module; m.Sum(2, 3)`,
 			5,
 		},
 		{
-			`import("../fixtures/nested"); nested.Inner.Sum(2, 3)`,
+			`p = "../fixtures/module"; import p; module.Sum(2, 3)`,
+			5,
+		},
+		{
+			`import "../fixtures/nested"; nested.Inner.Sum(2, 3)`,
 			5,
 		},
 	}
@@ -765,7 +777,7 @@ func TestImportSearchPaths(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			`import("../fixtures/module"); module.A`,
+			`import "../fixtures/module"; module.A`,
 			5,
 		},
 	}
