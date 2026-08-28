@@ -953,3 +953,55 @@ func TestParsingAssignmentFailsWithInvalidLeftSide(t *testing.T) {
 		t.Errorf("expected error about invalid assignment target, got: %q", p.Errors()[0])
 	}
 }
+
+// TestImportInExpressionPositionIsAParseError pins down that `import` is a
+// statement, not an expression. As an expression it silently accepted
+// nonsense: `x = import "lib"` bound nil, and `import "l" + name` parsed as
+// `(import "l") + name`, performing a real import of the wrong module before
+// failing with a misleading "no module named 'l'".
+func TestImportInExpressionPositionIsAParseError(t *testing.T) {
+	inputs := []string{
+		`x = import "lib"`,
+		`puts(import "lib")`,
+		`a = [import "lib", 1]`,
+		`import "l" + name`,
+	}
+
+	for _, input := range inputs {
+		l := lexer.New(input, "test")
+		p := New(l)
+		p.ParseProgram()
+
+		if len(p.Errors()) == 0 {
+			t.Fatalf("input %q: expected a parser error, got none", input)
+		}
+
+		// `import "l" + name` fails on the stray operator rather than on the
+		// import itself, and does so before any module is loaded.
+		if input != `import "l" + name` && !strings.Contains(p.Errors()[0], "`import` is a statement and cannot be used as an expression") {
+			t.Errorf("input %q: expected the statement-not-expression message, got %q", input, p.Errors()[0])
+		}
+	}
+}
+
+// TestImportParsesAsAStatementInsideBlocks guards the other direction: making
+// import a statement must not stop it working inside a function body or any
+// other block, since parseBlock routes through parseStatement too.
+func TestImportParsesAsAStatementInsideBlocks(t *testing.T) {
+	inputs := []string{
+		`import "lib"`,
+		`def f() import "lib" end`,
+		`if true import "lib" end`,
+		`foreach i in [1] import "lib" end`,
+	}
+
+	for _, input := range inputs {
+		l := lexer.New(input, "test")
+		p := New(l)
+		p.ParseProgram()
+
+		if len(p.Errors()) != 0 {
+			t.Errorf("input %q: expected no parser errors, got %v", input, p.Errors())
+		}
+	}
+}

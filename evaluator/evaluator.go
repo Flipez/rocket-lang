@@ -18,6 +18,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalBlock(node, env)
 	case *ast.Export:
 		return evalExport(node, env)
+	case *ast.Import:
+		return evalImport(node, env)
 	case *ast.Begin:
 		return evalBlock(node.Block, env)
 	case *ast.Foreach:
@@ -53,8 +55,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		return function
-	case *ast.Import:
-		return evalImport(node, env)
 	case *ast.String:
 		return object.NewString(node.Value)
 	case *ast.Array:
