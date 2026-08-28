@@ -150,6 +150,89 @@ func TestIfElseExpressions(t *testing.T) {
 	}
 }
 
+// TestElseIfSwallowedSibling is a regression test for a parser bug where
+// "else if" (two keywords, as opposed to the dedicated "elif" keyword)
+// inside a nested block corrupted the AST: the single `end` shared between
+// the nested if and its enclosing else was consumed twice, which caused the
+// statements following the outer if (and any statements/definitions
+// following the enclosing function) to be swallowed into the else branch.
+func TestElseIfSwallowedSibling(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		// The critical case: After() must still be reachable and callable
+		// after a function body containing a nested "else if".
+		{`
+			def Make(kind)
+				result = "none"
+				if (kind == "a")
+					result = "A"
+				else if (kind == "b")
+					result = "B"
+				end
+				return result
+			end
+
+			def After()
+				return 99
+			end
+
+			After()
+		`, 99},
+		// The "else if" branch itself must still evaluate correctly.
+		{`
+			def Make(kind)
+				result = "none"
+				if (kind == "a")
+					result = "A"
+				else if (kind == "b")
+					result = "B"
+				end
+				return result
+			end
+
+			Make("a")
+		`, "A"},
+		{`
+			def Make(kind)
+				result = "none"
+				if (kind == "a")
+					result = "A"
+				else if (kind == "b")
+					result = "B"
+				end
+				return result
+			end
+
+			Make("b")
+		`, "B"},
+		{`
+			def Make(kind)
+				result = "none"
+				if (kind == "a")
+					result = "A"
+				else if (kind == "b")
+					result = "B"
+				end
+				return result
+			end
+
+			Make("z")
+		`, "none"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, expected)
+		case string:
+			testStringObject(t, evaluated, expected)
+		}
+	}
+}
+
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
 		input    string

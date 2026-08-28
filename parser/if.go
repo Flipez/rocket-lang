@@ -52,7 +52,27 @@ func (p *Parser) parseIf() ast.Expression {
 	}
 
 	if p.curTokenIs(token.ELSE) {
-		expression.Alternative = p.parseBlock()
+		if p.peekTokenIs(token.IF) {
+			// "else if" (two keywords) shares its terminating `end` with the
+			// enclosing if/else. Treat it like `elif`: parse the nested if as
+			// a nested expression (which will itself end on that shared
+			// `end`) rather than handing off to parseBlock, which would
+			// unconditionally step past that `end` and keep consuming
+			// whatever statements follow.
+			elseToken := p.curToken
+			p.nextToken() // advance onto the nested IF token
+
+			nested := p.parseIf()
+
+			expression.Alternative = &ast.Block{
+				Token: elseToken,
+				Statements: []ast.Statement{
+					&ast.ExpressionStatement{Token: elseToken, Expression: nested},
+				},
+			}
+		} else {
+			expression.Alternative = p.parseBlock()
+		}
 	}
 
 	return expression
