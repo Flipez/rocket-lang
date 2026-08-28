@@ -508,9 +508,9 @@ func TestFunctionParameterParsing(t *testing.T) {
 		input          string
 		expectedParams []string
 	}{
-		{input: "def () {};", expectedParams: []string{}},
-		{input: "def (x) {};", expectedParams: []string{"x"}},
-		{input: "def (x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
+		{input: "def () end", expectedParams: []string{}},
+		{input: "def (x) end", expectedParams: []string{"x"}},
+		{input: "def (x, y, z) end", expectedParams: []string{"x", "y", "z"}},
 	}
 
 	for _, tt := range tests {
@@ -1003,5 +1003,105 @@ func TestImportParsesAsAStatementInsideBlocks(t *testing.T) {
 		if len(p.Errors()) != 0 {
 			t.Errorf("input %q: expected no parser errors, got %v", input, p.Errors())
 		}
+	}
+}
+
+// TestUnterminatedBlockIsAParseError covers a parser bug where parseBlock
+// treated EOF as a valid block terminator. An unterminated block silently
+// swallowed the rest of the file -- including whole function definitions --
+// and produced no diagnostic at all.
+//
+// The `else if` case is the common way to hit this: RocketLang has no
+// two-keyword `else if` construct, only `elif`, so `else if` is an ordinary
+// nested if inside an else branch and needs its own `end`.
+func TestUnterminatedBlockIsAParseError(t *testing.T) {
+	inputs := []string{
+		`def h()
+  return 1
+puts("after")`,
+		`if true
+  puts(1)`,
+		`while false
+  puts(1)`,
+		`foreach i in [1]
+  puts(i)`,
+		// `else if` with a single `end`: the nested if consumes it, leaving
+		// the enclosing else unterminated.
+		`def g(a)
+  if a == 1
+    "one"
+  else if a == 2
+    "two"
+  end
+end`,
+	}
+
+	for _, input := range inputs {
+		l := lexer.New(input, "test")
+		p := New(l)
+		p.ParseProgram()
+
+		if len(p.Errors()) == 0 {
+			t.Errorf("input %q: expected an unterminated-block error, got none", input)
+			continue
+		}
+
+		if !strings.Contains(p.Errors()[0], "unexpected end of file, expected `end`") {
+			t.Errorf("input %q: expected an unterminated-block error, got %q", input, p.Errors()[0])
+		}
+	}
+}
+
+// TestElseWithNestedIfParses is the counterpart: `else` followed by a nested
+// `if` is well formed when each block closes itself, and must keep parsing.
+func TestElseWithNestedIfParses(t *testing.T) {
+	inputs := []string{
+		`if a == 1
+  "one"
+else
+  if a == 2
+    "two"
+  end
+end`,
+		// The same shape written on one line, which is still two blocks and
+		// so still needs two `end`s.
+		`if a == 1
+  "one"
+else if a == 2
+  "two"
+  end
+end`,
+		`if a == 1
+  "one"
+elif a == 2
+  "two"
+end`,
+	}
+
+	for _, input := range inputs {
+		l := lexer.New(input, "test")
+		p := New(l)
+		p.ParseProgram()
+
+		if len(p.Errors()) != 0 {
+			t.Errorf("input %q: expected no parser errors, got %v", input, p.Errors())
+		}
+	}
+}
+
+// TestUnterminatedBlockDoesNotCascade guards the suppression rule: a block
+// left unterminated by an earlier failure at the same position reports only
+// that first error, not a second one blaming the missing `end`.
+func TestUnterminatedBlockDoesNotCascade(t *testing.T) {
+	l := lexer.New(`def Test(`, "test")
+	p := New(l)
+	p.ParseProgram()
+
+	if len(p.Errors()) != 1 {
+		t.Fatalf("expected exactly 1 error, got %d: %v", len(p.Errors()), p.Errors())
+	}
+
+	if !strings.Contains(p.Errors()[0], "expected next token to be )") {
+		t.Errorf("expected the original paren error, got %q", p.Errors()[0])
 	}
 }
