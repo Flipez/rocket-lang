@@ -174,10 +174,18 @@ func cmdGet(args []string, out io.Writer) error {
 	}
 
 	if version == "" {
-		if version, err = LatestTag(source.URL); err != nil {
+		isTag := false
+		if version, isTag, err = ResolveVersion(source.URL); err != nil {
 			return err
 		}
-		fmt.Fprintf(out, "resolved %s to %s\n", raw, version)
+
+		if isTag {
+			fmt.Fprintf(out, "resolved %s to %s\n", raw, version)
+		} else {
+			// Worth saying out loud: a branch is not a release, and it will
+			// move. The commit is pinned, so this install stays reproducible.
+			fmt.Fprintf(out, "resolved %s to the %s branch; it publishes no version tags\n", raw, version)
+		}
 	}
 
 	manifest.Planets[alias] = Entry{Source: raw, Version: version}

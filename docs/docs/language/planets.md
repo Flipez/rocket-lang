@@ -12,7 +12,8 @@ $ rocket-lang planet init
 created planets.yml
 added .planets/ to .gitignore
 
-$ rocket-lang planet get flipez/rocket-lang-core@main
+$ rocket-lang planet get flipez/rocket-lang-core
+resolved flipez/rocket-lang-core to the main branch; it publishes no version tags
 installed core main (7441c48) to .planets/core
 recorded in planets.yml
 
@@ -117,14 +118,19 @@ rocket-lang planet get flipez/rocket-lang-core@main
 rocket-lang planet get flipez/rocket-lang-core@6daa0cc
 ```
 
-A bare `planet get` still requires tags, because there is no sensible default
-otherwise:
+A bare `planet get` picks the highest version tag when the planet publishes
+any, and otherwise falls back to the planet's default branch, saying so:
 
 ```
 $ rocket-lang planet get flipez/rocket-lang-core
-planet get: https://github.com/flipez/rocket-lang-core publishes no version
-tags; pass an explicit @version
+resolved flipez/rocket-lang-core to the main branch; it publishes no version tags
 ```
+
+A tag always wins over the branch, even when the branch is further ahead — a
+release is a deliberate statement and an untagged commit is not.
+
+The branch name comes from the remote rather than being assumed, so a planet
+whose default branch is `master` or `trunk` works without saying so.
 
 Tracking a branch is not the same as following it: the commit is recorded at
 install time and pinned from then on, so everyone who checks the project out

@@ -25,7 +25,7 @@ func Install(m *Manifest, alias string, out io.Writer) (string, error) {
 
 	version := entry.Version
 	if version == "" {
-		if version, err = LatestTag(source.URL); err != nil {
+		if version, _, err = ResolveVersion(source.URL); err != nil {
 			return "", err
 		}
 	}

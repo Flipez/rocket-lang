@@ -14,6 +14,15 @@ import (
 func newRepo(t *testing.T, tags ...string) string {
 	t.Helper()
 
+	return newRepoOnBranch(t, "main", tags...)
+}
+
+// newRepoOnBranch builds a real git repository whose default branch is named
+// branch, so the default-branch lookup is tested against something other than
+// main.
+func newRepoOnBranch(t *testing.T, branch string, tags ...string) string {
+	t.Helper()
+
 	if _, err := exec.LookPath("git"); err != nil {
 		t.Skip("git is not available")
 	}
@@ -29,7 +38,7 @@ func newRepo(t *testing.T, tags ...string) string {
 		}
 	}
 
-	run("init", "--quiet", "--initial-branch", "main")
+	run("init", "--quiet", "--initial-branch", branch)
 	run("config", "user.email", "test@example.com")
 	run("config", "user.name", "test")
 
@@ -81,11 +90,57 @@ func TestLatestTagIsHighestNotNewest(t *testing.T) {
 	}
 }
 
+// TestLatestTagWithoutVersionTags: no tags is not an error. A planet that has
+// not tagged a release is still usable through its default branch, so the empty
+// answer lets ResolveVersion fall back rather than failing the install.
 func TestLatestTagWithoutVersionTags(t *testing.T) {
 	repo := newRepo(t, "nightly")
 
-	if _, err := LatestTag(repo); err == nil {
-		t.Error("LatestTag succeeded on a repo with no version tags")
+	tag, err := LatestTag(repo)
+	if err != nil {
+		t.Fatalf("LatestTag errored on a repo with no version tags: %s", err)
+	}
+	if tag != "" {
+		t.Errorf("LatestTag() = %q, want an empty string", tag)
+	}
+}
+
+// TestDefaultBranchIsReadFromTheRemote covers not hardcoding "main": the branch
+// name is whatever the remote says its HEAD points at.
+func TestDefaultBranchIsReadFromTheRemote(t *testing.T) {
+	repo := newRepoOnBranch(t, "trunk", "v1.0.0")
+
+	branch, err := DefaultBranch(repo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if branch != "trunk" {
+		t.Errorf("DefaultBranch() = %q, want trunk", branch)
+	}
+}
+
+func TestResolveVersionPrefersATag(t *testing.T) {
+	repo := newRepo(t, "v1.0.0", "v2.0.0")
+
+	version, isTag, err := ResolveVersion(repo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if version != "v2.0.0" || !isTag {
+		t.Errorf("ResolveVersion() = %q, isTag %v; want v2.0.0, true", version, isTag)
+	}
+}
+
+func TestResolveVersionFallsBackToTheDefaultBranch(t *testing.T) {
+	// Tagged, but not with anything that parses as a version.
+	repo := newRepoOnBranch(t, "trunk", "nightly")
+
+	version, isTag, err := ResolveVersion(repo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if version != "trunk" || isTag {
+		t.Errorf("ResolveVersion() = %q, isTag %v; want trunk, false", version, isTag)
 	}
 }
 

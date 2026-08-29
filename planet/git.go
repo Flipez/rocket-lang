@@ -88,7 +88,9 @@ func Tags(url string) ([]string, error) {
 	return tags, nil
 }
 
-// LatestTag returns the highest semver tag a remote publishes.
+// LatestTag returns the highest semver tag a remote publishes, or an empty
+// string when it publishes none. That is not an error: a planet that has not
+// tagged a release yet is still usable through its default branch.
 func LatestTag(url string) (string, error) {
 	tags, err := Tags(url)
 	if err != nil {
@@ -96,10 +98,61 @@ func LatestTag(url string) (string, error) {
 	}
 
 	if len(tags) == 0 {
-		return "", fmt.Errorf("%s publishes no version tags; pass an explicit @version", url)
+		return "", nil
 	}
 
 	return tags[len(tags)-1], nil
+}
+
+// DefaultBranch asks the remote which branch its HEAD points at. The answer is
+// read from the remote rather than assumed to be "main", since plenty of
+// repositories use master, trunk or something else entirely.
+func DefaultBranch(url string) (string, error) {
+	if err := requireGit(); err != nil {
+		return "", err
+	}
+
+	out, err := git("", "ls-remote", "--symref", url, "HEAD")
+	if err != nil {
+		return "", err
+	}
+
+	for _, line := range strings.Split(out, "\n") {
+		if !strings.HasPrefix(line, "ref:") {
+			continue
+		}
+
+		fields := strings.Fields(line)
+		if len(fields) < 2 {
+			continue
+		}
+
+		if branch := strings.TrimPrefix(fields[1], "refs/heads/"); branch != "" {
+			return branch, nil
+		}
+	}
+
+	return "", fmt.Errorf("%s does not report a default branch", url)
+}
+
+// ResolveVersion picks what to install when no version was asked for: the
+// highest semver tag if the planet publishes any, otherwise its default branch.
+// isTag says which, so a caller can point out that it settled for a branch.
+func ResolveVersion(url string) (version string, isTag bool, err error) {
+	tag, err := LatestTag(url)
+	if err != nil {
+		return "", false, err
+	}
+	if tag != "" {
+		return tag, true, nil
+	}
+
+	branch, err := DefaultBranch(url)
+	if err != nil {
+		return "", false, err
+	}
+
+	return branch, false, nil
 }
 
 // Checkout clones url into dest and checks out ref, which may be a tag, a
