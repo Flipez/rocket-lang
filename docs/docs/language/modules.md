@@ -195,6 +195,34 @@ first, so they win when the same module name exists in both.
 The path must be a string literal; it cannot be a variable or a computed
 expression.
 
+## In the playground
+
+The [playground](https://play.rocket-lang.org) has tabs. Every tab is a file
+next to the others, so an import between them works exactly as it does on disk:
+
+```js
+// main.rl
+import "util"
+import "./greet" as greet
+
+puts(util.double(21))
+puts(greet.hello("robert"))
+```
+
+```js
+// util.rl
+export NAME = "util"
+export def double(x) return x * 2 end
+```
+
+`main.rl` is the file that runs and cannot be removed. A bare name resolves
+against the same directory the tabs live in, and a `./` path resolves against
+the importing file, which is that directory too — so both spellings find a
+sibling tab.
+
+Planets are the one part that does not work there: installing one needs `git`
+and a filesystem, neither of which a browser has.
+
 ## Loading rules
 
 A module file is evaluated **once**. Importing it again reuses the result, so

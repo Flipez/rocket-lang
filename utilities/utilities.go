@@ -47,12 +47,6 @@ func AddPath(path string) error {
 	return nil
 }
 
-func Exists(path string) bool {
-	_, err := os.Stat(path)
-
-	return err == nil
-}
-
 // canonicalize resolves symlinks in path so the same on-disk file always
 // produces the same string, regardless of which symlinked or real route was
 // used to reach it. It falls back to the input path unchanged if the

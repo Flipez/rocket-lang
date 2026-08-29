@@ -81,7 +81,7 @@ Writes the given string to the file. Returns number of written bytes on success.
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
 
-Returns `true` when the value is of the given type or belongs to the given type group, so one question covers both. The name has to be one that exists: anything else is an error rather than a `false`, because a typo would otherwise read as a real answer. See [Types and type groups](/docs/language/types).
+Returns `true` when the value is of the given type or belongs to the given type group, so one question covers both. The name has to be one that exists: anything else is an error rather than a `false`, because a typo would otherwise read as a real answer. See [Types and type groups](../language/types).
 
 
 <CodeBlockSimple input='nil.is_a?("NIL")
@@ -219,7 +219,7 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](/docs/language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()

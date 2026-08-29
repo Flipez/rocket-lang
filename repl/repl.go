@@ -63,7 +63,6 @@ func Start(in io.Reader, out io.Writer) {
 		l := lexer.New(line, "")
 		p := parser.New(l)
 
-
 		var program *ast.Program
 
 		program = p.ParseProgram()

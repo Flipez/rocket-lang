@@ -1,0 +1,86 @@
+[
+  {
+    "id": "01_basics/01_puts",
+    "topic": "01_basics",
+    "name": "01_puts",
+    "task": "// Print the two lines below, in order:\n//\n//   Hello, RocketLang\n//   3\n//\n// puts() writes a value and a newline. A string keeps its quotes when it is\n// the value of a line, but puts prints the characters themselves.\n\nputs(\"Hello, RocketLang\")\n// TODO: print the number three\n",
+    "expected": "Hello, RocketLang\n3\n"
+  },
+  {
+    "id": "01_basics/02_variables",
+    "topic": "01_basics",
+    "name": "02_variables",
+    "task": "// A variable is assigned with =, and needs no declaration.\n//\n// Make this print the area and the perimeter of the rectangle:\n//\n//   12\n//   14\n\nwidth = 3\nheight = 4\n\nputs(width * height)\n// TODO: print the perimeter, which is twice the width plus twice the height\n",
+    "expected": "12\n14\n"
+  },
+  {
+    "id": "01_basics/03_comparison",
+    "topic": "01_basics",
+    "name": "03_comparison",
+    "task": "// Comparison gives a BOOLEAN. Only false and nil are false in RocketLang, so\n// 0 and \"\" are both true -- worth remembering, it differs from other languages.\n//\n// Make this print:\n//\n//   true\n//   false\n//   true\n\nputs(3 \u003c 4)\nputs(3 == 4)\n// TODO: print whether 3 is not equal to 4\n",
+    "expected": "true\nfalse\ntrue\n"
+  },
+  {
+    "id": "02_strings/01_methods",
+    "topic": "02_strings",
+    "name": "01_methods",
+    "task": "// A string has 33 methods. Ask it with \"abc\".methods() any time.\n//\n// Make this print:\n//\n//   HELLO\n//   5\n//   he__o\n\ns = \"hello\"\n\nputs(s.upcase())\nputs(s.size())\n// TODO: replace every \"l\" with \"_\"\n",
+    "expected": "HELLO\n5\nhe__o\n"
+  },
+  {
+    "id": "02_strings/02_bang",
+    "topic": "02_strings",
+    "name": "02_bang",
+    "task": "// A method ending in ! changes the value it is called on. The same name\n// without the ! leaves it alone and returns a new value.\n//\n// The line below calls upcase(), which is why s is still lowercase after it.\n// Make this print:\n//\n//   HELLO\n//   HELLO\n//\n// Change one character.\n\ns = \"hello\"\n\nputs(s.upcase())\nputs(s)\n",
+    "expected": "HELLO\nHELLO\n"
+  },
+  {
+    "id": "02_strings/03_predicates",
+    "topic": "02_strings",
+    "name": "03_predicates",
+    "task": "// A method ending in ? asks a question and answers true or false.\n//\n// Make this print:\n//\n//   true\n//   false\n//   true\n\nname = \"rocket-lang.rl\"\n\nputs(name.end_with?(\".rl\"))\nputs(name.empty?())\n// TODO: does the name contain \"lang\"?\n",
+    "expected": "true\nfalse\ntrue\n"
+  },
+  {
+    "id": "03_numbers/01_conversion",
+    "topic": "03_numbers",
+    "name": "01_conversion",
+    "task": "// A conversion that cannot succeed answers nil rather than inventing a zero,\n// so a failure can be told from a real 0.\n//\n// Make this print:\n//\n//   125\n//   nil\n//   true\n\nputs(\"125\".to_i())\nputs(\"abc\".to_i())\n// TODO: print whether \"abc\".to_i() is nil, using nil?\n",
+    "expected": "125\nnil\ntrue\n"
+  },
+  {
+    "id": "03_numbers/02_rounding",
+    "topic": "03_numbers",
+    "name": "02_rounding",
+    "task": "// ceil, floor, round and truncate take an optional number of decimal places.\n// They answer with a FLOAT, keeping the type they were given.\n//\n// Make this print:\n//\n//   2.0\n//   1.0\n//   1.57\n\nvalue = 1.567\n\nputs(value.ceil())\nputs(value.floor())\n// TODO: round to two decimal places\n",
+    "expected": "2.0\n1.0\n1.57\n"
+  },
+  {
+    "id": "03_numbers/03_bases",
+    "topic": "03_numbers",
+    "name": "03_bases",
+    "task": "// This one is unusual, and worth understanding.\n//\n// An integer remembers the base it was written in, and prints in it. Two\n// integers of different bases refuse to be combined, because 0x10 + 4 has no\n// obvious answer -- so you convert first.\n//\n// Make this print:\n//\n//   0x10\n//   16\n//   0x14\n\nhex = \"0x10\".to_i()\n\nputs(hex)\nputs(hex.to_base(10))\n// TODO: add 4 to hex and print it, still in hexadecimal.\n// Hint: give the 4 the same base first, with to_base.\n",
+    "expected": "0x10\n16\n0x14\n"
+  },
+  {
+    "id": "04_arrays/01_basics",
+    "topic": "04_arrays",
+    "name": "01_basics",
+    "task": "// An array is indexed from 0. A negative index counts back from the end, and\n// a slice takes a range.\n//\n// Make this print:\n//\n//   10\n//   40\n//   [20, 30]\n\nnumbers = [10, 20, 30, 40]\n\nputs(numbers[0])\nputs(numbers[-1])\n// TODO: print the middle two elements, using a slice\n",
+    "expected": "10\n40\n[20, 30]\n"
+  },
+  {
+    "id": "04_arrays/02_methods",
+    "topic": "04_arrays",
+    "name": "02_methods",
+    "task": "// sort and uniq answer with a new array, leaving the original alone -- the\n// same rule as upcase. Their ! forms change it in place.\n//\n// Make this print:\n//\n//   [1, 1, 3, 2]\n//   [1, 2, 3]\n//   7\n\nnumbers = [1, 1, 3, 2]\n\nputs(numbers.sort())\nputs(numbers)\n// TODO: replace the two lines above so the first prints the array untouched\n// and the second prints it sorted and deduplicated. Then print the sum.\n",
+    "expected": "[1, 1, 3, 2]\n[1, 2, 3]\n7\n"
+  },
+  {
+    "id": "04_arrays/03_callbacks",
+    "topic": "04_arrays",
+    "name": "03_callbacks",
+    "task": "// A callback is a function literal: def(x) ... end. A function returns its\n// last expression, so no return is needed.\n//\n// Make this print:\n//\n//   [2, 4, 6, 8]\n//   [2, 4]\n//   10\n\nnumbers = [1, 2, 3, 4]\n\nputs(numbers.map(def(x) x * 2 end))\n// TODO: print only the even numbers, using select\n// TODO: print the total, using reduce with a starting value of 0\n",
+    "expected": "[2, 4, 6, 8]\n[2, 4]\n10\n"
+  }
+]

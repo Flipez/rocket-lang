@@ -1,45 +1,93 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <title>🚀🇱🅰🆖 Playground</title>
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <title>RocketLang Playground</title>
+    <meta name="description" content="Run RocketLang in the browser. Nothing to install.">
+    <link rel="icon" href="https://rocket-lang.org/img/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style>
+      /* The editor and the output are code, so they are set in a monospace
+         face. Everything else is Bootstrap. */
+      #input, #output {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: .9rem;
+        line-height: 1.5;
+        tab-size: 2;
+      }
+
+      #input {
+        min-height: 26rem;
+        resize: vertical;
+      }
+
+      /* The output pane is the same height as the editor and scrolls, so a
+         long run cannot stretch the page. */
+      #output {
+        min-height: 26rem;
+        max-height: 60vh;
+        overflow: auto;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .pane {
+        height: 100%;
+      }
+    </style>
 </head>
 <body>
 	<div class="container py-4">
-		<header class="pb-3 mb-4 border-bottom">
-      <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-				<img src="https://rocket-lang.org/img/logo.png" height="56px" alt="RocketLang">
-        <h1>Playground</h1>
+		<header class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-4 border-bottom">
+      <a href="https://rocket-lang.org" class="d-flex align-items-center text-body text-decoration-none">
+				<img src="https://rocket-lang.org/img/logo.png" height="40" alt="" class="me-2">
+        <span class="fs-4">RocketLang <span class="text-body-secondary">Playground</span></span>
       </a>
+      <span class="text-body-secondary small">Runs in your browser. Nothing is sent anywhere.</span>
     </header>
 
     <div class="row align-items-md-stretch">
       <div class="col-md-6">
-        <div class="h-100 p-5 bg-light border rounded-3">
-          <h2>Input</h2>
-					<hr />
-					<p>
-	          <textarea class="form-control" rows="10" id="input" disabled placeholder="Loading WebAssembly binary..."></textarea>
-					</p>
-					<pi class="float-end">
-          <button id="shareButton" class="btn btn-outline-primary" type="button">Share</button>
-          <button id="runButton" class="btn btn-outline-success" type="button">Run</button>
-					</p>
+        <div class="pane p-3 p-md-4 bg-body-tertiary border rounded-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h5 mb-0">Program</h2>
+            <select class="form-select form-select-sm w-auto" id="exerciseSelect" aria-label="Exercise">
+              <option value="">Free play</option>
+            </select>
+          </div>
+          <p id="task" class="text-body-secondary small d-none"></p>
+          <ul class="nav nav-tabs" id="tabs">
+            <li class="nav-item"><button class="nav-link active" type="button" data-file="main.rl">main.rl</button></li>
+            <li class="nav-item"><button class="nav-link text-body-secondary" id="addFile" type="button" title="Add a file">+</button></li>
+          </ul>
+          <textarea class="form-control mb-3 rounded-top-0" id="input" spellcheck="false" autocapitalize="off" autocorrect="off" disabled placeholder="Loading the interpreter..."></textarea>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <button id="runButton" class="btn btn-success" type="button">Run</button>
+            <button id="checkButton" class="btn btn-outline-primary" type="button" disabled>Check</button>
+            <button id="linkButton" class="btn btn-outline-primary" type="button">Share</button>
+          </div>
+          <div class="form-text mt-2">
+            <kbd>Ctrl</kbd> + <kbd>Enter</kbd> runs. <kbd>Tab</kbd> inserts a tab.
+          </div>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="h-100 p-5 text-bg-dark rounded-3">
-          <h2>Output</h2>
-					<hr />
-	        <pre id="output"></pre>
+        <div class="pane p-3 p-md-4 text-bg-dark rounded-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h5 mb-0">Output</h2>
+            <span id="runStatus" class="badge text-bg-secondary">loading</span>
+          </div>
+          <p id="verdict" class="d-none"></p>
+          <pre id="output" class="text-light"></pre>
         </div>
       </div>
     </div>
 
-    <footer class="pt-3 mt-4 text-muted border-top">
-			🚀🇱🅰🆖 Playground.
-			See <a href="https://rocket-lang.org">rocket-lang.org</a> for more information | &nbsp;
+    <footer class="pt-3 mt-4 text-body-secondary small border-top">
+			See <a href="https://rocket-lang.org">rocket-lang.org</a> for the documentation, or the
+			<a href="https://rocket-lang.org/docs/language/types">type reference</a>. Source on
 			<a href="https://github.com/flipez/rocket-lang">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 16" width="45" height="16"><path fill-rule="evenodd" d="M18.53 12.03h-.02c.009 0 .015.01.024.011h.006l-.01-.01zm.004.011c-.093.001-.327.05-.574.05-.78 0-1.05-.36-1.05-.83V8.13h1.59c.09 0 .16-.08.16-.19v-1.7c0-.09-.08-.17-.16-.17h-1.59V3.96c0-.08-.05-.13-.14-.13h-2.16c-.09 0-.14.05-.14.13v2.17s-1.09.27-1.16.28c-.08.02-.13.09-.13.17v1.36c0 .11.08.19.17.19h1.11v3.28c0 2.44 1.7 2.69 2.86 2.69.53 0 1.17-.17 1.27-.22.06-.02.09-.09.09-.16v-1.5a.177.177 0 00-.146-.18zM42.23 9.84c0-1.81-.73-2.05-1.5-1.97-.6.04-1.08.34-1.08.34v3.52s.49.34 1.22.36c1.03.03 1.36-.34 1.36-2.25zm2.43-.16c0 3.43-1.11 4.41-3.05 4.41-1.64 0-2.52-.83-2.52-.83s-.04.46-.09.52c-.03.06-.08.08-.14.08h-1.48c-.1 0-.19-.08-.19-.17l.02-11.11c0-.09.08-.17.17-.17h2.13c.09 0 .17.08.17.17v3.77s.82-.53 2.02-.53l-.01-.02c1.2 0 2.97.45 2.97 3.88zm-8.72-3.61h-2.1c-.11 0-.17.08-.17.19v5.44s-.55.39-1.3.39-.97-.34-.97-1.09V6.25c0-.09-.08-.17-.17-.17h-2.14c-.09 0-.17.08-.17.17v5.11c0 2.2 1.23 2.75 2.92 2.75 1.39 0 2.52-.77 2.52-.77s.05.39.08.45c.02.05.09.09.16.09h1.34c.11 0 .17-.08.17-.17l.02-7.47c0-.09-.08-.17-.19-.17zm-23.7-.01h-2.13c-.09 0-.17.09-.17.2v7.34c0 .2.13.27.3.27h1.92c.2 0 .25-.09.25-.27V6.23c0-.09-.08-.17-.17-.17zm-1.05-3.38c-.77 0-1.38.61-1.38 1.38 0 .77.61 1.38 1.38 1.38.75 0 1.36-.61 1.36-1.38 0-.77-.61-1.38-1.36-1.38zm16.49-.25h-2.11c-.09 0-.17.08-.17.17v4.09h-3.31V2.6c0-.09-.08-.17-.17-.17h-2.13c-.09 0-.17.08-.17.17v11.11c0 .09.09.17.17.17h2.13c.09 0 .17-.08.17-.17V8.96h3.31l-.02 4.75c0 .09.08.17.17.17h2.13c.09 0 .17-.08.17-.17V2.6c0-.09-.08-.17-.17-.17zM8.81 7.35v5.74c0 .04-.01.11-.06.13 0 0-1.25.89-3.31.89-2.49 0-5.44-.78-5.44-5.92S2.58 1.99 5.1 2c2.18 0 3.06.49 3.2.58.04.05.06.09.06.14L7.94 4.5c0 .09-.09.2-.2.17-.36-.11-.9-.33-2.17-.33-1.47 0-3.05.42-3.05 3.73s1.5 3.7 2.58 3.7c.92 0 1.25-.11 1.25-.11v-2.3H4.88c-.11 0-.19-.08-.19-.17V7.35c0-.09.08-.17.19-.17h3.74c.11 0 .19.08.19.17z"></path></svg>
 			</a>.
@@ -49,18 +97,37 @@
 
 	<script src="wasm_exec.js"></script>
 	<script src="term.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 	<script>
     const urlParams = new URLSearchParams(window.location.search);
-		let shareData = urlParams.get('share')
-		if (shareData) {
-		  window.input.value = atob(shareData)
-		}
 
 
-		this.shareButton.addEventListener('click',function(e) {
-      urlParams.set('share', btoa(window.input.value));
-      window.location.search = urlParams;
+		window.linkButton.addEventListener('click', async function() {
+      // Reloading the page to hand someone a URL loses whatever they were
+      // running. Build it and copy it instead.
+      syncEditor();
+
+      const params = new URLSearchParams(window.location.search);
+      params.delete('exercise');
+      // A single file shares as plain source, so links made before there were
+      // tabs keep working and keep being made. More than one shares as JSON.
+      const only = Object.keys(files).length === 1;
+      params.set('share', btoa(only ? files[ENTRY] : JSON.stringify(files)));
+
+      const url = window.location.origin + window.location.pathname + '?' + params;
+      history.replaceState(null, '', '?' + params);
+
+      const label = this.innerText;
+      try {
+        await navigator.clipboard.writeText(url);
+        this.innerText = 'Link copied';
+      } catch (e) {
+        // Clipboard access needs a secure context, so fall back to leaving the
+        // URL in the address bar, which replaceState has already done.
+        this.innerText = 'Link in the address bar';
+      }
+
+      setTimeout(() => { this.innerText = label; }, 1600);
 		});
 
 
@@ -89,22 +156,313 @@
 
 			set_output(window.output);
 
-			fetch('main.wasm').then(response => response.arrayBuffer()).then(function(bin) {
-				  this.runButton.addEventListener('click',function(e) {
-						window.output.innerText = ""
+			fetch('main.wasm').then(response => response.arrayBuffer()).then(async function(bin) {
+				// One place that runs a program, so Run and Check cannot drift.
+				// go.run resolves when the program exits, at which point term.js
+				// has written everything to the output element.
+				// /play is the root the wasm build adds to the module search path,
+				// so `import "util"` finds /play/util.rl and `import "./util"`
+				// resolves against the entry file's directory, which is the same
+				// place.
+				const ROOT = '/play';
+				const ENTRY = 'main.rl';
+
+				// The files, and which one the editor is showing. The textarea
+				// only ever holds the active file, so it is written back into
+				// this before anything reads them.
+				const files = { [ENTRY]: '' };
+				let active = ENTRY;
+
+				function syncEditor() {
+					files[active] = window.input.value;
+				}
+
+				async function runProgram() {
+					syncEditor();
+					window.output.innerText = '';
+
+					// The entry runs as a file rather than through -e, because a
+					// relative import needs an importing file to resolve
+					// against. It also sidesteps the 12KB argv limit, since the
+					// sources travel as a global rather than on the command line.
+					const rooted = {};
+					for (const [name, content] of Object.entries(files))
+						rooted[ROOT + '/' + name] = content;
+
+					globalThis.rocketFiles = rooted;
 
 					const go = new Go();
-					go.argv = ['rocket-lang', '-e', window.input.value];
+					go.argv = ['rocket-lang', ROOT + '/' + ENTRY];
 					go.exit = (code) => {
 						if (code > 0)
 							output.innerText += 'Exit ' + code + '\n';
 					};
-					WebAssembly.instantiate(bin, go.importObject).then((result) => {
-						go.run(result.instance);
+
+					const result = await WebAssembly.instantiate(bin, go.importObject);
+					await go.run(result.instance);
+
+					return window.output.innerText;
+				}
+
+				// The interpreter prints the program's own final value, which is
+				// a nil as soon as a program ends in puts(). An exercise did not
+				// ask for it, so one trailing nil is dropped -- the same rule
+				// exercises/generate.go and run.sh apply.
+				function stripFinalValue(output) {
+					const lines = output.replace(/\n$/, '').split('\n');
+					if (lines.length && lines[lines.length - 1] === 'nil')
+						lines.pop();
+
+					return lines.length ? lines.join('\n') + '\n' : '';
+				}
+
+				function verdict(message, tone) {
+					window.verdict.className = 'fw-bold text-' + tone;
+					window.verdict.innerText = message;
+				}
+
+				// Named access cannot reach an element called "status": window.status
+				// is a built-in Window property holding a string.
+				const statusBadge = document.getElementById('runStatus');
+
+				function status(text, tone) {
+					statusBadge.className = 'badge text-bg-' + tone;
+					statusBadge.innerText = text;
+				}
+
+				// Instantiating the module twice at once would interleave output,
+				// so the buttons are held while a program is in flight.
+				let running = false;
+
+				async function runAndReport() {
+					if (running) return null;
+
+					running = true;
+					window.runButton.disabled = true;
+					window.checkButton.disabled = true;
+					status('running', 'warning');
+
+					try {
+						return await runProgram();
+					} finally {
+						running = false;
+						window.runButton.disabled = false;
+						window.checkButton.disabled = current === null;
+						status('ready', 'success');
+					}
+				}
+
+				window.runButton.addEventListener('click', () => {
+					window.verdict.className = 'd-none';
+					runAndReport();
+				});
+
+				window.input.addEventListener('keydown', function(e) {
+					if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+						e.preventDefault();
+						window.runButton.click();
+					}
+				});
+
+				// A share link holds either a single program, as it always did,
+				// or a JSON object of file name to source.
+				const shared = urlParams.get('share');
+				if (shared) {
+					let decoded = '';
+					try {
+						decoded = atob(shared);
+					} catch (e) {
+						decoded = '';
+					}
+
+					let parsed = null;
+					if (decoded.startsWith('{')) {
+						try {
+							parsed = JSON.parse(decoded);
+						} catch (e) {
+							parsed = null;
+						}
+					}
+
+					if (parsed && typeof parsed === 'object') {
+						for (const [name, content] of Object.entries(parsed))
+							if (typeof content === 'string') files[name] = content;
+						if (files[ENTRY] === undefined) files[ENTRY] = '';
+					} else if (decoded) {
+						files[ENTRY] = decoded;
+					}
+				}
+
+				window.input.value = files[active];
+
+				// --- tabs ------------------------------------------------------
+				// A file is a tab. main.rl is the entry and cannot be removed,
+				// because that is what Run executes and what an import resolves
+				// against.
+				function renderTabs() {
+					const strip = document.getElementById('tabs');
+					strip.innerHTML = '';
+
+					for (const name of Object.keys(files)) {
+						const item = document.createElement('li');
+						item.className = 'nav-item';
+
+						const tab = document.createElement('button');
+						tab.type = 'button';
+						tab.className = 'nav-link' + (name === active ? ' active' : '');
+						tab.innerText = name;
+						tab.onclick = () => selectFile(name);
+						item.appendChild(tab);
+
+						if (name !== ENTRY) {
+							const remove = document.createElement('button');
+							remove.type = 'button';
+							remove.className = 'btn btn-sm btn-link text-body-secondary py-0 px-1';
+							remove.innerText = '×';
+							remove.title = 'Remove ' + name;
+							remove.onclick = (e) => { e.stopPropagation(); removeFile(name); };
+							item.appendChild(remove);
+						}
+
+						strip.appendChild(item);
+					}
+
+					const add = document.createElement('li');
+					add.className = 'nav-item';
+					const addTab = document.createElement('button');
+					addTab.type = 'button';
+					addTab.className = 'nav-link text-body-secondary';
+					addTab.innerText = '+';
+					addTab.title = 'Add a file';
+					addTab.onclick = addFile;
+					add.appendChild(addTab);
+					strip.appendChild(add);
+				}
+
+				function selectFile(name) {
+					syncEditor();
+					active = name;
+					window.input.value = files[name];
+					renderTabs();
+					window.input.focus();
+				}
+
+				function addFile() {
+					syncEditor();
+
+					const name = prompt('File name', 'util.rl');
+					if (!name) return;
+
+					// A module is found by name, so the name has to be one an
+					// import can spell, and it has to end in .rl for the search
+					// path to find it.
+					const clean = name.trim();
+					if (!/^[A-Za-z_][\w-]*\.rl$/.test(clean)) {
+						alert('A file name looks like util.rl: a letter or underscore, then letters, digits, - or _, then .rl');
+						return;
+					}
+					if (files[clean] !== undefined) {
+						selectFile(clean);
+						return;
+					}
+
+					const module = clean.replace(/\.rl$/, '');
+					files[clean] = 'export def hello()\n  return "from ' + module + '"\nend\n';
+					selectFile(clean);
+				}
+
+				function removeFile(name) {
+					if (name === ENTRY) return;
+
+					delete files[name];
+					if (active === name) {
+						active = ENTRY;
+						window.input.value = files[ENTRY];
+					}
+					renderTabs();
+				}
+
+				// Exercises are optional: without the bundle the playground is
+				// exactly what it was.
+				let current = null;
+				let exercises = [];
+				try {
+					exercises = await fetch('exercises.json').then(r => r.ok ? r.json() : []);
+				} catch (e) {
+					exercises = [];
+				}
+
+				if (exercises.length) {
+					let topic = null;
+					let group = null;
+
+					for (const exercise of exercises) {
+						if (exercise.topic !== topic) {
+							topic = exercise.topic;
+							group = document.createElement('optgroup');
+							group.label = topic.replace(/^\d+_/, '');
+							window.exerciseSelect.appendChild(group);
+						}
+
+						const option = document.createElement('option');
+						option.value = exercise.id;
+						option.text = exercise.name.replace(/^\d+_/, '');
+						group.appendChild(option);
+					}
+
+					function load(id) {
+						current = exercises.find(e => e.id === id) || null;
+						window.verdict.className = 'd-none';
+						window.checkButton.disabled = current === null;
+
+						if (current) {
+							for (const name of Object.keys(files))
+								if (name !== ENTRY) delete files[name];
+
+							active = ENTRY;
+							files[ENTRY] = current.task;
+							window.input.value = current.task;
+							renderTabs();
+							window.task.innerText = current.id;
+							window.task.className = 'text-body-secondary small';
+						} else {
+							window.task.className = 'text-body-secondary small d-none';
+						}
+					}
+
+					window.exerciseSelect.addEventListener('change', function() {
+						load(this.value);
+						urlParams.set('exercise', this.value);
+						urlParams.delete('share');
+						history.replaceState(null, '', this.value ? '?' + urlParams : location.pathname);
 					});
-        })
-				window.input.placeholder = 'Ready!';
+
+					window.checkButton.addEventListener('click', async () => {
+						if (!current) return;
+
+						const printed = stripFinalValue(await runAndReport() || '');
+
+						if (printed === current.expected) {
+							verdict('Solved ✓', 'success');
+							return;
+						}
+
+						verdict('Not yet. Expected:\n' + current.expected, 'warning');
+					});
+
+					// A deep link wins over a share link, so a lesson can point
+					// straight at an exercise.
+					const wanted = urlParams.get('exercise');
+					if (wanted && exercises.some(e => e.id === wanted)) {
+						window.exerciseSelect.value = wanted;
+						load(wanted);
+					}
+				}
+
+				renderTabs();
+				window.input.placeholder = 'puts("Hello, RocketLang")';
 				window.input.disabled = false;
+				status('ready', 'success');
 			});
 		})();
 	</script>
