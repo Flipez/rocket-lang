@@ -82,5 +82,89 @@
     "name": "03_callbacks",
     "task": "// A callback is a function literal: def(x) ... end. A function returns its\n// last expression, so no return is needed.\n//\n// Make this print:\n//\n//   [2, 4, 6, 8]\n//   [2, 4]\n//   10\n\nnumbers = [1, 2, 3, 4]\n\nputs(numbers.map(def(x) x * 2 end))\n// TODO: print only the even numbers, using select\n// TODO: print the total, using reduce with a starting value of 0\n",
     "expected": "[2, 4, 6, 8]\n[2, 4]\n10\n"
+  },
+  {
+    "id": "05_hashes/01_basics",
+    "topic": "05_hashes",
+    "name": "01_basics",
+    "task": "// A hash maps keys to values. Any hashable value works as a key, not just\n// strings -- integers, floats, booleans, arrays and hashes all do.\n//\n// Make this print:\n//\n//   1\n//   true\n//   0\n//\n// The last line is what get() answers when the key is not there: the default\n// you pass it.\n\nh = {\"a\": 1, 2: true}\n\nputs(h[\"a\"])\nputs(h[2])\n// TODO: look up the missing key \"z\" with get, defaulting to 0\n",
+    "expected": "1\ntrue\n0\n"
+  },
+  {
+    "id": "05_hashes/02_order",
+    "topic": "05_hashes",
+    "name": "02_order",
+    "task": "// The order of a hash is not defined. keys() can answer in a different order\n// on every run, so anything that depends on the order has to sort.\n//\n// Make this print:\n//\n//   2\n//   [\"a\", \"b\"]\n//\n// The second line has to be the same on every run, so sort it.\n\nh = {\"a\": 1, \"b\": 2}\n\nputs(h.size())\n// TODO: print the keys in an order that does not change between runs\n",
+    "expected": "2\n[\"a\", \"b\"]\n"
+  },
+  {
+    "id": "05_hashes/03_callbacks",
+    "topic": "05_hashes",
+    "name": "03_callbacks",
+    "task": "// A hash takes callbacks too. select and reject receive the key and the value;\n// transform_values receives only the value.\n//\n// Make this print:\n//\n//   1\n//   20\n//\n// The first line is how many entries have a value above 1. The second is the\n// value under \"a\" after multiplying every value by 10.\n\nh = {\"a\": 2}\nh[\"b\"] = 1\n\n// TODO: count the entries whose value is greater than 1\n// TODO: multiply every value by 10, then read \"a\" back\n",
+    "expected": "1\n20\n"
+  },
+  {
+    "id": "06_control_flow/01_if",
+    "topic": "06_control_flow",
+    "name": "01_if",
+    "task": "// if takes elif and else. There is no `unless` and no `case`.\n//\n// Only false and nil are false, so 0 and \"\" are true. That catches people out.\n//\n// Make this print:\n//\n//   big\n//   zero is truthy\n\nn = 10\n\nif n \u003e 100\n  puts(\"huge\")\nelif n \u003e 5\n  // TODO: print \"big\"\nelse\n  puts(\"small\")\nend\n\nif 0\n  puts(\"zero is truthy\")\nelse\n  puts(\"zero is falsy\")\nend\n",
+    "expected": "big\nzero is truthy\n"
+  },
+  {
+    "id": "06_control_flow/02_loops",
+    "topic": "06_control_flow",
+    "name": "02_loops",
+    "task": "// foreach walks an array, and with two names it gives the index first and the\n// value second.\n//\n// Make this print:\n//\n//   0:a\n//   1:b\n//   3\n\nletters = [\"a\", \"b\"]\n\n// TODO: print each index and letter joined by a colon, like 0:a\n\ncount = 0\nwhile count \u003c 3\n  count = count + 1\nend\nputs(count)\n",
+    "expected": "0:a\n1:b\n3\n"
+  },
+  {
+    "id": "06_control_flow/03_break_next",
+    "topic": "06_control_flow",
+    "name": "03_break_next",
+    "task": "// break leaves a loop, next skips to the following turn. Both words work in a\n// foreach, in a while, and inside a callback given to each, map or select.\n//\n// Make this print:\n//\n//   1\n//   2\n//   1\n//   3\n\nnumbers = [1, 2, 3, 4]\n\n// break inside a callback ends the walk, so this prints 1 then 2.\nnumbers.each(def(n)\n  if n == 3\n    break\n  end\n  puts(n)\nend)\n\n// Skip the 2 and stop before the 4, so this prints 1 then 3.\nforeach n in numbers\n  // TODO: skip when n is 2\n  // TODO: stop when n is 4\n  puts(n)\nend\n",
+    "expected": "1\n2\n1\n3\n"
+  },
+  {
+    "id": "07_ranges/01_rocket",
+    "topic": "07_ranges",
+    "name": "01_rocket",
+    "task": "// A range is written with a rocket. -\u003e stops before the end, =\u003e includes it.\n//\n//   foreach i in 0 -\u003e 3     0 1 2\n//   foreach i in 0 =\u003e 3     0 1 2 3\n//\n// Make this print 1, 2, 3, then 5, each on its own line.\n\nforeach i in 1 -\u003e 4\n  puts(i)\nend\n\n// TODO: print just 5, using a range that includes its end\n",
+    "expected": "1\n2\n3\n5\n"
+  },
+  {
+    "id": "07_ranges/02_stepping",
+    "topic": "07_ranges",
+    "name": "02_stepping",
+    "task": "// ^ sets the step, which defaults to 1.\n//\n//   foreach i in 0 -\u003e 6 ^ 2     0 2 4\n//\n// Make this print:\n//\n//   0\n//   3\n//   6\n\n// TODO: count from 0 up to and including 6, in steps of 3\n",
+    "expected": "0\n3\n6\n"
+  },
+  {
+    "id": "07_ranges/03_reverse",
+    "topic": "07_ranges",
+    "name": "03_reverse",
+    "task": "// A range can run downwards: put the larger number first.\n//\n// Make this print:\n//\n//   3\n//   2\n//   1\n//   go\n\n// TODO: count down from 3 to 1\nputs(\"go\")\n",
+    "expected": "3\n2\n1\ngo\n"
+  },
+  {
+    "id": "08_functions/01_basics",
+    "topic": "08_functions",
+    "name": "01_basics",
+    "task": "// def defines a function. It answers with its last expression, so `return` is\n// optional -- both of these give the same thing.\n//\n// Make this print:\n//\n//   6\n//   9\n\ndef double(x)\n  return x * 2\nend\n\ndef triple(x)\n  x * 3\nend\n\nputs(double(3))\n// TODO: call triple with 3\n",
+    "expected": "6\n9\n"
+  },
+  {
+    "id": "08_functions/02_first_class",
+    "topic": "08_functions",
+    "name": "02_first_class",
+    "task": "// A function is a value. It can be stored in a variable, put in an array, and\n// passed to a method -- which is what a callback is.\n//\n// puts is a value too, so it can be a callback.\n//\n// Make this print:\n//\n//   1\n//   2\n//   84\n\nnumbers = [1, 2]\n\n// TODO: print each element by giving each() the puts builtin\n\nquadruple = def(x) x * 4 end\nputs(quadruple(21))\n",
+    "expected": "1\n2\n84\n"
+  },
+  {
+    "id": "08_functions/03_closures",
+    "topic": "08_functions",
+    "name": "03_closures",
+    "task": "// A function remembers where it was written, so it can see the variables that\n// were in scope there. That is enough to build an object: a hash of functions\n// closing over a constructor's locals, with private state.\n//\n// A value stored in a hash under a name can be called with a dot, so\n// account.deposit(50) works.\n//\n// Make this print:\n//\n//   150\n//   robert: 150\n//   someone: 0\n\ndef new_account(owner, balance)\n  return {\n    \"deposit\":  def(n) balance = balance + n return balance end,\n    \"describe\": def() return owner + \": \" + balance.to_s() end\n  }\nend\n\na = new_account(\"robert\", 100)\nb = new_account(\"someone\", 0)\n\n// TODO: deposit 50 into a and print what it answers\n// TODO: print a.describe() and then b.describe()\n",
+    "expected": "150\nrobert: 150\nsomeone: 0\n"
   }
 ]

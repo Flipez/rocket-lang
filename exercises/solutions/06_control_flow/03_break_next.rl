@@ -1,0 +1,18 @@
+numbers = [1, 2, 3, 4]
+
+numbers.each(def(n)
+  if n == 3
+    break
+  end
+  puts(n)
+end)
+
+foreach n in numbers
+  if n == 2
+    next
+  end
+  if n == 4
+    break
+  end
+  puts(n)
+end

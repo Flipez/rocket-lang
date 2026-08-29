@@ -56,10 +56,16 @@ playground, so all three agree on what "the output" is.
 | 02 | strings | methods, **the `!` convention**, `?` predicates |
 | 03 | numbers | conversions answering `nil`, rounding, **integer bases** |
 | 04 | arrays | indexing and slices, pure vs `!`, `map`/`select`/`reduce` |
+| 05 | hashes | any hashable key, `get`, the undefined order, callbacks |
+| 06 | control flow | `if`/`elif`/`else`, `while`, `foreach`, `break` and `next` |
+| 07 | ranges | the rocket operators `->`, `=>` and `^` |
+| 08 | functions | implicit return, functions as values, closures as objects |
 
-`03_numbers/03_bases` is the one worth reading even if you skip the rest: an
+Two are worth reading even if you skip the rest. `03_numbers/03_bases`: an
 integer remembers the base it was written in, and two integers of different
-bases refuse to be combined.
+bases refuse to be combined. `08_functions/03_closures`: there are no classes,
+but a hash of functions closing over a constructor's locals is an object, and a
+value stored under a name can be called with a dot.
 
 ## Rough edges to know about
 
@@ -73,3 +79,7 @@ avoid them, but you will meet them eventually:
 - non-ASCII strings are indexed by byte, so `"тест".size()` is `8`
 - a line starting with `[` continues the previous expression, so put a blank
   line or a statement between them
+
+One thing to know if you write your own exercise: a program prints its own final
+value, and only a trailing `nil` is dropped. So the last statement should be a
+`puts`, not something like `array.each(...)`, which answers with the array.
