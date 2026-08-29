@@ -70,3 +70,39 @@ func TestFloatInspect(t *testing.T) {
 		t.Errorf("float inspect does not match value")
 	}
 }
+
+// TestFloatRubyMethods covers the methods added to close the gap with Ruby's
+// Float. Rounding keeps returning a FLOAT rather than an INTEGER, which is this
+// language's rule that a numeric method answers with the type it was given.
+func TestFloatRubyMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`1.567.round(2)`, 1.57},
+		{`1.561.ceil(2)`, 1.57},
+		{`1.567.floor(2)`, 1.56},
+		{`1.567.truncate(2)`, 1.56},
+		{`555.5.round(0 - 1)`, 560.0},
+		{`1.567.truncate()`, 1.0},
+		{`(0.0 - 1.5).truncate()`, -1.0},
+		{`(0.0 - 1.5).floor()`, -2.0},
+		{`(0.0 - 1.5).ceil()`, -1.0},
+		// Still a FLOAT, not an INTEGER as in Ruby.
+		{`1.5.round().type()`, "FLOAT"},
+		{`1.5.truncate().type()`, "FLOAT"},
+
+		{`0.0.zero?()`, true},
+		{`1.5.zero?()`, false},
+		{`1.5.positive?()`, true},
+		{`(0.0 - 1.5).negative?()`, true},
+		{`0.0.positive?()`, false},
+		{`1.5.nan?()`, false},
+		{`1.5.finite?()`, true},
+		// 1, -1 or nil rather than a boolean, so the direction survives.
+		{`1.5.infinite?()`, nil},
+
+		{`11.0.divmod(4.0)`, "[2.0, 3.0]"},
+		{`11.0.divmod(0.0)`, "division by zero not allowed"},
+		// Truncated, so it agrees with Integer#divmod and with /.
+		{`11.0.divmod(0.0 - 4.0)`, "[-2.0, 3.0]"},
+	}
+	testInput(t, tests)
+}

@@ -42,7 +42,218 @@ Returns the base of the integer.
 
 
 <CodeBlockSimple input='"0b1010".to_i().base()
-' output='2' />
+' output='2
+' />
+
+
+### bit_length()
+> Returns `INTEGER`
+
+Returns how many bits are needed to represent the number, not counting the sign. A negative number needs as many as its complement, so `-256` is 8 bits just like `255`.
+
+
+<CodeBlockSimple input='255.bit_length()
+256.bit_length()
+0.bit_length()
+' output='8
+9
+0
+' />
+
+
+### ceil(INTEGER)
+> Returns `INTEGER`
+
+Rounds up to a multiple of ten, given a negative digit count. An integer is already exact, so no argument, or a count of zero or more, returns it unchanged.
+
+
+<CodeBlockSimple input='555.ceil(0 - 1)
+555.ceil(0 - 2)
+555.ceil()
+' output='560
+600
+555
+' />
+
+
+### chr()
+> Returns `STRING|ERROR`
+
+Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error.
+
+
+<CodeBlockSimple input='65.chr()
+' output='"A"
+' />
+
+
+### digits(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns the digits of the number, least significant first, in base 10 or in a given base. A negative number has no digits and gives an error.
+
+
+<CodeBlockSimple input='12345.digits()
+12345.digits(7)
+0.digits()
+' output='[5, 4, 3, 2, 1]
+[4, 6, 6, 0, 5]
+[0]
+' />
+
+
+### divmod(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns the quotient and the remainder as a two-element array. Both follow the `/` and `%` operators, which truncate toward zero. Ruby floors instead, so it answers `[-3, -1]` for the second example below.
+
+
+<CodeBlockSimple input='11.divmod(4)
+11.divmod(0 - 4)
+' output='[2, 3]
+[-2, 3]
+' />
+
+
+### even?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number divides by two exactly.
+
+
+<CodeBlockSimple input='4.even?()
+5.even?()
+' output='true
+false
+' />
+
+
+### floor(INTEGER)
+> Returns `INTEGER`
+
+Rounds down to a multiple of ten, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.
+
+
+<CodeBlockSimple input='555.floor(0 - 1)
+555.floor(0 - 2)
+' output='550
+500
+' />
+
+
+### gcd(INTEGER)
+> Returns `INTEGER|ERROR`
+
+Returns the greatest common divisor of the two numbers, always positive. Like the infix operators, it refuses two integers of different bases.
+
+
+<CodeBlockSimple input='36.gcd(60)
+3.gcd(0 - 7)
+' output='12
+1
+' />
+
+
+### lcm(INTEGER)
+> Returns `INTEGER|ERROR`
+
+Returns the least common multiple of the two numbers, always positive.
+
+
+<CodeBlockSimple input='36.lcm(60)
+3.lcm(0 - 7)
+' output='180
+21
+' />
+
+
+### negative?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is less than zero.
+
+
+<CodeBlockSimple input='(0 - 1).negative?()
+0.negative?()
+' output='true
+false
+' />
+
+
+### odd?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number does not divide by two exactly.
+
+
+<CodeBlockSimple input='5.odd?()
+4.odd?()
+' output='true
+false
+' />
+
+
+### positive?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is greater than zero.
+
+
+<CodeBlockSimple input='1.positive?()
+0.positive?()
+' output='true
+false
+' />
+
+
+### pow(INTEGER, INTEGER)
+> Returns `INTEGER|ERROR`
+
+Returns the number raised to the given power. A second argument takes the result modulo it, which keeps large exponents workable. A negative exponent is an error, since the result would not be an integer.
+
+
+<CodeBlockSimple input='2.pow(3)
+2.pow(3, 5)
+' output='8
+3
+' />
+
+
+### pred()
+> Returns `INTEGER`
+
+Returns the previous integer, keeping the base of the receiver.
+
+
+<CodeBlockSimple input='1.pred()
+0.pred()
+' output='0
+-1
+' />
+
+
+### round(INTEGER)
+> Returns `INTEGER`
+
+Rounds to the nearest multiple of ten, halves away from zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.
+
+
+<CodeBlockSimple input='555.round(0 - 1)
+554.round(0 - 1)
+' output='560
+550
+' />
+
+
+### succ()
+> Returns `INTEGER`
+
+Returns the next integer, keeping the base of the receiver.
+
+
+<CodeBlockSimple input='1.succ()
+' output='2
+' />
 
 
 ### to_base(INTEGER)
@@ -56,19 +267,62 @@ Converts the integer into a integer with the given base
 ' />
 
 
+### truncate(INTEGER)
+> Returns `INTEGER`
+
+Drops the last digits, rounding toward zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.
+
+
+<CodeBlockSimple input='555.truncate(0 - 1)
+(0 - 555).truncate(0 - 1)
+' output='550
+-550
+' />
+
+
+### zero?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is zero.
+
+
+<CodeBlockSimple input='0.zero?()
+1.zero?()
+' output='true
+false
+' />
+
+
 
 ## Generic Literal Methods
 
 ### methods()
 > Returns `ARRAY`
 
-Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods().sort()
+<CodeBlockSimple input='1.0.methods().include?("round")
 true.methods()
-' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+' output='true
 []
+' />
+
+
+### nil?()
+> Returns `BOOLEAN`
+
+Returns `true` only for `nil`. Reads better than comparing against `nil` at the end of a chain, and every type answers it.
+
+
+<CodeBlockSimple input='nil.nil?()
+1.nil?()
+"".nil?()
+[].first().nil?()
+' output='true
+false
+false
+true
 ' />
 
 
@@ -164,7 +418,7 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
+Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()

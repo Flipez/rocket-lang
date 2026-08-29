@@ -3,6 +3,7 @@ package object
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/flipez/rocket-lang/ast"
@@ -278,6 +279,20 @@ func init() {
 				return NewErrorFormat("%s is not serializable", o.Type())
 			},
 		},
+		"nil?": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				if o.Type() == NIL_OBJ {
+					return TRUE
+				}
+
+				return FALSE
+			},
+		},
 		"methods": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -286,12 +301,19 @@ func init() {
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
-				result := make([]Object, len(oms))
-				var i int
+				names := make([]string, 0, len(oms))
 				for name := range oms {
-					result[i] = NewString(name)
-					i++
+					names = append(names, name)
 				}
+				// Sorted, because reading it straight out of the map made the
+				// order differ between runs of the same program.
+				sort.Strings(names)
+
+				result := make([]Object, len(names))
+				for i, name := range names {
+					result[i] = NewString(name)
+				}
+
 				return NewArray(result)
 			},
 		},
@@ -303,12 +325,18 @@ func init() {
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				oms := objectMethods[o.Type()]
-				result := make([]string, len(oms))
-				var i int
-				for name, objectMethod := range oms {
-					result[i] = fmt.Sprintf("\t%s", objectMethod.Layout.Usage(name))
-					i++
+				names := make([]string, 0, len(oms))
+				for name := range oms {
+					names = append(names, name)
 				}
+				// Sorted for the same reason as methods() above.
+				sort.Strings(names)
+
+				result := make([]string, len(names))
+				for i, name := range names {
+					result[i] = fmt.Sprintf("\t%s", oms[name].Layout.Usage(name))
+				}
+
 				return NewString(fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n")))
 			},
 		},

@@ -9,48 +9,92 @@ methods:
       3.14
       3.14
   ceil:
-    description: "Rounds up to the nearest whole number, as a float."
+    description: "Returns the smallest float that is not less than the number. An optional digit count says how many decimal places to keep; a negative count rounds to a power of ten. The result stays a `FLOAT` -- in Ruby it would be an `INTEGER`."
     input: |
-      3.14.ceil()
-      (0.0 - 3.7).ceil()
+      1.5.ceil()
+      1.561.ceil(2)
+      555.5.ceil(0 - 1)
     output: |
-      4.0
-      -3.0
+      2.0
+      1.57
+      560.0
+  divmod:
+    description: "Returns the quotient and the remainder as a two-element array. Truncated toward zero, so it agrees with `Integer#divmod` and with `/`."
+    input: |
+      11.0.divmod(4.0)
+      11.0.divmod(0.0 - 4.0)
+    output: |
+      [2.0, 3.0]
+      [-2.0, 3.0]
+  finite?:
+    description: "Returns `true` when the number is neither infinite nor not-a-number."
+    input: |
+      1.5.finite?()
+    output: |
+      true
   floor:
-    description: "Rounds down to the nearest whole number, as a float."
+    description: "Returns the largest float that is not greater than the number. Takes the same optional digit count as `ceil`."
     input: |
-      3.14.floor()
-      (0.0 - 3.2).floor()
+      1.5.floor()
+      1.567.floor(2)
+      (0.0 - 1.5).floor()
     output: |
-      3.0
-      -4.0
+      1.0
+      1.56
+      -2.0
+  infinite?:
+    description: "Returns `1` for positive infinity, `-1` for negative infinity and `nil` otherwise, so the direction is not lost. Use `finite?` for the plain yes-or-no question."
+    input: |
+      1.5.infinite?()
+    output: |
+      nil
+  nan?:
+    description: "Returns `true` when the number is not a number."
+    input: |
+      1.5.nan?()
+    output: |
+      false
+  negative?:
+    description: "Returns `true` when the number is less than zero."
+    input: |
+      (0.0 - 1.5).negative?()
+      0.0.negative?()
+    output: |
+      true
+      false
+  positive?:
+    description: "Returns `true` when the number is greater than zero."
+    input: |
+      1.5.positive?()
+      0.0.positive?()
+    output: |
+      true
+      false
   round:
-    description: "Rounds to the nearest whole number, as a float. Halves round away from zero. The result stays a float, matching `Math.round`; chain `to_i` for an integer."
+    description: "Returns the number rounded to the nearest value, halves away from zero. Takes the same optional digit count as `ceil`."
     input: |
-      3.14.round()
-      2.5.round()
-      (0.0 - 2.5).round()
-      3.7.round().to_i()
+      1.5.round()
+      1.567.round(2)
+      555.5.round(0 - 1)
     output: |
-      3.0
-      3.0
-      -3.0
-      4
-  to_f:
-    description: "Returns self"
+      2.0
+      1.57
+      560.0
+  truncate:
+    description: "Returns the number with its fractional part dropped, rounding toward zero. Unlike `floor` this moves a negative number up. Takes the same optional digit count as `ceil`."
     input: |
-      123.456.to_f()
+      1.567.truncate()
+      (0.0 - 1.5).truncate()
+      1.567.truncate(2)
     output: |
-      123.456
-  to_s:
-    description: "Returns a string representation of the float."
+      1.0
+      -1.0
+      1.56
+  zero?:
+    description: "Returns `true` when the number is zero."
     input: |
-      123.456.to_s()
+      0.0.zero?()
+      1.5.zero?()
     output: |
-      "123.456"
-  to_i:
-    description: "Converts the float into an integer."
-    input: |
-      123.456.to_i()
-    output: |
-      123
+      true
+      false

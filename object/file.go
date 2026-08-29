@@ -211,6 +211,10 @@ func init() {
 	}
 }
 
+func (f *File) ToStringObj() *String {
+	return NewString(f.Inspect())
+}
+
 func (f *File) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(f, method, env, args)
 }

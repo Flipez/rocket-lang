@@ -20,46 +20,148 @@ Returns the absolute value, as a float.
 ' />
 
 
-### ceil()
+### ceil(INTEGER)
 > Returns `FLOAT`
 
-Rounds up to the nearest whole number, as a float.
+Returns the smallest float that is not less than the number. An optional digit count says how many decimal places to keep; a negative count rounds to a power of ten. The result stays a `FLOAT` -- in Ruby it would be an `INTEGER`.
 
 
-<CodeBlockSimple input='3.14.ceil()
-(0.0 - 3.7).ceil()
-' output='4.0
--3.0
+<CodeBlockSimple input='1.5.ceil()
+1.561.ceil(2)
+555.5.ceil(0 - 1)
+' output='2.0
+1.57
+560.0
 ' />
 
 
-### floor()
-> Returns `FLOAT`
+### divmod(FLOAT)
+> Returns `ARRAY|ERROR`
 
-Rounds down to the nearest whole number, as a float.
+Returns the quotient and the remainder as a two-element array. Truncated toward zero, so it agrees with `Integer#divmod` and with `/`.
 
 
-<CodeBlockSimple input='3.14.floor()
-(0.0 - 3.2).floor()
-' output='3.0
--4.0
+<CodeBlockSimple input='11.0.divmod(4.0)
+11.0.divmod(0.0 - 4.0)
+' output='[2.0, 3.0]
+[-2.0, 3.0]
 ' />
 
 
-### round()
+### finite?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is neither infinite nor not-a-number.
+
+
+<CodeBlockSimple input='1.5.finite?()
+' output='true
+' />
+
+
+### floor(INTEGER)
 > Returns `FLOAT`
 
-Rounds to the nearest whole number, as a float. Halves round away from zero. The result stays a float, matching `Math.round`; chain `to_i` for an integer.
+Returns the largest float that is not greater than the number. Takes the same optional digit count as `ceil`.
 
 
-<CodeBlockSimple input='3.14.round()
-2.5.round()
-(0.0 - 2.5).round()
-3.7.round().to_i()
-' output='3.0
-3.0
--3.0
-4
+<CodeBlockSimple input='1.5.floor()
+1.567.floor(2)
+(0.0 - 1.5).floor()
+' output='1.0
+1.56
+-2.0
+' />
+
+
+### infinite?()
+> Returns `INTEGER|NIL`
+
+Returns `1` for positive infinity, `-1` for negative infinity and `nil` otherwise, so the direction is not lost. Use `finite?` for the plain yes-or-no question.
+
+
+<CodeBlockSimple input='1.5.infinite?()
+' output='nil
+' />
+
+
+### nan?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is not a number.
+
+
+<CodeBlockSimple input='1.5.nan?()
+' output='false
+' />
+
+
+### negative?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is less than zero.
+
+
+<CodeBlockSimple input='(0.0 - 1.5).negative?()
+0.0.negative?()
+' output='true
+false
+' />
+
+
+### positive?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is greater than zero.
+
+
+<CodeBlockSimple input='1.5.positive?()
+0.0.positive?()
+' output='true
+false
+' />
+
+
+### round(INTEGER)
+> Returns `FLOAT`
+
+Returns the number rounded to the nearest value, halves away from zero. Takes the same optional digit count as `ceil`.
+
+
+<CodeBlockSimple input='1.5.round()
+1.567.round(2)
+555.5.round(0 - 1)
+' output='2.0
+1.57
+560.0
+' />
+
+
+### truncate(INTEGER)
+> Returns `FLOAT`
+
+Returns the number with its fractional part dropped, rounding toward zero. Unlike `floor` this moves a negative number up. Takes the same optional digit count as `ceil`.
+
+
+<CodeBlockSimple input='1.567.truncate()
+(0.0 - 1.5).truncate()
+1.567.truncate(2)
+' output='1.0
+-1.0
+1.56
+' />
+
+
+### zero?()
+> Returns `BOOLEAN`
+
+Returns `true` when the number is zero.
+
+
+<CodeBlockSimple input='0.0.zero?()
+1.5.zero?()
+' output='true
+false
 ' />
 
 
@@ -69,13 +171,30 @@ Rounds to the nearest whole number, as a float. Halves round away from zero. The
 ### methods()
 > Returns `ARRAY`
 
-Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods().sort()
+<CodeBlockSimple input='1.0.methods().include?("round")
 true.methods()
-' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+' output='true
 []
+' />
+
+
+### nil?()
+> Returns `BOOLEAN`
+
+Returns `true` only for `nil`. Reads better than comparing against `nil` at the end of a chain, and every type answers it.
+
+
+<CodeBlockSimple input='nil.nil?()
+1.nil?()
+"".nil?()
+[].first().nil?()
+' output='true
+false
+false
+true
 ' />
 
 
@@ -171,7 +290,7 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
+Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()

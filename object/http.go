@@ -21,6 +21,10 @@ type HTTP struct {
 func NewHTTP() *HTTP             { return &HTTP{mux: http.NewServeMux()} }
 func (h *HTTP) Type() ObjectType { return HTTP_OBJ }
 func (h *HTTP) Inspect() string  { return "HTTP" }
+func (h *HTTP) ToStringObj() *String {
+	return NewString(h.Inspect())
+}
+
 func (h *HTTP) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(h, method, env, args)
 }

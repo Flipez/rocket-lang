@@ -37,35 +37,113 @@ func init() {
 				return NewFloat(math.Abs(o.(*Float).Value))
 			},
 		},
-		"ceil": ObjectMethod{
+		"divmod": ObjectMethod{
 			Layout: MethodLayout{
-				ReturnPattern: Args(
+				ArgPattern: Args(
 					Arg(FLOAT_OBJ),
 				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
 			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return NewFloat(math.Ceil(o.(*Float).Value))
+			method: func(o Object, args []Object, _ Environment) Object {
+				value := o.(*Float).Value
+				divisor := args[0].(*Float).Value
+
+				if divisor == 0 {
+					return NewError("division by zero not allowed")
+				}
+
+				// Truncated, so that this agrees with Integer#divmod and with
+				// the / operator. Ruby floors instead.
+				quotient := math.Trunc(value / divisor)
+
+				return NewArrayWithObjects(
+					NewFloat(quotient),
+					NewFloat(value-quotient*divisor),
+				)
 			},
 		},
-		"floor": ObjectMethod{
+		"infinite?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(FLOAT_OBJ),
+					Arg(INTEGER_OBJ, NIL_OBJ),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
-				return NewFloat(math.Floor(o.(*Float).Value))
+				// 1, -1 or nil rather than a boolean, so the direction is not
+				// lost. finite? is the plain yes-or-no question.
+				switch {
+				case math.IsInf(o.(*Float).Value, 1):
+					return NewInteger(1)
+				case math.IsInf(o.(*Float).Value, -1):
+					return NewInteger(-1)
+				default:
+					return NIL
+				}
 			},
 		},
-		"round": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(FLOAT_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return NewFloat(math.Round(o.(*Float).Value))
-			},
+	}
+
+	// Rounding a float takes an optional number of decimal places. A negative
+	// count rounds to a power of ten, so 555.5.round(-1) is 560.0. The result
+	// stays a FLOAT: a numeric method returns the type it was given, which is
+	// why this differs from Ruby, where 1.5.round is an Integer.
+	floatRounding("ceil", math.Ceil)
+	floatRounding("floor", math.Floor)
+	floatRounding("round", math.Round)
+	floatRounding("truncate", math.Trunc)
+
+	floatPredicate("zero?", func(value float64) bool { return value == 0 })
+	floatPredicate("positive?", func(value float64) bool { return value > 0 })
+	floatPredicate("negative?", func(value float64) bool { return value < 0 })
+	floatPredicate("nan?", math.IsNaN)
+	floatPredicate("finite?", func(value float64) bool {
+		return !math.IsInf(value, 0) && !math.IsNaN(value)
+	})
+}
+
+// floatPredicate registers a method returning a BOOLEAN about the value.
+func floatPredicate(name string, test func(value float64) bool) {
+	objectMethods[FLOAT_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ReturnPattern: Args(Arg(BOOLEAN_OBJ)),
+		},
+		method: func(o Object, _ []Object, _ Environment) Object {
+			if test(o.(*Float).Value) {
+				return TRUE
+			}
+
+			return FALSE
+		},
+	}
+}
+
+// floatRounding registers ceil, floor, round or truncate, each taking an
+// optional number of decimal places.
+func floatRounding(name string, apply func(float64) float64) {
+	objectMethods[FLOAT_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ArgPattern:    Args(OptArg(INTEGER_OBJ)),
+			ReturnPattern: Args(Arg(FLOAT_OBJ)),
+		},
+		method: func(o Object, args []Object, _ Environment) Object {
+			value := o.(*Float).Value
+
+			if len(args) == 0 {
+				return NewFloat(apply(value))
+			}
+
+			// Scaling by a power of ten and back is what gives the digit
+			// count its meaning. Guard the non-finite cases, where scaling
+			// produces NaN instead of leaving the value alone.
+			if math.IsInf(value, 0) || math.IsNaN(value) {
+				return NewFloat(value)
+			}
+
+			scale := math.Pow(10, float64(args[0].(*Integer).Value))
+
+			return NewFloat(apply(value*scale) / scale)
 		},
 	}
 }

@@ -1,5 +1,4 @@
 title: "Array"
-description:
 example: |
   a = [1, 2, 3, 4, 5]
   puts(a[2])
@@ -18,30 +17,124 @@ example: |
   [2, 3]
   [1, 2, 8, 9, 5]
 methods:
-  reverse:
-    description: "Reverses the elements of the array"
+  clear:
+    description: "Removes every element and returns the array, so calls can be chained."
     input: |
-      ["a", "b", 1, 2].reverse()
+      a = [1, 2]
+      a.clear()
+      a
     output: |
-      [2, 1, "b", "a"]
-  size:
-    description: "Returns the amount of elements in the array."
+      [1, 2]
+      []
+      []
+  compact:
+    description: "Returns a copy with every `nil` removed. The array itself is unchanged; use `compact!` to remove them in place."
     input: |
-      ["a", "b", 1, 2].size()
+      a = [1, nil, 2, nil]
+      a.compact()
+      a
+    output: |
+      [1, nil, 2, nil]
+      [1, 2]
+      [1, nil, 2, nil]
+  compact!:
+    description: "Removes every `nil` in place and returns the array, so calls can be chained."
+    input: |
+      a = [1, nil, 2, nil]
+      a.compact!()
+      a
+    output: |
+      [1, nil, 2, nil]
+      [1, 2]
+      [1, 2]
+  concat:
+    description: "Appends every element of the given array and returns the array, so calls can be chained."
+    input: |
+      a = [1]
+      a.concat([2, 3])
+      a
+    output: |
+      [1]
+      [1, 2, 3]
+      [1, 2, 3]
+  count:
+    description: "Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you."
+    input: |
+      [1, 2, 2, 3].count()
+      [1, 2, 2, 3].count(2)
+      [1, 2, 2, 3].count(9)
     output: |
       4
-  sort:
-    description: "Sorts the array if it contains only one type of STRING, INTEGER or FLOAT"
+      2
+      0
+  delete:
+    description: "Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss."
     input: |
-      [3.4, 3.1, 2.0].sort()
+      a = [1, 2, 1]
+      a.delete(1)
+      a
+      a.delete(9)
     output: |
-      [2.0, 3.1, 3.4]
-  uniq:
-    description: "Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable."
+      [1, 2, 1]
+      1
+      [2]
+      nil
+  delete_at:
+    description: "Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array."
     input: |
-      ["a", 1, 1, 2].uniq()
+      a = [1, 2, 3]
+      a.delete_at(1)
+      a
+      a.delete_at(9)
     output: |
-      [1, 2, "a"]
+      [1, 2, 3]
+      2
+      [1, 3]
+      nil
+  drop:
+    description: "Returns everything after the first n elements as a new array. Dropping more than there are gives an empty array."
+    input: |
+      [1, 2, 3].drop(2)
+      [1, 2, 3].drop(9)
+    output: |
+      [3]
+      []
+  empty?:
+    description: "Returns `true` when the array has no elements."
+    input: |
+      [].empty?()
+      [1].empty?()
+    output: |
+      true
+      false
+  first:
+    description: "Returns the first element of the array. Shorthand for `array[0]`"
+    input: |
+      ["a", "b", 1, 2].first()
+    output: |
+      "a"
+  flatten:
+    description: "Returns a copy with nested arrays inlined, all the way down by default or to the given depth. The array itself is unchanged; use `flatten!` to inline in place."
+    input: |
+      a = [1, [2, [3]]]
+      a.flatten()
+      a.flatten(1)
+      a
+    output: |
+      [1, [2, [3]]]
+      [1, 2, 3]
+      [1, 2, [3]]
+      [1, [2, [3]]]
+  flatten!:
+    description: "Inlines nested arrays in place and returns the array, so calls can be chained. Takes the same optional depth as `flatten`."
+    input: |
+      a = [1, [2, [3]]]
+      a.flatten!()
+      a
+    output: |
+      [1, [2, [3]]]
+      [1, 2, 3]
+      [1, 2, 3]
   include?:
     description: "Returns true or false wether the array contains the given element"
     input: |
@@ -56,24 +149,50 @@ methods:
       ["a", "b", 1, 2].index(1)
     output: |
       2
-  first:
-    description: "Returns the first element of the array. Shorthand for `array[0]`"
+  insert:
+    description: "Inserts an element at the given index and returns the array. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`."
     input: |
-      ["a", "b", 1, 2].first()
+      a = [1, 2]
+      a.insert(1, 9)
+      a.insert(0 - 1, 8)
+      a
     output: |
-      "a"
+      [1, 2]
+      [1, 9, 2]
+      [1, 9, 2, 8]
+      [1, 9, 2, 8]
+  join:
+    description: "Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not."
+    input: |
+      [1, 2, 3].join()
+      [1, 2, 3].join("-")
+    output: |
+      "123"
+      "1-2-3"
   last:
     description: "Returns the last element of the array."
     input: |
       ["a", "b", 1, 2].last()
     output: |
       2
-  slices:
-    description: "Returns the elements of the array in slices with the size of the given integer"
+  max:
+    description: "Returns the largest element, or `nil` for an empty array. Takes the same elements as `min`."
     input: |
-      [1,2,3,4,5,6,7,8].slices(3)
+      [3, 1, 2].max()
+      [].max()
     output: |
-      [[1, 2, 3], [4, 5, 6], [7, 8]]
+      3
+      nil
+  min:
+    description: "Returns the smallest element, or `nil` for an empty array. The elements have to be all strings, all integers or all floats, exactly as `sort` requires."
+    input: |
+      [3, 1, 2].min()
+      ["b", "a"].min()
+      [].min()
+    output: |
+      1
+      "a"
+      nil
   pop:
     description: "Removes the last element of the array and returns it."
     input: |
@@ -85,15 +204,125 @@ methods:
       3
       [1, 2]
   push:
-    description: "Adds the given object as last element to the array."
+    description: "Adds the given object as the last element and returns the array, so calls can be chained."
     input: |
-      a = [1,2,3]
-      a.push("a")
+      d = [1,2,3]
+      d.push("a")
+      d
+    output: |
+      [1, 2, 3]
+      [1, 2, 3, "a"]
+      [1, 2, 3, "a"]
+  reverse:
+    description: "Returns a new array with the elements in reverse order. The array itself is unchanged; use `reverse!` to reverse it in place."
+    input: |
+      a = ["a", "b", 1, 2]
+      a.reverse()
+      a
+    output: |
+      ["a", "b", 1, 2]
+      [2, 1, "b", "a"]
+      ["a", "b", 1, 2]
+  reverse!:
+    description: "Reverses the array in place and returns it, so calls can be chained."
+    input: |
+      a = ["a", "b", 1, 2]
+      a.reverse!()
+      a
+    output: |
+      ["a", "b", 1, 2]
+      [2, 1, "b", "a"]
+      [2, 1, "b", "a"]
+  rindex:
+    description: "Returns the index of the last matching element, or `-1` when there is none. The mirror of `index`."
+    input: |
+      [1, 2, 2, 3].rindex(2)
+      [1, 2, 3].rindex(9)
+    output: |
+      2
+      -1
+  rotate:
+    description: "Returns a copy with the first elements moved to the end, one by default. A negative count rotates the other way, and the count wraps. The array itself is unchanged; use `rotate!` to rotate in place."
+    input: |
+      a = [1, 2, 3]
+      a.rotate()
+      a.rotate(2)
+      a.rotate(0 - 1)
       a
     output: |
       [1, 2, 3]
-      nil
-      [1, 2, 3, "a"]
+      [2, 3, 1]
+      [3, 1, 2]
+      [3, 1, 2]
+      [1, 2, 3]
+  rotate!:
+    description: "Rotates the array in place and returns it, so calls can be chained. Takes the same optional count as `rotate`."
+    input: |
+      a = [1, 2, 3]
+      a.rotate!()
+      a
+    output: |
+      [1, 2, 3]
+      [2, 3, 1]
+      [2, 3, 1]
+  shift:
+    description: "Removes the first element and returns it, or `nil` for an empty array. The mirror of `pop`, and like `pop` it changes the array without a `!`, because there is no pure version of taking something out."
+    input: |
+      a = [1, 2, 3]
+      a.shift()
+      a
+    output: |
+      [1, 2, 3]
+      1
+      [2, 3]
+  size:
+    description: "Returns the amount of elements in the array."
+    input: |
+      ["a", "b", 1, 2].size()
+    output: |
+      4
+  slices:
+    description: "Returns the elements of the array in slices with the size of the given integer"
+    input: |
+      [1,2,3,4,5,6,7,8].slices(3)
+    output: |
+      [[1, 2, 3], [4, 5, 6], [7, 8]]
+  sort:
+    description: "Returns a new sorted array. The elements must all be STRING, all INTEGER or all FLOAT, otherwise an error is returned and the array is left untouched. Use `sort!` to sort in place."
+    input: |
+      b = [3.4, 3.1, 2.0]
+      b.sort()
+      b
+    output: |
+      [3.4, 3.1, 2.0]
+      [2.0, 3.1, 3.4]
+      [3.4, 3.1, 2.0]
+  sort!:
+    description: "Sorts the array in place and returns it. A sort that cannot compare its elements returns an error and leaves the array unchanged rather than half-ordered."
+    input: |
+      b = [3.4, 3.1, 2.0]
+      b.sort!()
+      b
+    output: |
+      [3.4, 3.1, 2.0]
+      [2.0, 3.1, 3.4]
+      [2.0, 3.1, 3.4]
+  sum:
+    description: "Adds the elements up. They all have to be numbers."
+    input: |
+      [1, 2, 3].sum()
+      [1.5, 2.5].sum()
+    output: |
+      6
+      3
+  take:
+    description: "Returns the first n elements as a new array. Asking for more than there are gives all of them. The result is a copy, so changing the original does not change it."
+    input: |
+      [1, 2, 3].take(2)
+      [1, 2, 3].take(9)
+    output: |
+      [1, 2]
+      [1, 2, 3]
   to_m:
     description: "Converts a nested array (2D array) to a Matrix object."
     input: |
@@ -104,3 +333,33 @@ methods:
       │ 1.0  2.0 │
       │ 3.0  4.0 │
       └          ┘
+  uniq:
+    description: "Returns a new array with duplicates removed, keeping the order of first appearance. Returns an error if an element is not hashable. Use `uniq!` to deduplicate in place."
+    input: |
+      c = ["a", 1, 1, 2]
+      c.uniq()
+      c
+    output: |
+      ["a", 1, 1, 2]
+      ["a", 1, 2]
+      ["a", 1, 1, 2]
+  uniq!:
+    description: "Removes duplicates from the array in place and returns it, keeping the order of first appearance."
+    input: |
+      c = ["a", 1, 1, 2]
+      c.uniq!()
+      c
+    output: |
+      ["a", 1, 1, 2]
+      ["a", 1, 2]
+      ["a", 1, 2]
+  unshift:
+    description: "Adds an element to the front and returns the array, so calls can be chained. The mirror of `push`."
+    input: |
+      a = [2, 3]
+      a.unshift(1)
+      a
+    output: |
+      [2, 3]
+      [1, 2, 3]
+      [1, 2, 3]

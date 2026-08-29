@@ -15,13 +15,30 @@ It will be returned if something returns nothing (eg. puts or an empty break/nex
 ### methods()
 > Returns `ARRAY`
 
-Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods().sort()
+<CodeBlockSimple input='1.0.methods().include?("round")
 true.methods()
-' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+' output='true
 []
+' />
+
+
+### nil?()
+> Returns `BOOLEAN`
+
+Returns `true` only for `nil`. Reads better than comparing against `nil` at the end of a chain, and every type answers it.
+
+
+<CodeBlockSimple input='nil.nil?()
+1.nil?()
+"".nil?()
+[].first().nil?()
+' output='true
+false
+false
+true
 ' />
 
 
@@ -117,7 +134,7 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
+Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()

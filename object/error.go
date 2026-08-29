@@ -16,6 +16,12 @@ func NewErrorFormat(format string, a ...interface{}) *Error {
 
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
 func (e *Error) Inspect() string  { return "ERROR: " + e.Message }
+
+// ToStringObj gives the message without the "ERROR: " prefix Inspect adds, so
+// to_s() matches msg(). Ruby's Exception#to_s does the same.
+func (e *Error) ToStringObj() *String {
+	return NewString(e.Message)
+}
 func (e *Error) InvokeMethod(method string, env Environment, args ...Object) Object {
 	return objectMethodLookup(e, method, env, args)
 }

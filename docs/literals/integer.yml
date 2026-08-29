@@ -25,7 +25,137 @@ methods:
     description: "Returns the base of the integer."
     input: |
       "0b1010".to_i().base()
-    output:
+    output: |
+      2
+  bit_length:
+    description: "Returns how many bits are needed to represent the number, not counting the sign. A negative number needs as many as its complement, so `-256` is 8 bits just like `255`."
+    input: |
+      255.bit_length()
+      256.bit_length()
+      0.bit_length()
+    output: |
+      8
+      9
+      0
+  ceil:
+    description: "Rounds up to a multiple of ten, given a negative digit count. An integer is already exact, so no argument, or a count of zero or more, returns it unchanged."
+    input: |
+      555.ceil(0 - 1)
+      555.ceil(0 - 2)
+      555.ceil()
+    output: |
+      560
+      600
+      555
+  chr:
+    description: "Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error."
+    input: |
+      65.chr()
+    output: |
+      "A"
+  digits:
+    description: "Returns the digits of the number, least significant first, in base 10 or in a given base. A negative number has no digits and gives an error."
+    input: |
+      12345.digits()
+      12345.digits(7)
+      0.digits()
+    output: |
+      [5, 4, 3, 2, 1]
+      [4, 6, 6, 0, 5]
+      [0]
+  divmod:
+    description: "Returns the quotient and the remainder as a two-element array. Both follow the `/` and `%` operators, which truncate toward zero. Ruby floors instead, so it answers `[-3, -1]` for the second example below."
+    input: |
+      11.divmod(4)
+      11.divmod(0 - 4)
+    output: |
+      [2, 3]
+      [-2, 3]
+  even?:
+    description: "Returns `true` when the number divides by two exactly."
+    input: |
+      4.even?()
+      5.even?()
+    output: |
+      true
+      false
+  floor:
+    description: "Rounds down to a multiple of ten, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
+    input: |
+      555.floor(0 - 1)
+      555.floor(0 - 2)
+    output: |
+      550
+      500
+  gcd:
+    description: "Returns the greatest common divisor of the two numbers, always positive. Like the infix operators, it refuses two integers of different bases."
+    input: |
+      36.gcd(60)
+      3.gcd(0 - 7)
+    output: |
+      12
+      1
+  lcm:
+    description: "Returns the least common multiple of the two numbers, always positive."
+    input: |
+      36.lcm(60)
+      3.lcm(0 - 7)
+    output: |
+      180
+      21
+  negative?:
+    description: "Returns `true` when the number is less than zero."
+    input: |
+      (0 - 1).negative?()
+      0.negative?()
+    output: |
+      true
+      false
+  odd?:
+    description: "Returns `true` when the number does not divide by two exactly."
+    input: |
+      5.odd?()
+      4.odd?()
+    output: |
+      true
+      false
+  positive?:
+    description: "Returns `true` when the number is greater than zero."
+    input: |
+      1.positive?()
+      0.positive?()
+    output: |
+      true
+      false
+  pow:
+    description: "Returns the number raised to the given power. A second argument takes the result modulo it, which keeps large exponents workable. A negative exponent is an error, since the result would not be an integer."
+    input: |
+      2.pow(3)
+      2.pow(3, 5)
+    output: |
+      8
+      3
+  pred:
+    description: "Returns the previous integer, keeping the base of the receiver."
+    input: |
+      1.pred()
+      0.pred()
+    output: |
+      0
+      -1
+  round:
+    description: "Rounds to the nearest multiple of ten, halves away from zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
+    input: |
+      555.round(0 - 1)
+      554.round(0 - 1)
+    output: |
+      560
+      550
+  succ:
+    description: "Returns the next integer, keeping the base of the receiver."
+    input: |
+      1.succ()
+    output: |
       2
   to_base:
     description: "Converts the integer into a integer with the given base"
@@ -33,21 +163,19 @@ methods:
       "0b1010".to_i().to_base(8)
     output: |
       0o12
-  to_s:
-    description: "Returns a string representation of the integer, rendered in the integer's own base."
+  truncate:
+    description: "Drops the last digits, rounding toward zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
     input: |
-      1234.to_s()
+      555.truncate(0 - 1)
+      (0 - 555).truncate(0 - 1)
     output: |
-      "1234"
-  to_i:
-    description: "Returns self"
+      550
+      -550
+  zero?:
+    description: "Returns `true` when the number is zero."
     input: |
-      1234.to_i()
+      0.zero?()
+      1.zero?()
     output: |
-      1234
-  to_f:
-    description: "Converts the integer into a float."
-    input: |
-      1234.to_f()
-    output: |
-      1234.0
+      true
+      false

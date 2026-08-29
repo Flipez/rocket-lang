@@ -159,7 +159,192 @@ func init() {
 				return args[1]
 			},
 		},
+		"size": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewInteger(len(o.(*Hash).Pairs))
+			},
+		},
+		"empty?": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				if len(o.(*Hash).Pairs) == 0 {
+					return TRUE
+				}
+
+				return FALSE
+			},
+		},
+		"fetch": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+					OptArg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				h := o.(*Hash)
+
+				key, ok := args[0].(Hashable)
+				if !ok {
+					return NewErrorFormat("unusable as hash key: %s", args[0].Type())
+				}
+
+				if pair, found := h.Pairs[key.HashKey()]; found {
+					return pair.Value
+				}
+
+				// Without a fallback a missing key is an error rather than nil.
+				// That is the difference from get(), which always needs one.
+				if len(args) > 1 {
+					return args[1]
+				}
+
+				return NewErrorFormat("key not found: %s", args[0].Inspect())
+			},
+		},
+		"delete": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				h := o.(*Hash)
+
+				key, ok := args[0].(Hashable)
+				if !ok {
+					return NewErrorFormat("unusable as hash key: %s", args[0].Type())
+				}
+
+				hashed := key.HashKey()
+				pair, found := h.Pairs[hashed]
+				if !found {
+					return NIL
+				}
+				delete(h.Pairs, hashed)
+
+				// The value that went, so a delete can be told from a miss.
+				return pair.Value
+			},
+		},
+		"clear": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(HASH_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				h := o.(*Hash)
+				h.Pairs = make(map[HashKey]HashPair)
+
+				return h
+			},
+		},
+		"invert": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(HASH_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				pairs := make(map[HashKey]HashPair)
+
+				for _, pair := range o.(*Hash).Pairs {
+					value, ok := pair.Value.(Hashable)
+					if !ok {
+						return NewErrorFormat("unusable as hash key: %s", pair.Value.Type())
+					}
+					// Duplicate values collapse into one entry, and which one
+					// survives is not defined -- the same caveat Ruby carries.
+					pairs[value.HashKey()] = HashPair{Key: pair.Value, Value: pair.Key}
+				}
+
+				return NewHash(pairs)
+			},
+		},
 	}
+
+	hashPair("merge", Args(Arg(HASH_OBJ)), func(pairs map[HashKey]HashPair, args []Object) (map[HashKey]HashPair, Object) {
+		merged := copyPairs(pairs)
+		// The argument wins on a clash, as it does in Ruby.
+		for hashed, pair := range args[0].(*Hash).Pairs {
+			merged[hashed] = pair
+		}
+
+		return merged, nil
+	})
+	hashPair("compact", nil, func(pairs map[HashKey]HashPair, _ []Object) (map[HashKey]HashPair, Object) {
+		kept := make(map[HashKey]HashPair, len(pairs))
+		for hashed, pair := range pairs {
+			if pair.Value.Type() == NIL_OBJ {
+				continue
+			}
+			kept[hashed] = pair
+		}
+
+		return kept, nil
+	})
+}
+
+// hashPair registers a method and its in-place counterpart from one
+// transformation. See stringPair in string.go for why the two halves are not
+// written out separately.
+func hashPair(name string, argPattern []Argument, transform func(pairs map[HashKey]HashPair, args []Object) (map[HashKey]HashPair, Object)) {
+	layout := MethodLayout{
+		ArgPattern:    argPattern,
+		ReturnPattern: Args(Arg(HASH_OBJ, ERROR_OBJ)),
+	}
+
+	objectMethods[HASH_OBJ][name] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			pairs, err := transform(o.(*Hash).Pairs, args)
+			if err != nil {
+				return err
+			}
+
+			return NewHash(pairs)
+		},
+	}
+
+	objectMethods[HASH_OBJ][name+"!"] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			h := o.(*Hash)
+
+			pairs, err := transform(h.Pairs, args)
+			if err != nil {
+				return err
+			}
+			h.Pairs = pairs
+
+			return h
+		},
+	}
+}
+
+func copyPairs(src map[HashKey]HashPair) map[HashKey]HashPair {
+	out := make(map[HashKey]HashPair, len(src))
+	for hashed, pair := range src {
+		out[hashed] = pair
+	}
+
+	return out
 }
 
 func (h *Hash) InvokeMethod(method string, env Environment, args ...Object) Object {
@@ -173,6 +358,12 @@ func (h *Hash) GetIterator(_, _ int, _ bool) Iterator {
 		pairs = append(pairs, val)
 	}
 	return &hashIterator{pairs: pairs}
+}
+
+// ToStringObj renders the hash the way Inspect does. See Array.ToStringObj
+// for why this is not left to the generic to_s.
+func (h *Hash) ToStringObj() *String {
+	return NewString(h.Inspect())
 }
 
 func (h *Hash) MarshalJSON() ([]byte, error) {
