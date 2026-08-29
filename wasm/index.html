@@ -20,10 +20,17 @@
           <h2>Input</h2>
 					<hr />
 					<p>
+						<select class="form-select" id="exerciseSelect">
+							<option value="">Free play</option>
+						</select>
+					</p>
+					<p id="task" class="text-muted small d-none"></p>
+					<p>
 	          <textarea class="form-control" rows="10" id="input" disabled placeholder="Loading WebAssembly binary..."></textarea>
 					</p>
-					<pi class="float-end">
+					<p class="text-end">
           <button id="shareButton" class="btn btn-outline-primary" type="button">Share</button>
+          <button id="checkButton" class="btn btn-outline-secondary" type="button" disabled>Check</button>
           <button id="runButton" class="btn btn-outline-success" type="button">Run</button>
 					</p>
         </div>
@@ -32,6 +39,7 @@
         <div class="h-100 p-5 text-bg-dark rounded-3">
           <h2>Output</h2>
 					<hr />
+	        <p id="verdict" class="d-none"></p>
 	        <pre id="output"></pre>
         </div>
       </div>
@@ -89,20 +97,120 @@
 
 			set_output(window.output);
 
-			fetch('main.wasm').then(response => response.arrayBuffer()).then(function(bin) {
-				  this.runButton.addEventListener('click',function(e) {
-						window.output.innerText = ""
+			fetch('main.wasm').then(response => response.arrayBuffer()).then(async function(bin) {
+				// One place that runs a program, so Run and Check cannot drift.
+				// go.run resolves when the program exits, at which point term.js
+				// has written everything to the output element.
+				async function runProgram(source) {
+					window.output.innerText = '';
 
 					const go = new Go();
-					go.argv = ['rocket-lang', '-e', window.input.value];
+					go.argv = ['rocket-lang', '-e', source];
 					go.exit = (code) => {
 						if (code > 0)
 							output.innerText += 'Exit ' + code + '\n';
 					};
-					WebAssembly.instantiate(bin, go.importObject).then((result) => {
-						go.run(result.instance);
+
+					const result = await WebAssembly.instantiate(bin, go.importObject);
+					await go.run(result.instance);
+
+					return window.output.innerText;
+				}
+
+				// The interpreter prints the program's own final value, which is
+				// a nil as soon as a program ends in puts(). An exercise did not
+				// ask for it, so one trailing nil is dropped -- the same rule
+				// exercises/generate.go and run.sh apply.
+				function stripFinalValue(output) {
+					const lines = output.replace(/\n$/, '').split('\n');
+					if (lines.length && lines[lines.length - 1] === 'nil')
+						lines.pop();
+
+					return lines.length ? lines.join('\n') + '\n' : '';
+				}
+
+				function verdict(message, tone) {
+					window.verdict.className = 'fw-bold text-' + tone;
+					window.verdict.innerText = message;
+				}
+
+				window.runButton.addEventListener('click', () => {
+					window.verdict.className = 'd-none';
+					runProgram(window.input.value);
+				});
+
+				// Exercises are optional: without the bundle the playground is
+				// exactly what it was.
+				let exercises = [];
+				try {
+					exercises = await fetch('exercises.json').then(r => r.ok ? r.json() : []);
+				} catch (e) {
+					exercises = [];
+				}
+
+				let current = null;
+
+				if (exercises.length) {
+					let topic = null;
+					let group = null;
+
+					for (const exercise of exercises) {
+						if (exercise.topic !== topic) {
+							topic = exercise.topic;
+							group = document.createElement('optgroup');
+							group.label = topic.replace(/^\d+_/, '');
+							window.exerciseSelect.appendChild(group);
+						}
+
+						const option = document.createElement('option');
+						option.value = exercise.id;
+						option.text = exercise.name.replace(/^\d+_/, '');
+						group.appendChild(option);
+					}
+
+					function load(id) {
+						current = exercises.find(e => e.id === id) || null;
+						window.verdict.className = 'd-none';
+						window.checkButton.disabled = current === null;
+
+						if (current) {
+							window.input.value = current.task;
+							window.task.innerText = current.id;
+							window.task.className = 'text-muted small';
+						} else {
+							window.task.className = 'text-muted small d-none';
+						}
+					}
+
+					window.exerciseSelect.addEventListener('change', function() {
+						load(this.value);
+						urlParams.set('exercise', this.value);
+						urlParams.delete('share');
+						history.replaceState(null, '', this.value ? '?' + urlParams : location.pathname);
 					});
-        })
+
+					window.checkButton.addEventListener('click', async () => {
+						if (!current) return;
+
+						const printed = stripFinalValue(await runProgram(window.input.value));
+
+						if (printed === current.expected) {
+							verdict('Solved ✓', 'success');
+							return;
+						}
+
+						verdict('Not yet. Expected:\n' + current.expected, 'warning');
+					});
+
+					// A deep link wins over a share link, so a lesson can point
+					// straight at an exercise.
+					const wanted = urlParams.get('exercise');
+					if (wanted && exercises.some(e => e.id === wanted)) {
+						window.exerciseSelect.value = wanted;
+						load(wanted);
+					}
+				}
+
 				window.input.placeholder = 'Ready!';
 				window.input.disabled = false;
 			});
