@@ -86,15 +86,19 @@ func evalBuiltinModuleIndexExpression(module, index object.Object) object.Object
 }
 
 func evalStringIndexExpression(left, index object.Object) object.Object {
-	obj := left.(*object.String)
-	max := len(obj.Value) - 1
+	// Characters, not bytes. Indexing the string directly cuts a multi-byte
+	// character in half: "тест"[0] answered a single byte, which is not a
+	// character at all. size(), reverse() and the rest have always counted
+	// characters, so indexing has to agree with them.
+	runes := []rune(left.(*object.String).Value)
+	max := len(runes) - 1
 	idx := transformIndex(index.(*object.Integer).Value, max)
 
 	if idx > max {
 		return object.NIL
 	}
 
-	return object.NewString(string(obj.Value[idx]))
+	return object.NewString(string(runes[idx]))
 }
 
 func evalMatrixIndexExpression(left, index object.Object) object.Object {
@@ -119,29 +123,31 @@ func evalMatrixIndexExpression(left, index object.Object) object.Object {
 }
 
 func evalStringRangeIndexExpression(left, firstIndex, secondIndex object.Object) object.Object {
-	obj := left.(*object.String)
-	max := len(obj.Value) - 1
+	// Characters, for the same reason as evalStringIndexExpression: slicing the
+	// bytes of "тест" landed between the halves of a character.
+	runes := []rune(left.(*object.String).Value)
+	max := len(runes) - 1
 
 	if firstIndex == nil && secondIndex == nil {
-		return object.NewString(obj.Value)
+		return object.NewString(string(runes))
 	} else if firstIndex != nil && secondIndex != nil {
 		first := transformIndex(firstIndex.(*object.Integer).Value, max)
 		second := transformIndex(secondIndex.(*object.Integer).Value, max)
 
 		if first <= max && second <= max && first <= second {
-			return object.NewString(obj.Value[first:second])
+			return object.NewString(string(runes[first:second]))
 		}
 	} else if firstIndex != nil && secondIndex == nil {
 		first := transformIndex(firstIndex.(*object.Integer).Value, max)
 
 		if first <= max {
-			return object.NewString(obj.Value[first:])
+			return object.NewString(string(runes[first:]))
 		}
 	} else if firstIndex == nil && secondIndex != nil {
 		second := transformIndex(secondIndex.(*object.Integer).Value, max)
 
 		if second <= max {
-			return object.NewString(obj.Value[:second])
+			return object.NewString(string(runes[:second]))
 		}
 	}
 

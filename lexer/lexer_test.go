@@ -160,3 +160,91 @@ func TestNextToken(t *testing.T) {
 		}
 	}
 }
+
+// TestNonASCIIStrings covers what a double-quoted literal outside ASCII used to
+// become. l.ch is a byte, and appending string(l.ch) converts its numeric value
+// to a rune and encodes that -- so every byte of a multi-byte character became a
+// character of its own, and "тест" arrived as eight characters holding the
+// values of its eight UTF-8 bytes.
+//
+// A single-quoted literal was always right, because it slices the input rather
+// than rebuilding it. That the two disagreed is what gives the game away.
+func TestNonASCIIStrings(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"cyrillic", `"тест"`, "тест"},
+		{"cjk", `"こんにちは"`, "こんにちは"},
+		{"accents", `"café"`, "café"},
+		{"an emoji inside a string", `"a👍b"`, "a👍b"},
+		{"mixed with escapes", `"т\tе"`, "т\tе"},
+		{"escapes still work", `"a\tb\nc\"d\\e"`, "a\tb\nc\"d\\e"},
+		{"ascii is unchanged", `"plain"`, "plain"},
+		{"empty", `""`, ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tok := New(tt.input, "test").NextToken()
+
+			if tok.Type != token.STRING {
+				t.Fatalf("token type %s, want STRING", tok.Type)
+			}
+			if tok.Literal != tt.want {
+				t.Errorf("literal %q, want %q", tok.Literal, tt.want)
+			}
+			if len([]rune(tok.Literal)) != len([]rune(tt.want)) {
+				t.Errorf("%d characters, want %d", len([]rune(tok.Literal)), len([]rune(tt.want)))
+			}
+		})
+	}
+}
+
+// TestQuotingStylesAgree checks the two kinds of literal produce the same
+// string. They did not: '...' sliced the input and "..." rebuilt it wrongly.
+func TestQuotingStylesAgree(t *testing.T) {
+	for _, content := range []string{"тест", "こんにちは", "café", "plain", "a👍b"} {
+		double := New(`"`+content+`"`, "test").NextToken()
+		single := New(`'`+content+`'`, "test").NextToken()
+
+		if double.Literal != single.Literal {
+			t.Errorf("%q: double-quoted gave %q, single-quoted gave %q", content, double.Literal, single.Literal)
+		}
+	}
+}
+
+// TestNonASCIIIdentifier covers the same mistake in readIdentifier. It only ever
+// worked because a name and its uses were mangled identically, so it matched
+// itself while being wrong.
+func TestNonASCIIIdentifier(t *testing.T) {
+	tok := New("föö", "test").NextToken()
+
+	if tok.Type != token.IDENT {
+		t.Fatalf("token type %s, want IDENT", tok.Type)
+	}
+	if tok.Literal != "föö" {
+		t.Errorf("literal %q, want %q", tok.Literal, "föö")
+	}
+}
+
+// TestEmojiTokensStillWork guards the emoji handling, which assembles a
+// character from its bytes and is the one place that was already deliberate
+// about multi-byte input.
+func TestEmojiTokensStillWork(t *testing.T) {
+	tests := []struct {
+		input string
+		want  token.TokenType
+	}{
+		{"👍", token.TRUE},
+		{"👎", token.FALSE},
+		{"➕", token.PLUS},
+	}
+
+	for _, tt := range tests {
+		if tok := New(tt.input, "test").NextToken(); tok.Type != tt.want {
+			t.Errorf("%s lexed as %s, want %s", tt.input, tok.Type, tt.want)
+		}
+	}
+}

@@ -86,27 +86,35 @@ func evalSingleAssign(name ast.Expression, evaluated object.Object, env *object.
 				return object.NewError(err)
 			}
 
-			if l := len(o.Value); int(math.Abs(float64(idx))) >= l {
+			// Characters, not bytes, so that assigning into a string agrees
+			// with indexing it and with size(). Counting bytes made the length
+			// of "тест" eight and let an assignment land inside a character.
+			runes := []rune(o.Value)
+
+			if l := len(runes); int(math.Abs(float64(idx))) >= l {
 				return object.NewErrorFormat(
 					"index out of range, got %d but string is only %d long", idx, l,
 				)
 			}
 
 			if idx < 0 {
-				idx = len(o.Value) + idx
+				idx = len(runes) + idx
 			}
 
 			strEval, ok := evaluated.(*object.String)
 			if !ok {
 				return object.NewErrorFormat("expected STRING object, got %s", evaluated.Type())
 			}
-			if l := len(strEval.Value); l != 1 {
+
+			replacement := []rune(strEval.Value)
+			if l := len(replacement); l != 1 {
 				return object.NewErrorFormat(
 					"expected STRING object to have a length of 1, got %d", l,
 				)
 			}
 
-			o.Value = o.Value[:idx] + strEval.Value + o.Value[idx+1:]
+			runes[idx] = replacement[0]
+			o.Value = string(runes)
 		default:
 			return object.NewErrorFormat("expected object to be indexable")
 		}
