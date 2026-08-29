@@ -1305,3 +1305,95 @@ func TestFunctionArityAcceptsExactMatch(t *testing.T) {
 	testIntegerObject(t, testEval(`def none() return 7 end none()`), 7)
 	testIntegerObject(t, testEval(`f = def(a) return a end f(9)`), 9)
 }
+
+// TestCallableHashMembers covers calling a callable stored in a hash as though
+// it were a method. A hash of functions closing over a constructor's locals is
+// already an object with private state; before this it had to be called as
+// h["deposit"](50), which was the only thing that did not read like one.
+func TestCallableHashMembers(t *testing.T) {
+	constructor := `
+def new_account(owner, balance)
+  return {
+    "owner":    owner,
+    "deposit":  def(n) balance = balance + n return balance end,
+    "describe": def() return owner + ": " + balance.to_s() end
+  }
+end
+`
+
+	tests := []struct {
+		input    string
+		expected any
+	}{
+		{constructor + `a = new_account("r", 100); a.deposit(50)`, 150},
+		{constructor + `a = new_account("r", 100); a.deposit(50); a.describe()`, "r: 150"},
+		// Plain data under a name still reads as data, which already worked.
+		{constructor + `a = new_account("r", 100); a.owner`, "r"},
+
+		// The state is the constructor's locals, so instances are independent.
+		{constructor + `a = new_account("r", 1); b = new_account("s", 2); a.deposit(10); b.describe()`, "s: 2"},
+
+		// A real Hash method wins over a key of the same name, so a hash of
+		// data cannot hijack size() or keys(). The key is still reachable by
+		// index.
+		{`h = {"size": def() return 99 end}; h.size()`, 1},
+		{`h = {"size": def() return 99 end}; h["size"]()`, 99},
+		{`h = {"keys": def() return "hijacked" end}; h.keys().size()`, 1},
+
+		// A builtin is callable, so it can be stored and called too.
+		{`h = {"f": def(x) return x * 2 end}; h.f(21)`, 42},
+
+		// Nesting works, because each step is an ordinary value.
+		{`inner = {"go": def() return "deep" end}; outer = {"inner": inner}; outer.inner.go()`, "deep"},
+
+		// Arity and errors come from the function, reported as anywhere else.
+		{`h = {"f": def(x) return x end}; h.f()`, "to few arguments: got=0, want=1"},
+
+		// A name holding something uncallable says so, rather than claiming the
+		// method does not exist.
+		{`h = {"f": 1}; h.f()`, "`f` is not callable for HASH, it is INTEGER"},
+		{`h = {"f": nil}; h.f()`, "`f` is not callable for HASH, it is NIL"},
+		{`h = {"f": [1]}; h.f()`, "`f` is not callable for HASH, it is ARRAY"},
+
+		// A name that is not there at all keeps the old message, which is the
+		// more useful one: the method does not exist.
+		{`h = {}; h.nope()`, "undefined method `.nope()` for HASH"},
+		{`h = {"f": 1}; h.other()`, "undefined method `.other()` for HASH"},
+
+		// No other type gained a fallback.
+		{`a = [1]; a.nope()`, "undefined method `.nope()` for ARRAY"},
+		{`"a".nope()`, "undefined method `.nope()` for STRING"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch expected := tt.expected.(type) {
+		case int:
+			integer, ok := evaluated.(*object.Integer)
+			if !ok {
+				t.Errorf("input %q: not an Integer. got=%T (%+v)", tt.input, evaluated, evaluated)
+				continue
+			}
+			if integer.Value != expected {
+				t.Errorf("input %q: got=%d, want=%d", tt.input, integer.Value, expected)
+			}
+		case string:
+			if str, ok := evaluated.(*object.String); ok {
+				if str.Value != expected {
+					t.Errorf("input %q: got=%q, want=%q", tt.input, str.Value, expected)
+				}
+				continue
+			}
+
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("input %q: not a String or Error. got=%T (%+v)", tt.input, evaluated, evaluated)
+				continue
+			}
+			if !strings.Contains(errObj.Message, expected) {
+				t.Errorf("input %q: error %q does not contain %q", tt.input, errObj.Message, expected)
+			}
+		}
+	}
+}
