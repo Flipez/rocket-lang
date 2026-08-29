@@ -19,6 +19,67 @@ description: |
   respectively.
 
   Reading a key that is not present returns `nil`.
+
+  ## Calling a value stored in a hash
+
+  > 👉 Introduced in `0.24`
+
+  A value under a name can be read with a dot, and a **callable** value under a
+  name can be *called* with one:
+
+  ```js
+  h = {"double": def(x) return x * 2 end}
+
+  puts(h.double(21))     // 42
+  puts(h["double"](21))  // the same thing
+  ```
+
+  That makes a hash of functions read like the object it already is. The functions
+  close over the locals of whatever built the hash, so the state is private and
+  each one is independent:
+
+  ```js
+  def new_account(owner, balance)
+    return {
+      "owner":    owner,
+      "deposit":  def(n) balance = balance + n return balance end,
+      "describe": def() return owner + ": " + balance.to_s() end
+    }
+  end
+
+  a = new_account("robert", 100)
+  b = new_account("someone", 0)
+
+  puts(a.deposit(50))   // 150
+  puts(a.describe())    // "robert: 150"
+  puts(b.describe())    // "someone: 0"
+  puts(a.owner)         // "robert" -- plain data, read the same way
+  ```
+
+  A real hash method always wins, so a hash of data cannot take over `size` or
+  `keys`. The stored value is still reachable by index:
+
+  ```js
+  h = {"size": def() return 99 end}
+
+  puts(h.size())      // 1  -- the hash method
+  puts(h["size"]())   // 99 -- the stored function
+  ```
+
+  A name holding something that cannot be called says so, and a name that is not
+  there at all reports a missing method as before:
+
+  ```js
+  h = {"n": 1}
+
+  h.n()      // ERROR: `n` is not callable for HASH, it is INTEGER
+  h.other()  // ERROR: undefined method `.other()` for HASH
+  ```
+
+  This is not a class. The hash is still a `HASH`, so `type()` says `HASH`,
+  `methods()` lists the hash's own methods rather than the stored ones, and there
+  is no `self` or inheritance. What it adds is the call syntax for a pattern the
+  language could already express.
 example: |
   people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
 
