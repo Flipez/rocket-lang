@@ -26,8 +26,8 @@ import "core/stats" as stats
 
 scores = [42, 17, 99, 63]
 
-puts(list.Filter(scores, def(n) return n > 40 end))  // [42, 99, 63]
-puts(stats.Mean(scores))                             // 55.25
+puts(list.filter(scores, def(n) return n > 40 end))  // [42, 99, 63]
+puts(stats.mean(scores))                             // 55.25
 ```
 
 [flipez/rocket-lang-core](https://github.com/flipez/rocket-lang-core) is a
@@ -199,10 +199,13 @@ Export what callers should see, and keep the rest private:
 
 ```js
 // strings.rl
-export def Snake(s)
+export def snake_case(s)
   return s.replace(" ", "_")
 end
 ```
+
+Capitalization carries no meaning — `export` is what decides whether a name is
+public. An unexported `Helper` is private and an exported `helper` is not.
 
 Tag a release:
 
