@@ -175,3 +175,90 @@ methods:
     output: |
       ["1"]
       ["1", "2"]
+  each:
+    description: "Calls the callback once per entry with the key and the value, and returns the hash so calls can be chained. The order the entries arrive in is **not** defined and differs between runs, the same caveat `keys` carries -- use it for a side effect per entry, not to build something ordered."
+    input: |
+      h = {"a": 1}
+      h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+    output: |
+      {"a": 1}
+      a=1
+      {"a": 1}
+  select:
+    description: "Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `select!` to filter in place."
+    input: |
+      h = {"a": 1}
+      h["b"] = 2
+      h.select(def(k, v) v > 1 end).size()
+      h.size()
+    output: |
+      {"a": 1}
+      2
+      1
+      2
+  select!:
+    description: "Keeps only the entries the callback said yes to and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h["b"] = 2
+      h.select!(def(k, v) v > 1 end).size()
+      h.size()
+    output: |
+      {"a": 1}
+      2
+      1
+      1
+  reject:
+    description: "Returns a new hash of the entries the callback said no to -- the mirror of `select`. Use `reject!` to filter in place."
+    input: |
+      h = {"a": 1}
+      h["b"] = 2
+      h.reject(def(k, v) v > 1 end).size()
+    output: |
+      {"a": 1}
+      2
+      1
+  reject!:
+    description: "Drops the entries the callback said yes to and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h["b"] = 2
+      h.reject!(def(k, v) v > 1 end).size()
+    output: |
+      {"a": 1}
+      2
+      1
+  transform_values:
+    description: "Returns a new hash with each value replaced by what the callback answered for it. The keys are untouched. Use `transform_values!` to replace them in place."
+    input: |
+      h = {"a": 1}
+      h.transform_values(def(v) v * 10 end).get("a", 0)
+      h.get("a", 0)
+    output: |
+      {"a": 1}
+      10
+      1
+  transform_values!:
+    description: "Replaces each value with what the callback answered and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h.transform_values!(def(v) v * 10 end).get("a", 0)
+    output: |
+      {"a": 1}
+      10
+  transform_keys:
+    description: "Returns a new hash with each key replaced by what the callback answered for it. A new key still has to be `HASHABLE`, and two keys answering the same collapse into one entry -- which of them survives is not defined. Use `transform_keys!` to replace them in place."
+    input: |
+      h = {"a": 1}
+      h.transform_keys(def(k) k.upcase() end).get("A", 0)
+    output: |
+      {"a": 1}
+      1
+  transform_keys!:
+    description: "Replaces each key with what the callback answered and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+    output: |
+      {"a": 1}
+      1

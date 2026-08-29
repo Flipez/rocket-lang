@@ -114,6 +114,20 @@ nil
 ' />
 
 
+### each(CALLABLE)
+> Returns `HASH|ERROR`
+
+Calls the callback once per entry with the key and the value, and returns the hash so calls can be chained. The order the entries arrive in is **not** defined and differs between runs, the same caveat `keys` carries -- use it for a side effect per entry, not to build something ordered.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+' output='{"a": 1}
+a=1
+{"a": 1}
+' />
+
+
 ### empty?()
 > Returns `BOOLEAN`
 
@@ -226,6 +240,70 @@ h.size()
 ' />
 
 
+### reject(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash of the entries the callback said no to -- the mirror of `select`. Use `reject!` to filter in place.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.reject(def(k, v) v > 1 end).size()
+' output='{"a": 1}
+2
+1
+' />
+
+
+### reject!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Drops the entries the callback said yes to and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.reject!(def(k, v) v > 1 end).size()
+' output='{"a": 1}
+2
+1
+' />
+
+
+### select(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `select!` to filter in place.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.select(def(k, v) v > 1 end).size()
+h.size()
+' output='{"a": 1}
+2
+1
+2
+' />
+
+
+### select!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Keeps only the entries the callback said yes to and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.select!(def(k, v) v > 1 end).size()
+h.size()
+' output='{"a": 1}
+2
+1
+1
+' />
+
+
 ### size()
 > Returns `INTEGER`
 
@@ -238,6 +316,60 @@ h.size()
 ' output='{"a": 1}
 1
 0
+' />
+
+
+### transform_keys(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash with each key replaced by what the callback answered for it. A new key still has to be `HASHABLE`, and two keys answering the same collapse into one entry -- which of them survives is not defined. Use `transform_keys!` to replace them in place.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.transform_keys(def(k) k.upcase() end).get("A", 0)
+' output='{"a": 1}
+1
+' />
+
+
+### transform_keys!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Replaces each key with what the callback answered and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+' output='{"a": 1}
+1
+' />
+
+
+### transform_values(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash with each value replaced by what the callback answered for it. The keys are untouched. Use `transform_values!` to replace them in place.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.transform_values(def(v) v * 10 end).get("a", 0)
+h.get("a", 0)
+' output='{"a": 1}
+10
+1
+' />
+
+
+### transform_values!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Replaces each value with what the callback answered and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.transform_values!(def(v) v * 10 end).get("a", 0)
+' output='{"a": 1}
+10
 ' />
 
 

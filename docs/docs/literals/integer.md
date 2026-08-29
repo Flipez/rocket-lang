@@ -115,6 +115,20 @@ Returns the quotient and the remainder as a two-element array. Both follow the `
 ' />
 
 
+### downto(INTEGER, CALLABLE)
+> Returns `INTEGER|ERROR`
+
+Calls the callback with each integer from the receiver down to the given limit, inclusive at both ends, and returns the receiver. A limit above the receiver calls nothing.
+
+
+<CodeBlockSimple input='3.downto(1, def(i) puts(i) end)
+' output='3
+2
+1
+3
+' />
+
+
 ### even?()
 > Returns `BOOLEAN`
 
@@ -256,6 +270,22 @@ Returns the next integer, keeping the base of the receiver.
 ' />
 
 
+### times(CALLABLE)
+> Returns `INTEGER|ERROR`
+
+Calls the callback with each integer from `0` up to one less than the receiver, and returns the receiver so calls can be chained. A count of zero or less calls nothing rather than erroring, which makes it safe to hand a computed count. The counter keeps the receiver's base.
+
+
+<CodeBlockSimple input='3.times(def(i) puts(i) end)
+0.times(def(i) puts("never") end)
+' output='0
+1
+2
+3
+0
+' />
+
+
 ### to_base(INTEGER)
 > Returns `INTEGER`
 
@@ -277,6 +307,22 @@ Drops the last digits, rounding toward zero, given a negative digit count. No ar
 (0 - 555).truncate(0 - 1)
 ' output='550
 -550
+' />
+
+
+### upto(INTEGER, CALLABLE)
+> Returns `INTEGER|ERROR`
+
+Calls the callback with each integer from the receiver up to the given limit, inclusive at both ends, and returns the receiver. A limit below the receiver calls nothing.
+
+
+<CodeBlockSimple input='1.upto(3, def(i) puts(i) end)
+3.upto(1, def(i) puts("never") end)
+' output='1
+2
+3
+1
+3
 ' />
 
 

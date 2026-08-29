@@ -50,3 +50,36 @@ func CallbackStopped(o Object) bool {
 func CallbackSkipped(o Object) bool {
 	return o != nil && o.Type() == NEXT_VALUE_OBJ
 }
+
+// CallbackAction says what a method should do with what a callback returned.
+// Every method that takes one faces the same four cases, so they are named once
+// here rather than re-derived in each of them.
+type CallbackAction int
+
+const (
+	// UseValue is an ordinary result.
+	UseValue CallbackAction = iota
+	// SkipElement means the callback ran `next`: this element contributes
+	// nothing. For a method building a list that is a nil entry; for one
+	// filtering, it is a no.
+	SkipElement
+	// StopWalk means the callback ran `break`: iteration ends here and the
+	// answer reflects what was processed, the way break ends a foreach.
+	StopWalk
+	// Failed means the callback errored, and the error is the result.
+	Failed
+)
+
+// ClassifyCallback reads a callback's return value as one of the four actions.
+func ClassifyCallback(result Object) CallbackAction {
+	switch {
+	case IsError(result):
+		return Failed
+	case CallbackStopped(result):
+		return StopWalk
+	case CallbackSkipped(result):
+		return SkipElement
+	default:
+		return UseValue
+	}
+}

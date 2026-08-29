@@ -50,11 +50,12 @@ they appear only in signatures and in error messages.
 | Group | Means | Where it appears |
 | ----- | ----- | ---------------- |
 | `ANY` | any value at all | `push`, `unshift`, `insert`, `include?`, `index`, `rindex`, `count` and `delete` on an `ARRAY`; the fallback of `HASH.get` and `fetch`; `format`; `puts` |
-| `HASHABLE` | can be used as a hash key | the key argument of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.uniq` |
-| `COMPARABLE` | can be ordered against its own kind | the elements of `ARRAY.sort`, `min` and `max` |
+| `HASHABLE` | can be used as a hash key | the key argument of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.uniq`; what `HASH.transform_keys` answers |
+| `COMPARABLE` | can be ordered against its own kind | the elements of `ARRAY.sort`, `min` and `max`; what `ARRAY.sort_by`, `min_by` and `max_by` answer |
 | `STRINGABLE` | has a string form | the elements of `ARRAY.join` |
 | `INTEGERABLE` | can be read as an integer | the elements of `ARRAY.sum` |
 | `NUMERIC` | a number | the value argument of `MATRIX.set` |
+| `CALLABLE` | a function, or a builtin such as `puts` — both are values | every callback: `ARRAY.each`, `map`, `select`, `reject`, `reduce`, `all?`, `sort_by`, `min_by`; `HASH.each`, `select`, `transform_values`, `transform_keys`; `INTEGER.times`, `upto`, `downto` |
 
 ### What belongs to what
 
