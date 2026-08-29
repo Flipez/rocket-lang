@@ -15,19 +15,19 @@ Every value in RocketLang has a type, and `type()` reports it:
 
 | Type | How you get one | Own methods |
 | ---- | --------------- | ----------- |
-| `STRING` | `"abc"`, `'abc'` | [String](../literals/string) |
-| `INTEGER` | `1`. A base prefix is not a literal: write `"0x1f".to_i()` | [Integer](../literals/integer) |
-| `FLOAT` | `1.5` | [Float](../literals/float) |
-| `BOOLEAN` | `true`, `false`, `👍`, `👎` | none |
-| `NIL` | `nil`, or anything that has nothing to return | none |
-| `ARRAY` | `[1, 2]` | [Array](../literals/array) |
-| `HASH` | `{"a": 1}` | [Hash](../literals/hash) |
-| `MATRIX` | `[[1, 2], [3, 4]].to_m()` | [Matrix](../literals/matrix) |
-| `FUNCTION` | `def(x) return x end` | none |
-| `ERROR` | a failing operation, caught with `begin`/`rescue` | [Error](../literals/error) |
-| `FILE` | `IO.open("f.txt", "r", "0644")` | [File](../literals/file) |
-| `HTTP` | `HTTP.new()` | [HTTP](../literals/http) |
-| `MODULE` | `import "./lib" as lib` | none |
+| `STRING` | [String](../literals/string) |
+| `INTEGER` | [Integer](../literals/integer) |
+| `FLOAT` | [Float](../literals/float) |
+| `BOOLEAN` | none |
+| `NIL` | none |
+| `ARRAY` | [Array](../literals/array) |
+| `HASH` | [Hash](../literals/hash) |
+| `MATRIX` | [Matrix](../literals/matrix) |
+| `FUNCTION` | none |
+| `ERROR` | [Error](../literals/error) |
+| `FILE` | [File](../literals/file) |
+| `HTTP` | [HTTP](../literals/http) |
+| `MODULE` | none |
 | `BUILTIN_MODULE` | `Math`, `IO`, `JSON`, `OS`, `Time` | see [Builtins](../builtins/Math) |
 
 Every type also answers the
@@ -58,21 +58,26 @@ they appear only in signatures and in error messages.
 
 ### What belongs to what
 
-| Type | `ANY` | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` |
+`ANY` is not a row or a column here: every value belongs to it, so it says
+nothing about any particular type. It exists for signatures, where
+`push(ANY)` means the argument accepts anything.
+
+
+| Type | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` | `CALLABLE` |
 | -------- | --- | --- | --- | --- | --- | --- |
-| `STRING` | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| `INTEGER` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `FLOAT` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `BOOLEAN` | ✅ | ✅ | | ✅ | ✅ | |
-| `ARRAY` | ✅ | ✅ | | ✅ | | |
-| `HASH` | ✅ | ✅ | | ✅ | | |
-| `MATRIX` | ✅ | | | ✅ | | |
-| `NIL` | ✅ | | | ✅ | | |
-| `ERROR` | ✅ | | | ✅ | | |
-| `FILE` | ✅ | | | ✅ | | |
-| `HTTP` | ✅ | | | ✅ | | |
-| `FUNCTION` | ✅ | | | | | |
-| `MODULE` | ✅ | | | | | |
+| `STRING` | ✅ | ✅ | ✅ | ✅ | | |
+| `INTEGER` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `FLOAT` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `BOOLEAN` | ✅ | | ✅ | ✅ | | |
+| `ARRAY` | ✅ | | ✅ | | | |
+| `HASH` | ✅ | | ✅ | | | |
+| `MATRIX` | | | ✅ | | | |
+| `NIL` | | | ✅ | | | |
+| `ERROR` | | | ✅ | | | |
+| `FILE` | | | ✅ | | | |
+| `HTTP` | | | ✅ | | | |
+| `FUNCTION` | | | | | | ✅ |
+| `MODULE` | | | | | | |
 
 Two rows are worth a second look:
 
@@ -81,6 +86,9 @@ Two rows are worth a second look:
   `[true].sum()` is `1`.
 - An `ARRAY` and a `HASH` are `HASHABLE`, so they can be hash keys:
   `{[1]: "a"}` is a valid hash.
+- A `FUNCTION` is `CALLABLE` and nothing else — not even `STRINGABLE`, which is
+  why `[def() end].join()` fails. A builtin such as `puts` is `CALLABLE` too,
+  so `[1, 2].each(puts)` works.
 
 A group is decided by asking the value what it can do, not by comparing it
 against a list of type names. A type added to the language therefore joins every
@@ -94,9 +102,9 @@ of them:
 
 ```js
 🚀 > 1.type_groups()
-=> ["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
+=> ["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 🚀 > def() end.type_groups()
-=> ["ANY"]
+=> ["CALLABLE"]
 🚀 > "a".is_a?("HASHABLE")
 => true
 🚀 > nil.is_a?("HASHABLE")
@@ -112,6 +120,10 @@ questions:
 🚀 > "a".is_a?("INTEGER")
 => false
 ```
+
+`ANY` is missing from those lists on purpose — every value belongs to it, so it
+would only prefix every answer with the same word. `is_a?("ANY")` still answers
+`true`.
 
 A name that is neither is an error rather than a `false`, because a typo would
 otherwise read as a real answer:

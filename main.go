@@ -96,7 +96,6 @@ func runProgram(input string, file string) {
 	l := lexer.New(input, file)
 	p := parser.New(l)
 
-	object.AddEvaluator(evaluator.Eval)
 
 	program := p.ParseProgram()
 	if len(p.Errors()) > 0 {
