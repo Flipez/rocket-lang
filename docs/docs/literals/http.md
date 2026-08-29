@@ -6,14 +6,15 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 
 ```js
-def test()
+def hello()
   puts(request["body"])
-  return("test")
+  response["body"] = "hello " + request["method"]
 end
 
-HTTP.handle("/", test)
+server = HTTP.new()
+server.handle("/", hello)
 
-HTTP.listen(3000)
+server.listen(3000)
 
 // Example request hash:
 // {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}
@@ -25,10 +26,11 @@ HTTP.listen(3000)
 ### handle(STRING, FUNCTION)
 > Returns `NIL|ERROR`
 
-Adds a handle to the global HTTP server. Needs to be done before starting one via .listen().
+Adds a handler to this server. Every handler has to be registered before .listen() starts serving, because .listen() blocks.
 Inside the function a variable called "request" will be populated which is a hash with information about the request.
 
 Also a variable called "response" will be created which will be returned automatically as a response to the client.
+The callback's own return value is ignored: the response is the hash you leave behind, not what you return.
 The response can be adjusted to the needs. It is a HASH supports the following content:
 
 - "status" needs to be an INTEGER (eg. 200, 400, 500). Default is 200.
@@ -38,7 +40,7 @@ The response can be adjusted to the needs. It is a HASH supports the following c
 
 
 
-<CodeBlockSimple input='HTTP.handle("/", callback_func)
+<CodeBlockSimple input='server.handle("/", callback_func)
 ' />
 
 
@@ -50,7 +52,7 @@ Starts a blocking webserver on the given port.
 
 
 
-<CodeBlockSimple input='HTTP.listen(3000)
+<CodeBlockSimple input='server.listen(3000)
 ' />
 
 

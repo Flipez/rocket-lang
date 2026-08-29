@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { GetStarted } from "./GetStarted";
 
 const WelcomeCode = `🚀 » puts("hello from rocket-lang!")
-"hello from rocket-lang!"
+hello from rocket-lang!
 » nil
 
 🚀 » langs = ["ruby", "go", "crystal", "python", "php"]
@@ -18,10 +18,10 @@ const WelcomeCode = `🚀 » puts("hello from rocket-lang!")
 » "php"
 
 🚀 » langs.push("rocket-lang")
-» nil
-
-🚀 » langs
 » ["ruby", "go", "crystal", "python", "rocket-lang"]
+
+🚀 » langs.sort().first()
+» "crystal"
 `
 
 function Welcome() {
@@ -62,19 +62,20 @@ const JSONExample = `🚀 » JSON.parse('{"test": 123}')
 
 
 🚀 » a.to_json()
-» '{"test":1234}'
+» "{\\"test\\":1234}"
 `;
 
-const HTTPExample = `def test()
+const HTTPExample = `def hello()
   puts(request["body"])
-  return("test")
+  response["body"] = "hello " + request["method"]
 end
 
 
-HTTP.handle("/", test)
+server = HTTP.new()
+server.handle("/", hello)
 
 
-HTTP.listen(3000)
+server.listen(3000)
 `;
 
 const MathExample = `🚀 » Math.E
@@ -90,9 +91,9 @@ const MathExample = `🚀 » Math.E
 `;
 
 const TimeExample = `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
-» "Mon Oct 31 00:08:10 2022"
+» "Sat Aug 29 22:09:48 2026"
 🚀 » Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
-» "Mon Oct 31 00:28:43 2022"
+» "Sat Aug 29 22:09:48 2026"
 
 
 🚀 » Time.parse("2022-03-23", "2006-01-02")
@@ -107,10 +108,10 @@ const ClosuresExample = `newGreeter = def (greeting)
   end
 end
 
-hello = newGreeter("Hello");
-hello("dear, future Reader!");
+hello = newGreeter("Hello")
+hello("dear, future Reader!")
 
-» "Hello dear, future Reader!"
+Hello dear, future Reader!
 `;
 
 const BuiltinList = [
