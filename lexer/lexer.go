@@ -224,7 +224,15 @@ func (l *Lexer) NextToken() token.Token {
 }
 
 func (l *Lexer) readDoubleQuoteString() string {
-	var escapedString string
+	// Collected as bytes, and turned into a string once at the end.
+	//
+	// Appending string(l.ch) instead looks equivalent and is not: l.ch is a
+	// byte, and string(aByte) converts its numeric value to a rune and encodes
+	// that. So each byte of a multi-byte character became a character of its
+	// own -- "тест" arrived as eight characters holding the values of its eight
+	// UTF-8 bytes, which is why size() answered 8 and reverse() and chop() cut
+	// characters in half.
+	var out []byte
 
 	for {
 		l.readChar()
@@ -234,31 +242,32 @@ func (l *Lexer) readDoubleQuoteString() string {
 			switch nextCh {
 			case '"':
 				l.readChar()
-				escapedString += "\""
+				out = append(out, '"')
 			case 'n':
 				l.readChar()
-				escapedString += "\n"
+				out = append(out, '\n')
 			case 't':
 				l.readChar()
-				escapedString += "\t"
+				out = append(out, '\t')
 			case 'r':
 				l.readChar()
-				escapedString += "\r"
+				out = append(out, '\r')
 			case '\\':
 				l.readChar()
-				escapedString += "\\"
+				out = append(out, '\\')
 			default:
-				// If not a recognized escape sequence, keep the backslash
-				escapedString += string(l.ch)
+				// Not an escape sequence anyone recognises, so keep what is
+				// there, backslash included.
+				out = append(out, l.ch)
 			}
 		} else if l.ch == '"' || l.ch == 0 {
 			break
 		} else {
-			escapedString += string(l.ch)
+			out = append(out, l.ch)
 		}
 	}
 
-	return escapedString
+	return string(out)
 }
 
 func (l *Lexer) readSingleQuoteString() string {
@@ -273,14 +282,17 @@ func (l *Lexer) readSingleQuoteString() string {
 }
 
 func (l *Lexer) readIdentifier() string {
-	id := ""
+	// Bytes, for the same reason as readDoubleQuoteString. A name outside ASCII
+	// was mangled the same way, and only worked because its definition and its
+	// uses were mangled identically -- so it matched itself while being wrong.
+	var id []byte
 
 	for l.isIdentifier(l.ch) {
-		id += string(l.ch)
+		id = append(id, l.ch)
 		l.readChar()
 	}
 
-	return id
+	return string(id)
 }
 
 func (l *Lexer) isNewline() bool {

@@ -1545,3 +1545,86 @@ func runProgramFile(t *testing.T, path string) (string, object.Object) {
 
 	return <-collected, result
 }
+
+// TestNonASCIIIndexing covers indexing, slicing and assigning into a string
+// outside ASCII. Those three walked bytes while size(), reverse() and the rest
+// counted characters, so "тест"[0] answered a single byte -- half a character.
+func TestNonASCIIIndexing(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected any
+	}{
+		// Indexing.
+		{`s = "тест"; s[0]`, "т"},
+		{`s = "тест"; s[1]`, "е"},
+		{`s = "тест"; s[-1]`, "т"},
+		{`s = "тест"; s[3]`, "т"},
+		{`s = "こんにちは"; s[0]`, "こ"},
+		{`s = "café"; s[3]`, "é"},
+
+		// Slicing.
+		{`s = "тест"; s[:2]`, "те"},
+		{`s = "тест"; s[2:]`, "ст"},
+		{`s = "тест"; s[1:3]`, "ес"},
+
+		// Assigning into one.
+		{`s = "тест"; s[0] = "Т"; s`, "Тест"},
+		{`s = "abc"; s[1] = "ä"; s`, "aäc"},
+		{`s = "тест"; s[0] = "Т"; s.size()`, 4},
+
+		// The bounds are in characters too, so the length in the message
+		// matches what size() answers.
+		{`s = "тест"; s[4] = "x"`, "index out of range, got 4 but string is only 4 long"},
+
+		// ASCII is unchanged, which the documented example depends on.
+		{`s = "abcdef"; s[2]`, "c"},
+		{`s = "abcdef"; s[-2]`, "e"},
+		{`s = "abcdef"; s[:2]`, "ab"},
+		{`s = "abcdef"; s[2:]`, "cdef"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, expected)
+		case string:
+			if str, ok := evaluated.(*object.String); ok {
+				testStringObject(t, str, expected)
+				continue
+			}
+
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("input %q: not a String or Error, got %T", tt.input, evaluated)
+				continue
+			}
+			if !strings.Contains(errObj.Message, expected) {
+				t.Errorf("input %q: error %q does not contain %q", tt.input, errObj.Message, expected)
+			}
+		}
+	}
+}
+
+// TestStringOperationsAgreeOnLength walks every string method and operation
+// that counts, and checks they all count characters. Any one of them counting
+// bytes puts it out of step with the others, which is how this began.
+func TestStringOperationsAgreeOnLength(t *testing.T) {
+	for _, sample := range []string{`"тест"`, `"こんにちは"`, `"café"`, `"plain"`, `"a👍b"`} {
+		size := testEval(sample + ".size()")
+		ascii := testEval(sample + ".ascii().size()")
+		reversed := testEval(sample + ".reverse().size()")
+		sliced := testEval(sample + "[0:1].size()")
+
+		if size.Inspect() != ascii.Inspect() {
+			t.Errorf("%s: size() is %s but ascii() has %s entries", sample, size.Inspect(), ascii.Inspect())
+		}
+		if size.Inspect() != reversed.Inspect() {
+			t.Errorf("%s: size() is %s but reverse() is %s long", sample, size.Inspect(), reversed.Inspect())
+		}
+		if sliced.Inspect() != "1" {
+			t.Errorf("%s: a one-character slice is %s characters long", sample, sliced.Inspect())
+		}
+	}
+}
