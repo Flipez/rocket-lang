@@ -26,53 +26,10 @@ The documentation gives each method as a signature, for example
 | `STRING...` | one or more of them |
 
 Where a method takes a whole family of types, the family is named rather than
-listed. These names are **type groups**, not types — you never write them in
-RocketLang, they only appear in signatures and in error messages:
-
-| Group | Accepts | Used by |
-| ----- | ------- | ------- |
-| `ANY` | every value | `push`, `unshift`, `insert`, `include?` and `index` on an `ARRAY`, the fallback of `HASH.get` |
-| `HASHABLE` | anything usable as a hash key: `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY`, `HASH` | the key arguments of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.uniq` |
-| `COMPARABLE` | `STRING`, `INTEGER`, `FLOAT` | the elements of `ARRAY.sort`, `min` and `max` |
-| `STRINGABLE` | anything with a string form; a function and a module do not have one | the elements of `ARRAY.join` |
-| `INTEGERABLE` | anything readable as an integer, so also a `BOOLEAN` and a `STRING` that parses | the elements of `ARRAY.sum` |
-| `NUMERIC` | `INTEGER` and `FLOAT` | `MATRIX.set` |
-
-A group is checked by asking the value what it can do, not by comparing it
-against a list, so a type added to the language joins the group it qualifies
-for. An error names the group rather than spelling out its members:
-
-```js
-🚀 > {"a": 1}.get(nil, 0)
-=> ERROR: wrong argument type on position 1: got=NIL, want=HASHABLE
-```
-
-### Groups also describe elements
-
-A signature can only state what the *arguments* must be. Several methods have a
-requirement on the **elements** they are given instead, and they name the same
-groups:
-
-```js
-🚀 > [def() end].join()
-=> ERROR: element 0 is not STRINGABLE, got FUNCTION
-🚀 > [1, nil].uniq()
-=> ERROR: element 1 is not HASHABLE, got NIL
-🚀 > [1, nil].sum()
-=> ERROR: element 1 is not INTEGERABLE, got NIL
-🚀 > [1, nil].sort()
-=> ERROR: element 1 is not COMPARABLE, got NIL
-```
-
-Ordering carries one rule a group cannot express, because it is about the
-collection rather than any single value: the elements have to be the *same*
-comparable type. `1` and `2.5` are each `COMPARABLE` and still cannot be sorted
-together:
-
-```js
-🚀 > [1, 2.5].sort()
-=> ERROR: elements must all be one COMPARABLE type, got INTEGER at 0 and FLOAT at 1
-```
+listed — `push(ANY)`, `get(HASHABLE, ANY)`, `set(INTEGER, INTEGER, NUMERIC)`.
+Those names are **type groups**; see
+[Types and type groups](./types#type-groups) for what each one accepts and which
+types belong to it.
 
 ## Methods ending in `!`
 
