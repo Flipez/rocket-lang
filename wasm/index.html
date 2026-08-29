@@ -51,13 +51,20 @@
     <div class="row align-items-md-stretch">
       <div class="col-md-6">
         <div class="pane p-3 p-md-4 bg-body-tertiary border rounded-3">
-          <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
             <h2 class="h5 mb-0">Program</h2>
-            <select class="form-select form-select-sm w-auto" id="exerciseSelect" aria-label="Exercise">
-              <option value="">Free play</option>
-            </select>
+            <div class="d-flex align-items-center gap-2">
+              <select class="form-select form-select-sm w-auto" id="topicSelect" aria-label="Topic">
+                <option value="">Free play</option>
+              </select>
+              <select class="form-select form-select-sm w-auto d-none" id="exerciseSelect" aria-label="Exercise"></select>
+            </div>
           </div>
-          <p id="task" class="text-body-secondary small d-none"></p>
+          <div id="task" class="d-none align-items-center gap-2 mb-2">
+            <button id="prevButton" class="btn btn-sm btn-outline-secondary" type="button" title="Previous exercise">&lsaquo;</button>
+            <button id="nextButton" class="btn btn-sm btn-outline-secondary" type="button" title="Next exercise">&rsaquo;</button>
+            <span id="progressLabel" class="text-body-secondary small"></span>
+          </div>
           <ul class="nav nav-tabs" id="tabs">
             <li class="nav-item"><button class="nav-link active" type="button" data-file="main.rl">main.rl</button></li>
             <li class="nav-item"><button class="nav-link text-body-secondary" id="addFile" type="button" title="Add a file">+</button></li>
@@ -395,21 +402,78 @@
 				}
 
 				if (exercises.length) {
-					let topic = null;
-					let group = null;
+					// Thirty-nine exercises do not fit in one dropdown worth
+					// scanning. A topic is chosen first, then one of its three,
+					// and the arrows move through the whole set in order --
+					// which is how a set like this is actually worked through,
+					// so the dropdowns are for jumping, not for progressing.
+					const topics = [];
+					for (const exercise of exercises)
+						if (!topics.includes(exercise.topic)) topics.push(exercise.topic);
 
-					for (const exercise of exercises) {
-						if (exercise.topic !== topic) {
-							topic = exercise.topic;
-							group = document.createElement('optgroup');
-							group.label = topic.replace(/^\d+_/, '');
-							window.exerciseSelect.appendChild(group);
+					const label = (name) => name.replace(/^\d+_/, '').replace(/_/g, ' ');
+
+					// Which exercises have been solved, so the lists show where
+					// you are. Kept locally; nothing is sent anywhere.
+					const SOLVED_KEY = 'rocketlang.solved';
+					let solved = [];
+					try {
+						solved = JSON.parse(localStorage.getItem(SOLVED_KEY)) || [];
+					} catch (e) {
+						solved = [];
+					}
+
+					function markSolved(id) {
+						if (solved.includes(id)) return;
+
+						solved.push(id);
+						try {
+							localStorage.setItem(SOLVED_KEY, JSON.stringify(solved));
+						} catch (e) {
+							// Private browsing can refuse; the marks are a
+							// convenience, not state anything depends on.
+						}
+						renderTopics();
+						renderExercises(current ? current.topic : '');
+					}
+
+					function renderTopics() {
+						window.topicSelect.innerHTML = '';
+
+						const free = document.createElement('option');
+						free.value = '';
+						free.text = 'Free play';
+						window.topicSelect.appendChild(free);
+
+						for (const topic of topics) {
+							const inTopic = exercises.filter(e => e.topic === topic);
+							const done = inTopic.filter(e => solved.includes(e.id)).length;
+
+							const option = document.createElement('option');
+							option.value = topic;
+							option.text = (done === inTopic.length ? '\u2713 ' : '') +
+								label(topic) + ' (' + done + '/' + inTopic.length + ')';
+							window.topicSelect.appendChild(option);
 						}
 
-						const option = document.createElement('option');
-						option.value = exercise.id;
-						option.text = exercise.name.replace(/^\d+_/, '');
-						group.appendChild(option);
+						window.topicSelect.value = current ? current.topic : '';
+					}
+
+					function renderExercises(topic) {
+						window.exerciseSelect.innerHTML = '';
+						window.exerciseSelect.className =
+							'form-select form-select-sm w-auto' + (topic ? '' : ' d-none');
+
+						if (!topic) return;
+
+						for (const exercise of exercises.filter(e => e.topic === topic)) {
+							const option = document.createElement('option');
+							option.value = exercise.id;
+							option.text = (solved.includes(exercise.id) ? '\u2713 ' : '') + label(exercise.name);
+							window.exerciseSelect.appendChild(option);
+						}
+
+						if (current) window.exerciseSelect.value = current.id;
 					}
 
 					function load(id) {
@@ -425,19 +489,57 @@
 							files[ENTRY] = current.task;
 							window.input.value = current.task;
 							renderTabs();
-							window.task.innerText = current.id;
-							window.task.className = 'text-body-secondary small';
+
+							const at = exercises.indexOf(current);
+							window.progressLabel.innerText =
+								current.id + '  \u00b7  ' + (at + 1) + ' of ' + exercises.length +
+								'  \u00b7  ' + solved.length + ' solved';
+							window.task.className = 'd-flex align-items-center gap-2 mb-2';
+							window.prevButton.disabled = at === 0;
+							window.nextButton.disabled = at === exercises.length - 1;
 						} else {
-							window.task.className = 'text-body-secondary small d-none';
+							window.task.className = 'd-none align-items-center gap-2 mb-2';
+						}
+
+						renderTopics();
+						renderExercises(current ? current.topic : '');
+					}
+
+					function go(id) {
+						load(id);
+
+						if (id) {
+							urlParams.set('exercise', id);
+							urlParams.delete('share');
+							history.replaceState(null, '', '?' + urlParams);
+						} else {
+							urlParams.delete('exercise');
+							history.replaceState(null, '', location.pathname);
 						}
 					}
 
-					window.exerciseSelect.addEventListener('change', function() {
-						load(this.value);
-						urlParams.set('exercise', this.value);
-						urlParams.delete('share');
-						history.replaceState(null, '', this.value ? '?' + urlParams : location.pathname);
+					function step(by) {
+						if (!current) return;
+
+						const next = exercises[exercises.indexOf(current) + by];
+						if (next) go(next.id);
+					}
+
+					window.topicSelect.addEventListener('change', function() {
+						// Choosing a topic opens its first exercise, so one
+						// change is enough to start.
+						const first = exercises.find(e => e.topic === this.value);
+						go(this.value && first ? first.id : '');
 					});
+
+					window.exerciseSelect.addEventListener('change', function() {
+						go(this.value);
+					});
+
+					window.prevButton.addEventListener('click', () => step(-1));
+					window.nextButton.addEventListener('click', () => step(1));
+
+					renderTopics();
 
 					window.checkButton.addEventListener('click', async () => {
 						if (!current) return;
@@ -445,6 +547,7 @@
 						const printed = stripFinalValue(await runAndReport() || '');
 
 						if (printed === current.expected) {
+							markSolved(current.id);
 							verdict('Solved ✓', 'success');
 							return;
 						}
@@ -455,10 +558,7 @@
 					// A deep link wins over a share link, so a lesson can point
 					// straight at an exercise.
 					const wanted = urlParams.get('exercise');
-					if (wanted && exercises.some(e => e.id === wanted)) {
-						window.exerciseSelect.value = wanted;
-						load(wanted);
-					}
+					if (wanted && exercises.some(e => e.id === wanted)) load(wanted);
 				}
 
 				renderTabs();
