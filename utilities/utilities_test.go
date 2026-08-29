@@ -225,3 +225,42 @@ func TestSearchPathList(t *testing.T) {
 		}
 	}
 }
+
+// TestInitSearchPathsThenAddPathAppends covers the ordering the planet
+// directory depends on. FindModule builds the search path lazily, so a caller
+// that appends without forcing initialisation first would land at the front of
+// the list instead of the back — and an installed planet would then shadow the
+// project's own modules.
+func TestInitSearchPathsThenAddPathAppends(t *testing.T) {
+	before := len(SearchPaths)
+
+	InitSearchPaths()
+
+	built := len(SearchPaths)
+	if built == 0 {
+		t.Fatal("InitSearchPaths produced no search paths")
+	}
+
+	dir := t.TempDir()
+	if err := AddPath(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	if len(SearchPaths) != built+1 {
+		t.Fatalf("AddPath added %d entries, want 1", len(SearchPaths)-built)
+	}
+
+	resolved, _ := filepath.EvalSymlinks(dir)
+	last, _ := filepath.EvalSymlinks(SearchPaths[len(SearchPaths)-1])
+	if last != resolved {
+		t.Errorf("AddPath put %q at position %d, want it last", resolved, before)
+	}
+
+	// InitSearchPaths is idempotent, so a second call must not rebuild and
+	// push the appended entry out of last place.
+	InitSearchPaths()
+	last, _ = filepath.EvalSymlinks(SearchPaths[len(SearchPaths)-1])
+	if last != resolved {
+		t.Errorf("a second InitSearchPaths call disturbed the appended entry")
+	}
+}

@@ -23,13 +23,25 @@ end
 ```
 
 `a` and `Private` are both private. Capitalization means nothing — before
-`0.24` an uppercase name was exported automatically, and that rule is gone.
+`0.24` an uppercase name was exported automatically, and that rule is gone. The
+mixed casing above is deliberate: `A` and `lower` are both exported, `Private`
+is not, and nothing about the names decides that.
+
+Since capitalization no longer carries meaning, there is no reason to capitalize
+an exported function. Names that match the language's own methods — `upcase`,
+`to_s`, `include?` — read more naturally:
+
+```js
+export def snake_case(s)
+  return s.replace(" ", "_")
+end
+```
 
 You can also export a name that is already bound:
 
 ```js
-Square = def(x) return x * x end
-export Square
+square = def(x) return x * x end
+export square
 ```
 
 ## Importing
@@ -112,16 +124,16 @@ instead of trying to re-export the module itself:
 
 ```js
 // math.rl
-import "./stats" as Stats
+import "./stats" as stats
 
-export def Sum(a, b) return a + b end
-export def Mean(numbers) return Stats.Mean(numbers) end
+export def sum(a, b) return a + b end
+export def mean(numbers) return stats.mean(numbers) end
 ```
 
 ```js
 import "./math"
-math.Sum(1, 2)          // 3
-math.Mean([1, 2])       // reaches Stats through the wrapper function
+math.sum(1, 2)          // 3
+math.mean([1, 2])       // reaches stats through the wrapper function
 ```
 
 ### Where an import may appear

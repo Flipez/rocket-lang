@@ -7,8 +7,10 @@ import (
 	"strings"
 
 	"github.com/flipez/rocket-lang/ast"
+	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/stdlib"
+	"github.com/flipez/rocket-lang/token"
 	"github.com/flipez/rocket-lang/utilities"
 )
 
@@ -34,6 +36,14 @@ func evalImport(ie *ast.Import, env *object.Environment) object.Object {
 	name := ie.Alias
 	if name == "" {
 		name = filepath.Base(ie.Path)
+
+		// An implicit name comes from the path, which may contain characters
+		// that cannot be referenced afterwards. "my-lib" binds, but my-lib.Foo
+		// parses as subtraction, so the module would be unreachable. Planet
+		// names routinely contain hyphens, which makes this common.
+		if !isUsableBinding(name) {
+			return object.NewErrorFormat("%s:%d:%d: Import Error: cannot bind module as '%s': not a usable name, use 'as' to choose one", ie.Token.File, ie.Token.LineNumber, ie.Token.LinePosition, name)
+		}
 	}
 
 	if cached, ok := reg.Get(filename); ok {
@@ -199,4 +209,18 @@ func exportNames(hash *object.Hash) string {
 	}
 
 	return strings.Join(names, ", ")
+}
+
+// isUsableBinding reports whether name can be written in source and referenced.
+// Rather than restate the lexer's rules, it asks the lexer: a usable name is one
+// that lexes to exactly one identifier and nothing else.
+func isUsableBinding(name string) bool {
+	l := lexer.New(name, "")
+
+	first := l.NextToken()
+	if first.Type != token.IDENT || first.Literal != name {
+		return false
+	}
+
+	return l.NextToken().Type == token.EOF
 }
