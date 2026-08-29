@@ -12,26 +12,33 @@ $ rocket-lang planet init
 created planets.yml
 added .planets/ to .gitignore
 
-$ rocket-lang planet get flipez/rocket-lang-utils
-resolved flipez/rocket-lang-utils to v1.1.0
-installed utils v1.1.0 (364d720) to .planets/utils
+$ rocket-lang planet get flipez/rocket-lang-core@main
+installed core main (7441c48) to .planets/core
 recorded in planets.yml
 
-import it with:  import "utils/<module>"
+import it with:  import "core/<module>"
 ```
 
 ```js
-import "utils/strings" as strings
+import "core/list" as list
+import "core/stats" as stats
 
-puts(strings.Snake("hello world"))  // hello_world
+scores = [42, 17, 99, 63]
+
+puts(list.Filter(scores, def(n) return n > 40 end))  // [42, 99, 63]
+puts(stats.Mean(scores))                             // 55.25
 ```
+
+[flipez/rocket-lang-core](https://github.com/flipez/rocket-lang-core) is a
+small planet of generic helpers, and is used as the example throughout this
+page.
 
 ## Sources
 
 A source can be written four ways:
 
 ```
-flipez/rocket-lang-utils          github.com is assumed
+flipez/rocket-lang-core           github.com is assumed
 codeberg.org/flipez/utils         any host, when the first segment has a dot
 https://example.com/utils.git     an explicit git URL
 ../sibling-project                a local path, for a monorepo or a private planet
@@ -40,14 +47,14 @@ https://example.com/utils.git     an explicit git URL
 Add `@<version>` to pin one:
 
 ```
-rocket-lang planet get flipez/rocket-lang-utils@v1.2.0
+rocket-lang planet get flipez/rocket-lang-core@v1.2.0
 ```
 
 ## Names
 
 A planet is imported under an **alias**, which is the key in `planets.yml` and
 the directory name under `.planets/`. It is derived from the source, dropping a
-redundant `rocket-lang-` prefix, so `flipez/rocket-lang-utils` becomes `utils`.
+redundant `rocket-lang-` prefix, so `flipez/rocket-lang-core` becomes `core`.
 
 Choose your own with `--as`:
 
@@ -66,14 +73,14 @@ import "<alias>/<module>"
 ```
 
 The module is a file inside the planet, written **without** the `.rl`
-extension. A planet with `strings.rl` and `math.rl` offers:
+extension. A planet with `list.rl` and `stats.rl` offers:
 
 ```js
-import "utils/strings" as strings
-import "utils/math" as math
+import "core/list" as list
+import "core/stats" as stats
 ```
 
-A planet directory is not importable on its own — `import "utils"` does not
+A planet directory is not importable on its own — `import "core"` does not
 resolve. Imports name a file, as they do everywhere else in the language.
 
 Your own modules always win a name clash: the working directory is searched
@@ -89,10 +96,10 @@ ignoring prereleases, and records both the tag and the commit it resolved to:
 
 ```yaml
 planets:
-  utils:
-    source: flipez/rocket-lang-utils
-    version: v1.1.0
-    commit: 364d7201a12f07ce31a46671b8499535b403894f
+  core:
+    source: flipez/rocket-lang-core
+    version: main
+    commit: 7441c4811ff048ed4e4ee1a1a371ca837f4f52ef
 ```
 
 The commit is what makes an install reproducible. Once recorded, `planet
@@ -127,9 +134,9 @@ Running `get` again on an installed planet reports what is there and changes
 nothing, so a routine `get` can never move a dependency by surprise:
 
 ```
-$ rocket-lang planet get flipez/rocket-lang-utils
-utils is already installed at v1.1.0
-pass an explicit version to change it, for example flipez/rocket-lang-utils@v1.2.3
+$ rocket-lang planet get flipez/rocket-lang-core
+core is already installed at main
+pass an explicit version to change it, for example flipez/rocket-lang-core@v1.2.3
 ```
 
 ## Commands
@@ -147,8 +154,7 @@ correct, so repeated runs are cheap:
 
 ```
 $ rocket-lang planet install
-up to date  helpers v1.1.0
-up to date  utils v1.1.0
+up to date  core main
 ```
 
 `planet list` reports when what is installed disagrees with the manifest.
@@ -158,10 +164,11 @@ up to date  utils v1.1.0
 ```
 planets.yml
 .planets/
-  utils/
+  core/
     .planet          <- what is installed here
+    list.rl
+    stats.rl
     strings.rl
-    math.rl
 main.rl
 ```
 
