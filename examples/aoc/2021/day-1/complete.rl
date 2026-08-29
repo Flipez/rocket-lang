@@ -1,4 +1,4 @@
-input = IO.open("examples/aoc/2021/day-1/input").lines()
+input = IO.open("input").lines()
 
 // Part 1
 
@@ -24,12 +24,14 @@ puts(increase)
 
 increase = 0
 
+// A three-wide window rises exactly when the value entering it is larger than
+// the one leaving, so the sums need not be computed. Reading past the end used
+// to work only because nil.to_i() was 0.
 foreach i, number in input
-  sum = number + input[i+1].to_i() + input[i+2].to_i()
-  sum_two = input[i+1].to_i() + input[i+2].to_i() + input[i+3].to_i()
-  
-  if (sum_two > sum)
-    increase = increase + 1
+  if (i + 3 < input.size())
+    if (input[i+3] > number)
+      increase = increase + 1
+    end
   end
 end
 
