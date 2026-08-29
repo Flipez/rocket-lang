@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"io"
+	"os"
 	"strings"
 	"testing"
 
@@ -1396,4 +1398,150 @@ end
 			}
 		}
 	}
+}
+
+// TestImportFromVirtualFileSystem runs a real multi-file program with no files
+// on disk. That is what the playground needs -- a browser has no filesystem for
+// an import to resolve against -- and it is also how a module test should be
+// written: the fixtures are in the test, not beside it.
+func TestImportFromVirtualFileSystem(t *testing.T) {
+	const root = "/play"
+
+	tests := []struct {
+		name      string
+		files     map[string][]byte
+		expected  string
+		wantError bool
+	}{
+		{
+			name: "a bare name resolves through the search path",
+			files: map[string][]byte{
+				root + "/util.rl": []byte(`export def double(x) return x * 2 end`),
+				root + "/main.rl": []byte(`import "util"
+puts(util.double(21))`),
+			},
+			expected: "42\n",
+		},
+		{
+			name: "a ./ path resolves against the importing file",
+			files: map[string][]byte{
+				root + "/util.rl": []byte(`export def shout(s) return s.upcase() end`),
+				root + "/main.rl": []byte(`import "./util" as helper
+puts(helper.shout("hi"))`),
+			},
+			expected: "HI\n",
+		},
+		{
+			name: "only narrows what the namespace holds",
+			files: map[string][]byte{
+				root + "/util.rl": []byte(`export a = 1
+export b = 2`),
+				root + "/main.rl": []byte(`import "util" only a
+puts(util.a)`),
+			},
+			expected: "1\n",
+		},
+		{
+			name: "a module can import another module",
+			files: map[string][]byte{
+				root + "/inner.rl": []byte(`export def value() return "deep" end`),
+				root + "/middle.rl": []byte(`import "inner"
+export def reach() return inner.value() end`),
+				root + "/main.rl": []byte(`import "middle"
+puts(middle.reach())`),
+			},
+			expected: "deep\n",
+		},
+		{
+			name: "a missing module is reported, not a crash",
+			files: map[string][]byte{
+				root + "/main.rl": []byte(`import "nope"`),
+			},
+			expected:  "no module named 'nope' found",
+			wantError: true,
+		},
+		{
+			name: "a circular import is caught",
+			files: map[string][]byte{
+				root + "/a.rl":    []byte(`import "b"`),
+				root + "/b.rl":    []byte(`import "a"`),
+				root + "/main.rl": []byte(`import "a"`),
+			},
+			expected:  "circular import",
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			previousFS := utilities.SetFileSystem(utilities.MapFileSystem{Files: tt.files})
+			previousPaths := utilities.SearchPaths
+			utilities.SearchPaths = []string{root}
+
+			defer func() {
+				utilities.SetFileSystem(previousFS)
+				utilities.SearchPaths = previousPaths
+			}()
+
+			printed, result := runProgramFile(t, root+"/main.rl")
+
+			if !tt.wantError {
+				if printed != tt.expected {
+					t.Errorf("printed %q, want %q", printed, tt.expected)
+				}
+
+				return
+			}
+
+			if !object.IsError(result) {
+				t.Fatalf("expected an error, got %s (printed %q)", result.Inspect(), printed)
+			}
+			if !strings.Contains(result.(*object.Error).Message, tt.expected) {
+				t.Errorf("error %q does not contain %q", result.(*object.Error).Message, tt.expected)
+			}
+		})
+	}
+}
+
+// runProgramFile reads a file through the installed FileSystem and evaluates it
+// the way main does, returning what it printed and what it evaluated to.
+func runProgramFile(t *testing.T, path string) (string, object.Object) {
+	t.Helper()
+
+	source, err := utilities.ReadFile(path)
+	if err != nil {
+		t.Fatalf("%s: %s", path, err)
+	}
+
+	read, write, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	original := os.Stdout
+	os.Stdout = write
+
+	collected := make(chan string, 1)
+	go func() {
+		out, _ := io.ReadAll(read)
+		collected <- string(out)
+	}()
+
+	l := lexer.New(string(source), path)
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	var result object.Object
+	if len(p.Errors()) == 0 {
+		result = Eval(program, object.NewEnvironment())
+	}
+
+	write.Close()
+	os.Stdout = original
+
+	if len(p.Errors()) > 0 {
+		t.Fatalf("%s does not parse: %s", path, strings.Join(p.Errors(), "; "))
+	}
+
+	return <-collected, result
 }

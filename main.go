@@ -58,7 +58,7 @@ func main() {
 	if len(os.Args) == 1 {
 		repl.Start(os.Stdin, os.Stdout)
 	} else {
-		file, err := os.ReadFile(os.Args[1])
+		file, err := utilities.ReadFile(os.Args[1])
 		if err == nil {
 			runProgram(string(file), os.Args[1])
 		}
@@ -95,7 +95,6 @@ func runProgram(input string, file string) {
 	env := object.NewEnvironment()
 	l := lexer.New(input, file)
 	p := parser.New(l)
-
 
 	program := p.ParseProgram()
 	if len(p.Errors()) > 0 {

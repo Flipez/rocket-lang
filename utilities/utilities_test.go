@@ -264,3 +264,43 @@ func TestInitSearchPathsThenAddPathAppends(t *testing.T) {
 		t.Errorf("a second InitSearchPaths call disturbed the appended entry")
 	}
 }
+
+func TestMapFileSystem(t *testing.T) {
+	previous := SetFileSystem(MapFileSystem{Files: map[string][]byte{
+		"/play/main.rl": []byte(`import "util"`),
+	}})
+	defer SetFileSystem(previous)
+
+	if !Exists("/play/main.rl") {
+		t.Error("Exists should find a file the map has")
+	}
+	if Exists("/play/missing.rl") {
+		t.Error("Exists should not find a file the map lacks")
+	}
+
+	content, err := ReadFile("/play/main.rl")
+	if err != nil {
+		t.Fatalf("ReadFile: %s", err)
+	}
+	if string(content) != `import "util"` {
+		t.Errorf("ReadFile returned %q", content)
+	}
+
+	if _, err := ReadFile("/play/missing.rl"); err == nil {
+		t.Error("ReadFile should fail for a file the map lacks")
+	}
+}
+
+// TestSetFileSystemRestores checks that the previous filesystem comes back, so
+// a test installing one cannot leak it into the next.
+func TestSetFileSystemRestores(t *testing.T) {
+	previous := SetFileSystem(MapFileSystem{Files: map[string][]byte{}})
+	restored := SetFileSystem(previous)
+
+	if _, ok := restored.(MapFileSystem); !ok {
+		t.Errorf("SetFileSystem should return what it replaced, got %T", restored)
+	}
+	if !Exists("utilities.go") {
+		t.Error("the real filesystem should be back, and utilities.go should exist")
+	}
+}
