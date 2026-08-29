@@ -103,11 +103,19 @@ func init() {
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
+				return NewArray(reversedElements(o.(*Array).Elements))
+			},
+		},
+		"reverse!": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
+				ao.Elements = reversedElements(ao.Elements)
 
-				for i, j := 0, len(ao.Elements)-1; i < j; i, j = i+1, j-1 {
-					ao.Elements[i], ao.Elements[j] = ao.Elements[j], ao.Elements[i]
-				}
 				return ao
 			},
 		},
@@ -123,76 +131,31 @@ func init() {
 			},
 		},
 		"sort": ObjectMethod{
-			// Can be refactored to generics once
-			// https://github.com/golang/go/issues/48522
-			// is fixed
 			Layout: MethodLayout{
-				ReturnPattern: Args(Arg(ARRAY_OBJ)),
+				ReturnPattern: Args(Arg(ARRAY_OBJ, ERROR_OBJ)),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				sorted, err := sortedElements(o.(*Array).Elements)
+				if err != nil {
+					return err
+				}
+
+				return NewArray(sorted)
+			},
+		},
+		"sort!": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(Arg(ARRAY_OBJ, ERROR_OBJ)),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
-				sortError := false
 
-				if len(ao.Elements) == 0 {
-					return ao
+				sorted, err := sortedElements(ao.Elements)
+				if err != nil {
+					return err
 				}
+				ao.Elements = sorted
 
-				switch ao.Elements[0].(type) {
-				case *Float:
-					sort.SliceStable(ao.Elements, func(i, j int) bool {
-						leftElement, ok := ao.Elements[i].(*Float)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						rightElement, ok := ao.Elements[j].(*Float)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						return leftElement.Value < rightElement.Value
-					})
-				case *Integer:
-					sort.SliceStable(ao.Elements, func(i, j int) bool {
-						leftElement, ok := ao.Elements[i].(*Integer)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						rightElement, ok := ao.Elements[j].(*Integer)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						return leftElement.Value < rightElement.Value
-					})
-				case *String:
-					sort.SliceStable(ao.Elements, func(i, j int) bool {
-						leftElement, ok := ao.Elements[i].(*String)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						rightElement, ok := ao.Elements[j].(*String)
-						if !ok {
-							sortError = true
-							return false
-						}
-
-						return leftElement.Value < rightElement.Value
-					})
-				default:
-					sortError = true
-				}
-
-				if sortError {
-					return NewError("Array does contain either an object not INTEGER, FLOAT or STRING or is mixed")
-				}
 				return ao
 			},
 		},
@@ -231,26 +194,30 @@ func init() {
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
+				unique, err := uniqueElements(o.(*Array).Elements)
+				if err != nil {
+					return err
+				}
+
+				return NewArray(unique)
+			},
+		},
+		"uniq!": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				items := make(map[HashKey]Object)
-				for _, element := range ao.Elements {
-					helper, ok := element.(Hashable)
-					if !ok {
-						return NewErrorFormat("failed because element %s is not hashable", element.Type())
-					}
-					items[helper.HashKey()] = element
+				unique, err := uniqueElements(ao.Elements)
+				if err != nil {
+					return err
 				}
+				ao.Elements = unique
 
-				length := len(items)
-				newElements := make([]Object, length)
-				var idx int
-				for _, item := range items {
-					newElements[idx] = item
-					idx++
-				}
-
-				return NewArray(newElements)
+				return ao
 			},
 		},
 		"index": ObjectMethod{
@@ -269,29 +236,67 @@ func init() {
 		},
 		"first": ObjectMethod{
 			Layout: MethodLayout{
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
 				ReturnPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+					Arg(ANY_OBJ...),
 				),
 			},
-			method: func(o Object, _ []Object, _ Environment) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
+
+				if len(args) > 0 {
+					count := args[0].(*Integer).Value
+					if count < 0 {
+						return NewErrorFormat("negative count %d", count)
+					}
+
+					elements := ao.Elements
+					if count > len(elements) {
+						count = len(elements)
+					}
+
+					return NewArray(copyElements(elements[:count]))
+				}
+
 				if len(ao.Elements) == 0 {
 					return NIL
 				}
+
 				return ao.Elements[0]
 			},
 		},
 		"last": ObjectMethod{
 			Layout: MethodLayout{
+				ArgPattern: Args(
+					OptArg(INTEGER_OBJ),
+				),
 				ReturnPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+					Arg(ANY_OBJ...),
 				),
 			},
-			method: func(o Object, _ []Object, _ Environment) Object {
+			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
+
+				if len(args) > 0 {
+					count := args[0].(*Integer).Value
+					if count < 0 {
+						return NewErrorFormat("negative count %d", count)
+					}
+
+					elements := ao.Elements
+					if count > len(elements) {
+						count = len(elements)
+					}
+
+					return NewArray(copyElements(elements[len(elements)-count:]))
+				}
+
 				if len(ao.Elements) == 0 {
 					return NIL
 				}
+
 				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
@@ -322,7 +327,7 @@ func init() {
 		"push": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(NIL_OBJ),
+					Arg(ARRAY_OBJ),
 				),
 				ArgPattern: Args(
 					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
@@ -331,7 +336,8 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 				ao.Elements = append(ao.Elements, args[0])
-				return NIL
+
+				return ao
 			},
 		},
 		"include?": ObjectMethod{
@@ -396,7 +402,442 @@ func init() {
 				return matrix
 			},
 		},
+		"empty?": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				if len(o.(*Array).Elements) == 0 {
+					return TRUE
+				}
+
+				return FALSE
+			},
+		},
+		"count": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					OptArg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				// Without an argument this is size(). With one it counts how
+				// often that element occurs, which is what index() cannot tell
+				// you.
+				if len(args) == 0 {
+					return NewInteger(len(ao.Elements))
+				}
+
+				count := 0
+				for _, element := range ao.Elements {
+					if CompareObjects(element, args[0]) {
+						count++
+					}
+				}
+
+				return NewInteger(count)
+			},
+		},
+		"rindex": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				// -1 when absent, the same answer index() gives.
+				for i := len(ao.Elements) - 1; i >= 0; i-- {
+					if CompareObjects(ao.Elements[i], args[0]) {
+						return NewInteger(i)
+					}
+				}
+
+				return NewInteger(-1)
+			},
+		},
+		"min": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return extremeElement(o.(*Array).Elements, true)
+			},
+		},
+		"max": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				return extremeElement(o.(*Array).Elements, false)
+			},
+		},
+		"shift": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				// The mirror of pop: it changes the array and hands back the
+				// element, so it has no ! either.
+				if len(ao.Elements) == 0 {
+					return NIL
+				}
+
+				first := ao.Elements[0]
+				ao.Elements = copyElements(ao.Elements[1:])
+
+				return first
+			},
+		},
+		"unshift": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				ao.Elements = append([]Object{args[0]}, ao.Elements...)
+
+				return ao
+			},
+		},
+		"insert": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
+
+				at := args[0].(*Integer).Value
+				if at < 0 {
+					at = length + at + 1
+				}
+				// Inserting at length appends. Anything past that would need
+				// the array padded with nils, which is a surprise rather than a
+				// convenience.
+				if at < 0 || at > length {
+					return NewErrorFormat("index out of range, got %d but array has only %d elements", args[0].(*Integer).Value, length)
+				}
+
+				elements := make([]Object, 0, length+1)
+				elements = append(elements, ao.Elements[:at]...)
+				elements = append(elements, args[1])
+				elements = append(elements, ao.Elements[at:]...)
+				ao.Elements = elements
+
+				return ao
+			},
+		},
+		"delete": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				kept := make([]Object, 0, len(ao.Elements))
+				found := false
+				for _, element := range ao.Elements {
+					if CompareObjects(element, args[0]) {
+						found = true
+						continue
+					}
+					kept = append(kept, element)
+				}
+				ao.Elements = kept
+
+				// The element when something went, nil when nothing did, so the
+				// caller can tell the two apart.
+				if !found {
+					return NIL
+				}
+
+				return args[0]
+			},
+		},
+		"delete_at": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ANY_OBJ...),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				length := len(ao.Elements)
+
+				at := args[0].(*Integer).Value
+				if at < 0 {
+					at = length + at
+				}
+				// nil rather than an error for a position that is not there,
+				// the same answer first() and pop() give for an empty array.
+				if at < 0 || at >= length {
+					return NIL
+				}
+
+				removed := ao.Elements[at]
+				elements := make([]Object, 0, length-1)
+				elements = append(elements, ao.Elements[:at]...)
+				elements = append(elements, ao.Elements[at+1:]...)
+				ao.Elements = elements
+
+				return removed
+			},
+		},
+		"clear": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				ao := o.(*Array)
+				ao.Elements = make([]Object, 0)
+
+				return ao
+			},
+		},
+		"concat": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+				ao.Elements = append(ao.Elements, args[0].(*Array).Elements...)
+
+				return ao
+			},
+		},
+		"take": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				count := args[0].(*Integer).Value
+				if count < 0 {
+					return NewErrorFormat("negative count %d", count)
+				}
+				if count > len(ao.Elements) {
+					count = len(ao.Elements)
+				}
+
+				return NewArray(copyElements(ao.Elements[:count]))
+			},
+		},
+		"drop": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				ao := o.(*Array)
+
+				count := args[0].(*Integer).Value
+				if count < 0 {
+					return NewErrorFormat("negative count %d", count)
+				}
+				if count > len(ao.Elements) {
+					count = len(ao.Elements)
+				}
+
+				return NewArray(copyElements(ao.Elements[count:]))
+			},
+		},
 	}
+
+	// Pure method and ! counterpart from one transformation each, the same way
+	// string.go registers its pairs.
+	arrayPair("compact", nil, func(elements []Object, _ []Object) ([]Object, Object) {
+		return compactElements(elements), nil
+	})
+	arrayPair("flatten", Args(OptArg(INTEGER_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		depth := -1
+		if len(args) > 0 {
+			depth = args[0].(*Integer).Value
+			if depth < 0 {
+				return nil, NewErrorFormat("negative depth %d", depth)
+			}
+		}
+
+		return flattenElements(elements, depth), nil
+	})
+	arrayPair("rotate", Args(OptArg(INTEGER_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		by := 1
+		if len(args) > 0 {
+			by = args[0].(*Integer).Value
+		}
+
+		return rotatedElements(elements, by), nil
+	})
+}
+
+// arrayPair registers a method and its in-place counterpart from one
+// transformation, so the two halves cannot drift apart. See stringPair in
+// string.go for why this is not written out twice.
+func arrayPair(name string, argPattern []Argument, transform func(elements []Object, args []Object) ([]Object, Object)) {
+	layout := MethodLayout{
+		ArgPattern:    argPattern,
+		ReturnPattern: Args(Arg(ARRAY_OBJ, ERROR_OBJ)),
+	}
+
+	objectMethods[ARRAY_OBJ][name] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			elements, err := transform(o.(*Array).Elements, args)
+			if err != nil {
+				return err
+			}
+
+			return NewArray(elements)
+		},
+	}
+
+	objectMethods[ARRAY_OBJ][name+"!"] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			ao := o.(*Array)
+
+			elements, err := transform(ao.Elements, args)
+			if err != nil {
+				return err
+			}
+			ao.Elements = elements
+
+			return ao
+		},
+	}
+}
+
+// copyElements returns a fresh slice, so a method handing back a sub-slice
+// cannot be written through to the array it came from.
+func copyElements(src []Object) []Object {
+	out := make([]Object, len(src))
+	copy(out, src)
+
+	return out
+}
+
+func compactElements(src []Object) []Object {
+	out := make([]Object, 0, len(src))
+	for _, element := range src {
+		if element.Type() == NIL_OBJ {
+			continue
+		}
+		out = append(out, element)
+	}
+
+	return out
+}
+
+// flattenElements inlines nested arrays. A depth below zero means all the way
+// down; zero means leave them alone.
+func flattenElements(src []Object, depth int) []Object {
+	out := make([]Object, 0, len(src))
+	for _, element := range src {
+		nested, ok := element.(*Array)
+		if !ok || depth == 0 {
+			out = append(out, element)
+			continue
+		}
+
+		next := depth - 1
+		if depth < 0 {
+			next = depth
+		}
+		out = append(out, flattenElements(nested.Elements, next)...)
+	}
+
+	return out
+}
+
+// rotatedElements moves the first by elements to the end. A negative count
+// rotates the other way, and the count wraps, so rotating a 3-element array by
+// 4 is the same as by 1.
+func rotatedElements(src []Object, by int) []Object {
+	if len(src) == 0 {
+		return copyElements(src)
+	}
+
+	at := by % len(src)
+	if at < 0 {
+		at += len(src)
+	}
+
+	return append(copyElements(src[at:]), src[:at]...)
+}
+
+// extremeElement returns the smallest or largest element. It sorts a copy so
+// that the rule about what can be compared, and the error when it cannot, are
+// exactly sort's.
+func extremeElement(src []Object, min bool) Object {
+	if len(src) == 0 {
+		return NIL
+	}
+
+	sorted, err := sortedElements(src)
+	if err != nil {
+		return err
+	}
+
+	if min {
+		return sorted[0]
+	}
+
+	return sorted[len(sorted)-1]
 }
 
 func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Object {
@@ -405,6 +846,13 @@ func (ao *Array) InvokeMethod(method string, env Environment, args ...Object) Ob
 
 func (ao *Array) GetIterator(start, step int, _ bool) Iterator {
 	return &arrayIterator{items: ao.Elements, index: start, step: step}
+}
+
+// ToStringObj renders the array the way Inspect does, which is what Ruby's
+// Array#to_s does too. Without it the generic to_s fell through to an empty
+// string, so [1,2].to_s() was "" while to_json() worked.
+func (ao *Array) ToStringObj() *String {
+	return NewString(ao.Inspect())
 }
 
 func (ao *Array) MarshalJSON() ([]byte, error) {
@@ -425,4 +873,101 @@ func (a *arrayIterator) Next() (Object, Object, bool) {
 		return val, idx, true
 	}
 	return nil, NewInteger(0), false
+}
+
+// reversedElements returns a reversed copy, leaving src untouched.
+func reversedElements(src []Object) []Object {
+	out := make([]Object, len(src))
+	for i, element := range src {
+		out[len(src)-1-i] = element
+	}
+
+	return out
+}
+
+// sortedElements returns a sorted copy of src. The second value is an error
+// object when the elements are not a single sortable type, in which case the
+// copy must not be used -- working on a copy means a failed sort cannot leave a
+// half-ordered array behind.
+//
+// Can be refactored to generics once
+// https://github.com/golang/go/issues/48522 is fixed.
+func sortedElements(src []Object) ([]Object, Object) {
+	out := make([]Object, len(src))
+	copy(out, src)
+
+	if len(out) == 0 {
+		return out, nil
+	}
+
+	sortError := false
+
+	switch out[0].(type) {
+	case *Float:
+		sort.SliceStable(out, func(i, j int) bool {
+			left, leftOk := out[i].(*Float)
+			right, rightOk := out[j].(*Float)
+			if !leftOk || !rightOk {
+				sortError = true
+				return false
+			}
+
+			return left.Value < right.Value
+		})
+	case *Integer:
+		sort.SliceStable(out, func(i, j int) bool {
+			left, leftOk := out[i].(*Integer)
+			right, rightOk := out[j].(*Integer)
+			if !leftOk || !rightOk {
+				sortError = true
+				return false
+			}
+
+			return left.Value < right.Value
+		})
+	case *String:
+		sort.SliceStable(out, func(i, j int) bool {
+			left, leftOk := out[i].(*String)
+			right, rightOk := out[j].(*String)
+			if !leftOk || !rightOk {
+				sortError = true
+				return false
+			}
+
+			return left.Value < right.Value
+		})
+	default:
+		sortError = true
+	}
+
+	if sortError {
+		return nil, NewError("Array does contain either an object not INTEGER, FLOAT or STRING or is mixed")
+	}
+
+	return out, nil
+}
+
+// uniqueElements returns a copy with duplicates removed, keeping the order of
+// first appearance. Building the result from a map, as this once did, made the
+// order depend on Go's map iteration and therefore vary between runs.
+func uniqueElements(src []Object) ([]Object, Object) {
+	seen := make(map[HashKey]struct{}, len(src))
+	out := make([]Object, 0, len(src))
+
+	for _, element := range src {
+		hashable, ok := element.(Hashable)
+		if !ok {
+			return nil, NewErrorFormat("failed because element %s is not hashable", element.Type())
+		}
+
+		key := hashable.HashKey()
+		if _, duplicate := seen[key]; duplicate {
+			continue
+		}
+
+		seen[key] = struct{}{}
+		out = append(out, element)
+	}
+
+	return out, nil
 }

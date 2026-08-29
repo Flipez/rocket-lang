@@ -102,7 +102,7 @@ methods:
     output: |
       3.0
   set:
-    description: "Sets the element at the specified row and column (0-indexed)."
+    description: "Sets the element at the specified row and column (0-indexed) and returns the matrix, so calls can be chained."
     input: |
       m = [[1, 2, 3], [4, 5, 6]].to_m()
       m.set(0, 2, 99)
@@ -113,11 +113,15 @@ methods:
       │ 1.0  2.0  3.0 │
       │ 4.0  5.0  6.0 │
       └               ┘
-      nil
       2x3 matrix
       ┌                ┐
-      │ 1.0   2.0  99.0 │
-      │ 4.0   5.0   6.0 │
+      │ 1.0  2.0  99.0 │
+      │ 4.0  5.0   6.0 │
+      └                ┘
+      2x3 matrix
+      ┌                ┐
+      │ 1.0  2.0  99.0 │
+      │ 4.0  5.0   6.0 │
       └                ┘
   row:
     description: "Returns the specified row as an array (0-indexed)."

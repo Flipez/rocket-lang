@@ -2,22 +2,3 @@ title: "Nil"
 description: |
   Nil is the representation of "nothing".
   It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.
-methods:
-  to_s:
-    description: "Returns empty string."
-    input: |
-      nil.to_s()
-    output: |
-      ""
-  to_i:
-    description: "Returns zero integer."
-    input: |
-      nil.to_i()
-    output: |
-      0
-  to_f:
-    description: "Returns zero float."
-    input: |
-      nil.to_f()
-    output: |
-      0.0

@@ -27,14 +27,181 @@ puts(a[1:-2])
 
 ## Literal Specific Methods
 
-### first()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
+### clear()
+> Returns `ARRAY`
+
+Removes every element and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2]
+a.clear()
+a
+' output='[1, 2]
+[]
+[]
+' />
+
+
+### compact()
+> Returns `ARRAY|ERROR`
+
+Returns a copy with every `nil` removed. The array itself is unchanged; use `compact!` to remove them in place.
+
+
+<CodeBlockSimple input='a = [1, nil, 2, nil]
+a.compact()
+a
+' output='[1, nil, 2, nil]
+[1, 2]
+[1, nil, 2, nil]
+' />
+
+
+### compact!()
+> Returns `ARRAY|ERROR`
+
+Removes every `nil` in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, nil, 2, nil]
+a.compact!()
+a
+' output='[1, nil, 2, nil]
+[1, 2]
+[1, 2]
+' />
+
+
+### concat(ARRAY)
+> Returns `ARRAY`
+
+Appends every element of the given array and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1]
+a.concat([2, 3])
+a
+' output='[1]
+[1, 2, 3]
+[1, 2, 3]
+' />
+
+
+### count(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+> Returns `INTEGER`
+
+Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you.
+
+
+<CodeBlockSimple input='[1, 2, 2, 3].count()
+[1, 2, 2, 3].count(2)
+[1, 2, 2, 3].count(9)
+' output='4
+2
+0
+' />
+
+
+### delete(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+
+Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss.
+
+
+<CodeBlockSimple input='a = [1, 2, 1]
+a.delete(1)
+a
+a.delete(9)
+' output='[1, 2, 1]
+1
+[2]
+nil
+' />
+
+
+### delete_at(INTEGER)
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+
+Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.delete_at(1)
+a
+a.delete_at(9)
+' output='[1, 2, 3]
+2
+[1, 3]
+nil
+' />
+
+
+### drop(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns everything after the first n elements as a new array. Dropping more than there are gives an empty array.
+
+
+<CodeBlockSimple input='[1, 2, 3].drop(2)
+[1, 2, 3].drop(9)
+' output='[3]
+[]
+' />
+
+
+### empty?()
+> Returns `BOOLEAN`
+
+Returns `true` when the array has no elements.
+
+
+<CodeBlockSimple input='[].empty?()
+[1].empty?()
+' output='true
+false
+' />
+
+
+### first(INTEGER)
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
 
 Returns the first element of the array. Shorthand for `array[0]`
 
 
 <CodeBlockSimple input='["a", "b", 1, 2].first()
 ' output='"a"
+' />
+
+
+### flatten(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns a copy with nested arrays inlined, all the way down by default or to the given depth. The array itself is unchanged; use `flatten!` to inline in place.
+
+
+<CodeBlockSimple input='a = [1, [2, [3]]]
+a.flatten()
+a.flatten(1)
+a
+' output='[1, [2, [3]]]
+[1, 2, 3]
+[1, 2, [3]]
+[1, [2, [3]]]
+' />
+
+
+### flatten!(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Inlines nested arrays in place and returns the array, so calls can be chained. Takes the same optional depth as `flatten`.
+
+
+<CodeBlockSimple input='a = [1, [2, [3]]]
+a.flatten!()
+a
+' output='[1, [2, [3]]]
+[1, 2, 3]
+[1, 2, 3]
 ' />
 
 
@@ -62,23 +229,72 @@ Returns the index of the given element in the array if found. Otherwise return `
 ' />
 
 
+### insert(INTEGER, INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+> Returns `ARRAY|ERROR`
+
+Inserts an element at the given index and returns the array. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`.
+
+
+<CodeBlockSimple input='a = [1, 2]
+a.insert(1, 9)
+a.insert(0 - 1, 8)
+a
+' output='[1, 2]
+[1, 9, 2]
+[1, 9, 2, 8]
+[1, 9, 2, 8]
+' />
+
+
 ### join(STRING)
 > Returns `STRING`
 
+Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not.
 
 
+<CodeBlockSimple input='[1, 2, 3].join()
+[1, 2, 3].join("-")
+' output='"123"
+"1-2-3"
+' />
 
 
-
-
-### last()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
+### last(INTEGER)
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
 
 Returns the last element of the array.
 
 
 <CodeBlockSimple input='["a", "b", 1, 2].last()
 ' output='2
+' />
+
+
+### max()
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+
+Returns the largest element, or `nil` for an empty array. Takes the same elements as `min`.
+
+
+<CodeBlockSimple input='[3, 1, 2].max()
+[].max()
+' output='3
+nil
+' />
+
+
+### min()
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+
+Returns the smallest element, or `nil` for an empty array. The elements have to be all strings, all integers or all floats, exactly as `sort` requires.
+
+
+<CodeBlockSimple input='[3, 1, 2].min()
+["b", "a"].min()
+[].min()
+' output='1
+"a"
+nil
 ' />
 
 
@@ -98,16 +314,16 @@ a
 
 
 ### push(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
-> Returns `NIL`
+> Returns `ARRAY`
 
-Adds the given object as last element to the array.
+Adds the given object as the last element and returns the array, so calls can be chained.
 
 
-<CodeBlockSimple input='a = [1,2,3]
-a.push("a")
-a
+<CodeBlockSimple input='d = [1,2,3]
+d.push("a")
+d
 ' output='[1, 2, 3]
-nil
+[1, 2, 3, "a"]
 [1, 2, 3, "a"]
 ' />
 
@@ -115,11 +331,92 @@ nil
 ### reverse()
 > Returns `ARRAY`
 
-Reverses the elements of the array
+Returns a new array with the elements in reverse order. The array itself is unchanged; use `reverse!` to reverse it in place.
 
 
-<CodeBlockSimple input='["a", "b", 1, 2].reverse()
-' output='[2, 1, "b", "a"]
+<CodeBlockSimple input='a = ["a", "b", 1, 2]
+a.reverse()
+a
+' output='["a", "b", 1, 2]
+[2, 1, "b", "a"]
+["a", "b", 1, 2]
+' />
+
+
+### reverse!()
+> Returns `ARRAY`
+
+Reverses the array in place and returns it, so calls can be chained.
+
+
+<CodeBlockSimple input='a = ["a", "b", 1, 2]
+a.reverse!()
+a
+' output='["a", "b", 1, 2]
+[2, 1, "b", "a"]
+[2, 1, "b", "a"]
+' />
+
+
+### rindex(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+> Returns `INTEGER`
+
+Returns the index of the last matching element, or `-1` when there is none. The mirror of `index`.
+
+
+<CodeBlockSimple input='[1, 2, 2, 3].rindex(2)
+[1, 2, 3].rindex(9)
+' output='2
+-1
+' />
+
+
+### rotate(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns a copy with the first elements moved to the end, one by default. A negative count rotates the other way, and the count wraps. The array itself is unchanged; use `rotate!` to rotate in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.rotate()
+a.rotate(2)
+a.rotate(0 - 1)
+a
+' output='[1, 2, 3]
+[2, 3, 1]
+[3, 1, 2]
+[3, 1, 2]
+[1, 2, 3]
+' />
+
+
+### rotate!(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Rotates the array in place and returns it, so calls can be chained. Takes the same optional count as `rotate`.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.rotate!()
+a
+' output='[1, 2, 3]
+[2, 3, 1]
+[2, 3, 1]
+' />
+
+
+### shift()
+> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+
+Removes the first element and returns it, or `nil` for an empty array. The mirror of `pop`, and like `pop` it changes the array without a `!`, because there is no pure version of taking something out.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.shift()
+a
+' output='[1, 2, 3]
+1
+[2, 3]
 ' />
 
 
@@ -146,23 +443,59 @@ Returns the elements of the array in slices with the size of the given integer
 
 
 ### sort()
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
-Sorts the array if it contains only one type of STRING, INTEGER or FLOAT
+Returns a new sorted array. The elements must all be STRING, all INTEGER or all FLOAT, otherwise an error is returned and the array is left untouched. Use `sort!` to sort in place.
 
 
-<CodeBlockSimple input='[3.4, 3.1, 2.0].sort()
-' output='[2.0, 3.1, 3.4]
+<CodeBlockSimple input='b = [3.4, 3.1, 2.0]
+b.sort()
+b
+' output='[3.4, 3.1, 2.0]
+[2.0, 3.1, 3.4]
+[3.4, 3.1, 2.0]
+' />
+
+
+### sort!()
+> Returns `ARRAY|ERROR`
+
+Sorts the array in place and returns it. A sort that cannot compare its elements returns an error and leaves the array unchanged rather than half-ordered.
+
+
+<CodeBlockSimple input='b = [3.4, 3.1, 2.0]
+b.sort!()
+b
+' output='[3.4, 3.1, 2.0]
+[2.0, 3.1, 3.4]
+[2.0, 3.1, 3.4]
 ' />
 
 
 ### sum()
 > Returns `INTEGER`
 
+Adds the elements up. They all have to be numbers.
 
 
+<CodeBlockSimple input='[1, 2, 3].sum()
+[1.5, 2.5].sum()
+' output='6
+3
+' />
 
 
+### take(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns the first n elements as a new array. Asking for more than there are gives all of them. The result is a copy, so changing the original does not change it.
+
+
+<CodeBlockSimple input='[1, 2, 3].take(2)
+[1, 2, 3].take(9)
+' output='[1, 2]
+[1, 2, 3]
+' />
 
 
 ### to_m()
@@ -183,11 +516,45 @@ Converts a nested array (2D array) to a Matrix object.
 ### uniq()
 > Returns `ARRAY|ERROR`
 
-Returns a copy of the array with deduplicated elements. Raises an error if a element is not hashable.
+Returns a new array with duplicates removed, keeping the order of first appearance. Returns an error if an element is not hashable. Use `uniq!` to deduplicate in place.
 
 
-<CodeBlockSimple input='["a", 1, 1, 2].uniq()
-' output='[1, 2, "a"]
+<CodeBlockSimple input='c = ["a", 1, 1, 2]
+c.uniq()
+c
+' output='["a", 1, 1, 2]
+["a", 1, 2]
+["a", 1, 1, 2]
+' />
+
+
+### uniq!()
+> Returns `ARRAY|ERROR`
+
+Removes duplicates from the array in place and returns it, keeping the order of first appearance.
+
+
+<CodeBlockSimple input='c = ["a", 1, 1, 2]
+c.uniq!()
+c
+' output='["a", 1, 1, 2]
+["a", 1, 2]
+["a", 1, 2]
+' />
+
+
+### unshift(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+> Returns `ARRAY`
+
+Adds an element to the front and returns the array, so calls can be chained. The mirror of `push`.
+
+
+<CodeBlockSimple input='a = [2, 3]
+a.unshift(1)
+a
+' output='[2, 3]
+[1, 2, 3]
+[1, 2, 3]
 ' />
 
 
@@ -197,13 +564,30 @@ Returns a copy of the array with deduplicated elements. Raises an error if a ele
 ### methods()
 > Returns `ARRAY`
 
-Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods().sort()
+<CodeBlockSimple input='1.0.methods().include?("round")
 true.methods()
-' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+' output='true
 []
+' />
+
+
+### nil?()
+> Returns `BOOLEAN`
+
+Returns `true` only for `nil`. Reads better than comparing against `nil` at the end of a chain, and every type answers it.
+
+
+<CodeBlockSimple input='nil.nil?()
+1.nil?()
+"".nil?()
+[].first().nil?()
+' output='true
+false
+false
+true
 ' />
 
 
@@ -299,7 +683,7 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
+Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()

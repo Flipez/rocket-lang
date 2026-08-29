@@ -38,7 +38,7 @@ foreach instruction in instructions
   foreach i in amount
     temp_stack.push(stacks2[from - 1].pop())
   end
-  temp_stack.reverse()
+  temp_stack.reverse!()
   foreach item in temp_stack
     stacks2[to - 1].push(item)
   end

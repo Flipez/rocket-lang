@@ -70,104 +70,303 @@ methods:
       []
       [97]
       [97, 98, 99]
+  capitalize:
+    description: "Returns a copy with the first character upcased and every following character downcased, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost."
+    input: |
+      a = "hello World!"
+      a.capitalize()
+      a
+    output: |
+      "hello World!"
+      "Hello world!"
+      "hello World!"
+  capitalize!:
+    description: "Upcases the first character and downcases the rest in place, and returns the string, so calls can be chained."
+    input: |
+      a = "hello World!"
+      a.capitalize!()
+      a
+    output: |
+      "hello World!"
+      "Hello world!"
+      "Hello world!"
+  chomp:
+    description: "Returns a copy with one trailing line ending removed: `\\r\\n`, `\\n` or `\\r`. Given a string it removes one trailing occurrence of that string instead. Given `\"\"` it removes every trailing `\\n` and `\\r\\n`, which is the way to drop blank lines at the end of a file."
+    input: |
+      a = "line\n"
+      a.chomp()
+      a.chomp() == "line"
+      "abcdd".chomp("d")
+      "a\n\n\n".chomp("")
+    output: |
+      "line\n"
+      "line"
+      true
+      "abcd"
+      "a"
+  chomp!:
+    description: "Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`."
+    input: |
+      a = "line\n"
+      a.chomp!()
+      a
+    output: |
+      "line\n"
+      "line"
+      "line"
+  chop:
+    description: "Returns a copy with the last character removed. A trailing `\\r\\n` is removed as a unit so a line ending is never left half there. Chopping an empty string gives an empty string rather than an error."
+    input: |
+      a = "abcd"
+      a.chop()
+      a
+      "".chop()
+    output: |
+      "abcd"
+      "abc"
+      "abcd"
+      ""
+  chop!:
+    description: "Removes the last character in place and returns the string, so calls can be chained."
+    input: |
+      a = "abcd"
+      a.chop!()
+      a
+    output: |
+      "abcd"
+      "abc"
+      "abc"
   count:
     description: "Counts how often a given substring occurs in the string."
-    example: |
-      🚀 » "test".count("t")
-      » 2
-      🚀 » "test".count("f")
-      » 0
+    input: |
+      "test".count("t")
+    output: |
+      2
+  downcase:
+    description: "Returns a copy with all uppercase letters replaced by their lowercase counterparts."
+    input: |
+      a = "TEST"
+      a.downcase()
+      a
+    output: |
+      "TEST"
+      "test"
+      "TEST"
+  downcase!:
+    description: "Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained."
+    input: |
+      a = "TEST"
+      a.downcase!()
+      a
+    output: |
+      "TEST"
+      "test"
+      "test"
+  empty?:
+    description: "Returns `true` when the string has no characters."
+    input: |
+      "".empty?()
+      " ".empty?()
+    output: |
+      true
+      false
+  end_with?:
+    description: "Returns `true` when the string ends with any of the given strings."
+    input: |
+      "test.rl".end_with?(".rl")
+      "test.rl".end_with?(".go")
+      "test.rl".end_with?(".go", ".rl")
+    output: |
+      true
+      false
+      true
   find:
     description: "Returns the character index of a given string if found. Otherwise returns `-1`"
-    example: |
-      🚀 » "test".find("e")
-      » 1
-      🚀 » "test".find("f")
-      » -1
+    input: |
+      "test".find("e")
+    output: |
+      1
   format:
     description: "Formats according to a format specifier and returns the resulting string"
-    example: |
-      🚀 » "test%9d".format(1)
-      » "test        1"
-      🚀 » "test%1.2f".format(1.5)
-      » "test1.50"
-      🚀 » "test%s".format("test")
-      » "testtest"
-  size:
-    description: "Returns the amount of characters in the string."
-    example: |
-      🚀 » "test".size()
-      » 4
-  replace:
-    description: "Replaces the first string with the second string in the given string."
-    example: |
-      🚀 » "test".replace("t", "f")
-      » "fesf"
-  reverse:
-    description: "Returns a copy of the string with all characters reversed."
-    example: |
-      🚀 » "stressed".reverse()
-      » "desserts"
-  reverse!:
-    description: "Replaces all the characters in a string in reverse order."
-    example: |
-      🚀 » a = "stressed"
-      » "stressed"
-      🚀 » a.reverse!()
-      » nil
-      🚀 » a
-      » "desserts"
-  split:
-    description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`"
-    example: |
-      🚀 » "a,b,c,d".split(",")
-      » ["a", "b", "c", "d"]
-      🚀 » "test and another test".split()
-      » ["test", "and", "another", "test"]
+    input: |
+      "%s is %d".format("a", 1)
+    output: |
+      "a is 1"
+  include?:
+    description: "Returns `true` when the string contains the given substring."
+    input: |
+      "test".include?("es")
+      "test".include?("xy")
+    output: |
+      true
+      false
   lines:
     description: "Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split(\"\\n\")`."
-    example: |
-      🚀 » "test\ntest2".lines()
-      » ["test\ntest2"]
+    input: |
+      "a\nb".lines()
+    output: |
+      ["a", "b"]
+  lstrip:
+    description: "Returns a copy with leading whitespace removed. See `rstrip` for the trailing end and `strip` for both."
+    input: |
+      a = "  test  "
+      a.lstrip()
+      a
+    output: |
+      "  test  "
+      "test  "
+      "  test  "
+  lstrip!:
+    description: "Removes leading whitespace in place and returns the string, so calls can be chained."
+    input: |
+      a = "  test  "
+      a.lstrip!()
+      a
+    output: |
+      "  test  "
+      "test  "
+      "test  "
+  replace:
+    description: "Returns a copy with every occurrence of the first string replaced by the second. This is Ruby's `gsub` with plain strings rather than Ruby's `replace`."
+    input: |
+      a = "test"
+      a.replace("t", "f")
+      a
+    output: |
+      "test"
+      "fesf"
+      "test"
+  replace!:
+    description: "Replaces every occurrence of the first string with the second in place and returns the string, so calls can be chained."
+    input: |
+      a = "test"
+      a.replace!("t", "f")
+      a
+    output: |
+      "test"
+      "fesf"
+      "fesf"
+  reverse:
+    description: "Returns a copy of the string with all characters reversed."
+    input: |
+      a = "stressed"
+      a.reverse()
+      a
+    output: |
+      "stressed"
+      "desserts"
+      "stressed"
+  reverse!:
+    description: "Reverses the characters in place and returns the string, so calls can be chained."
+    input: |
+      a = "stressed"
+      a.reverse!()
+      a
+    output: |
+      "stressed"
+      "desserts"
+      "desserts"
+  rstrip:
+    description: "Returns a copy with trailing whitespace removed. See `lstrip` for the leading end and `strip` for both."
+    input: |
+      a = "  test  "
+      a.rstrip()
+      a
+    output: |
+      "  test  "
+      "  test"
+      "  test  "
+  rstrip!:
+    description: "Removes trailing whitespace in place and returns the string, so calls can be chained."
+    input: |
+      a = "  test  "
+      a.rstrip!()
+      a
+    output: |
+      "  test  "
+      "  test"
+      "  test"
+  size:
+    description: "Returns the amount of characters in the string."
+    input: |
+      "test".size()
+    output: |
+      4
+  split:
+    description: "Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `\" \"`"
+    input: |
+      "a b".split()
+      "a-b".split("-")
+    output: |
+      ["a", "b"]
+      ["a", "b"]
+  start_with?:
+    description: "Returns `true` when the string starts with any of the given strings."
+    input: |
+      "test.rl".start_with?("test")
+      "test.rl".start_with?("prod")
+      "test.rl".start_with?("prod", "test")
+    output: |
+      true
+      false
+      true
   strip:
-    description: "Returns a copy of the string with all leading and trailing whitespaces removed."
-    example: |
-      🚀 » " test ".strip()
-      » "test"
+    description: "Returns a copy with leading and trailing whitespace removed."
+    input: |
+      a = "  test  "
+      a.strip()
+      a
+    output: |
+      "  test  "
+      "test"
+      "  test  "
   strip!:
-    description: "Removes all leading and trailing whitespaces in the string."
-    example: |
-      🚀 » a = " test "
-      » " test "
-      🚀 » a.strip!()
-      » nil
-      🚀 » a
-      » "test"
-  downcase:
-    description: "Returns the string with all uppercase letters replaced with lowercase counterparts."
-    example: |
-      🚀 » "TeST".downcase()
-      » "test"
-  downcase!:
-    description: "Replaces all upcase characters with lowercase counterparts."
-    example: |
-      🚀 » a = "TeST"
-      » "TeST"
-      🚀 » a.downcase!()
-      » nil
-      🚀 » a
-      » "test"
+    description: "Removes leading and trailing whitespace in place and returns the string, so calls can be chained."
+    input: |
+      a = "  test  "
+      a.strip!()
+      a
+    output: |
+      "  test  "
+      "test"
+      "test"
+  swapcase:
+    description: "Returns a copy with every uppercase character downcased and every lowercase character upcased."
+    input: |
+      a = "Hello World"
+      a.swapcase()
+      a
+    output: |
+      "Hello World"
+      "hELLO wORLD"
+      "Hello World"
+  swapcase!:
+    description: "Swaps the case of every character in place and returns the string, so calls can be chained."
+    input: |
+      a = "Hello World"
+      a.swapcase!()
+      a
+    output: |
+      "Hello World"
+      "hELLO wORLD"
+      "hELLO wORLD"
   upcase:
-    description: "Returns the string with all lowercase letters replaced with uppercase counterparts."
-    example: |
-      🚀 » "test".upcase()
-      » "TEST"
+    description: "Returns a copy with all lowercase letters replaced by their uppercase counterparts."
+    input: |
+      a = "test"
+      a.upcase()
+      a
+    output: |
+      "test"
+      "TEST"
+      "test"
   upcase!:
-    description: "Replaces all lowercase characters with upcase counterparts."
-    example: |
-      🚀 » a = "test"
-      » "test"
-      🚀 » a.upcase!()
-      » nil
-      🚀 » a
-      » "TEST"
+    description: "Replaces lowercase characters with their uppercase counterparts in place and returns the string, so calls can be chained."
+    input: |
+      a = "test"
+      a.upcase!()
+      a
+    output: |
+      "test"
+      "TEST"
+      "TEST"

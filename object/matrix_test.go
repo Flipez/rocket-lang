@@ -569,8 +569,8 @@ func TestMatrixMethodSet(t *testing.T) {
 
 	// Valid set with integer
 	result := m.InvokeMethod("set", *env, NewInteger(0), NewInteger(2), NewInteger(99))
-	if result.Type() != NIL_OBJ {
-		t.Errorf("set method should return NIL, got %s", result.Type())
+	if result.Type() != MATRIX_OBJ {
+		t.Errorf("set method should return MATRIX, got %s", result.Type())
 	}
 	if m.Data[0][2] != 99.0 {
 		t.Errorf("After set, m[0][2] = %f, want 99.0", m.Data[0][2])
@@ -578,8 +578,8 @@ func TestMatrixMethodSet(t *testing.T) {
 
 	// Valid set with float
 	result = m.InvokeMethod("set", *env, NewInteger(1), NewInteger(1), NewFloat(3.14))
-	if result.Type() != NIL_OBJ {
-		t.Errorf("set method should return NIL, got %s", result.Type())
+	if result.Type() != MATRIX_OBJ {
+		t.Errorf("set method should return MATRIX, got %s", result.Type())
 	}
 	if m.Data[1][1] != 3.14 {
 		t.Errorf("After set, m[1][1] = %f, want 3.14", m.Data[1][1])

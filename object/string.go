@@ -6,6 +6,7 @@ import (
 	"hash/fnv"
 	"strconv"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -78,58 +79,6 @@ func init() {
 				return NewInteger(utf8.RuneCountInString(s.Value))
 			},
 		},
-		"replace": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(STRING_OBJ),
-					Arg(STRING_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				s := o.(*String)
-				oldS := args[0].(*String).Value
-				newS := args[1].(*String).Value
-				return NewString(strings.Replace(s.Value, oldS, newS, -1))
-			},
-		},
-		"reverse": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				out := make([]rune, utf8.RuneCountInString(s.Value))
-				i := len(out)
-				for _, c := range s.Value {
-					i--
-					out[i] = c
-				}
-				return NewString(string(out))
-			},
-		},
-		"reverse!": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(NIL_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				out := make([]rune, utf8.RuneCountInString(s.Value))
-				i := len(out)
-				for _, c := range s.Value {
-					i--
-					out[i] = c
-				}
-				s.Value = string(out)
-				return NIL
-			},
-		},
 		"split": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
@@ -177,75 +126,6 @@ func init() {
 				return NewArray(result)
 			},
 		},
-		"strip": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				return NewString(strings.TrimSpace(s.Value))
-			},
-		},
-		"strip!": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(NIL_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				s.Value = strings.TrimSpace(s.Value)
-				return NIL
-			},
-		},
-		"downcase": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				return NewString(strings.ToLower(s.Value))
-			},
-		},
-		"downcase!": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(NIL_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				s.Value = strings.ToLower(s.Value)
-				return NIL
-			},
-		},
-		"upcase": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(STRING_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				return NewString(strings.ToUpper(s.Value))
-			},
-		},
-		"upcase!": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(NIL_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				s := o.(*String)
-				s.Value = strings.ToUpper(s.Value)
-				return NIL
-			},
-		},
 		"ascii": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -269,6 +149,216 @@ func init() {
 			},
 		},
 	}
+
+	// Pure method and ! counterpart, each derived from a single transform. See
+	// stringPair for why they are not written out twice.
+	stringPair("reverse", nil, func(value string, _ []Object) string {
+		return reverseString(value)
+	})
+	stringPair("upcase", nil, func(value string, _ []Object) string {
+		return strings.ToUpper(value)
+	})
+	stringPair("downcase", nil, func(value string, _ []Object) string {
+		return strings.ToLower(value)
+	})
+	stringPair("capitalize", nil, func(value string, _ []Object) string {
+		return capitalizeString(value)
+	})
+	stringPair("swapcase", nil, func(value string, _ []Object) string {
+		return swapCaseString(value)
+	})
+	stringPair("strip", nil, func(value string, _ []Object) string {
+		return strings.TrimSpace(value)
+	})
+	stringPair("lstrip", nil, func(value string, _ []Object) string {
+		return strings.TrimLeftFunc(value, unicode.IsSpace)
+	})
+	stringPair("rstrip", nil, func(value string, _ []Object) string {
+		return strings.TrimRightFunc(value, unicode.IsSpace)
+	})
+	stringPair("chop", nil, func(value string, _ []Object) string {
+		return chopString(value)
+	})
+	stringPair("chomp", Args(OptArg(STRING_OBJ)), func(value string, args []Object) string {
+		if len(args) == 0 {
+			return chompLineEnding(value)
+		}
+
+		return chompSeparator(value, args[0].(*String).Value)
+	})
+	stringPair("replace", Args(Arg(STRING_OBJ), Arg(STRING_OBJ)), func(value string, args []Object) string {
+		return strings.ReplaceAll(value, args[0].(*String).Value, args[1].(*String).Value)
+	})
+
+	stringPredicate("empty?", nil, func(value string, _ []Object) bool {
+		return value == ""
+	})
+	stringPredicate("include?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
+		return strings.Contains(value, args[0].(*String).Value)
+	})
+	stringPredicate("start_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+		return anyAffix(args, func(affix string) bool {
+			return strings.HasPrefix(value, affix)
+		})
+	})
+	stringPredicate("end_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+		return anyAffix(args, func(affix string) bool {
+			return strings.HasSuffix(value, affix)
+		})
+	})
+}
+
+// stringPair registers a method and its in-place counterpart from one
+// transformation. Writing the pair out twice is what let Array#reverse mutate
+// while Array#uniq did not: the two halves drifted because nothing tied them
+// together. Here the ! method can only ever do what the plain one does.
+//
+// Both return a STRING. A ! method hands back the receiver so calls chain, which
+// is a deliberate departure from Ruby, where String#upcase! returns nil when it
+// changed nothing and "ABC".upcase!.reverse! therefore raises NoMethodError.
+func stringPair(name string, argPattern []Argument, transform func(value string, args []Object) string) {
+	layout := MethodLayout{
+		ArgPattern:    argPattern,
+		ReturnPattern: Args(Arg(STRING_OBJ)),
+	}
+
+	objectMethods[STRING_OBJ][name] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			return NewString(transform(o.(*String).Value, args))
+		},
+	}
+
+	objectMethods[STRING_OBJ][name+"!"] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, _ Environment) Object {
+			s := o.(*String)
+			s.Value = transform(s.Value, args)
+
+			return s
+		},
+	}
+}
+
+// stringPredicate registers a method returning a BOOLEAN. Predicates have no !
+// counterpart: there is nothing to change.
+func stringPredicate(name string, argPattern []Argument, test func(value string, args []Object) bool) {
+	objectMethods[STRING_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ArgPattern:    argPattern,
+			ReturnPattern: Args(Arg(BOOLEAN_OBJ)),
+		},
+		method: func(o Object, args []Object, _ Environment) Object {
+			if test(o.(*String).Value, args) {
+				return TRUE
+			}
+
+			return FALSE
+		},
+	}
+}
+
+// anyAffix reports whether any of the given strings satisfies match, which is
+// how Ruby's start_with? and end_with? take more than one candidate.
+func anyAffix(args []Object, match func(affix string) bool) bool {
+	for _, arg := range args {
+		if match(arg.(*String).Value) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func reverseString(value string) string {
+	out := make([]rune, utf8.RuneCountInString(value))
+	i := len(out)
+	for _, c := range value {
+		i--
+		out[i] = c
+	}
+
+	return string(out)
+}
+
+// capitalizeString upcases the first character and downcases the rest, as
+// Ruby's capitalize does -- 'hello World!' becomes 'Hello world!' rather than
+// keeping the W.
+func capitalizeString(value string) string {
+	if value == "" {
+		return value
+	}
+
+	runes := []rune(value)
+	out := make([]rune, len(runes))
+	out[0] = unicode.ToUpper(runes[0])
+	for i, c := range runes[1:] {
+		out[i+1] = unicode.ToLower(c)
+	}
+
+	return string(out)
+}
+
+func swapCaseString(value string) string {
+	return strings.Map(func(c rune) rune {
+		switch {
+		case unicode.IsUpper(c):
+			return unicode.ToLower(c)
+		case unicode.IsLower(c):
+			return unicode.ToUpper(c)
+		default:
+			return c
+		}
+	}, value)
+}
+
+// chopString removes the last character, or both characters of a trailing
+// CRLF so that a line ending is never left half there. An empty string chops
+// to an empty string rather than erroring.
+func chopString(value string) string {
+	if value == "" {
+		return value
+	}
+
+	if strings.HasSuffix(value, "\r\n") {
+		return value[:len(value)-2]
+	}
+
+	runes := []rune(value)
+
+	return string(runes[:len(runes)-1])
+}
+
+// chompLineEnding removes one trailing line ending: CRLF, LF or CR. A trailing
+// "\n\r" loses only the "\r", which is what Ruby does.
+func chompLineEnding(value string) string {
+	for _, ending := range []string{"\r\n", "\n", "\r"} {
+		if strings.HasSuffix(value, ending) {
+			return value[:len(value)-len(ending)]
+		}
+	}
+
+	return value
+}
+
+// chompSeparator removes one trailing occurrence of separator. The empty
+// separator is Ruby's special case for "strip every trailing blank line": it
+// removes any number of trailing CRLF or LF, but leaves a bare CR alone.
+func chompSeparator(value, separator string) string {
+	if separator == "" {
+		for {
+			switch {
+			case strings.HasSuffix(value, "\r\n"):
+				value = value[:len(value)-2]
+			case strings.HasSuffix(value, "\n"):
+				value = value[:len(value)-1]
+			default:
+				return value
+			}
+		}
+	}
+
+	return strings.TrimSuffix(value, separator)
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }

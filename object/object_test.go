@@ -2,6 +2,8 @@ package object_test
 
 import (
 	"errors"
+	"sort"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -54,11 +56,9 @@ func testInput(t *testing.T, tests []inputTestCase) {
 				testStringObject(t, strObj, expected)
 				continue
 			}
-			_, ok = evaluated.(*object.Nil)
-			if ok {
-				continue
-			}
-
+			// A NIL used to be accepted here, which meant every string and
+			// every error-message expectation in this file silently passed
+			// when the method under test returned nil instead.
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
 				t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
@@ -183,5 +183,133 @@ func TestObjectToAny(t *testing.T) {
 
 	for input, expected := range testcases {
 		require.Equal(t, expected, object.ObjectToAny(input))
+	}
+}
+
+// TestMethodListingIsSorted covers methods() and wat(), which used to read the
+// method names straight out of a map. That made the same program print a
+// different order on every run, so their output could not be relied on or
+// documented.
+func TestMethodListingIsSorted(t *testing.T) {
+	for _, subject := range []string{`[1,2,3]`, `"a"`, `{"a": 1}`, `1`, `1.0`, `true`} {
+		names := object.NewArray(nil)
+
+		// Repeat, because a map-order bug reproduces by chance rather than
+		// every time.
+		for range 20 {
+			listed, ok := testEval(`(` + subject + `).methods()`).(*object.Array)
+			require.True(t, ok, "methods() should return an array for %s", subject)
+
+			rendered := listed.Inspect()
+			require.Equal(t, sortedInspect(listed), rendered,
+				"methods() of %s should be sorted", subject)
+
+			if len(names.Elements) == 0 {
+				names = listed
+				continue
+			}
+			require.Equal(t, names.Inspect(), rendered,
+				"methods() of %s should not vary between calls", subject)
+		}
+
+		first := testEval(`(` + subject + `).wat()`).Inspect()
+		for range 20 {
+			require.Equal(t, first, testEval(`(`+subject+`).wat()`).Inspect(),
+				"wat() of %s should not vary between calls", subject)
+		}
+	}
+}
+
+// sortedInspect renders the array with its elements in sorted order, giving the
+// expectation to compare the real rendering against. It sorts the bare names
+// rather than their quoted renderings, because a quote sorts after "!" and
+// would put "reverse!" ahead of "reverse".
+func sortedInspect(a *object.Array) string {
+	names := make([]string, len(a.Elements))
+	for i, element := range a.Elements {
+		name, ok := element.(*object.String)
+		if !ok {
+			return "element " + string(element.Type()) + " is not a string"
+		}
+		names[i] = name.Value
+	}
+	sort.Strings(names)
+
+	for i, name := range names {
+		names[i] = `"` + name + `"`
+	}
+
+	return "[" + strings.Join(names, ", ") + "]"
+}
+
+// TestGenericMethodsWorkEverywhere checks the methods every type answers to.
+// to_s used to fall through to an empty string for ARRAY, HASH, ERROR, FILE and
+// HTTP, because none of them implemented Stringable -- so [1,2].to_s() was ""
+// while [1,2].to_json() worked.
+func TestGenericMethodsWorkEverywhere(t *testing.T) {
+	tests := []inputTestCase{
+		{`[1,2].to_s()`, "[1, 2]"},
+		{`[].to_s()`, "[]"},
+		{`{"a": 1}.to_s()`, `{"a": 1}`},
+		{`"a".to_s()`, "a"},
+		{`1.to_s()`, "1"},
+		{`1.5.to_s()`, "1.5"},
+		{`true.to_s()`, "true"},
+		{`nil.to_s()`, ""},
+		// to_s on a matrix already worked and must keep working.
+		{`[[1,2]].to_m().to_s().size() > 0`, true},
+
+		// nil? asks the question that comparing against nil already allowed,
+		// but reads better in a chain.
+		{`nil.nil?()`, true},
+		{`1.nil?()`, false},
+		{`"".nil?()`, false},
+		{`[].nil?()`, false},
+		{`{}.nil?()`, false},
+		{`false.nil?()`, false},
+		// A method that returns nil on a miss can be asked directly.
+		{`[].first().nil?()`, true},
+		{`[1].first().nil?()`, false},
+
+		{`nil.to_json()`, "null"},
+	}
+	testInput(t, tests)
+}
+
+// TestEveryTypeAnswersTheGenericMethods walks every registered type and calls
+// each generic method on a value of that type, so a type added later cannot
+// quietly fail to answer one of them.
+func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
+	// One literal per type that can be written down.
+	subjects := map[string]string{
+		"ARRAY":   `[1,2]`,
+		"BOOLEAN": `true`,
+		"FLOAT":   `1.5`,
+		"HASH":    `{"a": 1}`,
+		"INTEGER": `1`,
+		"MATRIX":  `[[1,2]].to_m()`,
+		"NIL":     `nil`,
+		"STRING":  `"a"`,
+	}
+
+	for wantType, literal := range subjects {
+		if got := testEval(literal + ".type()"); got.Inspect() != `"`+wantType+`"` {
+			t.Errorf("%s.type() = %s, want %q", literal, got.Inspect(), wantType)
+			continue
+		}
+
+		for _, method := range []string{"to_s", "to_json", "methods", "type", "wat", "nil?"} {
+			got := testEval(literal + "." + method + "()")
+			if got.Type() == object.ERROR_OBJ {
+				t.Errorf("%s.%s() failed: %s", literal, method, got.Inspect())
+			}
+		}
+
+		// to_s must never be the empty string except for nil, whose string form
+		// genuinely is empty.
+		got := testEval(literal + ".to_s()")
+		if wantType != "NIL" && got.Inspect() == `""` {
+			t.Errorf("%s.to_s() is empty; the type is probably not Stringable", literal)
+		}
 	}
 }

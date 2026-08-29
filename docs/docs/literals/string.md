@@ -84,31 +84,169 @@ Returns the character codes of the string, always as an array with one entry per
 ' />
 
 
+### capitalize()
+> Returns `STRING`
+
+Returns a copy with the first character upcased and every following character downcased, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost.
+
+
+<CodeBlockSimple input='a = "hello World!"
+a.capitalize()
+a
+' output='"hello World!"
+"Hello world!"
+"hello World!"
+' />
+
+
+### capitalize!()
+> Returns `STRING`
+
+Upcases the first character and downcases the rest in place, and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "hello World!"
+a.capitalize!()
+a
+' output='"hello World!"
+"Hello world!"
+"Hello world!"
+' />
+
+
+### chomp(STRING)
+> Returns `STRING`
+
+Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.chomp()
+a.chomp() == "line"
+"abcdd".chomp("d")
+"a\n\n\n".chomp("")
+' output='"line\n"
+"line"
+true
+"abcd"
+"a"
+' />
+
+
+### chomp!(STRING)
+> Returns `STRING`
+
+Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.chomp!()
+a
+' output='"line\n"
+"line"
+"line"
+' />
+
+
+### chop()
+> Returns `STRING`
+
+Returns a copy with the last character removed. A trailing `\r\n` is removed as a unit so a line ending is never left half there. Chopping an empty string gives an empty string rather than an error.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.chop()
+a
+"".chop()
+' output='"abcd"
+"abc"
+"abcd"
+""
+' />
+
+
+### chop!()
+> Returns `STRING`
+
+Removes the last character in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.chop!()
+a
+' output='"abcd"
+"abc"
+"abc"
+' />
+
+
 ### count(STRING)
 > Returns `INTEGER`
 
 Counts how often a given substring occurs in the string.
 
 
-
+<CodeBlockSimple input='"test".count("t")
+' output='2
+' />
 
 
 ### downcase()
 > Returns `STRING`
 
-Returns the string with all uppercase letters replaced with lowercase counterparts.
+Returns a copy with all uppercase letters replaced by their lowercase counterparts.
 
 
-
+<CodeBlockSimple input='a = "TEST"
+a.downcase()
+a
+' output='"TEST"
+"test"
+"TEST"
+' />
 
 
 ### downcase!()
-> Returns `NIL`
+> Returns `STRING`
 
-Replaces all upcase characters with lowercase counterparts.
+Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained.
 
 
+<CodeBlockSimple input='a = "TEST"
+a.downcase!()
+a
+' output='"TEST"
+"test"
+"test"
+' />
 
+
+### empty?()
+> Returns `BOOLEAN`
+
+Returns `true` when the string has no characters.
+
+
+<CodeBlockSimple input='"".empty?()
+" ".empty?()
+' output='true
+false
+' />
+
+
+### end_with?(STRING)
+> Returns `BOOLEAN`
+
+Returns `true` when the string ends with any of the given strings.
+
+
+<CodeBlockSimple input='"test.rl".end_with?(".rl")
+"test.rl".end_with?(".go")
+"test.rl".end_with?(".go", ".rl")
+' output='true
+false
+true
+' />
 
 
 ### find(STRING)
@@ -117,7 +255,9 @@ Replaces all upcase characters with lowercase counterparts.
 Returns the character index of a given string if found. Otherwise returns `-1`
 
 
-
+<CodeBlockSimple input='"test".find("e")
+' output='1
+' />
 
 
 ### format(STRING|INTEGER|FLOAT|BOOLEAN|ARRAY|HASH)
@@ -126,7 +266,22 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 Formats according to a format specifier and returns the resulting string
 
 
+<CodeBlockSimple input='"%s is %d".format("a", 1)
+' output='"a is 1"
+' />
 
+
+### include?(STRING)
+> Returns `BOOLEAN`
+
+Returns `true` when the string contains the given substring.
+
+
+<CodeBlockSimple input='"test".include?("es")
+"test".include?("xy")
+' output='true
+false
+' />
 
 
 ### lines()
@@ -135,16 +290,69 @@ Formats according to a format specifier and returns the resulting string
 Splits the string at newline escape sequence and return all chunks in an array. Shorthand for `string.split("\n")`.
 
 
+<CodeBlockSimple input='"a\nb".lines()
+' output='["a", "b"]
+' />
 
+
+### lstrip()
+> Returns `STRING`
+
+Returns a copy with leading whitespace removed. See `rstrip` for the trailing end and `strip` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.lstrip()
+a
+' output='"  test  "
+"test  "
+"  test  "
+' />
+
+
+### lstrip!()
+> Returns `STRING`
+
+Removes leading whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.lstrip!()
+a
+' output='"  test  "
+"test  "
+"test  "
+' />
 
 
 ### replace(STRING, STRING)
 > Returns `STRING`
 
-Replaces the first string with the second string in the given string.
+Returns a copy with every occurrence of the first string replaced by the second. This is Ruby's `gsub` with plain strings rather than Ruby's `replace`.
 
 
+<CodeBlockSimple input='a = "test"
+a.replace("t", "f")
+a
+' output='"test"
+"fesf"
+"test"
+' />
 
+
+### replace!(STRING, STRING)
+> Returns `STRING`
+
+Replaces every occurrence of the first string with the second in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "test"
+a.replace!("t", "f")
+a
+' output='"test"
+"fesf"
+"fesf"
+' />
 
 
 ### reverse()
@@ -153,16 +361,58 @@ Replaces the first string with the second string in the given string.
 Returns a copy of the string with all characters reversed.
 
 
-
+<CodeBlockSimple input='a = "stressed"
+a.reverse()
+a
+' output='"stressed"
+"desserts"
+"stressed"
+' />
 
 
 ### reverse!()
-> Returns `NIL`
+> Returns `STRING`
 
-Replaces all the characters in a string in reverse order.
+Reverses the characters in place and returns the string, so calls can be chained.
 
 
+<CodeBlockSimple input='a = "stressed"
+a.reverse!()
+a
+' output='"stressed"
+"desserts"
+"desserts"
+' />
 
+
+### rstrip()
+> Returns `STRING`
+
+Returns a copy with trailing whitespace removed. See `lstrip` for the leading end and `strip` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.rstrip()
+a
+' output='"  test  "
+"  test"
+"  test  "
+' />
+
+
+### rstrip!()
+> Returns `STRING`
+
+Removes trailing whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.rstrip!()
+a
+' output='"  test  "
+"  test"
+"  test"
+' />
 
 
 ### size()
@@ -171,7 +421,9 @@ Replaces all the characters in a string in reverse order.
 Returns the amount of characters in the string.
 
 
-
+<CodeBlockSimple input='"test".size()
+' output='4
+' />
 
 
 ### split(STRING)
@@ -180,43 +432,116 @@ Returns the amount of characters in the string.
 Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `" "`
 
 
+<CodeBlockSimple input='"a b".split()
+"a-b".split("-")
+' output='["a", "b"]
+["a", "b"]
+' />
 
+
+### start_with?(STRING)
+> Returns `BOOLEAN`
+
+Returns `true` when the string starts with any of the given strings.
+
+
+<CodeBlockSimple input='"test.rl".start_with?("test")
+"test.rl".start_with?("prod")
+"test.rl".start_with?("prod", "test")
+' output='true
+false
+true
+' />
 
 
 ### strip()
 > Returns `STRING`
 
-Returns a copy of the string with all leading and trailing whitespaces removed.
+Returns a copy with leading and trailing whitespace removed.
 
 
-
+<CodeBlockSimple input='a = "  test  "
+a.strip()
+a
+' output='"  test  "
+"test"
+"  test  "
+' />
 
 
 ### strip!()
-> Returns `NIL`
+> Returns `STRING`
 
-Removes all leading and trailing whitespaces in the string.
+Removes leading and trailing whitespace in place and returns the string, so calls can be chained.
 
 
+<CodeBlockSimple input='a = "  test  "
+a.strip!()
+a
+' output='"  test  "
+"test"
+"test"
+' />
 
+
+### swapcase()
+> Returns `STRING`
+
+Returns a copy with every uppercase character downcased and every lowercase character upcased.
+
+
+<CodeBlockSimple input='a = "Hello World"
+a.swapcase()
+a
+' output='"Hello World"
+"hELLO wORLD"
+"Hello World"
+' />
+
+
+### swapcase!()
+> Returns `STRING`
+
+Swaps the case of every character in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "Hello World"
+a.swapcase!()
+a
+' output='"Hello World"
+"hELLO wORLD"
+"hELLO wORLD"
+' />
 
 
 ### upcase()
 > Returns `STRING`
 
-Returns the string with all lowercase letters replaced with uppercase counterparts.
+Returns a copy with all lowercase letters replaced by their uppercase counterparts.
 
 
-
+<CodeBlockSimple input='a = "test"
+a.upcase()
+a
+' output='"test"
+"TEST"
+"test"
+' />
 
 
 ### upcase!()
-> Returns `NIL`
+> Returns `STRING`
 
-Replaces all lowercase characters with upcase counterparts.
+Replaces lowercase characters with their uppercase counterparts in place and returns the string, so calls can be chained.
 
 
-
+<CodeBlockSimple input='a = "test"
+a.upcase!()
+a
+' output='"test"
+"TEST"
+"TEST"
+' />
 
 
 
@@ -225,13 +550,30 @@ Replaces all lowercase characters with upcase counterparts.
 ### methods()
 > Returns `ARRAY`
 
-Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The order is unspecified, so sort the result if you need it stable. A type with no methods of its own returns an empty array.
+Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='"test".methods().sort()
+<CodeBlockSimple input='1.0.methods().include?("round")
 true.methods()
-' output='["ascii", "count", "downcase", "downcase!", "find", "format", "lines", "replace", "reverse", "reverse!", "size", "split", "strip", "strip!", "upcase", "upcase!"]
+' output='true
 []
+' />
+
+
+### nil?()
+> Returns `BOOLEAN`
+
+Returns `true` only for `nil`. Reads better than comparing against `nil` at the end of a chain, and every type answers it.
+
+
+<CodeBlockSimple input='nil.nil?()
+1.nil?()
+"".nil?()
+[].first().nil?()
+' output='true
+false
+false
+true
 ' />
 
 
@@ -327,7 +669,7 @@ Returns the type of the object.
 ### wat()
 > Returns `STRING`
 
-Returns the type's literal-specific methods with their usage information, as a single string. Types with no methods of their own list none.
+Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
 
 
 <CodeBlockSimple input='true.wat()

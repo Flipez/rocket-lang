@@ -43,31 +43,135 @@ example: |
   "moo"
   true
 methods:
-  include?:
-    description: "Returns true or false wether the hash contains the given object as key"
+  clear:
+    description: "Removes every entry and returns the hash, so calls can be chained."
     input: |
-      {"a": 1, 1: "b"}.include?(1)
-      {"a": 1, 1: "b"}.include?("c")
-    output:
+      h = {"a": 1}
+      h.clear()
+      h.size()
+    output: |
+      {"a": 1}
+      {}
+      0
+  compact:
+    description: "Returns a new hash without the entries whose value is `nil`. The hash itself is unchanged; use `compact!` to remove them in place."
+    input: |
+      h = {"a": nil}
+      h.compact().size()
+      h.size()
+    output: |
+      {"a": nil}
+      0
+      1
+  compact!:
+    description: "Removes the entries whose value is `nil` in place and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": nil}
+      h.compact!().size()
+      h.size()
+    output: |
+      {"a": nil}
+      0
+      0
+  delete:
+    description: "Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss."
+    input: |
+      h = {"a": 1}
+      h.delete("a")
+      h.size()
+      h.delete("a")
+    output: |
+      {"a": 1}
+      1
+      0
+      nil
+  empty?:
+    description: "Returns `true` when the hash has no entries."
+    input: |
+      {}.empty?()
+      {"a": 1}.empty?()
+    output: |
       true
       false
-  keys:
-    description: "Returns the keys of the hash."
+  fetch:
+    description: "Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required."
     input: |
-      {"a": "1", "b": "2"}.keys()
+      h = {"a": 1}
+      h.fetch("a")
+      h.fetch("z", 0)
     output: |
-      ["a", "b"]
-  values:
-    description: "Returns the values of the hash."
-    input: |
-      {"a": "1", "b": "2"}.values()
-    output: |
-      ["1", "2"]
+      {"a": 1}
+      1
+      0
   get:
     description: "Returns the value of the given key or the default"
     input: |
       {"a": "1", "b": "2"}.get("a", 10)
       {"a": "1", "b": "2"}.get("c", 10)
     output: |
-      1
+      "1"
       10
+  include?:
+    description: "Returns true or false wether the hash contains the given object as key"
+    input: |
+      {"a": 1, 1: "b"}.include?(1)
+      {"a": 1, 1: "b"}.include?("c")
+    output: |
+      true
+      false
+  invert:
+    description: "Returns a new hash with keys and values swapped. Values that repeat collapse into one entry, and which one survives is not defined. A value that cannot be a key is an error."
+    input: |
+      h = {"a": 1}
+      h.invert().get(1, "missing")
+    output: |
+      {"a": 1}
+      "a"
+  keys:
+    description: "Returns the keys of the hash. The order is **not** defined and can differ between runs of the same program, so sort the result if you need it stable."
+    input: |
+      {"a": "1"}.keys()
+      {"a": "1", "b": "2"}.keys().sort()
+    output: |
+      ["a"]
+      ["a", "b"]
+  merge:
+    description: "Returns a new hash with the entries of both. The argument wins where a key is in both. The hash itself is unchanged; use `merge!` to merge in place."
+    input: |
+      h = {"a": 1}
+      h.merge({"b": 2}).size()
+      h.size()
+      h.merge({"a": 9}).get("a", 0)
+    output: |
+      {"a": 1}
+      2
+      1
+      9
+  merge!:
+    description: "Merges the given hash in place and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h.merge!({"b": 2}).size()
+      h.size()
+    output: |
+      {"a": 1}
+      2
+      2
+  size:
+    description: "Returns the number of entries."
+    input: |
+      h = {"a": 1}
+      h.size()
+      {}.size()
+    output: |
+      {"a": 1}
+      1
+      0
+  values:
+    description: "Returns the values of the hash, in the same unspecified order as `keys`."
+    input: |
+      {"a": "1"}.values()
+      {"a": "1", "b": "2"}.values().sort()
+    output: |
+      ["1"]
+      ["1", "2"]

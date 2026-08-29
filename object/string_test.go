@@ -1,6 +1,7 @@
 package object_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/flipez/rocket-lang/object"
@@ -200,4 +201,172 @@ func TestStringConversionFailureIsNil(t *testing.T) {
 	}
 
 	testInput(t, tests)
+}
+
+// TestStringRubyMethods covers the methods added to close the gap with Ruby's
+// String. Each expectation is taken from the example lines in
+// https://ruby-doc.org/3.4.1/String.html so the behaviour matches Ruby rather
+// than whatever Go's strings package happens to do.
+func TestStringRubyMethods(t *testing.T) {
+	tests := []inputTestCase{
+		// capitalize downcases the rest, so a capital in the middle is lost.
+		{`"hello World!".capitalize()`, "Hello world!"},
+		{`"".capitalize()`, ""},
+		{`"hELLO".swapcase()`, "Hello"},
+		{`"Hello World".swapcase()`, "hELLO wORLD"},
+
+		{`"  a  ".lstrip()`, "a  "},
+		{`"  a  ".rstrip()`, "  a"},
+		{`"a".lstrip()`, "a"},
+		{`"\t\n a".lstrip()`, "a"},
+
+		// chomp with no argument removes one CR, LF or CRLF...
+		{`"abc\r".chomp()`, "abc"},
+		{`"abc\n".chomp()`, "abc"},
+		{`"abc\r\n".chomp()`, "abc"},
+		// ...but "\n\r" loses only the "\r", as in Ruby.
+		{`"abc\n\r".chomp()`, "abc\n"},
+		{`"abc".chomp()`, "abc"},
+		// With a separator it removes one trailing occurrence.
+		{`"abcd".chomp("d")`, "abc"},
+		{`"abcdd".chomp("d")`, "abcd"},
+		// The empty separator is Ruby's "drop every trailing blank line".
+		{`"abc\n\n\n".chomp("")`, "abc"},
+		{`"abc\r\n\r\n\r\n".chomp("")`, "abc"},
+		// It leaves bare CRs alone, which is the part that is easy to get wrong.
+		{`"abc\r\r\r".chomp("")`, "abc\r\r\r"},
+
+		{`"abcd".chop()`, "abc"},
+		// A trailing CRLF goes as a unit, so chop never splits a line ending.
+		{`"abc\r\n".chop()`, "abc"},
+		{`"".chop()`, ""},
+		{`"a".chop()`, ""},
+
+		{`"".empty?()`, true},
+		{`"a".empty?()`, false},
+		{`"abc".include?("b")`, true},
+		{`"abc".include?("z")`, false},
+		{`"abc".include?("")`, true},
+		{`"abc".start_with?("ab")`, true},
+		{`"abc".start_with?("z")`, false},
+		{`"abc".end_with?("bc")`, true},
+		{`"abc".end_with?("z")`, false},
+		// start_with? and end_with? take more than one candidate and are true
+		// if any of them matches, as Ruby's do.
+		{`"abc".start_with?("z", "y", "a")`, true},
+		{`"abc".start_with?("z", "y")`, false},
+		{`"abc".end_with?("z", "c")`, true},
+		{`"abc".end_with?("z", "y")`, false},
+		{`"abc".start_with?()`, "to few arguments: got=0, want=1"},
+		{`"abc".include?()`, "to few arguments: got=0, want=1"},
+		{`"abc".empty?("x")`, "to many arguments: got=1, want=0"},
+	}
+	testInput(t, tests)
+}
+
+// TestStringBangConvention checks the convention across every String pair: the
+// plain method leaves the receiver alone, the ! method changes it and returns
+// it. Ruby's String bangs return nil when they changed nothing, which is why
+// "ABC".upcase!.reverse! raises there; RocketLang returns the receiver instead
+// so chains hold.
+func TestStringBangConvention(t *testing.T) {
+	tests := []inputTestCase{
+		// Plain methods are pure.
+		{`s = "hello World"; s.capitalize(); s`, "hello World"},
+		{`s = "hello World"; s.swapcase(); s`, "hello World"},
+		{`s = "  a  "; s.lstrip(); s`, "  a  "},
+		{`s = "  a  "; s.rstrip(); s`, "  a  "},
+		{`s = "abc\n"; s.chomp(); s`, "abc\n"},
+		{`s = "abcd"; s.chop(); s`, "abcd"},
+		{`s = "a-b"; s.replace("-", "+"); s`, "a-b"},
+
+		// ! methods change the receiver.
+		{`s = "hello World"; s.capitalize!(); s`, "Hello world"},
+		{`s = "hello World"; s.swapcase!(); s`, "HELLO wORLD"},
+		{`s = "  a  "; s.lstrip!(); s`, "a  "},
+		{`s = "  a  "; s.rstrip!(); s`, "  a"},
+		{`s = "abc\n"; s.chomp!(); s`, "abc"},
+		{`s = "abcd"; s.chop!(); s`, "abc"},
+		{`s = "a-b"; s.replace!("-", "+"); s`, "a+b"},
+
+		// ...and return it, so they chain even when a call changes nothing.
+		{`"  hello World  ".strip!().capitalize!().swapcase!()`, "hELLO WORLD"},
+		{`"ABC".upcase!().reverse!()`, "CBA"},
+		{`"a-b\n".chomp!().replace!("-", "+").upcase!()`, "A+B"},
+		{`"abc".chomp!().chomp!()`, "abc"},
+
+		// Every ! method returns a STRING rather than NIL.
+		{`"a".upcase!().type()`, "STRING"},
+		{`"a".downcase!().type()`, "STRING"},
+		{`"a".capitalize!().type()`, "STRING"},
+		{`"a".swapcase!().type()`, "STRING"},
+		{`"a".strip!().type()`, "STRING"},
+		{`"a".lstrip!().type()`, "STRING"},
+		{`"a".rstrip!().type()`, "STRING"},
+		{`"a".reverse!().type()`, "STRING"},
+		{`"a".chomp!().type()`, "STRING"},
+		{`"a".chop!().type()`, "STRING"},
+		{`"a".replace!("a", "b").type()`, "STRING"},
+
+		// A ! method takes the same arguments as its plain counterpart.
+		{`"abcd".chomp!("d")`, "abc"},
+		{`"a-b".replace!("-")`, "to few arguments: got=1, want=2"},
+	}
+	testInput(t, tests)
+}
+
+// TestStringPairsAreComplete guards the convention itself: every String method
+// that changes the receiver has a pure counterpart of the same name and the
+// other way round. Adding one half of a pair and forgetting the other is the
+// gap this test exists to catch.
+func TestStringPairsAreComplete(t *testing.T) {
+	listed, ok := testEval(`"a".methods()`).(*object.Array)
+	if !ok {
+		t.Fatal(`"a".methods() should return an array`)
+	}
+
+	names := make(map[string]bool, len(listed.Elements))
+	for _, element := range listed.Elements {
+		name, ok := element.(*object.String)
+		if !ok {
+			t.Fatalf("method name is not a string, got %s", element.Type())
+		}
+		names[name.Value] = true
+	}
+
+	// Every ! method must have a pure counterpart. The other direction does not
+	// hold: size() and split() return something other than a string, so there
+	// is nothing for a size!() to mean.
+	for name := range names {
+		if !strings.HasSuffix(name, "!") {
+			continue
+		}
+		if !names[strings.TrimSuffix(name, "!")] {
+			t.Errorf("%s has no pure counterpart", name)
+		}
+	}
+
+	// The pairs that must exist. Listed explicitly so that dropping one is a
+	// failure rather than a silently smaller loop.
+	for _, name := range []string{
+		"capitalize", "chomp", "chop", "downcase", "lstrip",
+		"replace", "reverse", "rstrip", "strip", "swapcase", "upcase",
+	} {
+		if !names[name] {
+			t.Errorf("expected String to have %s()", name)
+		}
+		if !names[name+"!"] {
+			t.Errorf("expected String to have %s!()", name)
+		}
+	}
+
+	// Predicates have nothing to change, so they must not have a ! form.
+	for _, name := range []string{"empty?", "include?", "start_with?", "end_with?"} {
+		if !names[name] {
+			t.Errorf("expected String to have %s()", name)
+		}
+		if names[name+"!"] {
+			t.Errorf("%s should not have a ! form", name)
+		}
+	}
 }

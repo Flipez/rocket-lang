@@ -359,7 +359,8 @@ func init() {
 				if err != nil {
 					return NewErrorFormat("%s", err.Error())
 				}
-				return NIL
+
+				return m
 			},
 		},
 		"row": {
