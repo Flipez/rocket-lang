@@ -114,7 +114,7 @@ a
 ' />
 
 
-### chomp(STRING)
+### chomp([STRING])
 > Returns `STRING`
 
 Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
@@ -133,7 +133,7 @@ true
 ' />
 
 
-### chomp!(STRING)
+### chomp!([STRING])
 > Returns `STRING`
 
 Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`.
@@ -234,7 +234,7 @@ false
 ' />
 
 
-### end_with?(STRING)
+### end_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string ends with any of the given strings.
@@ -260,7 +260,7 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 ' />
 
 
-### format(STRING|INTEGER|FLOAT|BOOLEAN|ARRAY|HASH)
+### format((STRING|INTEGER|FLOAT|BOOLEAN|ARRAY|HASH)...)
 > Returns `STRING`
 
 Formats according to a format specifier and returns the resulting string
@@ -426,7 +426,7 @@ Returns the amount of characters in the string.
 ' />
 
 
-### split(STRING)
+### split([STRING])
 > Returns `ARRAY`
 
 Splits the string on a given seperator and returns all the chunks in an array. Default seperator is `" "`
@@ -439,7 +439,7 @@ Splits the string on a given seperator and returns all the chunks in an array. D
 ' />
 
 
-### start_with?(STRING)
+### start_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string starts with any of the given strings.

@@ -77,8 +77,8 @@ Returns a value with the magnitude of first argument and sign of second argument
 Returns the cosine of the radion argument
 
 
-<CodeBlockSimple input='Math.cos(Pi/2)
-' output='0.0
+<CodeBlockSimple input='Math.cos(0.0)
+' output='1.0
 ' />
 
 
@@ -89,7 +89,7 @@ Returns e**argument, the base-e exponential of argument
 
 
 <CodeBlockSimple input='Math.exp(1.0)
-' output='2.72
+' output='2.718281828459045
 ' />
 
 
@@ -110,7 +110,7 @@ Returns the greatest integer value less than or equal to argument
 Returns the natural logarithm of argument
 
 
-<CodeBlockSimple input='Math.log(2.7183)
+<CodeBlockSimple input='Math.log(Math.E)
 ' output='1.0
 ' />
 
@@ -121,7 +121,7 @@ Returns the natural logarithm of argument
 Returns the decimal logarithm of argument
 
 
-<CodeBlockSimple input='Math.log(100.0)
+<CodeBlockSimple input='Math.log10(100.0)
 ' output='2.0
 ' />
 
@@ -209,7 +209,7 @@ Returns the nearest integer, rounding half away from zero
 Returns the sine of the radion argument
 
 
-<CodeBlockSimple input='Math.sin(Pi)
+<CodeBlockSimple input='Math.sin(0.0)
 ' output='0.0
 ' />
 

@@ -20,7 +20,7 @@ Returns the absolute value, as a float.
 ' />
 
 
-### ceil(INTEGER)
+### ceil([INTEGER])
 > Returns `FLOAT`
 
 Returns the smallest float that is not less than the number. An optional digit count says how many decimal places to keep; a negative count rounds to a power of ten. The result stays a `FLOAT` -- in Ruby it would be an `INTEGER`.
@@ -59,7 +59,7 @@ Returns `true` when the number is neither infinite nor not-a-number.
 ' />
 
 
-### floor(INTEGER)
+### floor([INTEGER])
 > Returns `FLOAT`
 
 Returns the largest float that is not greater than the number. Takes the same optional digit count as `ceil`.
@@ -122,7 +122,7 @@ false
 ' />
 
 
-### round(INTEGER)
+### round([INTEGER])
 > Returns `FLOAT`
 
 Returns the number rounded to the nearest value, halves away from zero. Takes the same optional digit count as `ceil`.
@@ -137,7 +137,7 @@ Returns the number rounded to the nearest value, halves away from zero. Takes th
 ' />
 
 
-### truncate(INTEGER)
+### truncate([INTEGER])
 > Returns `FLOAT`
 
 Returns the number with its fractional part dropped, rounding toward zero. Unlike `floor` this moves a negative number up. Takes the same optional digit count as `ceil`.

@@ -127,7 +127,7 @@ false
 ' />
 
 
-### fetch(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL, INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+### fetch(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL, [INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL])
 > Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
 
 Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required.

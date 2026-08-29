@@ -87,7 +87,7 @@ a
 ' />
 
 
-### count(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+### count([INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL])
 > Returns `INTEGER`
 
 Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you.
@@ -162,7 +162,7 @@ false
 ' />
 
 
-### first(INTEGER)
+### first([INTEGER])
 > Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
 
 Returns the first element of the array. Shorthand for `array[0]`
@@ -173,7 +173,7 @@ Returns the first element of the array. Shorthand for `array[0]`
 ' />
 
 
-### flatten(INTEGER)
+### flatten([INTEGER])
 > Returns `ARRAY|ERROR`
 
 Returns a copy with nested arrays inlined, all the way down by default or to the given depth. The array itself is unchanged; use `flatten!` to inline in place.
@@ -190,7 +190,7 @@ a
 ' />
 
 
-### flatten!(INTEGER)
+### flatten!([INTEGER])
 > Returns `ARRAY|ERROR`
 
 Inlines nested arrays in place and returns the array, so calls can be chained. Takes the same optional depth as `flatten`.
@@ -246,7 +246,7 @@ a
 ' />
 
 
-### join(STRING)
+### join([STRING])
 > Returns `STRING`
 
 Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not.
@@ -259,7 +259,7 @@ Joins the elements into a string, with an optional separator between them. Every
 ' />
 
 
-### last(INTEGER)
+### last([INTEGER])
 > Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
 
 Returns the last element of the array.
@@ -371,7 +371,7 @@ Returns the index of the last matching element, or `-1` when there is none. The 
 ' />
 
 
-### rotate(INTEGER)
+### rotate([INTEGER])
 > Returns `ARRAY|ERROR`
 
 Returns a copy with the first elements moved to the end, one by default. A negative count rotates the other way, and the count wraps. The array itself is unchanged; use `rotate!` to rotate in place.
@@ -390,7 +390,7 @@ a
 ' />
 
 
-### rotate!(INTEGER)
+### rotate!([INTEGER])
 > Returns `ARRAY|ERROR`
 
 Rotates the array in place and returns it, so calls can be chained. Takes the same optional count as `rotate`.
