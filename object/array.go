@@ -85,12 +85,12 @@ func init() {
 					join = args[0].(*String).Value
 				}
 
+				if err := requireElements(ao.Elements, STRINGABLE); err != nil {
+					return err
+				}
+
 				for i, element := range ao.Elements {
-					if e, ok := element.(Stringable); ok {
-						arr[i] = e.ToStringObj().Value
-					} else {
-						return NewErrorFormat("Found non stringable element %s on index %d", element.Type(), i)
-					}
+					arr[i] = element.(Stringable).ToStringObj().Value
 				}
 
 				return NewString(strings.Join(arr, join))
@@ -169,17 +169,16 @@ func init() {
 				ao := o.(*Array)
 				var result int
 
-				for i, element := range ao.Elements {
-					val, ok := element.(Integerable)
-					if !ok {
-						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
-					}
+				if err := requireElements(ao.Elements, INTEGERABLE); err != nil {
+					return err
+				}
 
-					// A convertible type can still fail to convert, for
-					// instance a string that does not parse as a number.
-					integer, ok := val.ToIntegerObj().(*Integer)
+				for i, element := range ao.Elements {
+					// Being convertible is not the same as converting: a string
+					// is INTEGERABLE whether or not it parses as a number.
+					integer, ok := element.(Integerable).ToIntegerObj().(*Integer)
 					if !ok {
-						return NewErrorFormat("Found non number element %s on index %d", element.Type(), i)
+						return NewErrorFormat("element %d does not convert to a number, got %s", i, element.Type())
 					}
 
 					result += int(integer.Value)
@@ -875,6 +874,21 @@ func (a *arrayIterator) Next() (Object, Object, bool) {
 	return nil, NewInteger(0), false
 }
 
+// requireElements returns an error naming the first element outside the group,
+// or nil. The four requirements on elements -- STRINGABLE for join, INTEGERABLE
+// for sum, HASHABLE for uniq and COMPARABLE for sort -- used to be four checks
+// with four unrelated messages, one of which did not say which element was at
+// fault.
+func requireElements(elements []Object, group string) Object {
+	for i, element := range elements {
+		if !InGroup(group, element) {
+			return NewErrorFormat("element %d is not %s, got %s", i, group, element.Type())
+		}
+	}
+
+	return nil
+}
+
 // reversedElements returns a reversed copy, leaving src untouched.
 func reversedElements(src []Object) []Object {
 	out := make([]Object, len(src))
@@ -886,9 +900,13 @@ func reversedElements(src []Object) []Object {
 }
 
 // sortedElements returns a sorted copy of src. The second value is an error
-// object when the elements are not a single sortable type, in which case the
+// object when the elements are not a single COMPARABLE type, in which case the
 // copy must not be used -- working on a copy means a failed sort cannot leave a
 // half-ordered array behind.
+//
+// Both requirements are checked before any comparison runs, so the comparison
+// functions can assert without a fallback. They used to carry an ok check each
+// and set a flag that sort.SliceStable might or might not have reached.
 //
 // Can be refactored to generics once
 // https://github.com/golang/go/issues/48522 is fixed.
@@ -900,48 +918,34 @@ func sortedElements(src []Object) ([]Object, Object) {
 		return out, nil
 	}
 
-	sortError := false
-
-	switch out[0].(type) {
-	case *Float:
-		sort.SliceStable(out, func(i, j int) bool {
-			left, leftOk := out[i].(*Float)
-			right, rightOk := out[j].(*Float)
-			if !leftOk || !rightOk {
-				sortError = true
-				return false
-			}
-
-			return left.Value < right.Value
-		})
-	case *Integer:
-		sort.SliceStable(out, func(i, j int) bool {
-			left, leftOk := out[i].(*Integer)
-			right, rightOk := out[j].(*Integer)
-			if !leftOk || !rightOk {
-				sortError = true
-				return false
-			}
-
-			return left.Value < right.Value
-		})
-	case *String:
-		sort.SliceStable(out, func(i, j int) bool {
-			left, leftOk := out[i].(*String)
-			right, rightOk := out[j].(*String)
-			if !leftOk || !rightOk {
-				sortError = true
-				return false
-			}
-
-			return left.Value < right.Value
-		})
-	default:
-		sortError = true
+	// Two separate requirements, and they used to share one message that named
+	// neither the element nor which of the two had failed: [1, nil].sort() and
+	// [1, 2.5].sort() both said "an object not INTEGER, FLOAT or STRING or is
+	// mixed".
+	if err := requireElements(out, COMPARABLE); err != nil {
+		return nil, err
 	}
 
-	if sortError {
-		return nil, NewError("Array does contain either an object not INTEGER, FLOAT or STRING or is mixed")
+	wanted := out[0].Type()
+	for i, element := range out {
+		if element.Type() != wanted {
+			return nil, NewErrorFormat("elements must all be one %s type, got %s at 0 and %s at %d", COMPARABLE, wanted, element.Type(), i)
+		}
+	}
+
+	switch wanted {
+	case FLOAT_OBJ:
+		sort.SliceStable(out, func(i, j int) bool {
+			return out[i].(*Float).Value < out[j].(*Float).Value
+		})
+	case INTEGER_OBJ:
+		sort.SliceStable(out, func(i, j int) bool {
+			return out[i].(*Integer).Value < out[j].(*Integer).Value
+		})
+	case STRING_OBJ:
+		sort.SliceStable(out, func(i, j int) bool {
+			return out[i].(*String).Value < out[j].(*String).Value
+		})
 	}
 
 	return out, nil
@@ -954,13 +958,12 @@ func uniqueElements(src []Object) ([]Object, Object) {
 	seen := make(map[HashKey]struct{}, len(src))
 	out := make([]Object, 0, len(src))
 
-	for _, element := range src {
-		hashable, ok := element.(Hashable)
-		if !ok {
-			return nil, NewErrorFormat("failed because element %s is not hashable", element.Type())
-		}
+	if err := requireElements(src, HASHABLE); err != nil {
+		return nil, err
+	}
 
-		key := hashable.HashKey()
+	for _, element := range src {
+		key := element.(Hashable).HashKey()
 		if _, duplicate := seen[key]; duplicate {
 			continue
 		}

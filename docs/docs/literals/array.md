@@ -249,7 +249,7 @@ a
 ### join([STRING])
 > Returns `STRING`
 
-Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not.
+Joins the elements into a string, with an optional separator between them. Every element has to be `STRINGABLE`; a function is not.
 
 
 <CodeBlockSimple input='[1, 2, 3].join()
@@ -286,7 +286,7 @@ nil
 ### min()
 > Returns `ANY`
 
-Returns the smallest element, or `nil` for an empty array. The elements have to be all strings, all integers or all floats, exactly as `sort` requires.
+Returns the smallest element, or `nil` for an empty array. The elements have to satisfy exactly what `sort` requires.
 
 
 <CodeBlockSimple input='[3, 1, 2].min()
@@ -445,7 +445,7 @@ Returns the elements of the array in slices with the size of the given integer
 ### sort()
 > Returns `ARRAY|ERROR`
 
-Returns a new sorted array. The elements must all be STRING, all INTEGER or all FLOAT, otherwise an error is returned and the array is left untouched. Use `sort!` to sort in place.
+Returns a new sorted array. Every element has to be `COMPARABLE` -- a `STRING`, `INTEGER` or `FLOAT` -- and they all have to be the same one of those, otherwise an error is returned naming the element at fault and the array is left untouched. Use `sort!` to sort in place.
 
 
 <CodeBlockSimple input='b = [3.4, 3.1, 2.0]
@@ -475,7 +475,7 @@ b
 ### sum()
 > Returns `INTEGER`
 
-Adds the elements up. They all have to be numbers.
+Adds the elements up. Every element has to be `INTEGERABLE`, which is wider than being a number: a string that parses and a boolean both count.
 
 
 <CodeBlockSimple input='[1, 2, 3].sum()
@@ -516,7 +516,7 @@ Converts a nested array (2D array) to a Matrix object.
 ### uniq()
 > Returns `ARRAY|ERROR`
 
-Returns a new array with duplicates removed, keeping the order of first appearance. Returns an error if an element is not hashable. Use `uniq!` to deduplicate in place.
+Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `uniq!` to deduplicate in place.
 
 
 <CodeBlockSimple input='c = ["a", 1, 1, 2]

@@ -67,8 +67,16 @@ const (
 	// arguments need. Declaring these ANY let a NIL or a MATRIX through to an
 	// unchecked type assertion, and {"a": 1}.get(nil, 0) panicked.
 	HASHABLE = "HASHABLE"
-	// STRINGABLE accepts what has a string form.
+	// STRINGABLE accepts what has a string form, which is what join needs of
+	// every element it is given.
 	STRINGABLE = "STRINGABLE"
+	// INTEGERABLE accepts what can be read as an integer. Wider than NUMERIC: a
+	// string that parses and a boolean qualify, which is why ["12"].sum() is 12.
+	INTEGERABLE = "INTEGERABLE"
+	// COMPARABLE accepts what can be ordered against its own kind. Ordering
+	// also requires the values to be of one type, which is a property of the
+	// collection rather than of any single value, so sort checks that on top.
+	COMPARABLE = "COMPARABLE"
 	// NUMERIC accepts INTEGER and FLOAT.
 	NUMERIC = "NUMERIC"
 )
@@ -86,14 +94,21 @@ var typeGroups = map[string]func(Object) bool{
 		_, ok := o.(Stringable)
 		return ok
 	},
+	INTEGERABLE: func(o Object) bool {
+		_, ok := o.(Integerable)
+		return ok
+	},
+	COMPARABLE: func(o Object) bool {
+		switch o.Type() {
+		case INTEGER_OBJ, FLOAT_OBJ, STRING_OBJ:
+			return true
+		default:
+			return false
+		}
+	},
 	NUMERIC: func(o Object) bool {
 		return o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ
 	},
-}
-
-var NUMBER_OBJ = []string{
-	INTEGER_OBJ,
-	FLOAT_OBJ,
 }
 
 const (
@@ -153,6 +168,19 @@ func (a Argument) usage() string {
 	}
 
 	return rendered
+}
+
+// InGroup reports whether o belongs to the named group. Argument patterns get
+// this through Check; method bodies need it directly, because a requirement on
+// the elements of a collection is not something an argument pattern can state:
+// join needs every element STRINGABLE, not its separator.
+func InGroup(group string, o Object) bool {
+	check, ok := typeGroups[group]
+	if !ok {
+		return false
+	}
+
+	return check(o)
 }
 
 func (a Argument) Check(o Object) bool {
