@@ -14,6 +14,36 @@ names with their arguments:
 Both are sorted by name. Before `0.24` they came out in a different order on
 every run.
 
+## Reading a signature
+
+The documentation gives each method as a signature, for example
+`fetch(HASHABLE, [ANY])`. Three things appear in the argument list:
+
+| Notation | Meaning |
+| -------- | ------- |
+| `STRING` | a concrete type |
+| `[STRING]` | may be left out |
+| `STRING...` | one or more of them |
+
+Where a method takes a whole family of types, the family is named rather than
+listed. These names are **type groups**, not types — you never write them in
+RocketLang, they only appear in signatures and in error messages:
+
+| Group | Accepts | Used by |
+| ----- | ------- | ------- |
+| `ANY` | every value | `push`, `unshift`, `insert`, `include?` and `index` on an `ARRAY`, the fallback of `HASH.get` |
+| `HASHABLE` | anything usable as a hash key: `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY`, `HASH` | the key arguments of `HASH.get`, `fetch`, `delete` and `include?` |
+| `NUMERIC` | `INTEGER` and `FLOAT` | `MATRIX.set` |
+
+A group is checked by asking the value what it can do, not by comparing it
+against a list, so a type added to the language joins the group it qualifies
+for. An error names the group rather than spelling out its members:
+
+```js
+🚀 > {"a": 1}.get(nil, 0)
+=> ERROR: wrong argument type on position 1: got=NIL, want=HASHABLE
+```
+
 ## Methods ending in `!`
 
 A method whose name ends in `!` changes the value it is called on. The plain

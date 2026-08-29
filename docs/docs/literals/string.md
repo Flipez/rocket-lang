@@ -260,7 +260,7 @@ Returns the character index of a given string if found. Otherwise returns `-1`
 ' />
 
 
-### format((STRING|INTEGER|FLOAT|BOOLEAN|ARRAY|HASH)...)
+### format(ANY...)
 > Returns `STRING`
 
 Formats according to a format specifier and returns the resulting string

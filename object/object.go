@@ -51,16 +51,44 @@ type Floatable interface {
 	ToFloatObj() Object
 }
 
-var ANY_OBJ = []string{
-	INTEGER_OBJ,
-	STRING_OBJ,
-	BOOLEAN_OBJ,
-	ARRAY_OBJ,
-	HASH_OBJ,
-	MATRIX_OBJ,
-	FLOAT_OBJ,
-	ERROR_OBJ,
-	NIL_OBJ,
+// Type groups name a set of accepted types by what an object can do rather than
+// by listing the types that can do it. They go wherever an ObjectType goes:
+// Arg(HASHABLE), OptArg(ANY), OverloadArg(NUMERIC).
+//
+// Listing types by hand is what these replace. "Any value" used to be written
+// four different ways, no two of them the same set: push accepted FUNCTION but
+// not FLOAT, so [1].push(1.5) was an error, and include? accepted neither FLOAT
+// nor MATRIX. A group is checked by asking the object, so a type added later
+// joins without anyone remembering to update a list.
+const (
+	// ANY accepts every object.
+	ANY = "ANY"
+	// HASHABLE accepts what can be a hash key, which is what a Hash's key
+	// arguments need. Declaring these ANY let a NIL or a MATRIX through to an
+	// unchecked type assertion, and {"a": 1}.get(nil, 0) panicked.
+	HASHABLE = "HASHABLE"
+	// STRINGABLE accepts what has a string form.
+	STRINGABLE = "STRINGABLE"
+	// NUMERIC accepts INTEGER and FLOAT.
+	NUMERIC = "NUMERIC"
+)
+
+// typeGroups maps each group to the question it asks of an object. Where a Go
+// interface already expresses the requirement, the group asserts against it, so
+// the group and the method body cannot disagree about what qualifies.
+var typeGroups = map[string]func(Object) bool{
+	ANY: func(Object) bool { return true },
+	HASHABLE: func(o Object) bool {
+		_, ok := o.(Hashable)
+		return ok
+	},
+	STRINGABLE: func(o Object) bool {
+		_, ok := o.(Stringable)
+		return ok
+	},
+	NUMERIC: func(o Object) bool {
+		return o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ
+	},
 }
 
 var NUMBER_OBJ = []string{
@@ -129,10 +157,19 @@ func (a Argument) usage() string {
 
 func (a Argument) Check(o Object) bool {
 	for _, t := range a.Types {
+		if group, isGroup := typeGroups[t]; isGroup {
+			if group(o) {
+				return true
+			}
+
+			continue
+		}
+
 		if ObjectType(t) == o.Type() {
 			return true
 		}
 	}
+
 	return false
 }
 

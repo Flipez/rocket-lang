@@ -33,7 +33,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.include?("a")`, true},
 		{`{"a": 1, 1: "b"}.include?(1)`, true},
 		{`{"a": 1, 1: "b"}.include?("c")`, false},
-		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH`},
+		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
 		{`{"a": 1, 1: "b"}.include?()`, `to few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
@@ -122,7 +122,7 @@ func TestHashRubyMethods(t *testing.T) {
 		{`{"a": 1}.fetch("a")`, 1},
 		{`{"a": 1}.fetch("z", 0)`, 0},
 		{`{"a": 1}.fetch("z")`, `key not found: "z"`},
-		{`{"a": 1}.fetch(nil)`, "unusable as hash key: NIL"},
+		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 
 		// delete reports the value that went, or nil when nothing did.
 		{`h = {"a": 1}; h.delete("a")`, 1},

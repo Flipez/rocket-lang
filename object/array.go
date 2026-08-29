@@ -226,7 +226,7 @@ func init() {
 					Arg(INTEGER_OBJ),
 				),
 				ArgPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -240,7 +240,7 @@ func init() {
 					OptArg(INTEGER_OBJ),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -273,7 +273,7 @@ func init() {
 					OptArg(INTEGER_OBJ),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -303,7 +303,7 @@ func init() {
 		"pop": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -330,7 +330,7 @@ func init() {
 					Arg(ARRAY_OBJ),
 				),
 				ArgPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FUNCTION_OBJ, FILE_OBJ),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -346,7 +346,7 @@ func init() {
 					Arg(BOOLEAN_OBJ),
 				),
 				ArgPattern: Args(
-					Arg(STRING_OBJ, ARRAY_OBJ, HASH_OBJ, BOOLEAN_OBJ, INTEGER_OBJ, NIL_OBJ, FILE_OBJ),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -419,7 +419,7 @@ func init() {
 		"count": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					OptArg(ANY_OBJ...),
+					OptArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -448,7 +448,7 @@ func init() {
 		"rindex": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -470,7 +470,7 @@ func init() {
 		"min": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -480,7 +480,7 @@ func init() {
 		"max": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -490,7 +490,7 @@ func init() {
 		"shift": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -511,7 +511,7 @@ func init() {
 		"unshift": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
@@ -528,7 +528,7 @@ func init() {
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
@@ -561,10 +561,10 @@ func init() {
 		"delete": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
@@ -596,7 +596,7 @@ func init() {
 					Arg(INTEGER_OBJ),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {

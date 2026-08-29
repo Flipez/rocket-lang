@@ -98,7 +98,7 @@ m.rows()
 ' />
 
 
-### set(INTEGER, INTEGER, FLOAT|INTEGER)
+### set(INTEGER, INTEGER, NUMERIC)
 > Returns `NIL|ERROR`
 
 Sets the element at the specified row and column (0-indexed) and returns the matrix, so calls can be chained.

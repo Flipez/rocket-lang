@@ -94,7 +94,7 @@ methods:
       true
       false
   fetch:
-    description: "Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required."
+    description: "Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required. The key has to be `HASHABLE`; the fallback can be anything."
     input: |
       h = {"a": 1}
       h.fetch("a")
@@ -104,7 +104,7 @@ methods:
       1
       0
   get:
-    description: "Returns the value of the given key or the default"
+    description: "Returns the value stored under the given key, or the given default when there is no such entry. The key has to be `HASHABLE`; the default can be anything."
     input: |
       {"a": "1", "b": "2"}.get("a", 10)
       {"a": "1", "b": "2"}.get("c", 10)
@@ -112,7 +112,7 @@ methods:
       "1"
       10
   include?:
-    description: "Returns true or false wether the hash contains the given object as key"
+    description: "Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`."
     input: |
       {"a": 1, 1: "b"}.include?(1)
       {"a": 1, 1: "b"}.include?("c")
