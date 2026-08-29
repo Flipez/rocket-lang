@@ -635,19 +635,19 @@ func TestIsA(t *testing.T) {
 // drift apart unnoticed.
 func TestTypeGroupsMethod(t *testing.T) {
 	tests := []inputTestCase{
-		{`"a".type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","STRINGABLE"]`},
-		{`1.type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
-		{`1.5.type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
-		{`true.type_groups().to_json()`, `["ANY","HASHABLE","INTEGERABLE","STRINGABLE"]`},
-		{`[1].type_groups().to_json()`, `["ANY","HASHABLE","STRINGABLE"]`},
-		{`{"a": 1}.type_groups().to_json()`, `["ANY","HASHABLE","STRINGABLE"]`},
-		{`nil.type_groups().to_json()`, `["ANY","STRINGABLE"]`},
-		{`[[1,2]].to_m().type_groups().to_json()`, `["ANY","STRINGABLE"]`},
+		{`"a".type_groups().to_json()`, `["COMPARABLE","HASHABLE","INTEGERABLE","STRINGABLE"]`},
+		{`1.type_groups().to_json()`, `["COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
+		{`1.5.type_groups().to_json()`, `["COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
+		{`true.type_groups().to_json()`, `["HASHABLE","INTEGERABLE","STRINGABLE"]`},
+		{`[1].type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
+		{`{"a": 1}.type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
+		{`nil.type_groups().to_json()`, `["STRINGABLE"]`},
+		{`[[1,2]].to_m().type_groups().to_json()`, `["STRINGABLE"]`},
 		// A function is CALLABLE and nothing else -- not STRINGABLE, not
 		// HASHABLE, which is the whole reason the element checks in join, sum,
 		// uniq and sort exist.
-		{`def() end.type_groups().to_json()`, `["ANY","CALLABLE"]`},
-		{`puts.type_groups().to_json()`, `["ANY","CALLABLE"]`},
+		{`def() end.type_groups().to_json()`, `["CALLABLE"]`},
+		{`puts.type_groups().to_json()`, `["CALLABLE"]`},
 		// Nothing else is callable.
 		{`1.type_groups().include?("CALLABLE")`, false},
 		{`"a".type_groups().include?("CALLABLE")`, false},
@@ -669,8 +669,21 @@ func TestIsAAgreesWithTypeGroups(t *testing.T) {
 	for _, subject := range subjects {
 		for _, group := range object.TypeGroupNames() {
 			predicate := testEval(`(` + subject + `).is_a?("` + group + `")`)
-			listed := testEval(`(` + subject + `).type_groups().include?("` + group + `")`)
 
+			// ANY is deliberately absent from the listing: it says an argument
+			// accepts anything, which describes a parameter rather than this
+			// value, and it is true of everything. is_a? still answers it.
+			if group == object.ANY {
+				require.Equal(t, "true", predicate.Inspect(),
+					"is_a?(ANY) should be true for %s", subject)
+				require.Equal(t, "false",
+					testEval(`(`+subject+`).type_groups().include?("ANY")`).Inspect(),
+					"type_groups() should not list ANY for %s", subject)
+
+				continue
+			}
+
+			listed := testEval(`(` + subject + `).type_groups().include?("` + group + `")`)
 			require.Equal(t, listed.Inspect(), predicate.Inspect(),
 				"is_a?(%q) and type_groups() disagree for %s", group, subject)
 		}
@@ -680,9 +693,6 @@ func TestIsAAgreesWithTypeGroups(t *testing.T) {
 		require.Equal(t, "true", own.Inspect(),
 			"%s should be a %s", subject, testEval(`(`+subject+`).type()`).Inspect())
 
-		// ...and belongs to ANY, whatever it is.
-		require.Equal(t, "true", testEval(`(`+subject+`).is_a?("ANY")`).Inspect(),
-			"%s should be ANY", subject)
 	}
 }
 

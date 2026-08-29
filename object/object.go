@@ -466,6 +466,17 @@ func init() {
 				// the order differed between runs.
 				groups := make([]Object, 0, len(typeGroups))
 				for _, name := range TypeGroupNames() {
+					// ANY is left out. Every other group says something the
+					// value can do; ANY says an argument accepts anything,
+					// which is a statement about a parameter rather than about
+					// this value. As a property it is true of everything, so it
+					// distinguishes nothing and only prefixes every list with a
+					// constant. is_a?("ANY") still answers true, because ANY is
+					// a real group wherever a signature uses it.
+					if name == ANY {
+						continue
+					}
+
 					if typeGroups[name](o) {
 						groups = append(groups, NewString(name))
 					}
