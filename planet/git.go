@@ -102,13 +102,15 @@ func LatestTag(url string) (string, error) {
 	return tags[len(tags)-1], nil
 }
 
-// Checkout clones url at tag into dest and returns the resolved commit.
+// Checkout clones url into dest and checks out ref, which may be a tag, a
+// branch or a commit. It returns the resolved commit.
 //
-// --depth 1 is deliberately not used: shallow fetching is unsupported over
-// git's dumb HTTP protocol, which is what lets a plain static file server act
-// as a planet mirror. Planet repositories are small enough that a full clone
-// costs little.
-func Checkout(url, tag, dest string) (string, error) {
+// The clone is not shallow, and deliberately so on two counts. Shallow
+// fetching is unsupported over git's dumb HTTP protocol, which is what lets a
+// plain static file server act as a planet mirror; and a full clone is what
+// makes checking out a recorded commit possible, which is how an install is
+// pinned against a moved tag or a branch that has advanced.
+func Checkout(url, ref, dest string) (string, error) {
 	if err := requireGit(); err != nil {
 		return "", err
 	}
@@ -117,7 +119,11 @@ func Checkout(url, tag, dest string) (string, error) {
 		return "", err
 	}
 
-	if _, err := git("", "clone", "--quiet", "--branch", tag, url, dest); err != nil {
+	if _, err := git("", "clone", "--quiet", url, dest); err != nil {
+		return "", err
+	}
+
+	if _, err := git(dest, "checkout", "--quiet", ref); err != nil {
 		return "", err
 	}
 

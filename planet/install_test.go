@@ -5,6 +5,7 @@ package planet
 import (
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 )
@@ -178,5 +179,104 @@ func TestLocalModuleConflict(t *testing.T) {
 
 	if _, conflict := LocalModuleConflict(m, "other"); conflict {
 		t.Error("reported a conflict for an unrelated alias")
+	}
+}
+
+// moveBranch advances main in a repo built by newRepo, so drift can be tested.
+func moveBranch(t *testing.T, repo, content string) {
+	t.Helper()
+
+	if err := os.WriteFile(filepath.Join(repo, "mod.rl"), []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, args := range [][]string{{"add", "mod.rl"}, {"commit", "--quiet", "-m", "moved"}} {
+		cmd := exec.Command("git", args...)
+		cmd.Dir = repo
+		if out, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %s", args, out)
+		}
+	}
+}
+
+// TestInstallPinsToTheRecordedCommit is the property that makes the commit
+// field load-bearing rather than decorative. A branch advances and a tag can be
+// force-moved, so re-resolving the ref would hand back different code than the
+// manifest describes.
+func TestInstallPinsToTheRecordedCommit(t *testing.T) {
+	repo := newRepo(t, "v1.0.0")
+	m := projectWith(t, repo, "dep", "main")
+
+	if err := InstallAll(m, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+
+	pinned := m.Planets["dep"].Commit
+	if pinned == "" {
+		t.Fatal("no commit was recorded")
+	}
+
+	moveBranch(t, repo, "export V = 99\n")
+
+	// A fresh checkout, as a CI job would have.
+	if err := os.RemoveAll(m.PlanetsDir()); err != nil {
+		t.Fatal(err)
+	}
+	if err := InstallAll(m, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+
+	if got := m.Planets["dep"].Commit; got != pinned {
+		t.Errorf("the recorded commit changed from %s to %s", pinned, got)
+	}
+
+	stamp, _ := ReadStamp(m.Dir("dep"))
+	if stamp.Commit != pinned {
+		t.Errorf("installed %s, want the pinned %s", stamp.Commit, pinned)
+	}
+
+	content, _ := os.ReadFile(filepath.Join(m.Dir("dep"), "mod.rl"))
+	if string(content) == "export V = 99\n" {
+		t.Error("install followed the branch instead of the recorded commit")
+	}
+}
+
+// TestInstallFollowsTheRefWhenNoCommitIsRecorded is the counterpart: without a
+// commit there is nothing to pin to, so the ref decides.
+func TestInstallFollowsTheRefWhenNoCommitIsRecorded(t *testing.T) {
+	repo := newRepo(t, "v1.0.0")
+	m := projectWith(t, repo, "dep", "main")
+
+	if err := InstallAll(m, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+
+	moveBranch(t, repo, "export V = 99\n")
+
+	// Clearing the commit is what planet get does for an explicit version.
+	entry := m.Planets["dep"]
+	entry.Commit = ""
+	m.Planets["dep"] = entry
+
+	if err := os.RemoveAll(m.PlanetsDir()); err != nil {
+		t.Fatal(err)
+	}
+	if err := InstallAll(m, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+
+	content, _ := os.ReadFile(filepath.Join(m.Dir("dep"), "mod.rl"))
+	if string(content) != "export V = 99\n" {
+		t.Errorf("content = %q, want the advanced branch content", content)
+	}
+}
+
+// TestCheckoutAcceptsABranch covers using a branch name as a version, which
+// git's clone accepts as readily as a tag.
+func TestCheckoutAcceptsABranch(t *testing.T) {
+	repo := newRepo(t, "v1.0.0")
+
+	if _, err := Checkout(repo, "main", filepath.Join(t.TempDir(), "x")); err != nil {
+		t.Errorf("Checkout of a branch failed: %s", err)
 	}
 }

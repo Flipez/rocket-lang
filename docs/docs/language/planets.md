@@ -95,8 +95,33 @@ planets:
     commit: 364d7201a12f07ce31a46671b8499535b403894f
 ```
 
-The commit is what makes an install reproducible, because a tag can be moved
-after the fact.
+The commit is what makes an install reproducible. Once recorded, `planet
+install` checks out **that commit** rather than re-resolving the reference, so a
+tag that is force-moved or a branch that advances cannot change what a checkout
+gets. Only an explicit `planet get <source>@<version>` moves it.
+
+### Branches and commits
+
+A version does not have to be a tag. Any reference git understands works,
+which is useful for a planet that has not tagged a release yet:
+
+```
+rocket-lang planet get flipez/rocket-lang-core@main
+rocket-lang planet get flipez/rocket-lang-core@6daa0cc
+```
+
+A bare `planet get` still requires tags, because there is no sensible default
+otherwise:
+
+```
+$ rocket-lang planet get flipez/rocket-lang-core
+planet get: https://github.com/flipez/rocket-lang-core publishes no version
+tags; pass an explicit @version
+```
+
+Tracking a branch is not the same as following it: the commit is recorded at
+install time and pinned from then on, so everyone who checks the project out
+gets the same code.
 
 Running `get` again on an installed planet reports what is there and changes
 nothing, so a routine `get` can never move a dependency by surprise:

@@ -39,7 +39,15 @@ func Install(m *Manifest, alias string, out io.Writer) (string, error) {
 		return "", err
 	}
 
-	commit, err := Checkout(source.URL, version, staging)
+	// A recorded commit wins over the ref. That is what pins an install: a tag
+	// can be moved and a branch advances, so re-resolving the ref would hand
+	// back different code than the manifest describes.
+	ref := version
+	if entry.Commit != "" {
+		ref = entry.Commit
+	}
+
+	commit, err := Checkout(source.URL, ref, staging)
 	if err != nil {
 		os.RemoveAll(staging)
 		return "", err
