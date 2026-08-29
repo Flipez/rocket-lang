@@ -25,7 +25,6 @@ func testEval(input string) object.Object {
 	l := lexer.New(input, "test")
 	p := parser.New(l)
 	program := p.ParseProgram()
-	object.AddEvaluator(evaluator.Eval)
 	env := object.NewEnvironment()
 
 	return evaluator.Eval(program, env)
@@ -644,9 +643,14 @@ func TestTypeGroupsMethod(t *testing.T) {
 		{`{"a": 1}.type_groups().to_json()`, `["ANY","HASHABLE","STRINGABLE"]`},
 		{`nil.type_groups().to_json()`, `["ANY","STRINGABLE"]`},
 		{`[[1,2]].to_m().type_groups().to_json()`, `["ANY","STRINGABLE"]`},
-		// A function belongs to nothing but ANY, which is the whole reason the
-		// element checks in join, sum, uniq and sort exist.
-		{`def() end.type_groups().to_json()`, `["ANY"]`},
+		// A function is CALLABLE and nothing else -- not STRINGABLE, not
+		// HASHABLE, which is the whole reason the element checks in join, sum,
+		// uniq and sort exist.
+		{`def() end.type_groups().to_json()`, `["ANY","CALLABLE"]`},
+		{`puts.type_groups().to_json()`, `["ANY","CALLABLE"]`},
+		// Nothing else is callable.
+		{`1.type_groups().include?("CALLABLE")`, false},
+		{`"a".type_groups().include?("CALLABLE")`, false},
 
 		{`"a".type_groups("x")`, "to many arguments: got=1, want=0"},
 	}

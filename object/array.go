@@ -13,6 +13,14 @@ type Array struct {
 }
 
 func NewArray(slice []Object) *Array {
+	if slice == nil {
+		// A nil slice marshals as JSON null, so [].to_json() was "null" while
+		// an array emptied with pop was "[]" -- the same value, serialized two
+		// ways depending on how it got there. An empty array literal arrives
+		// here with nothing, so normalise once at the door.
+		slice = make([]Object, 0)
+	}
+
 	return &Array{Elements: slice}
 }
 
@@ -399,6 +407,38 @@ func init() {
 					return NewErrorFormat("failed to convert array to matrix: %s", err.Error())
 				}
 				return matrix
+			},
+		},
+		"each": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(CALLABLE),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, env Environment) Object {
+				ao := o.(*Array)
+
+				for _, element := range ao.Elements {
+					result := CallFunction(args[0], env, element)
+
+					// An error ends the walk and is handed on, rather than
+					// being swallowed and the loop carrying on regardless.
+					if IsError(result) {
+						return result
+					}
+
+					if CallbackStopped(result) {
+						break
+					}
+				}
+
+				// The array, so a walk can be chained onto and after. each
+				// changes nothing itself, and the only other thing it could
+				// return is nil, which would end a chain.
+				return ao
 			},
 		},
 		"empty?": ObjectMethod{

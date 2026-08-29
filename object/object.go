@@ -79,6 +79,9 @@ const (
 	COMPARABLE = "COMPARABLE"
 	// NUMERIC accepts INTEGER and FLOAT.
 	NUMERIC = "NUMERIC"
+	// CALLABLE accepts what can be called: a function written in RocketLang, or
+	// a builtin such as puts, which is a value too.
+	CALLABLE = "CALLABLE"
 )
 
 // typeGroups maps each group to the question it asks of an object. Where a Go
@@ -108,6 +111,9 @@ var typeGroups = map[string]func(Object) bool{
 	},
 	NUMERIC: func(o Object) bool {
 		return o.Type() == INTEGER_OBJ || o.Type() == FLOAT_OBJ
+	},
+	CALLABLE: func(o Object) bool {
+		return o.Type() == FUNCTION_OBJ || o.Type() == BUILTIN_FUNCTION_OBJ
 	},
 }
 

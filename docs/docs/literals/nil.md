@@ -161,7 +161,7 @@ nil.type_groups()
 def() end.type_groups()
 ' output='["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["ANY", "STRINGABLE"]
-["ANY"]
+["ANY", "CALLABLE"]
 ' />
 
 

@@ -58,21 +58,21 @@ they appear only in signatures and in error messages.
 
 ### What belongs to what
 
-| Type | `ANY` | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` |
-| -------- | --- | --- | --- | --- | --- | --- |
-| `STRING` | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| `INTEGER` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `FLOAT` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `BOOLEAN` | ✅ | ✅ | | ✅ | ✅ | |
-| `ARRAY` | ✅ | ✅ | | ✅ | | |
-| `HASH` | ✅ | ✅ | | ✅ | | |
-| `MATRIX` | ✅ | | | ✅ | | |
-| `NIL` | ✅ | | | ✅ | | |
-| `ERROR` | ✅ | | | ✅ | | |
-| `FILE` | ✅ | | | ✅ | | |
-| `HTTP` | ✅ | | | ✅ | | |
-| `FUNCTION` | ✅ | | | | | |
-| `MODULE` | ✅ | | | | | |
+| Type | `ANY` | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` | `CALLABLE` |
+| -------- | --- | --- | --- | --- | --- | --- | --- |
+| `STRING` | ✅ | ✅ | ✅ | ✅ | ✅ | | |
+| `INTEGER` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `FLOAT` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `BOOLEAN` | ✅ | ✅ | | ✅ | ✅ | | |
+| `ARRAY` | ✅ | ✅ | | ✅ | | | |
+| `HASH` | ✅ | ✅ | | ✅ | | | |
+| `MATRIX` | ✅ | | | ✅ | | | |
+| `NIL` | ✅ | | | ✅ | | | |
+| `ERROR` | ✅ | | | ✅ | | | |
+| `FILE` | ✅ | | | ✅ | | | |
+| `HTTP` | ✅ | | | ✅ | | | |
+| `FUNCTION` | ✅ | | | | | | ✅ |
+| `MODULE` | ✅ | | | | | | |
 
 Two rows are worth a second look:
 
@@ -81,6 +81,9 @@ Two rows are worth a second look:
   `[true].sum()` is `1`.
 - An `ARRAY` and a `HASH` are `HASHABLE`, so they can be hash keys:
   `{[1]: "a"}` is a valid hash.
+- A `FUNCTION` is `CALLABLE` and nothing else — not even `STRINGABLE`, which is
+  why `[def() end].join()` fails. A builtin such as `puts` is `CALLABLE` too,
+  so `[1, 2].each(puts)` works.
 
 A group is decided by asking the value what it can do, not by comparing it
 against a list of type names. A type added to the language therefore joins every

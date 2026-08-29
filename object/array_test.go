@@ -355,3 +355,52 @@ func TestElementGroupErrors(t *testing.T) {
 	}
 	testInput(t, tests)
 }
+
+// TestArrayEach covers the first method that calls back into user code. Until
+// the function applier was injected, a method could reach a callback's body but
+// had no way to pass it an argument -- which is why HTTP.handle sets `request`
+// as a variable instead of taking it as a parameter.
+func TestArrayEach(t *testing.T) {
+	tests := []inputTestCase{
+		// The receiver comes back, so a walk chains. Returning nil would end
+		// the chain, and each changes nothing that would be worth returning.
+		{`a = [1,2,3]; a.each(def(x) end).to_json()`, "[1,2,3]"},
+		{`[3,1,2].sort().each(def(x) end).size()`, 3},
+		{`a = [1]; a.each(def(x) end).type()`, "ARRAY"},
+		{`a = []; a.each(def(x) end).to_json()`, "[]"},
+
+		// The callback actually receives the element, which is the whole point.
+		{`out = []; a = [1,2,3]; a.each(def(x) out.push(x * 2) end); out.to_json()`, "[2,4,6]"},
+		{`out = []; a = ["x","y"]; a.each(def(s) out.push(s.upcase()) end); out.to_json()`, `["X","Y"]`},
+
+		// break ends the walk, next moves it along. A function does not consume
+		// either, so a callback can hand one back, and passing it through as a
+		// value would be meaningless.
+		{`out = []; a = [1,2,3,4]; a.each(def(x) if x == 3 break end out.push(x) end); out.to_json()`, "[1,2]"},
+		{`out = []; a = [1,2,3]; a.each(def(x) if x == 2 next end out.push(x) end); out.to_json()`, "[1,3]"},
+		// break still hands back the array, not the BREAK_VALUE.
+		{`a = [1,2]; a.each(def(x) break end).type()`, "ARRAY"},
+
+		// An error ends the walk and is handed on rather than swallowed.
+		{`a = [1]; a.each(def(x) x.no_such_method() end)`, "test:1:25: undefined method `.no_such_method()` for INTEGER"},
+		{`out = []; a = [1,2,3]; begin a.each(def(x) out.push(x); x.nope() end) rescue e end out.to_json()`, "[1]"},
+
+		// Arity is the applier's business, and it reports it the way a call
+		// written out in full would.
+		{`a = [1]; a.each(def(x, y) end)`, "to few arguments: got=1, want=2"},
+		{`a = [1]; a.each(def() end)`, "to many arguments: got=1, want=0"},
+
+		// A builtin is a value too, so it is callable.
+		{`a = [1]; a.each(puts).to_json()`, "[1]"},
+
+		// CALLABLE refuses what cannot be called.
+		{`a = [1]; a.each(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
+		{`a = [1]; a.each(nil)`, "wrong argument type on position 1: got=NIL, want=CALLABLE"},
+		{`a = [1]; a.each()`, "to few arguments: got=0, want=1"},
+
+		// A closure keeps its own scope, so the callback sees where it was
+		// written rather than where it is called.
+		{`factor = 10; out = []; a = [1,2]; a.each(def(x) out.push(x * factor) end); out.to_json()`, "[10,20]"},
+	}
+	testInput(t, tests)
+}

@@ -22,7 +22,7 @@ methods:
     output: |
       ["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
       ["ANY", "STRINGABLE"]
-      ["ANY"]
+      ["ANY", "CALLABLE"]
   methods:
     description: "Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array."
     input: |

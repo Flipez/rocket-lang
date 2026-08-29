@@ -149,6 +149,25 @@ Returns everything after the first n elements as a new array. Dropping more than
 ' />
 
 
+### each(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `puts`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.each(def(x) puts(x * 2) end)
+a.each(def(x) if x == 2 break end puts(x) end).size()
+' output='[1, 2, 3]
+2
+4
+6
+[1, 2, 3]
+1
+3
+' />
+
+
 ### empty?()
 > Returns `BOOLEAN`
 
@@ -710,7 +729,7 @@ nil.type_groups()
 def() end.type_groups()
 ' output='["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["ANY", "STRINGABLE"]
-["ANY"]
+["ANY", "CALLABLE"]
 ' />
 
 
