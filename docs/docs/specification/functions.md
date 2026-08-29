@@ -65,3 +65,29 @@ The returned array can be unpacked into multiple variables (see [Multiple Assign
 x, y, z = get_coordinates()
 // x = 10, y = 20, z = 30
 ```
+
+## Arguments
+
+A call has to supply exactly as many arguments as the function has parameters.
+Too few or too many is an error:
+
+```js
+def add(a, b)
+  return a + b
+end
+
+add(1, 2)     // 3
+add(1)        // ERROR: add: to few arguments: got=1, want=2
+add(1, 2, 3)  // ERROR: add: to many arguments: got=3, want=2
+```
+
+A named function reports its own name, which helps when the call is into a
+module rather than a function on screen. Like any other error it can be caught:
+
+```js
+begin
+  add(1)
+rescue e
+  puts(e.msg())   // add: to few arguments: got=1, want=2
+end
+```
