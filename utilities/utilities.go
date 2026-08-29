@@ -66,6 +66,14 @@ func canonicalize(path string) string {
 	return resolved
 }
 
+// InitSearchPaths builds the search path if it has not been built yet. Callers
+// that need to append to it -- the planet directory goes after the working
+// directory, not before it -- must force initialisation first, because
+// FindModule would otherwise build it lazily and put their entry at the front.
+func InitSearchPaths() {
+	once.Do(initSearchPaths)
+}
+
 func FindModule(name string) string {
 	once.Do(initSearchPaths)
 

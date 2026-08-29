@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	flag "github.com/spf13/pflag"
 
@@ -10,7 +11,9 @@ import (
 	"github.com/flipez/rocket-lang/lexer"
 	"github.com/flipez/rocket-lang/object"
 	"github.com/flipez/rocket-lang/parser"
+	"github.com/flipez/rocket-lang/planet"
 	"github.com/flipez/rocket-lang/repl"
+	"github.com/flipez/rocket-lang/utilities"
 )
 
 func main() {
@@ -24,6 +27,8 @@ func main() {
 	}
 
 	flag.Parse()
+
+	configureSearchPath()
 
 	if *version {
 		print(repl.SplashVersion())
@@ -42,6 +47,32 @@ func main() {
 		if err == nil {
 			runProgram(string(file), os.Args[1])
 		}
+	}
+}
+
+// configureSearchPath appends the current project's planet directory to the
+// module search path. It goes after ROCKETLANGPATH and the working directory,
+// so a project's own modules always win a name clash with an installed planet.
+func configureSearchPath() {
+	utilities.InitSearchPaths()
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return
+	}
+
+	root, ok := planet.FindRoot(cwd)
+	if !ok {
+		return
+	}
+
+	planetsDir := filepath.Join(root, planet.DirName)
+	if !utilities.Exists(planetsDir) {
+		return
+	}
+
+	if err := utilities.AddPath(planetsDir); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: could not add %s to the search path: %s\n", planetsDir, err)
 	}
 }
 
