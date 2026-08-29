@@ -32,9 +32,9 @@ Every value in RocketLang has a type, and `type()` reports it:
 
 Every type also answers the
 [generic methods](../literals/string#generic-literal-methods)
-`to_s`, `to_i`, `to_f`, `to_json`, `type`, `methods`, `wat` and `nil?` — except a
-`MODULE`, which only exposes what the module exports, so `lib.type()` is an
-error rather than `"MODULE"`.
+`to_s`, `to_i`, `to_f`, `to_json`, `type`, `type_groups`, `methods`, `wat`,
+`is_a?` and `nil?` — except a `MODULE`, which only exposes what the module
+exports, so `lib.type()` is an error rather than `"MODULE"`.
 
 ## Type groups
 
@@ -86,6 +86,43 @@ A group is decided by asking the value what it can do, not by comparing it
 against a list of type names. A type added to the language therefore joins every
 group it qualifies for without anyone maintaining a list — which is how
 `push` once came to accept a `FUNCTION` but reject a `FLOAT`.
+
+### Asking a value
+
+`type_groups()` lists the groups a value belongs to, and `is_a?` answers for one
+of them:
+
+```js
+🚀 > 1.type_groups()
+=> ["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
+🚀 > def() end.type_groups()
+=> ["ANY"]
+🚀 > "a".is_a?("HASHABLE")
+=> true
+🚀 > nil.is_a?("HASHABLE")
+=> false
+```
+
+`is_a?` takes a type name as readily as a group name, so it covers both
+questions:
+
+```js
+🚀 > "a".is_a?("STRING")
+=> true
+🚀 > "a".is_a?("INTEGER")
+=> false
+```
+
+A name that is neither is an error rather than a `false`, because a typo would
+otherwise read as a real answer:
+
+```js
+🚀 > "a".is_a?("HASHBALE")
+=> ERROR: unknown type or type group: HASHBALE
+```
+
+The names are exact, and `type()` answers in upper case, so `is_a?` asks in it:
+`is_a?("string")` is an error too.
 
 ## Where groups show up
 
