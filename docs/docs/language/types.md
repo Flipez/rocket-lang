@@ -1,0 +1,130 @@
+# Types and type groups
+
+> 👉 Type groups were introduced in `0.24`
+
+Every value in RocketLang has a type, and `type()` reports it:
+
+```js
+🚀 > "abc".type()
+=> "STRING"
+🚀 > [1, 2].type()
+=> "ARRAY"
+```
+
+## The types
+
+| Type | How you get one | Own methods |
+| ---- | --------------- | ----------- |
+| `STRING` | `"abc"`, `'abc'` | [String](../literals/string) |
+| `INTEGER` | `1`. A base prefix is not a literal: write `"0x1f".to_i()` | [Integer](../literals/integer) |
+| `FLOAT` | `1.5` | [Float](../literals/float) |
+| `BOOLEAN` | `true`, `false`, `👍`, `👎` | none |
+| `NIL` | `nil`, or anything that has nothing to return | none |
+| `ARRAY` | `[1, 2]` | [Array](../literals/array) |
+| `HASH` | `{"a": 1}` | [Hash](../literals/hash) |
+| `MATRIX` | `[[1, 2], [3, 4]].to_m()` | [Matrix](../literals/matrix) |
+| `FUNCTION` | `def(x) return x end` | none |
+| `ERROR` | a failing operation, caught with `begin`/`rescue` | [Error](../literals/error) |
+| `FILE` | `IO.open("f.txt", "r", "0644")` | [File](../literals/file) |
+| `HTTP` | `HTTP.new()` | [HTTP](../literals/http) |
+| `MODULE` | `import "./lib" as lib` | none |
+| `BUILTIN_MODULE` | `Math`, `IO`, `JSON`, `OS`, `Time` | see [Builtins](../builtins/Math) |
+
+Every type also answers the
+[generic methods](../literals/string#generic-literal-methods)
+`to_s`, `to_i`, `to_f`, `to_json`, `type`, `methods`, `wat` and `nil?` — except a
+`MODULE`, which only exposes what the module exports, so `lib.type()` is an
+error rather than `"MODULE"`.
+
+## Type groups
+
+A method that accepts a whole family of types names the family rather than
+listing it. These names are **type groups**. You never write one in RocketLang:
+they appear only in signatures and in error messages.
+
+```js
+🚀 > {"a": 1}.get(nil, 0)
+=> ERROR: wrong argument type on position 1: got=NIL, want=HASHABLE
+```
+
+| Group | Means | Where it appears |
+| ----- | ----- | ---------------- |
+| `ANY` | any value at all | `push`, `unshift`, `insert`, `include?`, `index`, `rindex`, `count` and `delete` on an `ARRAY`; the fallback of `HASH.get` and `fetch`; `format`; `puts` |
+| `HASHABLE` | can be used as a hash key | the key argument of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.uniq` |
+| `COMPARABLE` | can be ordered against its own kind | the elements of `ARRAY.sort`, `min` and `max` |
+| `STRINGABLE` | has a string form | the elements of `ARRAY.join` |
+| `INTEGERABLE` | can be read as an integer | the elements of `ARRAY.sum` |
+| `NUMERIC` | a number | the value argument of `MATRIX.set` |
+
+### What belongs to what
+
+| Type | `ANY` | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` |
+| -------- | --- | --- | --- | --- | --- | --- |
+| `STRING` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `INTEGER` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `FLOAT` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `BOOLEAN` | ✅ | ✅ | | ✅ | ✅ | |
+| `ARRAY` | ✅ | ✅ | | ✅ | | |
+| `HASH` | ✅ | ✅ | | ✅ | | |
+| `MATRIX` | ✅ | | | ✅ | | |
+| `NIL` | ✅ | | | ✅ | | |
+| `ERROR` | ✅ | | | ✅ | | |
+| `FILE` | ✅ | | | ✅ | | |
+| `HTTP` | ✅ | | | ✅ | | |
+| `FUNCTION` | ✅ | | | | | |
+| `MODULE` | ✅ | | | | | |
+
+Two rows are worth a second look:
+
+- A `BOOLEAN` is `INTEGERABLE`, and a `STRING` is too when it parses. That is
+  wider than being a number, which is why `["12"].sum()` is `12` and
+  `[true].sum()` is `1`.
+- An `ARRAY` and a `HASH` are `HASHABLE`, so they can be hash keys:
+  `{[1]: "a"}` is a valid hash.
+
+A group is decided by asking the value what it can do, not by comparing it
+against a list of type names. A type added to the language therefore joins every
+group it qualifies for without anyone maintaining a list — which is how
+`push` once came to accept a `FUNCTION` but reject a `FLOAT`.
+
+## Where groups show up
+
+### In a signature
+
+The documentation gives each method as a signature. A group sits where a type
+would:
+
+```
+push(ANY)
+get(HASHABLE, ANY)
+set(INTEGER, INTEGER, NUMERIC)
+```
+
+See [Methods](./methods#reading-a-signature) for the rest of the notation,
+including how an optional or repeatable argument is written.
+
+### In a requirement on elements
+
+A signature can only describe the *arguments*. Some methods require something of
+the **elements** they are given, and they name the same groups:
+
+```js
+🚀 > [def() end].join()
+=> ERROR: element 0 is not STRINGABLE, got FUNCTION
+🚀 > [1, nil].uniq()
+=> ERROR: element 1 is not HASHABLE, got NIL
+🚀 > [1, nil].sum()
+=> ERROR: element 1 is not INTEGERABLE, got NIL
+🚀 > [1, nil].sort()
+=> ERROR: element 1 is not COMPARABLE, got NIL
+```
+
+Ordering carries one requirement no group can express, because it is about the
+collection rather than any single value: the elements have to be the **same**
+comparable type. `1` and `2.5` are each `COMPARABLE` and still cannot be sorted
+together:
+
+```js
+🚀 > [1, 2.5].sort()
+=> ERROR: elements must all be one COMPARABLE type, got INTEGER at 0 and FLOAT at 1
+```

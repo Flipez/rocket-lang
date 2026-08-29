@@ -162,7 +162,7 @@ methods:
       [1, 9, 2, 8]
       [1, 9, 2, 8]
   join:
-    description: "Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not."
+    description: "Joins the elements into a string, with an optional separator between them. Every element has to be `STRINGABLE`; a function is not."
     input: |
       [1, 2, 3].join()
       [1, 2, 3].join("-")
@@ -184,7 +184,7 @@ methods:
       3
       nil
   min:
-    description: "Returns the smallest element, or `nil` for an empty array. The elements have to be all strings, all integers or all floats, exactly as `sort` requires."
+    description: "Returns the smallest element, or `nil` for an empty array. The elements have to satisfy exactly what `sort` requires."
     input: |
       [3, 1, 2].min()
       ["b", "a"].min()
@@ -288,7 +288,7 @@ methods:
     output: |
       [[1, 2, 3], [4, 5, 6], [7, 8]]
   sort:
-    description: "Returns a new sorted array. The elements must all be STRING, all INTEGER or all FLOAT, otherwise an error is returned and the array is left untouched. Use `sort!` to sort in place."
+    description: "Returns a new sorted array. Every element has to be `COMPARABLE` -- a `STRING`, `INTEGER` or `FLOAT` -- and they all have to be the same one of those, otherwise an error is returned naming the element at fault and the array is left untouched. Use `sort!` to sort in place."
     input: |
       b = [3.4, 3.1, 2.0]
       b.sort()
@@ -308,7 +308,7 @@ methods:
       [2.0, 3.1, 3.4]
       [2.0, 3.1, 3.4]
   sum:
-    description: "Adds the elements up. They all have to be numbers."
+    description: "Adds the elements up. Every element has to be `INTEGERABLE`, which is wider than being a number: a string that parses and a boolean both count."
     input: |
       [1, 2, 3].sum()
       [1.5, 2.5].sum()
@@ -334,7 +334,7 @@ methods:
       │ 3.0  4.0 │
       └          ┘
   uniq:
-    description: "Returns a new array with duplicates removed, keeping the order of first appearance. Returns an error if an element is not hashable. Use `uniq!` to deduplicate in place."
+    description: "Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `uniq!` to deduplicate in place."
     input: |
       c = ["a", 1, 1, 2]
       c.uniq()

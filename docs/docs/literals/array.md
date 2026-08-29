@@ -87,7 +87,7 @@ a
 ' />
 
 
-### count([INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL])
+### count([ANY])
 > Returns `INTEGER`
 
 Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you.
@@ -102,8 +102,8 @@ Without an argument this is `size`. With one it counts how often that element oc
 ' />
 
 
-### delete(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+### delete(ANY)
+> Returns `ANY`
 
 Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss.
 
@@ -120,7 +120,7 @@ nil
 
 
 ### delete_at(INTEGER)
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
 Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array.
 
@@ -163,7 +163,7 @@ false
 
 
 ### first([INTEGER])
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
 Returns the first element of the array. Shorthand for `array[0]`
 
@@ -205,7 +205,7 @@ a
 ' />
 
 
-### include?(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
+### include?(ANY)
 > Returns `BOOLEAN`
 
 Returns true or false wether the array contains the given element
@@ -218,7 +218,7 @@ true
 ' />
 
 
-### index(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
+### index(ANY)
 > Returns `INTEGER`
 
 Returns the index of the given element in the array if found. Otherwise return `-1`.
@@ -229,7 +229,7 @@ Returns the index of the given element in the array if found. Otherwise return `
 ' />
 
 
-### insert(INTEGER, INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+### insert(INTEGER, ANY)
 > Returns `ARRAY|ERROR`
 
 Inserts an element at the given index and returns the array. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`.
@@ -249,7 +249,7 @@ a
 ### join([STRING])
 > Returns `STRING`
 
-Joins the elements into a string, with an optional separator between them. Every element has to have a string form; a function does not.
+Joins the elements into a string, with an optional separator between them. Every element has to be `STRINGABLE`; a function is not.
 
 
 <CodeBlockSimple input='[1, 2, 3].join()
@@ -260,7 +260,7 @@ Joins the elements into a string, with an optional separator between them. Every
 
 
 ### last([INTEGER])
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
 Returns the last element of the array.
 
@@ -271,7 +271,7 @@ Returns the last element of the array.
 
 
 ### max()
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
 Returns the largest element, or `nil` for an empty array. Takes the same elements as `min`.
 
@@ -284,9 +284,9 @@ nil
 
 
 ### min()
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
-Returns the smallest element, or `nil` for an empty array. The elements have to be all strings, all integers or all floats, exactly as `sort` requires.
+Returns the smallest element, or `nil` for an empty array. The elements have to satisfy exactly what `sort` requires.
 
 
 <CodeBlockSimple input='[3, 1, 2].min()
@@ -299,7 +299,7 @@ nil
 
 
 ### pop()
-> Returns `STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE`
+> Returns `ANY`
 
 Removes the last element of the array and returns it.
 
@@ -313,7 +313,7 @@ a
 ' />
 
 
-### push(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FUNCTION|FILE)
+### push(ANY)
 > Returns `ARRAY`
 
 Adds the given object as the last element and returns the array, so calls can be chained.
@@ -358,7 +358,7 @@ a
 ' />
 
 
-### rindex(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+### rindex(ANY)
 > Returns `INTEGER`
 
 Returns the index of the last matching element, or `-1` when there is none. The mirror of `index`.
@@ -406,7 +406,7 @@ a
 
 
 ### shift()
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+> Returns `ANY`
 
 Removes the first element and returns it, or `nil` for an empty array. The mirror of `pop`, and like `pop` it changes the array without a `!`, because there is no pure version of taking something out.
 
@@ -445,7 +445,7 @@ Returns the elements of the array in slices with the size of the given integer
 ### sort()
 > Returns `ARRAY|ERROR`
 
-Returns a new sorted array. The elements must all be STRING, all INTEGER or all FLOAT, otherwise an error is returned and the array is left untouched. Use `sort!` to sort in place.
+Returns a new sorted array. Every element has to be `COMPARABLE` -- a `STRING`, `INTEGER` or `FLOAT` -- and they all have to be the same one of those, otherwise an error is returned naming the element at fault and the array is left untouched. Use `sort!` to sort in place.
 
 
 <CodeBlockSimple input='b = [3.4, 3.1, 2.0]
@@ -475,7 +475,7 @@ b
 ### sum()
 > Returns `INTEGER`
 
-Adds the elements up. They all have to be numbers.
+Adds the elements up. Every element has to be `INTEGERABLE`, which is wider than being a number: a string that parses and a boolean both count.
 
 
 <CodeBlockSimple input='[1, 2, 3].sum()
@@ -516,7 +516,7 @@ Converts a nested array (2D array) to a Matrix object.
 ### uniq()
 > Returns `ARRAY|ERROR`
 
-Returns a new array with duplicates removed, keeping the order of first appearance. Returns an error if an element is not hashable. Use `uniq!` to deduplicate in place.
+Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `uniq!` to deduplicate in place.
 
 
 <CodeBlockSimple input='c = ["a", 1, 1, 2]
@@ -543,7 +543,7 @@ c
 ' />
 
 
-### unshift(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
+### unshift(ANY)
 > Returns `ARRAY`
 
 Adds an element to the front and returns the array, so calls can be chained. The mirror of `push`.

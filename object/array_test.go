@@ -46,7 +46,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`["test","test",2].uniq().size()`, 2},
 		// nil is not hashable, so it cannot be de-duplicated. Written with a
 		// literal rather than relying on what a !-method hands back.
-		{`[nil].uniq()`, "failed because element NIL is not hashable"},
+		{`[nil].uniq()`, "element 0 is not HASHABLE, got NIL"},
 		{"[].first()", nil},
 		{"[1,2,3].first()", 1},
 		{"[].last()", nil},
@@ -56,10 +56,10 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[3.4, 3.1, 2.0].sort()`, `[2.0, 3.1, 3.4]`},
 		{`[3, 1, 4].sort()`, `[1, 3, 4]`},
 		{`["Gopher", "Go", "Alpha"].sort()`, `["Alpha", "Go", "Gopher"]`},
-		{`["Gopher", 1, "Alpha"].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
-		{`[1, "Go", 1].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
-		{`[2.0, "Go", 2.0].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
-		{`[true, "Go", true].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`["Gopher", 1, "Alpha"].sort()`, "elements must all be one COMPARABLE type, got STRING at 0 and INTEGER at 1"},
+		{`[1, "Go", 1].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
+		{`[2.0, "Go", 2.0].sort()`, "elements must all be one COMPARABLE type, got FLOAT at 0 and STRING at 1"},
+		{`[true, "Go", true].sort()`, "element 0 is not COMPARABLE, got BOOLEAN"},
 		{`[].sort()`, `[]`},
 		{`["a", "b", 1, 2].reverse()`, `[2, 1, "b", "a"]`},
 		{`[1,2,3].include?(4)`, false},
@@ -75,15 +75,15 @@ func TestArrayObjectMethods(t *testing.T) {
 		// has no string form -- a function -- is refused.
 		{"[1,2,3,{}].join()", "123{}"},
 		{"[1,2,3,[4]].join()", "123[4]"},
-		{"[def() end].join()", "Found non stringable element FUNCTION on index 0"},
+		{"[def() end].join()", "element 0 is not STRINGABLE, got FUNCTION"},
 		{"[1,2,3].join()", "123"},
 		{"[1,2,3].join('-')", "1-2-3"},
-		{"['1',2, 2.5,{}].sum()", "Found non number element HASH on index 3"},
+		{"['1',2, 2.5,{}].sum()", "element 3 is not INTEGERABLE, got HASH"},
 		{"['1', 2, 2.5].sum()", 5},
 		// A type can be convertible in principle and still fail to convert:
 		// nil and a non-numeric string both used to contribute a silent 0.
-		{"[1, nil].sum()", "Found non number element NIL on index 1"},
-		{"['abc'].sum()", "Found non number element STRING on index 0"},
+		{"[1, nil].sum()", "element 1 is not INTEGERABLE, got NIL"},
+		{"['abc'].sum()", "element 0 does not convert to a number, got STRING"},
 		{`[[1, 2], [3, 4]].to_m()`, "2x2 matrix\n┌          ┐\n│ 1.0  2.0 │\n│ 3.0  4.0 │\n└          ┘"},
 		{`[[1, 2], [3, 4]].to_m().to_a()`, "[[1.0, 2.0], [3.0, 4.0]]"},
 		{`[1, 2].to_m()`, "failed to convert array to matrix: matrix must be created from 2D array"},
@@ -172,7 +172,7 @@ func TestArrayBangConvention(t *testing.T) {
 		{`a = [1,2,3]; a.pop(); a.to_json()`, "[1,2]"},
 
 		// A sort that cannot compare its elements errors...
-		{`[1,"a"].sort()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[1,"a"].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
 		// ...and leaves the array alone rather than half-ordered. The error has
 		// to be caught, or it would propagate before to_json runs and the
 		// assertion would pass without checking anything.
@@ -213,7 +213,7 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`[].max()`, nil},
 		// min and max borrow sort's rule about what can be compared, so they
 		// fail the same way and with the same words.
-		{`[1,"a"].min()`, "Array does contain either an object not INTEGER, FLOAT or STRING or is mixed"},
+		{`[1,"a"].min()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
 
 		{`[1,2,3].first(2)`, "[1, 2]"},
 		{`[1,2,3].first(9)`, "[1, 2, 3]"},
@@ -307,6 +307,51 @@ func TestArrayBangPairsAreComplete(t *testing.T) {
 		{`[1,[2,[3]]].flatten!(1).to_json()`, "[1,2,[3]]"},
 		{`[1,2,3].rotate!(2).to_json()`, "[3,1,2]"},
 		{`[1,2].flatten!(0 - 1)`, "negative depth -1"},
+	}
+	testInput(t, tests)
+}
+
+// TestElementGroupErrors covers the requirements a method places on the
+// elements it is given. These were four checks with four unrelated messages,
+// and sort's named neither the element at fault nor which of its two rules had
+// been broken -- [1, nil].sort() and [1, 2.5].sort() said the same thing.
+func TestElementGroupErrors(t *testing.T) {
+	tests := []inputTestCase{
+		// Each one names the group, the index and what was found instead.
+		{`[def() end].join()`, "element 0 is not STRINGABLE, got FUNCTION"},
+		{`[1, def() end].join()`, "element 1 is not STRINGABLE, got FUNCTION"},
+		{`[nil].uniq()`, "element 0 is not HASHABLE, got NIL"},
+		{`[1, nil].uniq()`, "element 1 is not HASHABLE, got NIL"},
+		{`[1, nil].sum()`, "element 1 is not INTEGERABLE, got NIL"},
+		{`[nil].sort()`, "element 0 is not COMPARABLE, got NIL"},
+		{`[1, nil].sort()`, "element 1 is not COMPARABLE, got NIL"},
+		{`[true].sort()`, "element 0 is not COMPARABLE, got BOOLEAN"},
+
+		// Ordering has a second rule that no per-element group can state, so it
+		// gets its own message -- and both types are named.
+		{`[1, 2.5].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and FLOAT at 1"},
+		{`[1, "a"].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
+		{`["a", 1].sort()`, "elements must all be one COMPARABLE type, got STRING at 0 and INTEGER at 1"},
+		// min and max borrow the same rules, so they report the same way.
+		{`[1, "a"].min()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
+		{`[1, "a"].max()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
+		{`[nil].min()`, "element 0 is not COMPARABLE, got NIL"},
+
+		// One element of a COMPARABLE type is fine, and so is none.
+		{`[1].sort().to_json()`, "[1]"},
+		{`[].sort().to_json()`, "[]"},
+		{`[2.5, 1.5].sort().to_json()`, "[1.5,2.5]"},
+		{`["b", "a"].sort().to_json()`, `["a","b"]`},
+
+		// INTEGERABLE is wider than NUMERIC on purpose: a string that parses
+		// and a boolean both count, which is existing sum behaviour.
+		{`["12"].sum()`, 12},
+		{`[true].sum()`, 1},
+		{`[1.9].sum()`, 1},
+		// Being INTEGERABLE is not the same as converting, so that failure is
+		// reported differently rather than blamed on the type.
+		{`["abc"].sum()`, "element 0 does not convert to a number, got STRING"},
+		{`[1, "abc"].sum()`, "element 1 does not convert to a number, got STRING"},
 	}
 	testInput(t, tests)
 }

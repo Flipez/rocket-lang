@@ -97,8 +97,8 @@ h.size()
 ' />
 
 
-### delete(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+### delete(HASHABLE)
+> Returns `ANY`
 
 Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss.
 
@@ -127,10 +127,10 @@ false
 ' />
 
 
-### fetch(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL, [INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL])
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+### fetch(HASHABLE, [ANY])
+> Returns `ANY`
 
-Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required.
+Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required. The key has to be `HASHABLE`; the fallback can be anything.
 
 
 <CodeBlockSimple input='h = {"a": 1}
@@ -142,10 +142,10 @@ h.fetch("z", 0)
 ' />
 
 
-### get(INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL, INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL)
-> Returns `INTEGER|STRING|BOOLEAN|ARRAY|HASH|MATRIX|FLOAT|ERROR|NIL`
+### get(HASHABLE, ANY)
+> Returns `ANY`
 
-Returns the value of the given key or the default
+Returns the value stored under the given key, or the given default when there is no such entry. The key has to be `HASHABLE`; the default can be anything.
 
 
 <CodeBlockSimple input='{"a": "1", "b": "2"}.get("a", 10)
@@ -155,10 +155,10 @@ Returns the value of the given key or the default
 ' />
 
 
-### include?(BOOLEAN|STRING|INTEGER|FLOAT|ARRAY|HASH)
+### include?(HASHABLE)
 > Returns `BOOLEAN`
 
-Returns true or false wether the hash contains the given object as key
+Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`.
 
 
 <CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)

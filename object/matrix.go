@@ -340,7 +340,7 @@ func init() {
 		},
 		"set": {
 			Layout: MethodLayout{
-				ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(INTEGER_OBJ), Arg(FLOAT_OBJ, INTEGER_OBJ)),
+				ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(INTEGER_OBJ), Arg(NUMERIC)),
 				ReturnPattern: Args(Arg(NIL_OBJ, ERROR_OBJ)),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {

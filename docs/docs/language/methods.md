@@ -14,6 +14,23 @@ names with their arguments:
 Both are sorted by name. Before `0.24` they came out in a different order on
 every run.
 
+## Reading a signature
+
+The documentation gives each method as a signature, for example
+`fetch(HASHABLE, [ANY])`. Three things appear in the argument list:
+
+| Notation | Meaning |
+| -------- | ------- |
+| `STRING` | a concrete type |
+| `[STRING]` | may be left out |
+| `STRING...` | one or more of them |
+
+Where a method takes a whole family of types, the family is named rather than
+listed — `push(ANY)`, `get(HASHABLE, ANY)`, `set(INTEGER, INTEGER, NUMERIC)`.
+Those names are **type groups**; see
+[Types and type groups](./types#type-groups) for what each one accepts and which
+types belong to it.
+
 ## Methods ending in `!`
 
 A method whose name ends in `!` changes the value it is called on. The plain

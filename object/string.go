@@ -53,7 +53,7 @@ func init() {
 		"format": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					OverloadArg(STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, BOOLEAN_OBJ, ARRAY_OBJ, HASH_OBJ),
+					OverloadArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),

@@ -77,7 +77,29 @@ func (h *Hash) Set(key, value any) {
 	} else {
 		valObj = AnyToObject(value)
 	}
-	h.Pairs[keyObj.(Hashable).HashKey()] = HashPair{Key: keyObj, Value: valObj}
+	hashable, ok := keyObj.(Hashable)
+	if !ok {
+		// Called from Go rather than from the interpreter, so there is no
+		// argument pattern guarding this one. Dropping the entry beats bringing
+		// the process down over a key that could never be looked up anyway.
+		return
+	}
+
+	h.Pairs[hashable.HashKey()] = HashPair{Key: keyObj, Value: valObj}
+}
+
+// hashKeyOf turns an argument into a hash key. The HASHABLE argument pattern
+// already rejects anything that cannot be one, so the error is unreachable from
+// the interpreter; it exists so that widening a pattern can never again turn
+// into a panic. include? and get used to assert without checking, and
+// {"a": 1}.get(nil, 0) brought the process down.
+func hashKeyOf(o Object) (HashKey, Object) {
+	hashable, ok := o.(Hashable)
+	if !ok {
+		return HashKey{}, NewErrorFormat("unusable as hash key: %s", o.Type())
+	}
+
+	return hashable.HashKey(), nil
 }
 
 func init() {
@@ -128,34 +150,46 @@ func init() {
 					Arg(BOOLEAN_OBJ),
 				),
 				ArgPattern: Args(
-					Arg(BOOLEAN_OBJ, STRING_OBJ, INTEGER_OBJ, FLOAT_OBJ, ARRAY_OBJ, HASH_OBJ),
+					Arg(HASHABLE),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				h := o.(*Hash)
-				key := args[0].(Hashable)
-				if _, ok := h.Pairs[key.HashKey()]; ok {
+
+				key, err := hashKeyOf(args[0])
+				if err != nil {
+					return err
+				}
+
+				if _, ok := h.Pairs[key]; ok {
 					return TRUE
 				}
+
 				return FALSE
 			},
 		},
 		"get": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
-					Arg(ANY_OBJ...),
+					Arg(HASHABLE),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				h := o.(*Hash)
-				k := args[0].(Hashable)
-				if pair, ok := h.Pairs[k.HashKey()]; ok {
+
+				key, err := hashKeyOf(args[0])
+				if err != nil {
+					return err
+				}
+
+				if pair, ok := h.Pairs[key]; ok {
 					return pair.Value
 				}
+
 				return args[1]
 			},
 		},
@@ -186,22 +220,22 @@ func init() {
 		"fetch": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
-					OptArg(ANY_OBJ...),
+					Arg(HASHABLE),
+					OptArg(ANY),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				h := o.(*Hash)
 
-				key, ok := args[0].(Hashable)
-				if !ok {
-					return NewErrorFormat("unusable as hash key: %s", args[0].Type())
+				key, err := hashKeyOf(args[0])
+				if err != nil {
+					return err
 				}
 
-				if pair, found := h.Pairs[key.HashKey()]; found {
+				if pair, found := h.Pairs[key]; found {
 					return pair.Value
 				}
 
@@ -217,21 +251,20 @@ func init() {
 		"delete": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(HASHABLE),
 				),
 				ReturnPattern: Args(
-					Arg(ANY_OBJ...),
+					Arg(ANY),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				h := o.(*Hash)
 
-				key, ok := args[0].(Hashable)
-				if !ok {
-					return NewErrorFormat("unusable as hash key: %s", args[0].Type())
+				hashed, err := hashKeyOf(args[0])
+				if err != nil {
+					return err
 				}
 
-				hashed := key.HashKey()
 				pair, found := h.Pairs[hashed]
 				if !found {
 					return NIL

@@ -464,3 +464,123 @@ func watMethodName(line string) string {
 
 	return name
 }
+
+// TestTypeGroups covers the argument groups introduced for #296. A group names
+// what an object must be able to do instead of listing the types that can do it,
+// which is how push came to accept FUNCTION but not FLOAT.
+func TestTypeGroups(t *testing.T) {
+	tests := []inputTestCase{
+		// ANY takes everything, so these are no longer type errors. Each of
+		// them was one, because the hand-written list behind it had forgotten
+		// FLOAT and MATRIX.
+		{`a = [1]; a.push(1.5); a.to_json()`, "[1,1.5]"},
+		{`a = [1]; a.unshift(1.5); a.to_json()`, "[1.5,1]"},
+		{`a = [1]; a.insert(0, 1.5); a.to_json()`, "[1.5,1]"},
+		{`[1.5].include?(1.5)`, true},
+		{`[1.5].index(1.5)`, 0},
+		{`[1.5].rindex(1.5)`, 0},
+		{`[1.5].count(1.5)`, 1},
+		{`a = [1.5]; a.delete(1.5); a.to_json()`, "[]"},
+		{`a = [1]; a.push([[1,2]].to_m()); a.size()`, 2},
+		{`[1].include?([[1,2]].to_m())`, false},
+
+		// HASHABLE takes what can be a key. get and include? used to assert
+		// without checking, so {"a": 1}.get(nil, 0) panicked and took the
+		// process with it.
+		{`{"a": 1}.get(nil, 0)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.get([[1,2]].to_m(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
+		{`{"a": 1}.include?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.delete(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		// All four take the same keys, which was not true before: get accepted
+		// a NIL and crashed, include? rejected a FLOAT, delete accepted one.
+		{`{1.5: "a"}.get(1.5, "missing")`, "a"},
+		{`{1.5: "a"}.include?(1.5)`, true},
+		{`{1.5: "a"}.fetch(1.5)`, "a"},
+		{`h = {1.5: "a"}; h.delete(1.5)`, "a"},
+		// A hash and an array are hashable, so they are keys too.
+		{`{[1]: "a"}.get([1], "missing")`, "a"},
+
+		// The fallback value of get and fetch is ANY, not HASHABLE -- it is
+		// never used as a key.
+		{`{"a": 1}.get("z", nil)`, nil},
+		{`{"a": 1}.fetch("z", nil)`, nil},
+
+		// NUMERIC takes INTEGER or FLOAT.
+		{`m = [[1,2]].to_m(); m.set(0, 0, 9); m.to_a().to_json()`, "[[9,2]]"},
+		{`m = [[1,2]].to_m(); m.set(0, 0, 9.5); m.to_a().to_json()`, "[[9.5,2]]"},
+		{`[[1,2]].to_m().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
+		{`[[1,2]].to_m().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
+	}
+	testInput(t, tests)
+}
+
+// TestTypeGroupsRenderInSignatures checks that a group prints as its own name
+// rather than expanding. Hash#fetch used to render as a 118-character union of
+// nine types repeated twice, which told the reader nothing.
+func TestTypeGroupsRenderInSignatures(t *testing.T) {
+	tests := []struct {
+		name   string
+		layout object.MethodLayout
+		want   string
+	}{
+		{
+			"push",
+			object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY))},
+			"push(ANY)",
+		},
+		{
+			"fetch",
+			object.MethodLayout{ArgPattern: object.Args(
+				object.Arg(object.HASHABLE),
+				object.OptArg(object.ANY),
+			)},
+			"fetch(HASHABLE, [ANY])",
+		},
+		{
+			"set",
+			object.MethodLayout{ArgPattern: object.Args(object.Arg(object.NUMERIC))},
+			"set(NUMERIC)",
+		},
+		{
+			"format",
+			object.MethodLayout{ArgPattern: object.Args(object.OverloadArg(object.ANY))},
+			"format(ANY...)",
+		},
+		{
+			// A group and a concrete type can sit in the same argument.
+			"mixed",
+			object.MethodLayout{ArgPattern: object.Args(
+				object.Arg(object.NUMERIC, object.STRING_OBJ),
+			)},
+			"mixed(NUMERIC|STRING)",
+		},
+	}
+
+	for _, tt := range tests {
+		if got := tt.layout.Usage(tt.name); got != tt.want {
+			t.Errorf("Usage(%q) = %q, want %q", tt.name, got, tt.want)
+		}
+	}
+}
+
+// TestTypeGroupNamesDoNotCollideWithTypes guards the one thing that would make
+// groups silently wrong: a group shares its namespace with the object type
+// names, so a group called STRING would shadow the type.
+func TestTypeGroupNamesDoNotCollideWithTypes(t *testing.T) {
+	groups := []string{object.ANY, object.HASHABLE, object.STRINGABLE, object.NUMERIC}
+
+	types := []string{
+		object.INTEGER_OBJ, object.STRING_OBJ, object.BOOLEAN_OBJ, object.ARRAY_OBJ,
+		object.HASH_OBJ, object.MATRIX_OBJ, object.FLOAT_OBJ, object.ERROR_OBJ,
+		object.NIL_OBJ, object.FILE_OBJ, object.FUNCTION_OBJ, object.HTTP_OBJ,
+	}
+
+	for _, group := range groups {
+		for _, objType := range types {
+			if group == objType {
+				t.Errorf("type group %q collides with the object type of the same name", group)
+			}
+		}
+	}
+}
