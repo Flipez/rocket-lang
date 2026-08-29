@@ -416,13 +416,29 @@ Returns the type of the object.
 
 
 ### wat()
-> Returns `STRING`
+> Returns `NIL`
 
-Returns the type's literal-specific methods with their usage information, as a single string, sorted by name. Types with no methods of their own list none.
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
 
 
 <CodeBlockSimple input='true.wat()
-' output='"BOOLEAN supports the following methods:\n"
+1.0.wat()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	ceil([INTEGER])
+	divmod(FLOAT)
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	nan?()
+	negative?()
+	positive?()
+	round([INTEGER])
+	truncate([INTEGER])
+	zero?()
+nil
 ' />
 
 

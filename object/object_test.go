@@ -2,6 +2,8 @@ package object_test
 
 import (
 	"errors"
+	"io"
+	"os"
 	"sort"
 	"strings"
 	"testing"
@@ -212,9 +214,28 @@ func TestMethodListingIsSorted(t *testing.T) {
 				"methods() of %s should not vary between calls", subject)
 		}
 
-		first := testEval(`(` + subject + `).wat()`).Inspect()
+		// wat() prints its listing and returns nil, so comparing return
+		// values would compare "nil" to "nil" and assert nothing. Captured so
+		// the listing does not end up in the test output.
+		var watResult object.Object
+		captureStdout(t, func() { watResult = testEval(`(` + subject + `).wat()`) })
+		require.Equal(t, object.ObjectType(object.NIL_OBJ), watResult.Type(),
+			"wat() of %s should return nil", subject)
+
+		first := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+		require.Equal(t, sortedWatListing(first), first,
+			"wat() of %s should list its methods sorted", subject)
+
+		// One header line plus one line per method, so nothing is dropped from
+		// the listing or counted twice.
+		listed, ok := testEval(`(` + subject + `).methods()`).(*object.Array)
+		require.True(t, ok)
+		require.Len(t, strings.Split(strings.TrimSuffix(first, "\n"), "\n"), len(listed.Elements)+1,
+			"wat() of %s should print one line per method plus the header", subject)
+
 		for range 20 {
-			require.Equal(t, first, testEval(`(`+subject+`).wat()`).Inspect(),
+			printed := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+			require.Equal(t, first, printed,
 				"wat() of %s should not vary between calls", subject)
 		}
 	}
@@ -391,4 +412,55 @@ func TestArgumentStringStaysBare(t *testing.T) {
 		{`"a".start_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 	}
 	testInput(t, tests)
+}
+
+// captureStdout collects what fn writes to os.Stdout. wat() prints its listing
+// instead of returning it, so this is the only way to assert on it.
+func captureStdout(t *testing.T, fn func()) string {
+	t.Helper()
+
+	read, write, err := os.Pipe()
+	require.NoError(t, err)
+
+	original := os.Stdout
+	os.Stdout = write
+	defer func() { os.Stdout = original }()
+
+	fn()
+	require.NoError(t, write.Close())
+
+	printed, err := io.ReadAll(read)
+	require.NoError(t, err)
+
+	return string(printed)
+}
+
+// sortedWatListing returns the listing with its method lines sorted, giving the
+// expectation to compare the real output against. The header stays first.
+//
+// It sorts on the bare method name rather than the rendered line, because "("
+// sorts after "!" and would otherwise put chomp!([STRING]) ahead of
+// chomp([STRING]).
+func sortedWatListing(listing string) string {
+	lines := strings.Split(strings.TrimSuffix(listing, "\n"), "\n")
+	if len(lines) < 2 {
+		return listing
+	}
+
+	sorted := make([]string, len(lines)-1)
+	copy(sorted, lines[1:])
+	sort.SliceStable(sorted, func(i, j int) bool {
+		return watMethodName(sorted[i]) < watMethodName(sorted[j])
+	})
+
+	return lines[0] + "\n" + strings.Join(sorted, "\n") + "\n"
+}
+
+func watMethodName(line string) string {
+	name := strings.TrimPrefix(line, "\t")
+	if open := strings.Index(name, "("); open >= 0 {
+		return name[:open]
+	}
+
+	return name
 }
