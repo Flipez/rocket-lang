@@ -1259,3 +1259,49 @@ func TestImportRejectsUnusableImplicitBinding(t *testing.T) {
 func TestImportWithAsAcceptsAnyPath(t *testing.T) {
 	testIntegerObject(t, testEval(`import "../fixtures/hyphen-name" as hyphen; hyphen.Value`), 7)
 }
+
+// TestFunctionArityIsChecked covers a crash: extendFunctionEnv iterated the
+// parameters and indexed into the arguments, so calling a function with fewer
+// arguments than it has parameters ran off the end of the slice and panicked,
+// killing the process. Too many arguments were silently discarded. Builtins
+// validated both cases already; user-defined functions validated neither.
+func TestFunctionArityIsChecked(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		// The panic.
+		{`def f(a, b) return a end f(1)`, "to few arguments: got=1, want=2"},
+		{`def f(a, b) return a end f()`, "to few arguments: got=0, want=2"},
+		// The quiet half: these used to return a value and say nothing.
+		{`def f(a) return a end f(1, 2, 3)`, "to many arguments: got=3, want=1"},
+		{`def f() return 1 end f(1)`, "to many arguments: got=1, want=0"},
+		// A named function says which one, which matters when the call is into
+		// a library rather than a function on screen.
+		{`def named(a) return a end named()`, "named: to few arguments"},
+		// An anonymous function has no name to report.
+		{`f = def(a) return a end f()`, "to few arguments: got=0, want=1"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		err, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("input %q: expected an error, got=%T (%+v)", tt.input, evaluated, evaluated)
+			continue
+		}
+
+		if !strings.Contains(err.Message, tt.expected) {
+			t.Errorf("input %q: expected %q, got=%q", tt.input, tt.expected, err.Message)
+		}
+	}
+}
+
+// TestFunctionArityAcceptsExactMatch guards the other direction: the check must
+// not reject a correct call.
+func TestFunctionArityAcceptsExactMatch(t *testing.T) {
+	testIntegerObject(t, testEval(`def add(a, b) return a + b end add(2, 3)`), 5)
+	testIntegerObject(t, testEval(`def none() return 7 end none()`), 7)
+	testIntegerObject(t, testEval(`f = def(a) return a end f(9)`), 9)
+}

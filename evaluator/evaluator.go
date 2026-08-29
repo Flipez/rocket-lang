@@ -156,6 +156,14 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 func applyFunction(def object.Object, args []object.Object, env *object.Environment) object.Object {
 	switch def := def.(type) {
 	case *object.Function:
+		// extendFunctionEnv indexes the arguments by parameter position, so a
+		// short call would read past the end of the slice and panic. Builtins
+		// validate arity through MethodLayout; this is the equivalent for
+		// functions written in RocketLang, and uses the same wording.
+		if err := checkArity(def, args); err != nil {
+			return err
+		}
+
 		extendedEnv := extendFunctionEnv(def, args)
 		evaluated := Eval(def.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
@@ -166,6 +174,28 @@ func applyFunction(def object.Object, args []object.Object, env *object.Environm
 	default:
 		return object.NewErrorFormat("not a function: %s", def.Type())
 	}
+}
+
+// checkArity reports a call that does not match the function's parameter list.
+// A named function names itself, which matters when the call is into a library
+// rather than a function the reader has on screen.
+func checkArity(def *object.Function, args []object.Object) object.Object {
+	given, want := len(args), len(def.Parameters)
+
+	if given == want {
+		return nil
+	}
+
+	problem := "to many arguments"
+	if given < want {
+		problem = "to few arguments"
+	}
+
+	if def.Name != "" {
+		return object.NewErrorFormat("%s: %s: got=%d, want=%d", def.Name, problem, given, want)
+	}
+
+	return object.NewErrorFormat("%s: got=%d, want=%d", problem, given, want)
 }
 
 func extendFunctionEnv(def *object.Function, args []object.Object) *object.Environment {
