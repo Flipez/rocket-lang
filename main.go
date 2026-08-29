@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -16,12 +17,26 @@ import (
 	"github.com/flipez/rocket-lang/utilities"
 )
 
+// subcommands are matched against the first argument before it is treated as a
+// program file. A file whose name collides with one is reached as ./name, or by
+// giving it the usual .rl extension.
+var subcommands = map[string]func([]string, io.Writer, io.Writer) int{
+	"planet": planet.Command,
+}
+
 func main() {
+	if len(os.Args) > 1 {
+		if run, ok := subcommands[os.Args[1]]; ok {
+			os.Exit(run(os.Args[2:], os.Stdout, os.Stderr))
+		}
+	}
+
 	version := flag.BoolP("version", "v", false, "Prints the version and build date.")
 	exec := flag.StringP("exec", "e", "", "Runs the given code.")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: rocket-lang [flags] [program file] [arguments]\n\nAvailable flags:\n")
+		fmt.Fprintf(os.Stderr, "Usage: rocket-lang [flags] [program file] [arguments]\n")
+		fmt.Fprintf(os.Stderr, "       rocket-lang planet <command>\n\nAvailable flags:\n")
 
 		flag.PrintDefaults()
 	}

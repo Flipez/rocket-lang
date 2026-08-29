@@ -14,7 +14,7 @@ func TestParseSourceURL(t *testing.T) {
 		"codeberg.org/flipez/utils": "https://codeberg.org/flipez/utils",
 		"git.example.com/team/a/b":  "https://git.example.com/team/a/b",
 		// Explicit URLs and scp-style remotes pass through untouched.
-		"https://example.com/u/thing.git": "https://example.com/u/thing.git",
+		"https://example.com/u/thing.git":   "https://example.com/u/thing.git",
 		"git@github.com:flipez/helpers.git": "git@github.com:flipez/helpers.git",
 		// A trailing slash is tolerated.
 		"flipez/helpers/": "https://github.com/flipez/helpers",
