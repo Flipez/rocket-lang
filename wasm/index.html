@@ -66,7 +66,7 @@
           <div class="d-flex flex-wrap gap-2 align-items-center">
             <button id="runButton" class="btn btn-success" type="button">Run</button>
             <button id="checkButton" class="btn btn-outline-primary" type="button" disabled>Check</button>
-            <button id="shareButton" class="btn btn-outline-primary" type="button">Share</button>
+            <button id="linkButton" class="btn btn-outline-primary" type="button">Share</button>
           </div>
           <div class="form-text mt-2">
             <kbd>Ctrl</kbd> + <kbd>Enter</kbd> runs. <kbd>Tab</kbd> inserts a tab.
@@ -102,7 +102,7 @@
     const urlParams = new URLSearchParams(window.location.search);
 
 
-		window.shareButton.addEventListener('click', async function() {
+		window.linkButton.addEventListener('click', async function() {
       // Reloading the page to hand someone a URL loses whatever they were
       // running. Build it and copy it instead.
       syncEditor();
