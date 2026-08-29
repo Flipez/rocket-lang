@@ -1232,3 +1232,30 @@ func TestLoopsReturnNil(t *testing.T) {
 		}
 	}
 }
+
+// TestImportRejectsUnusableImplicitBinding covers a silent failure that
+// predates planets: an implicit binding taken from the path could contain
+// characters that cannot be referenced afterwards. "my-lib" bound fine, but
+// my-lib.X parses as subtraction, so the module was unreachable and the import
+// reported nothing. Planet names routinely contain hyphens, which makes this
+// common rather than exotic.
+func TestImportRejectsUnusableImplicitBinding(t *testing.T) {
+	evaluated := testEval(`import "../fixtures/hyphen-name"`)
+
+	err, ok := evaluated.(*object.Error)
+	if !ok {
+		t.Fatalf("expected an error, got=%T (%+v)", evaluated, evaluated)
+	}
+	if !strings.Contains(err.Message, "cannot bind module as 'hyphen-name'") {
+		t.Errorf("expected the unusable-name error, got=%q", err.Message)
+	}
+	if !strings.Contains(err.Message, "use 'as'") {
+		t.Errorf("the error does not point at the fix: %q", err.Message)
+	}
+}
+
+// TestImportWithAsAcceptsAnyPath is the counterpart: an explicit alias makes a
+// path that cannot supply a usable name importable.
+func TestImportWithAsAcceptsAnyPath(t *testing.T) {
+	testIntegerObject(t, testEval(`import "../fixtures/hyphen-name" as hyphen; hyphen.Value`), 7)
+}
