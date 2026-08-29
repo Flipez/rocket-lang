@@ -24,6 +24,15 @@ var subcommands = map[string]func([]string, io.Writer, io.Writer) int{
 	"planet": planet.Command,
 }
 
+// The process reports whether the program ran. Nothing did before: an uncaught
+// error, a parse error and a missing file all exited 0, so anything scripting
+// the interpreter -- a shell pipeline, CI -- could not tell success from
+// failure, and `rocket-lang typo.rl` said nothing at all.
+const (
+	exitOK      = 0
+	exitFailure = 1
+)
+
 func main() {
 	if len(os.Args) > 1 {
 		if run, ok := subcommands[os.Args[1]]; ok {
@@ -51,18 +60,29 @@ func main() {
 	}
 
 	if len(*exec) > 0 {
-		runProgram(*exec, "")
-		return
+		os.Exit(runProgram(*exec, ""))
 	}
 
 	if len(os.Args) == 1 {
 		repl.Start(os.Stdin, os.Stdout)
-	} else {
-		file, err := utilities.ReadFile(os.Args[1])
-		if err == nil {
-			runProgram(string(file), os.Args[1])
-		}
+
+		return
 	}
+
+	os.Exit(runFile(os.Args[1]))
+}
+
+// runFile runs a program from disk. A file that cannot be read is reported
+// rather than passed over in silence, which is what the missing else did.
+func runFile(path string) int {
+	file, err := utilities.ReadFile(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "rocket-lang: cannot read %s: %s\n", path, err)
+
+		return exitFailure
+	}
+
+	return runProgram(string(file), path)
 }
 
 // configureSearchPath appends the current project's planet directory to the
@@ -91,7 +111,7 @@ func configureSearchPath() {
 	}
 }
 
-func runProgram(input string, file string) {
+func runProgram(input string, file string) int {
 	env := object.NewEnvironment()
 	l := lexer.New(input, file)
 	p := parser.New(l)
@@ -99,19 +119,32 @@ func runProgram(input string, file string) {
 	program := p.ParseProgram()
 	if len(p.Errors()) > 0 {
 		printParserErrors(p.Errors())
-		return
+
+		return exitFailure
 	}
 
 	evaluated := evaluator.Eval(program, env)
-	if evaluated != nil {
-		fmt.Println(evaluated.Inspect())
+	if evaluated == nil {
+		return exitOK
 	}
+
+	// The program's final value is printed whatever it is, because that is what
+	// the interpreter does with a value. An error being that value means nothing
+	// handled it -- an error aborts the rest of the program and becomes its
+	// result -- so the process reports failure.
+	fmt.Println(evaluated.Inspect())
+
+	if object.IsError(evaluated) {
+		return exitFailure
+	}
+
+	return exitOK
 }
 
 func printParserErrors(errors []string) {
-	fmt.Println("🔥 Great, you broke it!")
-	fmt.Println(" parser errors:")
+	fmt.Fprintln(os.Stderr, "🔥 Great, you broke it!")
+	fmt.Fprintln(os.Stderr, " parser errors:")
 	for _, msg := range errors {
-		fmt.Printf("\t %s\n", msg)
+		fmt.Fprintf(os.Stderr, "\t %s\n", msg)
 	}
 }
