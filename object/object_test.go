@@ -313,3 +313,82 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 		}
 	}
 }
+
+// TestUsageMarksOptionalAndVariadicArgs covers what a rendered signature says
+// about its arguments. Usage() used to print only the types, so three different
+// contracts came out identically: count(STRING) takes exactly one, split(STRING)
+// takes zero or one, and start_with?(STRING) takes one or more.
+func TestUsageMarksOptionalAndVariadicArgs(t *testing.T) {
+	tests := []struct {
+		name   string
+		layout object.MethodLayout
+		want   string
+	}{
+		{"size", object.MethodLayout{}, "size()"},
+		{
+			"count",
+			object.MethodLayout{ArgPattern: object.Args(object.Arg(object.STRING_OBJ))},
+			"count(STRING)",
+		},
+		{
+			"split",
+			object.MethodLayout{ArgPattern: object.Args(object.OptArg(object.STRING_OBJ))},
+			"split([STRING])",
+		},
+		{
+			"start_with?",
+			object.MethodLayout{ArgPattern: object.Args(object.OverloadArg(object.STRING_OBJ))},
+			"start_with?(STRING...)",
+		},
+		{
+			// A required argument followed by an optional one, as pow has.
+			"pow",
+			object.MethodLayout{ArgPattern: object.Args(
+				object.Arg(object.INTEGER_OBJ),
+				object.OptArg(object.INTEGER_OBJ),
+			)},
+			"pow(INTEGER, [INTEGER])",
+		},
+		{
+			// A union keeps its alternatives inside the brackets.
+			"first",
+			object.MethodLayout{ArgPattern: object.Args(
+				object.OptArg(object.INTEGER_OBJ, object.STRING_OBJ),
+			)},
+			"first([INTEGER|STRING])",
+		},
+		{
+			// A variadic union is parenthesised, so the ellipsis does not read
+			// as applying to STRING alone.
+			"format",
+			object.MethodLayout{ArgPattern: object.Args(
+				object.OverloadArg(object.STRING_OBJ, object.INTEGER_OBJ),
+			)},
+			"format((STRING|INTEGER)...)",
+		},
+	}
+
+	for _, tt := range tests {
+		if got := tt.layout.Usage(tt.name); got != tt.want {
+			t.Errorf("Usage(%q) = %q, want %q", tt.name, got, tt.want)
+		}
+	}
+}
+
+// TestArgumentStringStaysBare checks that the wording of the "wrong argument
+// type" error did not pick up the signature brackets: there the reader is being
+// told what one position accepts, and "want=[STRING]" would only be confusing.
+func TestArgumentStringStaysBare(t *testing.T) {
+	if got := object.OptArg(object.STRING_OBJ).String(); got != "STRING" {
+		t.Errorf("OptArg(...).String() = %q, want %q", got, "STRING")
+	}
+	if got := object.OverloadArg(object.STRING_OBJ).String(); got != "STRING" {
+		t.Errorf("OverloadArg(...).String() = %q, want %q", got, "STRING")
+	}
+
+	tests := []inputTestCase{
+		{`"a".split(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`"a".start_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+	}
+	testInput(t, tests)
+}

@@ -100,6 +100,33 @@ func (a Argument) String() string {
 	return strings.Join(a.Types, "|")
 }
 
+// usage renders the argument as it appears in a signature. Brackets mean it may
+// be left out, a trailing ellipsis means more of the same may follow. Without
+// them count(STRING), split(STRING) and start_with?(STRING) all printed
+// identically while meaning "exactly one", "zero or one" and "one or more".
+//
+// This is deliberately not String(), which is used in the "wrong argument type"
+// error, where the reader is being told what a single position accepts and the
+// brackets would only be noise.
+func (a Argument) usage() string {
+	rendered := strings.Join(a.Types, "|")
+
+	if a.Overload {
+		// Parenthesise a union first, so the ellipsis reads as applying to the
+		// whole argument rather than only to the last type of it.
+		if len(a.Types) > 1 {
+			rendered = "(" + rendered + ")"
+		}
+		rendered += "..."
+	}
+
+	if a.Optional {
+		rendered = "[" + rendered + "]"
+	}
+
+	return rendered
+}
+
 func (a Argument) Check(o Object) bool {
 	for _, t := range a.Types {
 		if ObjectType(t) == o.Type() {
@@ -196,7 +223,7 @@ func (ml MethodLayout) Usage(name string) string {
 	if len(ml.ArgPattern) > 0 {
 		types := make([]string, len(ml.ArgPattern))
 		for idx, pattern := range ml.ArgPattern {
-			types[idx] = strings.Join(pattern.Types, "|")
+			types[idx] = pattern.usage()
 		}
 		args = strings.Join(types, ", ")
 	}

@@ -61,7 +61,7 @@ Returns how many bits are needed to represent the number, not counting the sign.
 ' />
 
 
-### ceil(INTEGER)
+### ceil([INTEGER])
 > Returns `INTEGER`
 
 Rounds up to a multiple of ten, given a negative digit count. An integer is already exact, so no argument, or a count of zero or more, returns it unchanged.
@@ -87,7 +87,7 @@ Returns the character with this code point, as a string. The inverse of a single
 ' />
 
 
-### digits(INTEGER)
+### digits([INTEGER])
 > Returns `ARRAY|ERROR`
 
 Returns the digits of the number, least significant first, in base 10 or in a given base. A negative number has no digits and gives an error.
@@ -128,7 +128,7 @@ false
 ' />
 
 
-### floor(INTEGER)
+### floor([INTEGER])
 > Returns `INTEGER`
 
 Rounds down to a multiple of ten, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.
@@ -206,7 +206,7 @@ false
 ' />
 
 
-### pow(INTEGER, INTEGER)
+### pow(INTEGER, [INTEGER])
 > Returns `INTEGER|ERROR`
 
 Returns the number raised to the given power. A second argument takes the result modulo it, which keeps large exponents workable. A negative exponent is an error, since the result would not be an integer.
@@ -232,7 +232,7 @@ Returns the previous integer, keeping the base of the receiver.
 ' />
 
 
-### round(INTEGER)
+### round([INTEGER])
 > Returns `INTEGER`
 
 Rounds to the nearest multiple of ten, halves away from zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.
@@ -267,7 +267,7 @@ Converts the integer into a integer with the given base
 ' />
 
 
-### truncate(INTEGER)
+### truncate([INTEGER])
 > Returns `INTEGER`
 
 Drops the last digits, rounding toward zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged.

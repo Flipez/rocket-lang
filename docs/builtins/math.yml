@@ -34,15 +34,15 @@ functions:
   cos:
     description: "Returns the cosine of the radion argument"
     input: |
-      Math.cos(Pi/2)
+      Math.cos(0.0)
     output: |
-      0.0
+      1.0
   exp:
     description: "Returns e**argument, the base-e exponential of argument"
     input: |
       Math.exp(1.0)
     output: |
-      2.72
+      2.718281828459045
   floor:
     description: "Returns the greatest integer value less than or equal to argument"
     input: |
@@ -52,13 +52,13 @@ functions:
   log:
     description: "Returns the natural logarithm of argument"
     input: |
-      Math.log(2.7183)
+      Math.log(Math.E)
     output: |
       1.0
   log10:
     description: "Returns the decimal logarithm of argument"
     input: |
-      Math.log(100.0)
+      Math.log10(100.0)
     output: |
       2.0
   log2:
@@ -106,7 +106,7 @@ functions:
   sin:
     description: "Returns the sine of the radion argument"
     input: |
-      Math.sin(Pi)
+      Math.sin(0.0)
     output: |
       0.0
   sqrt:
