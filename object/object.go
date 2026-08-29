@@ -347,7 +347,7 @@ func init() {
 		"wat": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
-					Arg(STRING_OBJ),
+					Arg(NIL_OBJ),
 				),
 			},
 			method: func(o Object, _ []Object, _ Environment) Object {
@@ -359,12 +359,18 @@ func init() {
 				// Sorted for the same reason as methods() above.
 				sort.Strings(names)
 
-				result := make([]string, len(names))
-				for i, name := range names {
-					result[i] = fmt.Sprintf("\t%s", oms[name].Layout.Usage(name))
+				// Printed rather than returned. This listing exists to be read,
+				// and the REPL echoes a value through Inspect(), which escapes
+				// the newlines and tabs and put the whole thing on one line.
+				// puts() already prints a string's raw value for the same
+				// reason. methods() covers the case where the names are wanted
+				// as data.
+				fmt.Printf("%s supports the following methods:\n", o.Type())
+				for _, name := range names {
+					fmt.Printf("\t%s\n", oms[name].Layout.Usage(name))
 				}
 
-				return NewString(fmt.Sprintf("%s supports the following methods:\n%s", o.Type(), strings.Join(result, "\n")))
+				return NIL
 			},
 		},
 		"type": ObjectMethod{
