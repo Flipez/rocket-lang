@@ -105,11 +105,17 @@ func LatestTag(url string) (string, error) {
 // Checkout clones url into dest and checks out ref, which may be a tag, a
 // branch or a commit. It returns the resolved commit.
 //
-// The clone is not shallow, and deliberately so on two counts. Shallow
-// fetching is unsupported over git's dumb HTTP protocol, which is what lets a
-// plain static file server act as a planet mirror; and a full clone is what
-// makes checking out a recorded commit possible, which is how an install is
-// pinned against a moved tag or a branch that has advanced.
+// The clone is deliberately not shallow. A full clone is what lets an arbitrary
+// recorded commit be checked out, which is how an install is pinned against a
+// moved tag or a branch that has advanced. Fetching a single commit shallowly
+// is possible, but only when the server sets uploadpack.allowReachableSHA1InWant
+// -- GitHub does, a self-hosted Gitea may not -- so it would need a full-clone
+// fallback anyway.
+//
+// The cost is small for the libraries planets tend to be: cloning a two-commit
+// repository takes the same time either way, because network latency dominates.
+// Shallow only pays on a repository with real history, which is worth revisiting
+// if that becomes common.
 func Checkout(url, ref, dest string) (string, error) {
 	if err := requireGit(); err != nil {
 		return "", err
