@@ -56,10 +56,21 @@ playground, so all three agree on what "the output" is.
 | 02 | strings | methods, **the `!` convention**, `?` predicates |
 | 03 | numbers | conversions answering `nil`, rounding, **integer bases** |
 | 04 | arrays | indexing and slices, pure vs `!`, `map`/`select`/`reduce` |
+| 05 | hashes | any hashable key, `get`, the undefined order, callbacks |
+| 06 | control flow | `if`/`elif`/`else`, `while`, `foreach`, `break` and `next` |
+| 07 | ranges | the rocket operators `->`, `=>` and `^` |
+| 08 | functions | implicit return, functions as values, closures as objects |
+| 09 | errors | `begin`/`rescue`, the error object, and why a failed conversion is `nil` rather than an error |
+| 10 | types | `type`, `type_groups`, `is_a?`, `methods` — the language describing itself |
+| 11 | matrix | a first-class matrix: `shape`, `get`/`set`, `row`, `transpose` |
+| 12 | stdlib | `JSON`, `Math`, `Time` |
+| 13 | capstone | three small problems using everything above |
 
-`03_numbers/03_bases` is the one worth reading even if you skip the rest: an
+Two are worth reading even if you skip the rest. `03_numbers/03_bases`: an
 integer remembers the base it was written in, and two integers of different
-bases refuse to be combined.
+bases refuse to be combined. `08_functions/03_closures`: there are no classes,
+but a hash of functions closing over a constructor's locals is an object, and a
+value stored under a name can be called with a dot.
 
 ## Rough edges to know about
 
@@ -73,3 +84,16 @@ avoid them, but you will meet them eventually:
 - non-ASCII strings are indexed by byte, so `"тест".size()` is `8`
 - a line starting with `[` continues the previous expression, so put a blank
   line or a statement between them
+
+Two things to know if you write your own exercise.
+
+A program prints its own final value, and only a trailing `nil` is dropped. So
+the last statement should be a `puts`, not something like `array.each(...)`,
+which answers with the array.
+
+And nothing may depend on the environment. `Time.format` uses the local
+timezone, so timestamp 0 is `1970-01-01` in London and `1969-12-31` in New York
+— `12_stdlib/03_time` asks about the *shape* the layout produces instead. For
+the same reason no exercise uses `IO` or `OS`: there is no filesystem in the
+playground, so an exercise using one would pass in the terminal and fail in the
+browser.

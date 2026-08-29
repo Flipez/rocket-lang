@@ -82,5 +82,194 @@
     "name": "03_callbacks",
     "task": "// A callback is a function literal: def(x) ... end. A function returns its\n// last expression, so no return is needed.\n//\n// Make this print:\n//\n//   [2, 4, 6, 8]\n//   [2, 4]\n//   10\n\nnumbers = [1, 2, 3, 4]\n\nputs(numbers.map(def(x) x * 2 end))\n// TODO: print only the even numbers, using select\n// TODO: print the total, using reduce with a starting value of 0\n",
     "expected": "[2, 4, 6, 8]\n[2, 4]\n10\n"
+  },
+  {
+    "id": "05_hashes/01_basics",
+    "topic": "05_hashes",
+    "name": "01_basics",
+    "task": "// A hash maps keys to values. Any hashable value works as a key, not just\n// strings -- integers, floats, booleans, arrays and hashes all do.\n//\n// Make this print:\n//\n//   1\n//   true\n//   0\n//\n// The last line is what get() answers when the key is not there: the default\n// you pass it.\n\nh = {\"a\": 1, 2: true}\n\nputs(h[\"a\"])\nputs(h[2])\n// TODO: look up the missing key \"z\" with get, defaulting to 0\n",
+    "expected": "1\ntrue\n0\n"
+  },
+  {
+    "id": "05_hashes/02_order",
+    "topic": "05_hashes",
+    "name": "02_order",
+    "task": "// The order of a hash is not defined. keys() can answer in a different order\n// on every run, so anything that depends on the order has to sort.\n//\n// Make this print:\n//\n//   2\n//   [\"a\", \"b\"]\n//\n// The second line has to be the same on every run, so sort it.\n\nh = {\"a\": 1, \"b\": 2}\n\nputs(h.size())\n// TODO: print the keys in an order that does not change between runs\n",
+    "expected": "2\n[\"a\", \"b\"]\n"
+  },
+  {
+    "id": "05_hashes/03_callbacks",
+    "topic": "05_hashes",
+    "name": "03_callbacks",
+    "task": "// A hash takes callbacks too. select and reject receive the key and the value;\n// transform_values receives only the value.\n//\n// Make this print:\n//\n//   1\n//   20\n//\n// The first line is how many entries have a value above 1. The second is the\n// value under \"a\" after multiplying every value by 10.\n\nh = {\"a\": 2}\nh[\"b\"] = 1\n\n// TODO: count the entries whose value is greater than 1\n// TODO: multiply every value by 10, then read \"a\" back\n",
+    "expected": "1\n20\n"
+  },
+  {
+    "id": "06_control_flow/01_if",
+    "topic": "06_control_flow",
+    "name": "01_if",
+    "task": "// if takes elif and else. There is no `unless` and no `case`.\n//\n// Only false and nil are false, so 0 and \"\" are true. That catches people out.\n//\n// Make this print:\n//\n//   big\n//   zero is truthy\n\nn = 10\n\nif n \u003e 100\n  puts(\"huge\")\nelif n \u003e 5\n  // TODO: print \"big\"\nelse\n  puts(\"small\")\nend\n\nif 0\n  puts(\"zero is truthy\")\nelse\n  puts(\"zero is falsy\")\nend\n",
+    "expected": "big\nzero is truthy\n"
+  },
+  {
+    "id": "06_control_flow/02_loops",
+    "topic": "06_control_flow",
+    "name": "02_loops",
+    "task": "// foreach walks an array, and with two names it gives the index first and the\n// value second.\n//\n// Make this print:\n//\n//   0:a\n//   1:b\n//   3\n\nletters = [\"a\", \"b\"]\n\n// TODO: print each index and letter joined by a colon, like 0:a\n\ncount = 0\nwhile count \u003c 3\n  count = count + 1\nend\nputs(count)\n",
+    "expected": "0:a\n1:b\n3\n"
+  },
+  {
+    "id": "06_control_flow/03_break_next",
+    "topic": "06_control_flow",
+    "name": "03_break_next",
+    "task": "// break leaves a loop, next skips to the following turn. Both words work in a\n// foreach, in a while, and inside a callback given to each, map or select.\n//\n// Make this print:\n//\n//   1\n//   2\n//   1\n//   3\n\nnumbers = [1, 2, 3, 4]\n\n// break inside a callback ends the walk, so this prints 1 then 2.\nnumbers.each(def(n)\n  if n == 3\n    break\n  end\n  puts(n)\nend)\n\n// Skip the 2 and stop before the 4, so this prints 1 then 3.\nforeach n in numbers\n  // TODO: skip when n is 2\n  // TODO: stop when n is 4\n  puts(n)\nend\n",
+    "expected": "1\n2\n1\n3\n"
+  },
+  {
+    "id": "07_ranges/01_rocket",
+    "topic": "07_ranges",
+    "name": "01_rocket",
+    "task": "// A range is written with a rocket. -\u003e stops before the end, =\u003e includes it.\n//\n//   foreach i in 0 -\u003e 3     0 1 2\n//   foreach i in 0 =\u003e 3     0 1 2 3\n//\n// Make this print 1, 2, 3, then 5, each on its own line.\n\nforeach i in 1 -\u003e 4\n  puts(i)\nend\n\n// TODO: print just 5, using a range that includes its end\n",
+    "expected": "1\n2\n3\n5\n"
+  },
+  {
+    "id": "07_ranges/02_stepping",
+    "topic": "07_ranges",
+    "name": "02_stepping",
+    "task": "// ^ sets the step, which defaults to 1.\n//\n//   foreach i in 0 -\u003e 6 ^ 2     0 2 4\n//\n// Make this print:\n//\n//   0\n//   3\n//   6\n\n// TODO: count from 0 up to and including 6, in steps of 3\n",
+    "expected": "0\n3\n6\n"
+  },
+  {
+    "id": "07_ranges/03_reverse",
+    "topic": "07_ranges",
+    "name": "03_reverse",
+    "task": "// A range can run downwards: put the larger number first.\n//\n// Make this print:\n//\n//   3\n//   2\n//   1\n//   go\n\n// TODO: count down from 3 to 1\nputs(\"go\")\n",
+    "expected": "3\n2\n1\ngo\n"
+  },
+  {
+    "id": "08_functions/01_basics",
+    "topic": "08_functions",
+    "name": "01_basics",
+    "task": "// def defines a function. It answers with its last expression, so `return` is\n// optional -- both of these give the same thing.\n//\n// Make this print:\n//\n//   6\n//   9\n\ndef double(x)\n  return x * 2\nend\n\ndef triple(x)\n  x * 3\nend\n\nputs(double(3))\n// TODO: call triple with 3\n",
+    "expected": "6\n9\n"
+  },
+  {
+    "id": "08_functions/02_first_class",
+    "topic": "08_functions",
+    "name": "02_first_class",
+    "task": "// A function is a value. It can be stored in a variable, put in an array, and\n// passed to a method -- which is what a callback is.\n//\n// puts is a value too, so it can be a callback.\n//\n// Make this print:\n//\n//   1\n//   2\n//   84\n\nnumbers = [1, 2]\n\n// TODO: print each element by giving each() the puts builtin\n\nquadruple = def(x) x * 4 end\nputs(quadruple(21))\n",
+    "expected": "1\n2\n84\n"
+  },
+  {
+    "id": "08_functions/03_closures",
+    "topic": "08_functions",
+    "name": "03_closures",
+    "task": "// A function remembers where it was written, so it can see the variables that\n// were in scope there. That is enough to build an object: a hash of functions\n// closing over a constructor's locals, with private state.\n//\n// A value stored in a hash under a name can be called with a dot, so\n// account.deposit(50) works.\n//\n// Make this print:\n//\n//   150\n//   robert: 150\n//   someone: 0\n\ndef new_account(owner, balance)\n  return {\n    \"deposit\":  def(n) balance = balance + n return balance end,\n    \"describe\": def() return owner + \": \" + balance.to_s() end\n  }\nend\n\na = new_account(\"robert\", 100)\nb = new_account(\"someone\", 0)\n\n// TODO: deposit 50 into a and print what it answers\n// TODO: print a.describe() and then b.describe()\n",
+    "expected": "150\nrobert: 150\nsomeone: 0\n"
+  },
+  {
+    "id": "09_errors/01_rescue",
+    "topic": "09_errors",
+    "name": "01_rescue",
+    "task": "// An operation that fails answers with an ERROR, which stops the program --\n// unless it happens inside begin/rescue.\n//\n// rescue takes a name, and that name is bound to the error.\n//\n// Make this print:\n//\n//   caught: division by zero not allowed\n//   still running\n\nbegin\n  1 / 0\nrescue e\n  // TODO: print \"caught: \" followed by the error's message\nend\n\nputs(\"still running\")\n",
+    "expected": "caught: division by zero not allowed\nstill running\n"
+  },
+  {
+    "id": "09_errors/02_error_object",
+    "topic": "09_errors",
+    "name": "02_error_object",
+    "task": "// An error is an ordinary value. It has one method of its own -- msg -- and\n// everything else it answers comes from the methods every type has.\n//\n// Make this print:\n//\n//   ERROR\n//   [\"msg\"]\n//   true\n\nbegin\n  nil.no_such_method()\nrescue e\n  puts(e.type())\n  // TODO: print the methods ERROR has of its own\n  // TODO: print whether msg() and to_s() give the same thing\nend\n",
+    "expected": "ERROR\n[\"msg\"]\ntrue\n"
+  },
+  {
+    "id": "09_errors/03_nil_not_error",
+    "topic": "09_errors",
+    "name": "03_nil_not_error",
+    "task": "// Not every failure is an ERROR. A conversion that cannot succeed answers nil\n// instead, so a failure can be told apart from a real zero -- and nil needs no\n// rescue.\n//\n// Make this print:\n//\n//   nil\n//   0\n//   could not read a number\n\nvalue = \"abc\".to_i()\n\nputs(value)\nputs(\"0\".to_i())\n\n// TODO: if value is nil, print \"could not read a number\"\n",
+    "expected": "nil\n0\ncould not read a number\n"
+  },
+  {
+    "id": "10_types/01_type",
+    "topic": "10_types",
+    "name": "01_type",
+    "task": "// Every value has a type, and type() answers with its name.\n//\n// Make this print:\n//\n//   STRING\n//   INTEGER\n//   ARRAY\n//   FUNCTION\n\nputs(\"a\".type())\nputs(1.type())\n// TODO: print the type of an array\n// TODO: print the type of a function literal, def() end\n",
+    "expected": "STRING\nINTEGER\nARRAY\nFUNCTION\n"
+  },
+  {
+    "id": "10_types/02_groups",
+    "topic": "10_types",
+    "name": "02_groups",
+    "task": "// A method that accepts a family of types names the family rather than listing\n// it. Those names are type groups, and a value can be asked about them.\n//\n// is_a? takes a type name as readily as a group name. A name that is neither is\n// an error, not a false -- a typo should not look like an answer.\n//\n// Make this print:\n//\n//   true\n//   false\n//   [\"CALLABLE\"]\n\nputs(\"a\".is_a?(\"HASHABLE\"))\n// TODO: is nil HASHABLE?\n// TODO: print the groups a function belongs to\n",
+    "expected": "true\nfalse\n[\"CALLABLE\"]\n"
+  },
+  {
+    "id": "10_types/03_introspection",
+    "topic": "10_types",
+    "name": "03_introspection",
+    "task": "// A value can list what it responds to. methods() gives the names a type has of\n// its own, sorted, and wat() prints them with their arguments. Try\n// `1.5.wat()` in the playground.\n//\n// Make this print:\n//\n//   true\n//   false\n//   true\n//\n// The last line asks whether the list comes back sorted, which it does -- so\n// the same program prints the same thing on every run.\n\nputs(1.5.methods().include?(\"round\"))\n// TODO: does a float have an upcase method?\n// TODO: is the list of methods already sorted? compare it with itself sorted\n",
+    "expected": "true\nfalse\ntrue\n"
+  },
+  {
+    "id": "11_matrix/01_basics",
+    "topic": "11_matrix",
+    "name": "01_basics",
+    "task": "// A matrix is its own type, built from a nested array with to_m(). Its values\n// are always floats, whatever went in.\n//\n// Make this print:\n//\n//   MATRIX\n//   [2, 3]\n//   6\n\nm = [[1, 2, 3], [4, 5, 6]].to_m()\n\nputs(m.type())\n// TODO: print the shape, which is rows and columns\n// TODO: print how many values it holds\n",
+    "expected": "MATRIX\n[2, 3]\n6\n"
+  },
+  {
+    "id": "11_matrix/02_access",
+    "topic": "11_matrix",
+    "name": "02_access",
+    "task": "// get and set take a row and a column, both counted from 0. set changes the\n// matrix and answers with it, so calls can be chained.\n//\n// Make this print:\n//\n//   2.0\n//   [1.0, 2.0]\n//   [[9.0, 2.0], [3.0, 4.0]]\n\nm = [[1, 2], [3, 4]].to_m()\n\nputs(m.get(0, 1))\n// TODO: print the first row\n// TODO: set the top-left value to 9, then print the whole matrix as an array\n",
+    "expected": "2.0\n[1.0, 2.0]\n[[9.0, 2.0], [3.0, 4.0]]\n"
+  },
+  {
+    "id": "11_matrix/03_transpose",
+    "topic": "11_matrix",
+    "name": "03_transpose",
+    "task": "// transpose turns rows into columns, and t is the short name for it. Neither\n// changes the original.\n//\n// Make this print:\n//\n//   [[1.0, 3.0], [2.0, 4.0]]\n//   [[1.0, 2.0], [3.0, 4.0]]\n//   [3, 2]\n\nm = [[1, 2], [3, 4]].to_m()\n\n// TODO: print the transpose as an array\n// TODO: print the original as an array, to show it did not change\n\nwide = [[1, 2, 3], [4, 5, 6]].to_m()\n// TODO: print the shape of the transpose of wide\n",
+    "expected": "[[1.0, 3.0], [2.0, 4.0]]\n[[1.0, 2.0], [3.0, 4.0]]\n[3, 2]\n"
+  },
+  {
+    "id": "12_stdlib/01_json",
+    "topic": "12_stdlib",
+    "name": "01_json",
+    "task": "// JSON.parse turns text into a hash or an array. Every object answers to_json.\n//\n// One thing to watch: JSON has one number type, so a number comes back as a\n// FLOAT even when it was written without a decimal point.\n//\n// Make this print:\n//\n//   FLOAT\n//   1.0\n//   {\"a\":1}\n\nparsed = JSON.parse(\"{\\\"n\\\": 1}\")\n\n// TODO: print the type of the value under \"n\"\n// TODO: print the value itself\nputs({\"a\": 1}.to_json())\n",
+    "expected": "FLOAT\n1.0\n{\"a\":1}\n"
+  },
+  {
+    "id": "12_stdlib/02_math",
+    "topic": "12_stdlib",
+    "name": "02_math",
+    "task": "// Math holds the usual functions, and some constants. A constant is a property,\n// so it is written Math.Pi with no brackets.\n//\n// Make this print:\n//\n//   5.0\n//   3.14\n//   8.0\n\nputs(Math.sqrt(25.0))\n// TODO: print Pi rounded to two decimal places\n// TODO: print 2 to the power of 3\n",
+    "expected": "5.0\n3.14\n8.0\n"
+  },
+  {
+    "id": "12_stdlib/03_time",
+    "topic": "12_stdlib",
+    "name": "03_time",
+    "task": "// Time.format takes a unix timestamp and a layout. The layout is a date written\n// out: 2006 is the year, 01 the month, 02 the day, 15:04:05 the time.\n//\n// It formats in the local timezone, so the exact date depends on where you are\n// -- timestamp 0 is 1970-01-01 in London and 1969-12-31 in New York. This\n// exercise asks only about the shape the layout produces, which is the same\n// everywhere.\n//\n// Make this print:\n//\n//   4\n//   10\n//   true\n\nputs(Time.format(0, \"2006\").size())\n// TODO: format timestamp 0 as year-month-day, and print the length\n// TODO: print whether Time.unix() is greater than 0\n",
+    "expected": "4\n10\ntrue\n"
+  },
+  {
+    "id": "13_capstone/01_word_count",
+    "topic": "13_capstone",
+    "name": "01_word_count",
+    "task": "// Everything from the earlier topics, on one small problem.\n//\n// Count how often each word appears, then answer three questions about it.\n// split() with no argument splits on spaces, and get() with a default is what\n// makes counting a one-liner.\n//\n// Make this print:\n//\n//   2\n//   4\n//   [\"brown\", \"fox\", \"quick\", \"the\"]\n\ntext = \"the quick brown fox the\"\n\ncounts = {}\nforeach word in text.split()\n  // TODO: add one to this word's count, defaulting to 0 when it is new\nend\n\nputs(counts.get(\"the\", 0))\nputs(counts.size())\nputs(counts.keys().sort())\n",
+    "expected": "2\n4\n[\"brown\", \"fox\", \"quick\", \"the\"]\n"
+  },
+  {
+    "id": "13_capstone/02_report",
+    "topic": "13_capstone",
+    "name": "02_report",
+    "task": "// The same data, with callbacks instead of a loop.\n//\n// Each record is a hash. Pick the ones that are active, sort them by size, and\n// total the sizes.\n//\n// Make this print:\n//\n//   [\"db-1\", \"web-1\"]\n//   2560\n//   db-1\n\nservers = [\n  {\"name\": \"web-1\", \"active\": true,  \"size\": 512},\n  {\"name\": \"web-2\", \"active\": false, \"size\": 1024},\n  {\"name\": \"db-1\",  \"active\": true,  \"size\": 2048}\n]\n\n// TODO: the names of the active servers, sorted\n// TODO: the total size of the active servers, using reduce with a start of 0\n// TODO: the name of the largest active server, using max_by\n",
+    "expected": "[\"db-1\", \"web-1\"]\n2560\ndb-1\n"
+  },
+  {
+    "id": "13_capstone/03_fizzbuzz",
+    "topic": "13_capstone",
+    "name": "03_fizzbuzz",
+    "task": "// One last one, using a range and a chain of conditions.\n//\n// For 1 to 15: print \"fizz\" when the number divides by 3, \"buzz\" when it\n// divides by 5, \"fizzbuzz\" when it divides by both, and otherwise the number.\n//\n// Make this print:\n//\n//   1\n//   2\n//   fizz\n//   4\n//   buzz\n//   fizz\n//   7\n//   8\n//   fizz\n//   buzz\n//   11\n//   fizz\n//   13\n//   14\n//   fizzbuzz\n\n// TODO: write it\n",
+    "expected": "1\n2\nfizz\n4\nbuzz\nfizz\n7\n8\nfizz\nbuzz\n11\nfizz\n13\n14\nfizzbuzz\n"
   }
 ]
