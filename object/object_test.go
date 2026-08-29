@@ -584,3 +584,127 @@ func TestTypeGroupNamesDoNotCollideWithTypes(t *testing.T) {
 		}
 	}
 }
+
+// TestIsA covers the predicate for both a type name and a group name, and the
+// mistake it has to refuse: a name that is neither.
+func TestIsA(t *testing.T) {
+	tests := []inputTestCase{
+		// A group.
+		{`"a".is_a?("HASHABLE")`, true},
+		{`nil.is_a?("HASHABLE")`, false},
+		{`1.is_a?("COMPARABLE")`, true},
+		{`true.is_a?("COMPARABLE")`, false},
+		{`true.is_a?("INTEGERABLE")`, true},
+		{`[1].is_a?("STRINGABLE")`, true},
+		{`def() end.is_a?("STRINGABLE")`, false},
+		{`1.is_a?("NUMERIC")`, true},
+		{`1.5.is_a?("NUMERIC")`, true},
+		{`"1".is_a?("NUMERIC")`, false},
+		// ANY is true for everything, including a function and a nil.
+		{`"a".is_a?("ANY")`, true},
+		{`nil.is_a?("ANY")`, true},
+		{`def() end.is_a?("ANY")`, true},
+
+		// A concrete type, which collapses type() == "X" into the same question.
+		{`"a".is_a?("STRING")`, true},
+		{`"a".is_a?("INTEGER")`, false},
+		{`1.5.is_a?("FLOAT")`, true},
+		{`1.is_a?("FLOAT")`, false},
+		{`nil.is_a?("NIL")`, true},
+		{`[1].is_a?("ARRAY")`, true},
+		{`{"a": 1}.is_a?("HASH")`, true},
+		{`def() end.is_a?("FUNCTION")`, true},
+		{`[[1,2]].to_m().is_a?("MATRIX")`, true},
+
+		// A name that is neither is an error, not a false. A typo would
+		// otherwise answer "no" and read like a real result.
+		{`"a".is_a?("HASHBALE")`, "unknown type or type group: HASHBALE"},
+		{`"a".is_a?("STRIGN")`, "unknown type or type group: STRIGN"},
+		{`"a".is_a?("")`, "unknown type or type group: "},
+		// Names are exact; type() answers in upper case, so is_a? asks in it.
+		{`"a".is_a?("hashable")`, "unknown type or type group: hashable"},
+		{`"a".is_a?("string")`, "unknown type or type group: string"},
+
+		{`"a".is_a?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`"a".is_a?()`, "to few arguments: got=0, want=1"},
+	}
+	testInput(t, tests)
+}
+
+// TestTypeGroupsMethod covers the listing. The expectations are the rows of the
+// membership table in docs/docs/language/types.md, so the two cannot
+// drift apart unnoticed.
+func TestTypeGroupsMethod(t *testing.T) {
+	tests := []inputTestCase{
+		{`"a".type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","STRINGABLE"]`},
+		{`1.type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
+		{`1.5.type_groups().to_json()`, `["ANY","COMPARABLE","HASHABLE","INTEGERABLE","NUMERIC","STRINGABLE"]`},
+		{`true.type_groups().to_json()`, `["ANY","HASHABLE","INTEGERABLE","STRINGABLE"]`},
+		{`[1].type_groups().to_json()`, `["ANY","HASHABLE","STRINGABLE"]`},
+		{`{"a": 1}.type_groups().to_json()`, `["ANY","HASHABLE","STRINGABLE"]`},
+		{`nil.type_groups().to_json()`, `["ANY","STRINGABLE"]`},
+		{`[[1,2]].to_m().type_groups().to_json()`, `["ANY","STRINGABLE"]`},
+		// A function belongs to nothing but ANY, which is the whole reason the
+		// element checks in join, sum, uniq and sort exist.
+		{`def() end.type_groups().to_json()`, `["ANY"]`},
+
+		{`"a".type_groups("x")`, "to many arguments: got=1, want=0"},
+	}
+	testInput(t, tests)
+}
+
+// TestIsAAgreesWithTypeGroups walks every type against every group and checks
+// that the two methods answer the same. They share one predicate, and this is
+// what keeps a future change from giving them separate copies of it.
+func TestIsAAgreesWithTypeGroups(t *testing.T) {
+	subjects := []string{
+		`"a"`, `1`, `1.5`, `true`, `[1]`, `{"a": 1}`, `nil`,
+		`[[1,2]].to_m()`, `def() end`,
+	}
+
+	for _, subject := range subjects {
+		for _, group := range object.TypeGroupNames() {
+			predicate := testEval(`(` + subject + `).is_a?("` + group + `")`)
+			listed := testEval(`(` + subject + `).type_groups().include?("` + group + `")`)
+
+			require.Equal(t, listed.Inspect(), predicate.Inspect(),
+				"is_a?(%q) and type_groups() disagree for %s", group, subject)
+		}
+
+		// A value is always its own type, whatever that is.
+		own := testEval(`(` + subject + `).is_a?((` + subject + `).type())`)
+		require.Equal(t, "true", own.Inspect(),
+			"%s should be a %s", subject, testEval(`(`+subject+`).type()`).Inspect())
+
+		// ...and belongs to ANY, whatever it is.
+		require.Equal(t, "true", testEval(`(`+subject+`).is_a?("ANY")`).Inspect(),
+			"%s should be ANY", subject)
+	}
+}
+
+// TestKnownObjectTypesAreComplete guards the list is_a? validates against. A
+// type missing from it would make is_a? report a real type name as unknown.
+func TestKnownObjectTypesAreComplete(t *testing.T) {
+	known := make(map[string]bool)
+	for _, name := range object.KnownObjectTypes() {
+		known[name] = true
+	}
+
+	for objType := range object.ListObjectMethods() {
+		name := string(objType)
+		if name == "*" {
+			continue
+		}
+		if !known[name] {
+			t.Errorf("%s registers methods but is not in KnownObjectTypes()", name)
+		}
+	}
+
+	// Every group name has to stay out of the type list, or is_a? would resolve
+	// it twice and the two answers could differ.
+	for _, group := range object.TypeGroupNames() {
+		if known[group] {
+			t.Errorf("type group %q is also listed as an object type", group)
+		}
+	}
+}

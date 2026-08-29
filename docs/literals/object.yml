@@ -1,4 +1,28 @@
 methods:
+  is_a?:
+    description: "Returns `true` when the value is of the given type or belongs to the given type group, so one question covers both. The name has to be one that exists: anything else is an error rather than a `false`, because a typo would otherwise read as a real answer. See [Types and type groups](/docs/language/types)."
+    input: |
+      nil.is_a?("NIL")
+      "a".is_a?("HASHABLE")
+      nil.is_a?("HASHABLE")
+      true.is_a?("INTEGERABLE")
+      "a".is_a?("INTEGER")
+    output: |
+      true
+      true
+      false
+      true
+      false
+  type_groups:
+    description: "Returns the type groups the value belongs to, sorted. `ANY` is in every list. See [Types and type groups](/docs/language/types) for what each group means."
+    input: |
+      1.type_groups()
+      nil.type_groups()
+      def() end.type_groups()
+    output: |
+      ["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
+      ["ANY", "STRINGABLE"]
+      ["ANY"]
   methods:
     description: "Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array."
     input: |

@@ -133,6 +133,54 @@ const (
 	BUILTIN_PROPERTY_OBJ = "BUILTIN_PROPERTY"
 )
 
+// knownObjectTypes is every name a type can go by, which is what lets is_a?
+// tell an unknown name from one that simply does not match. A new type belongs
+// here; TestKnownObjectTypesAreComplete checks the ones that register methods.
+var knownObjectTypes = map[string]bool{
+	INTEGER_OBJ:          true,
+	FLOAT_OBJ:            true,
+	BOOLEAN_OBJ:          true,
+	NIL_OBJ:              true,
+	RETURN_VALUE_OBJ:     true,
+	BREAK_VALUE_OBJ:      true,
+	NEXT_VALUE_OBJ:       true,
+	ERROR_OBJ:            true,
+	FUNCTION_OBJ:         true,
+	STRING_OBJ:           true,
+	ARRAY_OBJ:            true,
+	HASH_OBJ:             true,
+	MATRIX_OBJ:           true,
+	FILE_OBJ:             true,
+	MODULE_OBJ:           true,
+	HTTP_OBJ:             true,
+	BUILTIN_MODULE_OBJ:   true,
+	BUILTIN_FUNCTION_OBJ: true,
+	BUILTIN_PROPERTY_OBJ: true,
+}
+
+// KnownObjectTypes returns the type names, sorted. Exported for the tests that
+// check the type groups and is_a? against every type there is.
+func KnownObjectTypes() []string {
+	names := make([]string, 0, len(knownObjectTypes))
+	for name := range knownObjectTypes {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	return names
+}
+
+// TypeGroupNames returns the group names, sorted.
+func TypeGroupNames() []string {
+	names := make([]string, 0, len(typeGroups))
+	for name := range typeGroups {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	return names
+}
+
 type Argument struct {
 	Types    []string
 	Optional bool
@@ -369,6 +417,55 @@ func init() {
 				}
 
 				return NewErrorFormat("%s is not serializable", o.Type())
+			},
+		},
+		"is_a?": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(BOOLEAN_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				name := args[0].(*String).Value
+
+				// A name that is neither is a mistake rather than a "no": a
+				// typo would otherwise answer false and read as a real result.
+				if !knownObjectTypes[name] {
+					if _, isGroup := typeGroups[name]; !isGroup {
+						return NewErrorFormat("unknown type or type group: %s", name)
+					}
+				}
+
+				// The same resolution the argument patterns use, so what a
+				// value says about itself and what a method accepts can never
+				// drift apart.
+				if Arg(name).Check(o) {
+					return TRUE
+				}
+
+				return FALSE
+			},
+		},
+		"type_groups": ObjectMethod{
+			Layout: MethodLayout{
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, _ []Object, _ Environment) Object {
+				// Sorted, for the same reason methods() is: read out of the map
+				// the order differed between runs.
+				groups := make([]Object, 0, len(typeGroups))
+				for _, name := range TypeGroupNames() {
+					if typeGroups[name](o) {
+						groups = append(groups, NewString(name))
+					}
+				}
+
+				return NewArray(groups)
 			},
 		},
 		"nil?": ObjectMethod{

@@ -59,6 +59,25 @@ Please note that performing `.msg()` on a ERROR object does result in a STRING o
 
 ## Generic Literal Methods
 
+### is_a?(STRING)
+> Returns `BOOLEAN|ERROR`
+
+Returns `true` when the value is of the given type or belongs to the given type group, so one question covers both. The name has to be one that exists: anything else is an error rather than a `false`, because a typo would otherwise read as a real answer. See [Types and type groups](/docs/language/types).
+
+
+<CodeBlockSimple input='nil.is_a?("NIL")
+"a".is_a?("HASHABLE")
+nil.is_a?("HASHABLE")
+true.is_a?("INTEGERABLE")
+"a".is_a?("INTEGER")
+' output='true
+true
+false
+true
+false
+' />
+
+
 ### methods()
 > Returns `ARRAY`
 
@@ -175,6 +194,21 @@ Returns the type of the object.
 
 <CodeBlockSimple input='"test".type()
 ' output='"STRING"
+' />
+
+
+### type_groups()
+> Returns `ARRAY`
+
+Returns the type groups the value belongs to, sorted. `ANY` is in every list. See [Types and type groups](/docs/language/types) for what each group means.
+
+
+<CodeBlockSimple input='1.type_groups()
+nil.type_groups()
+def() end.type_groups()
+' output='["ANY", "COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
+["ANY", "STRINGABLE"]
+["ANY"]
 ' />
 
 
