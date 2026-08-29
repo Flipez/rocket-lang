@@ -102,34 +102,6 @@
     const urlParams = new URLSearchParams(window.location.search);
 
 
-		window.linkButton.addEventListener('click', async function() {
-      // Reloading the page to hand someone a URL loses whatever they were
-      // running. Build it and copy it instead.
-      syncEditor();
-
-      const params = new URLSearchParams(window.location.search);
-      params.delete('exercise');
-      // A single file shares as plain source, so links made before there were
-      // tabs keep working and keep being made. More than one shares as JSON.
-      const only = Object.keys(files).length === 1;
-      params.set('share', btoa(only ? files[ENTRY] : JSON.stringify(files)));
-
-      const url = window.location.origin + window.location.pathname + '?' + params;
-      history.replaceState(null, '', '?' + params);
-
-      const label = this.innerText;
-      try {
-        await navigator.clipboard.writeText(url);
-        this.innerText = 'Link copied';
-      } catch (e) {
-        // Clipboard access needs a secure context, so fall back to leaving the
-        // URL in the address bar, which replaceState has already done.
-        this.innerText = 'Link in the address bar';
-      }
-
-      setTimeout(() => { this.innerText = label; }, 1600);
-		});
-
 
     window.input.addEventListener('keydown', function(e) {
       if (e.key == 'Tab') {
@@ -294,6 +266,36 @@
 				}
 
 				window.input.value = files[active];
+
+				window.linkButton.addEventListener('click', async function() {
+					// Reloading the page to hand someone a URL loses whatever
+					// they were running. Build it and copy it instead.
+					syncEditor();
+
+					const params = new URLSearchParams(window.location.search);
+					params.delete('exercise');
+					// A single file shares as plain source, so links made before
+					// there were tabs keep working and keep being made. More
+					// than one shares as JSON.
+					const only = Object.keys(files).length === 1;
+					params.set('share', btoa(only ? files[ENTRY] : JSON.stringify(files)));
+
+					const url = window.location.origin + window.location.pathname + '?' + params;
+					history.replaceState(null, '', '?' + params);
+
+					const label = this.innerText;
+					try {
+						await navigator.clipboard.writeText(url);
+						this.innerText = 'Link copied';
+					} catch (e) {
+						// Clipboard access needs a secure context, so fall back
+						// to leaving the URL in the address bar, which
+						// replaceState has already done.
+						this.innerText = 'Link in the address bar';
+					}
+
+					setTimeout(() => { this.innerText = label; }, 1600);
+				});
 
 				// --- tabs ------------------------------------------------------
 				// A file is a tab. main.rl is the entry and cannot be removed,
