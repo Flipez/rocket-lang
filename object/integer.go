@@ -75,6 +75,36 @@ func init() {
 				return NewIntegerWithBase(o.(*Integer).Value, args[0].(*Integer).Value)
 			},
 		},
+		"times": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(CALLABLE),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, env Environment) Object {
+				i := o.(*Integer)
+
+				// 0 to n-1, so 3.times sees 0, 1, 2. A count of zero or less
+				// calls nothing rather than erroring, which is what makes it
+				// safe to hand a computed count.
+				for counter := 0; counter < i.Value; counter++ {
+					result := CallFunction(args[0], env, NewIntegerWithBase(counter, i.Base))
+
+					if IsError(result) {
+						return result
+					}
+
+					if CallbackStopped(result) {
+						break
+					}
+				}
+
+				return i
+			},
+		},
 		"chr": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -299,11 +329,54 @@ func init() {
 		return value / factor * factor
 	})
 
+	integerWalk("upto", false)
+	integerWalk("downto", true)
+
 	integerPredicate("even?", func(value int) bool { return value%2 == 0 })
 	integerPredicate("odd?", func(value int) bool { return value%2 != 0 })
 	integerPredicate("zero?", func(value int) bool { return value == 0 })
 	integerPredicate("positive?", func(value int) bool { return value > 0 })
 	integerPredicate("negative?", func(value int) bool { return value < 0 })
+}
+
+// integerWalk registers upto or downto. Both hand back the receiver so a walk
+// can be chained onto, the way Array#each does.
+func integerWalk(name string, down bool) {
+	objectMethods[INTEGER_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(CALLABLE)),
+			ReturnPattern: Args(Arg(INTEGER_OBJ, ERROR_OBJ)),
+		},
+		method: func(o Object, args []Object, env Environment) Object {
+			i := o.(*Integer)
+			limit := args[0].(*Integer)
+
+			if err := requireSameBase(i, limit); err != nil {
+				return err
+			}
+
+			step := 1
+			if down {
+				step = -1
+			}
+
+			// Inclusive at both ends, as Ruby's are: 1.upto(3) sees 1, 2, 3. A
+			// limit on the wrong side calls nothing instead of running away.
+			for counter := i.Value; (down && counter >= limit.Value) || (!down && counter <= limit.Value); counter += step {
+				result := CallFunction(args[1], env, NewIntegerWithBase(counter, i.Base))
+
+				if IsError(result) {
+					return result
+				}
+
+				if CallbackStopped(result) {
+					break
+				}
+			}
+
+			return i
+		},
+	}
 }
 
 // integerPredicate registers a method returning a BOOLEAN about the value.

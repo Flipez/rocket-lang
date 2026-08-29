@@ -193,6 +193,36 @@ func init() {
 				return args[1]
 			},
 		},
+		"each": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(CALLABLE),
+				),
+				ReturnPattern: Args(
+					Arg(HASH_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, env Environment) Object {
+				h := o.(*Hash)
+
+				// The order the entries arrive in is not defined and differs
+				// between runs, the same caveat keys() carries. Use it for a
+				// side effect on each entry, not to build something ordered.
+				for _, pair := range h.Pairs {
+					result := CallFunction(args[0], env, pair.Key, pair.Value)
+
+					if IsError(result) {
+						return result
+					}
+
+					if CallbackStopped(result) {
+						break
+					}
+				}
+
+				return h
+			},
+		},
 		"size": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -312,6 +342,59 @@ func init() {
 		},
 	}
 
+	hashCallbackPair("select", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+		return filteredPairs(pairs, fn, env, true)
+	})
+	hashCallbackPair("reject", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+		return filteredPairs(pairs, fn, env, false)
+	})
+	hashCallbackPair("transform_values", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+		out := make(map[HashKey]HashPair, len(pairs))
+
+		for hashed, pair := range pairs {
+			result := CallFunction(fn, env, pair.Value)
+
+			switch ClassifyCallback(result) {
+			case Failed:
+				return nil, result
+			case StopWalk:
+				return out, nil
+			case SkipElement:
+				out[hashed] = HashPair{Key: pair.Key, Value: NIL}
+			default:
+				out[hashed] = HashPair{Key: pair.Key, Value: result}
+			}
+		}
+
+		return out, nil
+	})
+	hashCallbackPair("transform_keys", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+		out := make(map[HashKey]HashPair, len(pairs))
+
+		for _, pair := range pairs {
+			result := CallFunction(fn, env, pair.Key)
+
+			switch ClassifyCallback(result) {
+			case Failed:
+				return nil, result
+			case StopWalk:
+				return out, nil
+			case SkipElement:
+				return nil, NewError("a key cannot be nothing: the callback of transform_keys ran next")
+			}
+
+			// A new key still has to be usable as one, and two keys mapping to
+			// the same one collapse -- which of them survives is not defined.
+			hashed, err := hashKeyOf(result)
+			if err != nil {
+				return nil, err
+			}
+			out[hashed] = HashPair{Key: result, Value: pair.Value}
+		}
+
+		return out, nil
+	})
+
 	hashPair("merge", Args(Arg(HASH_OBJ)), func(pairs map[HashKey]HashPair, args []Object) (map[HashKey]HashPair, Object) {
 		merged := copyPairs(pairs)
 		// The argument wins on a clash, as it does in Ruby.
@@ -332,6 +415,67 @@ func init() {
 
 		return kept, nil
 	})
+}
+
+// hashCallbackPair registers a method taking a callback and its in-place
+// counterpart, the same arrangement as hashPair.
+func hashCallbackPair(name string, transform func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object)) {
+	layout := MethodLayout{
+		ArgPattern:    Args(Arg(CALLABLE)),
+		ReturnPattern: Args(Arg(HASH_OBJ, ERROR_OBJ)),
+	}
+
+	objectMethods[HASH_OBJ][name] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, env Environment) Object {
+			pairs, err := transform(o.(*Hash).Pairs, args[0], env)
+			if err != nil {
+				return err
+			}
+
+			return NewHash(pairs)
+		},
+	}
+
+	objectMethods[HASH_OBJ][name+"!"] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, env Environment) Object {
+			h := o.(*Hash)
+
+			pairs, err := transform(h.Pairs, args[0], env)
+			if err != nil {
+				return err
+			}
+			h.Pairs = pairs
+
+			return h
+		},
+	}
+}
+
+// filteredPairs keeps the entries the callback answers for, which way round
+// decided by keep -- select keeps a yes, reject keeps a no.
+func filteredPairs(pairs map[HashKey]HashPair, fn Object, env Environment, keep bool) (map[HashKey]HashPair, Object) {
+	out := make(map[HashKey]HashPair, len(pairs))
+
+	for hashed, pair := range pairs {
+		result := CallFunction(fn, env, pair.Key, pair.Value)
+
+		switch ClassifyCallback(result) {
+		case Failed:
+			return nil, result
+		case StopWalk:
+			return out, nil
+		case SkipElement:
+			continue
+		default:
+			if IsTruthy(result) == keep {
+				out[hashed] = pair
+			}
+		}
+	}
+
+	return out, nil
 }
 
 // hashPair registers a method and its in-place counterpart from one

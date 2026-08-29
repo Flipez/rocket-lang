@@ -175,3 +175,42 @@ func TestIntegerRubyMethods(t *testing.T) {
 	}
 	testInput(t, tests)
 }
+
+// TestIntegerCallbackMethods covers times, upto and downto. All three hand back
+// the receiver so a walk chains, the way Array#each does.
+func TestIntegerCallbackMethods(t *testing.T) {
+	tests := []inputTestCase{
+		// times counts 0 to n-1, so 3.times sees 0, 1, 2.
+		{`out = []; 3.times(def(i) out.push(i) end); out.to_json()`, "[0,1,2]"},
+		{`3.times(def(i) end)`, 3},
+		{`3.times(def(i) end).type()`, "INTEGER"},
+		// A count of zero or less calls nothing rather than erroring, which is
+		// what makes it safe to hand a computed count.
+		{`out = []; 0.times(def(i) out.push(i) end); out.to_json()`, "[]"},
+		{`out = []; (0 - 3).times(def(i) out.push(i) end); out.to_json()`, "[]"},
+
+		// upto and downto are inclusive at both ends.
+		{`out = []; 1.upto(3, def(i) out.push(i) end); out.to_json()`, "[1,2,3]"},
+		{`out = []; 3.downto(1, def(i) out.push(i) end); out.to_json()`, "[3,2,1]"},
+		{`out = []; 2.upto(2, def(i) out.push(i) end); out.to_json()`, "[2]"},
+		// A limit on the wrong side calls nothing instead of running away.
+		{`out = []; 3.upto(1, def(i) out.push(i) end); out.to_json()`, "[]"},
+		{`out = []; 1.downto(3, def(i) out.push(i) end); out.to_json()`, "[]"},
+		{`1.upto(3, def(i) end)`, 1},
+
+		{`out = []; 9.times(def(i) if i == 3 break end out.push(i) end); out.to_json()`, "[0,1,2]"},
+		{`out = []; 1.upto(9, def(i) if i == 3 break end out.push(i) end); out.to_json()`, "[1,2]"},
+
+		// The counter keeps the receiver's base, and upto refuses a limit of
+		// another base for the same reason the infix operators do.
+		{`"0x10".to_i().times(def(i) end).base()`, 16},
+		{`out = []; "0b10".to_i().times(def(i) out.push(i.base()) end); out.to_json()`, "[2,2]"},
+		{`"0x10".to_i().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
+
+		{`3.times(def(i) i.nope() end)`, "test:1:17: undefined method `.nope()` for INTEGER"},
+		{`3.times(def(i, j) end)`, "to few arguments: got=1, want=2"},
+		{`3.times(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
+		{`1.upto(3)`, "to few arguments: got=1, want=2"},
+	}
+	testInput(t, tests)
+}

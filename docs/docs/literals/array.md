@@ -27,6 +27,40 @@ puts(a[1:-2])
 
 ## Literal Specific Methods
 
+### all?(CALLABLE)
+> Returns `BOOLEAN|ERROR`
+
+Returns `true` when the callback says yes to every element, and for an empty array.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.all?(def(x) x > 0 end)
+a.all?(def(x) x > 2 end)
+[].all?(def(x) false end)
+' output='[1, 2, 3]
+true
+false
+true
+' />
+
+
+### any?(CALLABLE)
+> Returns `BOOLEAN|ERROR`
+
+Returns `true` when the callback says yes to at least one element, and `false` for an empty array.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.any?(def(x) x > 2 end)
+a.any?(def(x) x > 9 end)
+[].any?(def(x) true end)
+' output='[1, 2, 3]
+true
+false
+false
+' />
+
+
 ### clear()
 > Returns `ARRAY`
 
@@ -289,6 +323,36 @@ Returns the last element of the array.
 ' />
 
 
+### map(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Returns a new array holding what the callback answered for each element. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. `break` in the callback ends the walk and `next` means the element contributed nothing, as in a `foreach`. An error from the callback ends the walk and is passed on. A `next` contributes `nil`, so the length is kept. Use `map!` to replace the elements in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.map(def(x) x * 2 end)
+a
+' output='[1, 2, 3]
+[2, 4, 6]
+[1, 2, 3]
+' />
+
+
+### map!(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Replaces each element with what the callback answered and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.map!(def(x) x * 2 end)
+a
+' output='[1, 2, 3]
+[2, 4, 6]
+[2, 4, 6]
+' />
+
+
 ### max()
 > Returns `ANY`
 
@@ -299,6 +363,19 @@ Returns the largest element, or `nil` for an empty array. Takes the same element
 [].max()
 ' output='3
 nil
+' />
+
+
+### max_by(CALLABLE)
+> Returns `ANY`
+
+Returns the element with the largest answer from the callback, or `nil` for an empty array.
+
+
+<CodeBlockSimple input='a = ["ccc", "a", "bb"]
+a.max_by(def(w) w.size() end)
+' output='["ccc", "a", "bb"]
+"ccc"
 ' />
 
 
@@ -314,6 +391,36 @@ Returns the smallest element, or `nil` for an empty array. The elements have to 
 ' output='1
 "a"
 nil
+' />
+
+
+### min_by(CALLABLE)
+> Returns `ANY`
+
+Returns the element with the smallest answer from the callback, or `nil` for an empty array.
+
+
+<CodeBlockSimple input='a = ["ccc", "a", "bb"]
+a.min_by(def(w) w.size() end)
+[].min_by(def(x) x end)
+' output='["ccc", "a", "bb"]
+"a"
+nil
+' />
+
+
+### none?(CALLABLE)
+> Returns `BOOLEAN|ERROR`
+
+Returns `true` when the callback says yes to no element, and for an empty array.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.none?(def(x) x > 9 end)
+a.none?(def(x) x > 2 end)
+' output='[1, 2, 3]
+true
+false
 ' />
 
 
@@ -344,6 +451,53 @@ d
 ' output='[1, 2, 3]
 [1, 2, 3, "a"]
 [1, 2, 3, "a"]
+' />
+
+
+### reduce(ANY, CALLABLE)
+> Returns `ANY`
+
+Folds the array into a single value. The callback receives what has been carried so far and the element, and answers with the next carried value. The starting value is required: Ruby lets you leave it out and uses the first element, which then makes an empty array a special case.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.reduce(0, def(sum, x) sum + x end)
+a.reduce(1, def(product, x) product * x end)
+[].reduce(7, def(sum, x) sum + x end)
+' output='[1, 2, 3]
+6
+6
+7
+' />
+
+
+### reject(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Returns a new array of the elements the callback said no to -- the mirror of `select`. Use `reject!` to filter in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.reject(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[1, 3]
+[1, 2, 3, 4]
+' />
+
+
+### reject!(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Drops the elements the callback said yes to and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.reject!(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[1, 3]
+[1, 3]
 ' />
 
 
@@ -424,6 +578,36 @@ a
 ' />
 
 
+### select(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Returns a new array of the elements the callback said yes to. Only `false` and `nil` are no, so `0` and `""` are yes. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. Use `select!` to filter in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.select(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[2, 4]
+[1, 2, 3, 4]
+' />
+
+
+### select!(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Keeps only the elements the callback said yes to and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.select!(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[2, 4]
+[2, 4]
+' />
+
+
 ### shift()
 > Returns `ANY`
 
@@ -488,6 +672,36 @@ b
 ' output='[3.4, 3.1, 2.0]
 [2.0, 3.1, 3.4]
 [2.0, 3.1, 3.4]
+' />
+
+
+### sort_by(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Returns a new array ordered by what the callback answers for each element. The answers have to satisfy what `sort` requires of elements -- all `COMPARABLE` and all the same one -- and are reported the same way. Use `sort_by!` to sort in place.
+
+
+<CodeBlockSimple input='a = ["ccc", "a", "bb"]
+a.sort_by(def(w) w.size() end)
+a
+' output='["ccc", "a", "bb"]
+["a", "bb", "ccc"]
+["ccc", "a", "bb"]
+' />
+
+
+### sort_by!(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Orders the array by what the callback answers and returns it, so calls can be chained.
+
+
+<CodeBlockSimple input='a = ["ccc", "a", "bb"]
+a.sort_by!(def(w) w.size() end)
+a
+' output='["ccc", "a", "bb"]
+["a", "bb", "ccc"]
+["a", "bb", "ccc"]
 ' />
 
 

@@ -165,3 +165,44 @@ func TestHashBangPairsAreComplete(t *testing.T) {
 	}
 	testInput(t, tests)
 }
+
+// TestHashCallbackMethods covers the Hash methods unlocked by the function
+// applier. The order entries arrive in is not defined, so nothing here depends
+// on it -- select and reject answer with a hash, and the counts are what matter.
+func TestHashCallbackMethods(t *testing.T) {
+	tests := []inputTestCase{
+		// select and reject receive the key and the value.
+		{`h = {"a": 1, "b": 2, "c": 3}; h.select(def(k, v) v > 1 end).size()`, 2},
+		{`h = {"a": 1, "b": 2, "c": 3}; h.reject(def(k, v) v > 1 end).size()`, 1},
+		{`h = {"a": 1}; h.select(def(k, v) k == "a" end).size()`, 1},
+		{`h = {"a": 1, "b": 2}; h.select(def(k, v) v > 1 end); h.size()`, 2},
+		{`h = {"a": 1, "b": 2}; h.select!(def(k, v) v > 1 end); h.size()`, 1},
+
+		// transform_values receives the value, transform_keys the key.
+		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end).get("a", 0)`, 10},
+		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end); h.get("a", 0)`, 1},
+		{`h = {"a": 1}; h.transform_values!(def(v) v * 10 end); h.get("a", 0)`, 10},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end).get("A", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end); h.get("a", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys!(def(k) k.upcase() end); h.get("A", 0)`, 1},
+		// A new key still has to be usable as one.
+		{`h = {"a": 1}; h.transform_keys(def(k) nil end)`, "unusable as hash key: NIL"},
+		{`h = {"a": 1}; h.transform_keys(def(k) next end)`, "a key cannot be nothing: the callback of transform_keys ran next"},
+
+		// each hands back the hash, so it chains, and receives both halves.
+		{`h = {"a": 1}; h.each(def(k, v) end).size()`, 1},
+		{`h = {"a": 1}; h.each(def(k, v) end).type()`, "HASH"},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(k) end); out.to_json()`, `["a"]`},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(v) end); out.to_json()`, "[1]"},
+		{`h = {"a": 1}; h.each(def(k, v) break end).size()`, 1},
+
+		// Arity is checked against what the method passes.
+		{`h = {"a": 1}; h.each(def(k) end)`, "to many arguments: got=2, want=1"},
+		{`h = {"a": 1}; h.transform_values(def(v, extra) end)`, "to few arguments: got=1, want=2"},
+		{`h = {"a": 1}; h.each(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
+
+		// An error from a callback is passed on.
+		{`h = {"a": 1}; h.transform_values(def(v) v.nope() end)`, "test:1:42: undefined method `.nope()` for INTEGER"},
+	}
+	testInput(t, tests)
+}

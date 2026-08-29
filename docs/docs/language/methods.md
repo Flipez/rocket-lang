@@ -31,6 +31,55 @@ Those names are **type groups**; see
 [Types and type groups](./types#type-groups) for what each one accepts and which
 types belong to it.
 
+## Methods that take a callback
+
+A callback is a function literal, since there is no separate block syntax:
+
+```js
+🚀 > [1, 2, 3].map(def(x) x * 2 end)
+=> [2, 4, 6]
+🚀 > [1, 2, 3, 4].select(def(x) x % 2 == 0 end)
+=> [2, 4]
+🚀 > [1, 2, 3].reduce(0, def(sum, x) sum + x end)
+=> 6
+```
+
+A builtin is a value too, so it can be the callback:
+
+```js
+🚀 > [1, 2].each(puts)
+1
+2
+=> [1, 2]
+```
+
+Every one of them treats the callback's answer the same way:
+
+| In the callback | Effect |
+| --------------- | ------ |
+| a value | used — what that means is the method's business |
+| `break` | the walk ends here, and the answer covers what was walked |
+| `next` | the element contributed nothing: a `nil` from `map`, a no from `select` |
+| an error | the walk ends and the error is passed on |
+
+```js
+🚀 > [1, 2, 3, 4].map(def(x) if x == 3 break end x end)
+=> [1, 2]
+🚀 > [1, 2, 3].map(def(x) if x == 2 next end x end)
+=> [1, nil, 3]
+```
+
+`break` and `next` behave as they do in a `foreach`. Note that `return` inside
+the callback returns from the *callback*, since it is an ordinary function —
+there is no enclosing method to return from.
+
+Only `false` and `nil` are no, so `select` keeps a `0` and an empty string:
+
+```js
+🚀 > [1, 2].select(def(x) 0 end)
+=> [1, 2]
+```
+
 ## Methods ending in `!`
 
 A method whose name ends in `!` changes the value it is called on. The plain

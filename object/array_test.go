@@ -404,3 +404,82 @@ func TestArrayEach(t *testing.T) {
 	}
 	testInput(t, tests)
 }
+
+// TestArrayCallbackMethods covers the methods unlocked by the function applier.
+// They all share one set of rules for what a callback's return means, so the
+// cases that matter are the shared ones: break, next, an error, and arity.
+func TestArrayCallbackMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`a = [1,2,3]; a.map(def(x) x * 2 end).to_json()`, "[2,4,6]"},
+		{`a = [1,2,3,4]; a.select(def(x) x % 2 == 0 end).to_json()`, "[2,4]"},
+		{`a = [1,2,3,4]; a.reject(def(x) x % 2 == 0 end).to_json()`, "[1,3]"},
+		// Only false and nil are false, so 0 and "" are yeses -- the language's
+		// own truthiness, the same as if and while use.
+		{`a = [1,2]; a.select(def(x) 0 end).to_json()`, "[1,2]"},
+		{`a = [1,2]; a.select(def(x) "" end).to_json()`, "[1,2]"},
+		{`a = [1,2]; a.select(def(x) nil end).to_json()`, "[]"},
+
+		{`a = [1,2,3]; a.reduce(0, def(sum, x) sum + x end)`, 6},
+		{`a = [1,2,3]; a.reduce(1, def(p, x) p * x end)`, 6},
+		{`a = [1,2]; a.reduce("", def(s, x) s + x.to_s() end)`, "12"},
+		// An empty array answers with the starting value, which is why it is
+		// required rather than taken from the first element.
+		{`a = []; a.reduce(7, def(sum, x) sum + x end)`, 7},
+
+		{`a = [1,2,3]; a.all?(def(x) x > 0 end)`, true},
+		{`a = [1,2,3]; a.all?(def(x) x > 2 end)`, false},
+		{`a = [1,2,3]; a.any?(def(x) x > 2 end)`, true},
+		{`a = [1,2,3]; a.any?(def(x) x > 9 end)`, false},
+		{`a = [1,2,3]; a.none?(def(x) x > 9 end)`, true},
+		{`a = [1,2,3]; a.none?(def(x) x > 2 end)`, false},
+		// An empty array is every element and no element at once.
+		{`a = []; a.all?(def(x) false end)`, true},
+		{`a = []; a.any?(def(x) true end)`, false},
+		{`a = []; a.none?(def(x) true end)`, true},
+
+		{`a = ["ccc","a","bb"]; a.sort_by(def(w) w.size() end).to_json()`, `["a","bb","ccc"]`},
+		{`a = ["ccc","a","bb"]; a.min_by(def(w) w.size() end)`, "a"},
+		{`a = ["ccc","a","bb"]; a.max_by(def(w) w.size() end)`, "ccc"},
+		{`a = []; a.min_by(def(x) x end)`, nil},
+		{`a = []; a.max_by(def(x) x end)`, nil},
+		// The keys have to satisfy what sort requires of elements, and they are
+		// reported the same way.
+		{`a = ["a","b"]; a.sort_by(def(w) nil end)`, "element 0 is not COMPARABLE, got NIL"},
+		{`a = ["a","b"]; a.sort_by(def(w) if w == "a" 1 else "x" end end)`, "keys must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
+
+		// break ends the walk and the answer covers what was walked. next means
+		// the element contributed nothing, which for map is a nil and for a
+		// filter is a no.
+		{`a = [1,2,3,4]; a.map(def(x) if x == 3 break end x end).to_json()`, "[1,2]"},
+		{`a = [1,2,3]; a.map(def(x) if x == 2 next end x end).to_json()`, "[1,null,3]"},
+		{`a = [1,2,3,4]; a.select(def(x) if x == 3 break end true end).to_json()`, "[1,2]"},
+		{`a = [1,2,3]; a.select(def(x) if x == 2 next end true end).to_json()`, "[1,3]"},
+		{`a = [1,2,3]; a.reduce(0, def(sum, x) if x == 3 break end sum + x end)`, 3},
+		{`a = [1,2,3]; a.reduce(0, def(sum, x) if x == 2 next end sum + x end)`, 4},
+		{`a = [1,2,3]; a.all?(def(x) if x == 3 break end x > 0 end)`, true},
+
+		// The pure form leaves the receiver alone, the ! form changes it.
+		{`a = [1,2]; a.map(def(x) x * 2 end); a.to_json()`, "[1,2]"},
+		{`a = [1,2]; a.map!(def(x) x * 2 end); a.to_json()`, "[2,4]"},
+		{`a = [1,2,3]; a.select!(def(x) x > 1 end); a.to_json()`, "[2,3]"},
+		{`a = [1,2,3]; a.reject!(def(x) x > 1 end); a.to_json()`, "[1]"},
+		{`a = ["ccc","a"]; a.sort_by!(def(w) w.size() end); a.to_json()`, `["a","ccc"]`},
+		{`a = [1,2]; a.map!(def(x) x end).type()`, "ARRAY"},
+
+		// An error from a callback ends the walk and is passed on.
+		{`a = [1]; a.map(def(x) x.nope() end)`, "test:1:24: undefined method `.nope()` for INTEGER"},
+		{`a = [1]; a.select(def(x) x.nope() end)`, "test:1:27: undefined method `.nope()` for INTEGER"},
+		{`a = [1]; a.reduce(0, def(s, x) x.nope() end)`, "test:1:33: undefined method `.nope()` for INTEGER"},
+
+		// Arity and callability are reported the same way everywhere.
+		{`a = [1]; a.map(def(x, y) end)`, "to few arguments: got=1, want=2"},
+		{`a = [1]; a.reduce(0, def(x) end)`, "to many arguments: got=2, want=1"},
+		{`a = [1]; a.map(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
+		{`a = [1]; a.reduce(0, "x")`, "wrong argument type on position 2: got=STRING, want=CALLABLE"},
+
+		// Chaining is the point of having them as methods.
+		{`a = [1,2,3,4,5]; a.select(def(x) x % 2 == 1 end).map(def(x) x * x end).sum()`, 35},
+		{`a = [1,2,3]; a.map(def(x) x * 2 end).select(def(x) x > 2 end).reduce(0, def(s, x) s + x end)`, 10},
+	}
+	testInput(t, tests)
+}

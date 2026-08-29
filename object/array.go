@@ -409,6 +409,41 @@ func init() {
 				return matrix
 			},
 		},
+		"reduce": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(ANY),
+					Arg(CALLABLE),
+				),
+				ReturnPattern: Args(
+					Arg(ANY),
+				),
+			},
+			method: func(o Object, args []Object, env Environment) Object {
+				// The starting value is required. Ruby lets you leave it out
+				// and uses the first element, which then makes the result of an
+				// empty array a special case; asking for it keeps one rule.
+				carried := args[0]
+
+				for _, element := range o.(*Array).Elements {
+					result := CallFunction(args[1], env, carried, element)
+
+					switch ClassifyCallback(result) {
+					case Failed:
+						return result
+					case StopWalk:
+						return carried
+					case SkipElement:
+						// Contributed nothing, so carry on unchanged.
+						continue
+					default:
+						carried = result
+					}
+				}
+
+				return carried
+			},
+		},
 		"each": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
@@ -754,6 +789,31 @@ func init() {
 
 		return flattenElements(elements, depth), nil
 	})
+	arrayCallbackPair("map", mappedElements)
+	arrayCallbackPair("sort_by", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
+		keys, err, count := callbackKeys(elements, fn, env)
+		if err != nil {
+			return nil, err
+		}
+
+		return sortedByKeys(elements, keys, count)
+	})
+	arrayCallbackPair("select", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
+		return filteredElements(elements, fn, env, true)
+	})
+	arrayCallbackPair("reject", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
+		return filteredElements(elements, fn, env, false)
+	})
+
+	// An empty array is all yeses and no yeses at once, which is what these
+	// answer: all? is true, any? false, none? true.
+	arrayPredicate("all?", func(yes, total int) bool { return yes == total })
+	arrayPredicate("any?", func(yes, _ int) bool { return yes > 0 })
+	arrayPredicate("none?", func(yes, _ int) bool { return yes == 0 })
+
+	arrayExtremeBy("min_by", true)
+	arrayExtremeBy("max_by", false)
+
 	arrayPair("rotate", Args(OptArg(INTEGER_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
 		by := 1
 		if len(args) > 0 {
@@ -927,6 +987,241 @@ func requireElements(elements []Object, group string) Object {
 	}
 
 	return nil
+}
+
+// arrayCallbackPair registers a method taking a callback and its in-place
+// counterpart, built from one transformation -- the same arrangement as
+// arrayPair, so a pure method and its ! form cannot drift.
+func arrayCallbackPair(name string, transform func(elements []Object, fn Object, env Environment) ([]Object, Object)) {
+	layout := MethodLayout{
+		ArgPattern:    Args(Arg(CALLABLE)),
+		ReturnPattern: Args(Arg(ARRAY_OBJ, ERROR_OBJ)),
+	}
+
+	objectMethods[ARRAY_OBJ][name] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, env Environment) Object {
+			elements, err := transform(o.(*Array).Elements, args[0], env)
+			if err != nil {
+				return err
+			}
+
+			return NewArray(elements)
+		},
+	}
+
+	objectMethods[ARRAY_OBJ][name+"!"] = ObjectMethod{
+		Layout: layout,
+		method: func(o Object, args []Object, env Environment) Object {
+			ao := o.(*Array)
+
+			elements, err := transform(ao.Elements, args[0], env)
+			if err != nil {
+				return err
+			}
+			ao.Elements = elements
+
+			return ao
+		},
+	}
+}
+
+// mappedElements applies fn to every element. `next` contributes nil, keeping
+// the length, which is what Ruby's map does; `break` returns what was collected
+// so far rather than discarding it.
+func mappedElements(elements []Object, fn Object, env Environment) ([]Object, Object) {
+	out := make([]Object, 0, len(elements))
+
+	for _, element := range elements {
+		result := CallFunction(fn, env, element)
+
+		switch ClassifyCallback(result) {
+		case Failed:
+			return nil, result
+		case StopWalk:
+			return out, nil
+		case SkipElement:
+			out = append(out, NIL)
+		default:
+			out = append(out, result)
+		}
+	}
+
+	return out, nil
+}
+
+// filteredElements keeps the elements the callback answers for. keep says which
+// way round: select keeps a yes, reject keeps a no. Truthiness is the language's
+// own -- only false and nil are false, so 0 and "" are yeses.
+func filteredElements(elements []Object, fn Object, env Environment, keep bool) ([]Object, Object) {
+	out := make([]Object, 0, len(elements))
+
+	for _, element := range elements {
+		result := CallFunction(fn, env, element)
+
+		switch ClassifyCallback(result) {
+		case Failed:
+			return nil, result
+		case StopWalk:
+			return out, nil
+		case SkipElement:
+			// Contributed nothing, which is a no either way round.
+			continue
+		default:
+			if IsTruthy(result) == keep {
+				out = append(out, element)
+			}
+		}
+	}
+
+	return out, nil
+}
+
+// arrayPredicate registers a method answering a question about every element.
+// verdict decides from the count of yeses and the total.
+func arrayPredicate(name string, verdict func(yes, total int) bool) {
+	objectMethods[ARRAY_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ArgPattern:    Args(Arg(CALLABLE)),
+			ReturnPattern: Args(Arg(BOOLEAN_OBJ, ERROR_OBJ)),
+		},
+		method: func(o Object, args []Object, env Environment) Object {
+			elements := o.(*Array).Elements
+			yes, seen := 0, 0
+
+			for _, element := range elements {
+				result := CallFunction(args[0], env, element)
+
+				switch ClassifyCallback(result) {
+				case Failed:
+					return result
+				case StopWalk:
+					// The answer covers what was walked, as break ends a
+					// foreach rather than voiding it.
+					if verdict(yes, seen) {
+						return TRUE
+					}
+
+					return FALSE
+				case SkipElement:
+					seen++
+				default:
+					seen++
+					if IsTruthy(result) {
+						yes++
+					}
+				}
+			}
+
+			if verdict(yes, seen) {
+				return TRUE
+			}
+
+			return FALSE
+		},
+	}
+}
+
+// callbackKeys applies fn to every element and returns one key per element. The
+// second value is an error, the third how far the walk got, which is short of
+// the whole array when the callback broke out.
+func callbackKeys(elements []Object, fn Object, env Environment) ([]Object, Object, int) {
+	keys := make([]Object, 0, len(elements))
+
+	for _, element := range elements {
+		result := CallFunction(fn, env, element)
+
+		switch ClassifyCallback(result) {
+		case Failed:
+			return nil, result, 0
+		case StopWalk:
+			return keys, nil, len(keys)
+		case SkipElement:
+			keys = append(keys, NIL)
+		default:
+			keys = append(keys, result)
+		}
+	}
+
+	return keys, nil, len(keys)
+}
+
+// sortedByKeys orders the first count elements by their keys. The keys have to
+// satisfy what sort requires of elements, and they are reported the same way.
+func sortedByKeys(elements, keys []Object, count int) ([]Object, Object) {
+	if err := requireElements(keys[:count], COMPARABLE); err != nil {
+		return nil, err
+	}
+	if count > 0 {
+		wanted := keys[0].Type()
+		for i, key := range keys[:count] {
+			if key.Type() != wanted {
+				return nil, NewErrorFormat("keys must all be one %s type, got %s at 0 and %s at %d", COMPARABLE, wanted, key.Type(), i)
+			}
+		}
+	}
+
+	order := make([]int, count)
+	for i := range order {
+		order[i] = i
+	}
+	sort.SliceStable(order, func(a, b int) bool {
+		return compareKeys(keys[order[a]], keys[order[b]])
+	})
+
+	out := make([]Object, count)
+	for i, idx := range order {
+		out[i] = elements[idx]
+	}
+
+	return out, nil
+}
+
+// compareKeys reports whether left sorts before right. The callers have already
+// established that both are the same COMPARABLE type.
+func compareKeys(left, right Object) bool {
+	switch left.Type() {
+	case INTEGER_OBJ:
+		return left.(*Integer).Value < right.(*Integer).Value
+	case FLOAT_OBJ:
+		return left.(*Float).Value < right.(*Float).Value
+	case STRING_OBJ:
+		return left.(*String).Value < right.(*String).Value
+	default:
+		return false
+	}
+}
+
+// arrayExtremeBy registers min_by or max_by.
+func arrayExtremeBy(name string, min bool) {
+	objectMethods[ARRAY_OBJ][name] = ObjectMethod{
+		Layout: MethodLayout{
+			ArgPattern:    Args(Arg(CALLABLE)),
+			ReturnPattern: Args(Arg(ANY)),
+		},
+		method: func(o Object, args []Object, env Environment) Object {
+			elements := o.(*Array).Elements
+
+			keys, err, count := callbackKeys(elements, args[0], env)
+			if err != nil {
+				return err
+			}
+			if count == 0 {
+				return NIL
+			}
+
+			ordered, err := sortedByKeys(elements, keys, count)
+			if err != nil {
+				return err
+			}
+
+			if min {
+				return ordered[0]
+			}
+
+			return ordered[len(ordered)-1]
+		},
+	}
 }
 
 // reversedElements returns a reversed copy, leaving src untouched.
