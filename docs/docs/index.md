@@ -3,52 +3,81 @@ sidebar_position: 0
 ---
 # Getting Started
 
-RocketLang as of version 0.9.5 is the full (as in the book was worked through) version of [MonkeyLang](https://monkeylang.org/) and
-is then being extended with various useful and not so useful features.
+RocketLang started as a complete implementation of
+[MonkeyLang](https://monkeylang.org/) — the language built in
+*Writing an Interpreter in Go* — and has been extended since with features both
+useful and not so useful.
 
 # Latest Version
 
 [![GitHub release](https://img.shields.io/github/release/flipez/rocket-lang.svg)](https://github.com/flipez/rocket-lang/releases/)
 
 # Quick Start
+
 ```js
-input = open("examples/aoc/2021/day-1/input").lines()
+// Values carry methods.
+name = "rocket-lang"
+puts(name.upcase())          // ROCKET-LANG
+puts(name.split("-").size()) // 2
 
+// Arrays and hashes, both with methods of their own.
+crew = ["ada", "grace", "alan"]
+puts(crew.size())            // 3
+puts(crew.include?("ada"))   // true
 
-a = []
-foreach i, number in input
-  a.push(number.strip().to_i())
+ages = {"ada": 36, "grace": 45}
+puts(ages["grace"])          // 45
+
+// Functions are values, so they can be passed around.
+double = def(n)
+  return n * 2
 end
-input = a
+puts(double(21))             // 42
 
-increase = 0
-foreach i, number in input
-  if (number > input[i-1])
-    increase = increase + 1
+// Blocks close with `end`, and parentheses around a condition are optional.
+foreach i, member in crew
+  if i > 0
+    puts(i.to_s() + ": " + member)
   end
 end
-puts(increase + 1)
 
-increase = 0
-foreach i, number in input
-  sum = number + input[i+1] + input[i+2]
-  sum_two = input[i+1] + input[i+2] + input[i+3]
-
-  if (sum_two > sum)
-    increase = increase + 1
-  end
+// Errors are values you can catch.
+begin
+  puts(1 / 0)
+rescue e
+  puts("caught: " + e.msg())
 end
-puts(increase + 1)
 ```
 
+Split a program across files with [modules](./language/modules), and pull in
+someone else's with [planets](./language/planets):
+
+```js
+import "./helpers" as helpers
+```
+
+For longer programs, the [examples
+directory](https://github.com/flipez/rocket-lang/tree/main/examples) has
+solutions to several Advent of Code puzzles.
+
 # Help
-You can launch RocketLang with `-h` or `--help` to get an overview about the cli capabilities.
+
+Launch RocketLang with `-h` or `--help` for an overview of the CLI.
 
 ```zsh
 $ rocket-lang -h
 Usage: rocket-lang [flags] [program file] [arguments]
+       rocket-lang planet <command>
 
 Available flags:
   -e, --exec string   Runs the given code.
   -v, --version       Prints the version and build date.
+```
+
+Run a file, evaluate a snippet, or start a REPL with no arguments at all:
+
+```zsh
+$ rocket-lang program.rl
+$ rocket-lang -e 'puts("hi")'
+$ rocket-lang
 ```

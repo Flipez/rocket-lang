@@ -37,7 +37,7 @@ if (part_one(")())())") != -3)
 end
 
 "// We can now read data from files so using 'real' input data is much easier"
-real_input = IO.open("examples/aoc/2015/day1.input").content().strip()
+real_input = IO.open("day1.input").content().strip()
 
 puts("Solution Day 1 Part 1: ")
 puts(part_one(real_input))

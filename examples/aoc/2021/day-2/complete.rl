@@ -1,4 +1,4 @@
-input = IO.open("examples/aoc/2021/day-2/input").lines()
+input = IO.open("input").lines()
 
 depth = 0
 hor = 0
