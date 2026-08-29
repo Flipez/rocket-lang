@@ -1,5 +1,5 @@
 # Planets
-> 👉 Planets were introduced in `0.25`
+> 👉 Planets were introduced in `0.24`
 
 A **planet** is a reusable RocketLang library: a git repository of `.rl` files
 that a project pulls in and imports. Planets live in `.planets/` and are
