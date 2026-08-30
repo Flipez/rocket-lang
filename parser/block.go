@@ -15,7 +15,12 @@ func (p *Parser) parseBlock() *ast.Block {
 
 	p.nextToken()
 
-	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.END) && !p.curTokenIs(token.ELSE) && !p.curTokenIs(token.ELIF) && !p.curTokenIs(token.RESCUE) {
+	// `}` is deliberately not a terminator. Curly-brace blocks were removed in
+	// #89, before v0.16.0, but this check was left behind -- so a `}` still
+	// closed a block while `{` no longer opened one. A stray `}` therefore stood
+	// in for a missing `end` and the program ran, with the block ending somewhere
+	// the reader had no reason to expect.
+	for !p.curTokenIs(token.EOF) && !p.curTokenIs(token.END) && !p.curTokenIs(token.ELSE) && !p.curTokenIs(token.ELIF) && !p.curTokenIs(token.RESCUE) {
 
 		stmt := p.parseStatement()
 		if stmt != nil {

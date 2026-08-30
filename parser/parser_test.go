@@ -874,7 +874,7 @@ func TestImportWithIntegerExpressionPathIsAParseError(t *testing.T) {
 }
 
 func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
-	l := lexer.New(`foreach i in -5 { puts(i)}`, "test")
+	l := lexer.New("foreach i in -5\n  puts(i)\nend", "test")
 	p := New(l)
 	p.ParseProgram()
 
@@ -1182,5 +1182,96 @@ func TestLineBreakSeparatesStatements(t *testing.T) {
 					tt.expectedStatements, len(program.Statements), tt.input, program.String())
 			}
 		})
+	}
+}
+
+// TestCurlyBraceBlocksAreRejected covers the removal of curly-brace blocks.
+// They were dropped in #89 before v0.16.0, but `}` stayed in parseBlock's
+// terminator list -- so `{` no longer opened a block while `}` still closed
+// one, and a stray `}` quietly stood in for a missing `end`.
+func TestCurlyBraceBlocksAreRejected(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		// The message a reader should get, in part.
+		expectedError string
+	}{
+		{
+			"foreach",
+			"foreach i in 3 { puts(i) }",
+			"`{` opens a hash literal, not a block",
+		},
+		{
+			"if",
+			"if (true) { puts(\"y\") }",
+			"`{` opens a hash literal, not a block",
+		},
+		{
+			"while",
+			"while (false) { puts(1) }",
+			"`{` opens a hash literal, not a block",
+		},
+		{
+			// `}` used to close the block here, and the program ran.
+			"a stray } cannot stand in for end",
+			"if (true)\n  puts(\"in\")\n}\nputs(\"after\")",
+			"expected `end` to close the block opened here",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, p := createProgram(tt.input)
+
+			if len(p.errors) == 0 {
+				t.Fatalf("expected a parser error for %q, got none", tt.input)
+			}
+
+			if !strings.Contains(strings.Join(p.errors, "\n"), tt.expectedError) {
+				t.Errorf("expected an error containing %q for %q, got:\n%s",
+					tt.expectedError, tt.input, strings.Join(p.errors, "\n"))
+			}
+		})
+	}
+}
+
+// TestHashLiteralsStillParse guards the other side of the change: `{` is a hash
+// literal everywhere, including as the only statement of a block, which is how
+// a function returns one.
+func TestHashLiteralsStillParse(t *testing.T) {
+	tests := []string{
+		`x = {"a": 1, "b": 2}`,
+		`x = {}`,
+		`x = {"a": {"b": 1}}`,
+		"def make()\n  {\"a\": 1}\nend",
+		"def empty()\n  {}\nend",
+		`foreach k, v in {"a": 1}` + "\n  puts(k)\nend",
+	}
+
+	for _, input := range tests {
+		t.Run(input, func(t *testing.T) {
+			_, p := createProgram(input)
+			checkParserErrors(t, p)
+		})
+	}
+}
+
+// TestHashKeyWithoutColonKeepsThePlainMessage checks that the brace-block hint
+// does not leak into a genuine hash typo, where it would be noise.
+func TestHashKeyWithoutColonKeepsThePlainMessage(t *testing.T) {
+	_, p := createProgram(`x = {"a" 1}`)
+
+	if len(p.errors) == 0 {
+		t.Fatal("expected a parser error, got none")
+	}
+
+	joined := strings.Join(p.errors, "\n")
+
+	if strings.Contains(joined, "not a block") {
+		t.Errorf("the brace-block hint should not appear for a hash missing its colon, got:\n%s", joined)
+	}
+
+	if !strings.Contains(joined, "expected next token to be :") {
+		t.Errorf("expected the plain message, got:\n%s", joined)
 	}
 }
