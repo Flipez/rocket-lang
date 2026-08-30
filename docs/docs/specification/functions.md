@@ -77,8 +77,8 @@ def add(a, b)
 end
 
 add(1, 2)     // 3
-add(1)        // ERROR: add: to few arguments: got=1, want=2
-add(1, 2, 3)  // ERROR: add: to many arguments: got=3, want=2
+add(1)        // ERROR: add: too few arguments: got=1, want=2
+add(1, 2, 3)  // ERROR: add: too many arguments: got=3, want=2
 ```
 
 A named function reports its own name, which helps when the call is into a
@@ -88,6 +88,6 @@ module rather than a function on screen. Like any other error it can be caught:
 begin
   add(1)
 rescue e
-  puts(e.msg())   // add: to few arguments: got=1, want=2
+  puts(e.msg())   // add: too few arguments: got=1, want=2
 end
 ```

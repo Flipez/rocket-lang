@@ -186,9 +186,9 @@ func checkArity(def *object.Function, args []object.Object) object.Object {
 		return nil
 	}
 
-	problem := "to many arguments"
+	problem := "too many arguments"
 	if given < want {
-		problem = "to few arguments"
+		problem = "too few arguments"
 	}
 
 	if def.Name != "" {

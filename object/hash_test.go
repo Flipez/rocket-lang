@@ -34,7 +34,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.include?(1)`, true},
 		{`{"a": 1, 1: "b"}.include?("c")`, false},
 		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
-		{`{"a": 1, 1: "b"}.include?()`, `to few arguments: got=0, want=1`},
+		{`{"a": 1, 1: "b"}.include?()`, `too few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
 		// to_s used to be "" because Hash was not Stringable. A single entry,
@@ -197,8 +197,8 @@ func TestHashCallbackMethods(t *testing.T) {
 		{`h = {"a": 1}; h.each(def(k, v) break end).size()`, 1},
 
 		// Arity is checked against what the method passes.
-		{`h = {"a": 1}; h.each(def(k) end)`, "to many arguments: got=2, want=1"},
-		{`h = {"a": 1}; h.transform_values(def(v, extra) end)`, "to few arguments: got=1, want=2"},
+		{`h = {"a": 1}; h.each(def(k) end)`, "too many arguments: got=2, want=1"},
+		{`h = {"a": 1}; h.transform_values(def(v, extra) end)`, "too few arguments: got=1, want=2"},
 		{`h = {"a": 1}; h.each(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
 
 		// An error from a callback is passed on.

@@ -39,7 +39,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].index(4)`, -1},
 		{`[1,2,3].index(3)`, 2},
 		{`[1,2,3].index(true)`, -1},
-		{`[1,2,3].index()`, "to few arguments: got=0, want=1"},
+		{`[1,2,3].index()`, "too few arguments: got=0, want=1"},
 		{"a = []; b = []; foreach i in a \n b.push(a[i]) \nend; a.size()==b.size()", true},
 		{`[1,1,2].uniq().size()`, 2},
 		{`[true,true,2].uniq().size()`, 2},
@@ -65,7 +65,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].include?(4)`, false},
 		{`[1,2,3].include?(3)`, true},
 		{`[1,2,3].include?(true)`, false},
-		{`[1,2,3].include?()`, "to few arguments: got=0, want=1"},
+		{`[1,2,3].include?()`, "too few arguments: got=0, want=1"},
 		{`[1,2,3,4,5,6,7,8,9].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`},
 		{`[1,2,3,4,5,6,7,8].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
 		{`[1,2].slices(3)`, `[[1, 2]]`},
@@ -387,8 +387,8 @@ func TestArrayEach(t *testing.T) {
 
 		// Arity is the applier's business, and it reports it the way a call
 		// written out in full would.
-		{`a = [1]; a.each(def(x, y) end)`, "to few arguments: got=1, want=2"},
-		{`a = [1]; a.each(def() end)`, "to many arguments: got=1, want=0"},
+		{`a = [1]; a.each(def(x, y) end)`, "too few arguments: got=1, want=2"},
+		{`a = [1]; a.each(def() end)`, "too many arguments: got=1, want=0"},
 
 		// A builtin is a value too, so it is callable.
 		{`a = [1]; a.each(puts).to_json()`, "[1]"},
@@ -396,7 +396,7 @@ func TestArrayEach(t *testing.T) {
 		// CALLABLE refuses what cannot be called.
 		{`a = [1]; a.each(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
 		{`a = [1]; a.each(nil)`, "wrong argument type on position 1: got=NIL, want=CALLABLE"},
-		{`a = [1]; a.each()`, "to few arguments: got=0, want=1"},
+		{`a = [1]; a.each()`, "too few arguments: got=0, want=1"},
 
 		// A closure keeps its own scope, so the callback sees where it was
 		// written rather than where it is called.
@@ -472,8 +472,8 @@ func TestArrayCallbackMethods(t *testing.T) {
 		{`a = [1]; a.reduce(0, def(s, x) x.nope() end)`, "test:1:33: undefined method `.nope()` for INTEGER"},
 
 		// Arity and callability are reported the same way everywhere.
-		{`a = [1]; a.map(def(x, y) end)`, "to few arguments: got=1, want=2"},
-		{`a = [1]; a.reduce(0, def(x) end)`, "to many arguments: got=2, want=1"},
+		{`a = [1]; a.map(def(x, y) end)`, "too few arguments: got=1, want=2"},
+		{`a = [1]; a.reduce(0, def(x) end)`, "too many arguments: got=2, want=1"},
 		{`a = [1]; a.map(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
 		{`a = [1]; a.reduce(0, "x")`, "wrong argument type on position 2: got=STRING, want=CALLABLE"},
 

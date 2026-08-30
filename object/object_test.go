@@ -625,7 +625,7 @@ func TestIsA(t *testing.T) {
 		{`"a".is_a?("string")`, "unknown type or type group: string"},
 
 		{`"a".is_a?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
-		{`"a".is_a?()`, "to few arguments: got=0, want=1"},
+		{`"a".is_a?()`, "too few arguments: got=0, want=1"},
 	}
 	testInput(t, tests)
 }
@@ -652,7 +652,7 @@ func TestTypeGroupsMethod(t *testing.T) {
 		{`1.type_groups().include?("CALLABLE")`, false},
 		{`"a".type_groups().include?("CALLABLE")`, false},
 
-		{`"a".type_groups("x")`, "to many arguments: got=1, want=0"},
+		{`"a".type_groups("x")`, "too many arguments: got=1, want=0"},
 	}
 	testInput(t, tests)
 }
