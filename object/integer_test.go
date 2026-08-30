@@ -208,9 +208,9 @@ func TestIntegerCallbackMethods(t *testing.T) {
 		{`"0x10".to_i().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
 
 		{`3.times(def(i) i.nope() end)`, "test:1:17: undefined method `.nope()` for INTEGER"},
-		{`3.times(def(i, j) end)`, "to few arguments: got=1, want=2"},
+		{`3.times(def(i, j) end)`, "too few arguments: got=1, want=2"},
 		{`3.times(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},
-		{`1.upto(3)`, "to few arguments: got=1, want=2"},
+		{`1.upto(3)`, "too few arguments: got=1, want=2"},
 	}
 	testInput(t, tests)
 }

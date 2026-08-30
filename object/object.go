@@ -303,11 +303,11 @@ func (ml MethodLayout) validateArgs(args []Object) error {
 	overloadArgs := possibleArgsLen > 0 && ml.ArgPattern[possibleArgsLen-1].Overload
 
 	if givenArgsLen < requiredArgsLen {
-		return fmt.Errorf("to few arguments: got=%d, want=%d", givenArgsLen, requiredArgsLen)
+		return fmt.Errorf("too few arguments: got=%d, want=%d", givenArgsLen, requiredArgsLen)
 	}
 
 	if (givenArgsLen > possibleArgsLen) && !overloadArgs {
-		return fmt.Errorf("to many arguments: got=%d, want=%d", givenArgsLen, possibleArgsLen)
+		return fmt.Errorf("too many arguments: got=%d, want=%d", givenArgsLen, possibleArgsLen)
 	}
 
 	if givenArgsLen > 0 {

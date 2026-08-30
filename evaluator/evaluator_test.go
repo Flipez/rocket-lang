@@ -387,12 +387,12 @@ func TestBuiltinFunctions(t *testing.T) {
 		expected interface{}
 	}{
 		{`puts("test")`, nil},
-		{`OS.raise("Error")`, "to few arguments: got=1, want=2"},
+		{`OS.raise("Error")`, "too few arguments: got=1, want=2"},
 		{`OS.raise("Error", 1)`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
 		{`OS.raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
-		{`OS.exit()`, "to few arguments: got=0, want=1"},
+		{`OS.exit()`, "too few arguments: got=0, want=1"},
 		{`OS.exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
-		{`IO.open()`, "to few arguments: got=0, want=1"},
+		{`IO.open()`, "too few arguments: got=0, want=1"},
 		{`IO.open(1, "r", "0644")`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
@@ -1273,16 +1273,16 @@ func TestFunctionArityIsChecked(t *testing.T) {
 		expected string
 	}{
 		// The panic.
-		{`def f(a, b) return a end f(1)`, "to few arguments: got=1, want=2"},
-		{`def f(a, b) return a end f()`, "to few arguments: got=0, want=2"},
+		{`def f(a, b) return a end f(1)`, "too few arguments: got=1, want=2"},
+		{`def f(a, b) return a end f()`, "too few arguments: got=0, want=2"},
 		// The quiet half: these used to return a value and say nothing.
-		{`def f(a) return a end f(1, 2, 3)`, "to many arguments: got=3, want=1"},
-		{`def f() return 1 end f(1)`, "to many arguments: got=1, want=0"},
+		{`def f(a) return a end f(1, 2, 3)`, "too many arguments: got=3, want=1"},
+		{`def f() return 1 end f(1)`, "too many arguments: got=1, want=0"},
 		// A named function says which one, which matters when the call is into
 		// a library rather than a function on screen.
-		{`def named(a) return a end named()`, "named: to few arguments"},
+		{`def named(a) return a end named()`, "named: too few arguments"},
 		// An anonymous function has no name to report.
-		{`f = def(a) return a end f()`, "to few arguments: got=0, want=1"},
+		{`f = def(a) return a end f()`, "too few arguments: got=0, want=1"},
 	}
 
 	for _, tt := range tests {
@@ -1349,7 +1349,7 @@ end
 		{`inner = {"go": def() return "deep" end}; outer = {"inner": inner}; outer.inner.go()`, "deep"},
 
 		// Arity and errors come from the function, reported as anywhere else.
-		{`h = {"f": def(x) return x end}; h.f()`, "to few arguments: got=0, want=1"},
+		{`h = {"f": def(x) return x end}; h.f()`, "too few arguments: got=0, want=1"},
 
 		// A name holding something uncallable says so, rather than claiming the
 		// method does not exist.

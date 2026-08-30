@@ -32,9 +32,9 @@ func TestStringObject(t *testing.T) {
 func TestStringObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`"test".count("e")`, 1},
-		{`"test".count()`, "to few arguments: got=0, want=1"},
+		{`"test".count()`, "too few arguments: got=0, want=1"},
 		{`"test".find("e")`, 1},
-		{`"test".find()`, "to few arguments: got=0, want=1"},
+		{`"test".find()`, "too few arguments: got=0, want=1"},
 		{`"test".size()`, 4},
 		{`"test".to_i()`, nil},
 		{`"125".to_i()`, 125},
@@ -67,12 +67,12 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"1022".to_f()`, 1022.0},
 		{`"1022".to_s()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},
-		{`"test".replace()`, "to few arguments: got=0, want=2"},
-		{`"test".replace("e")`, "to few arguments: got=1, want=2"},
+		{`"test".replace()`, "too few arguments: got=0, want=2"},
+		{`"test".replace("e")`, "too few arguments: got=1, want=2"},
 		{`"test".reverse()`, "tset"},
 		{`"test test1".split()`, `["test", "test1"]`},
 		{`"test test1".split(",")`, `["test test1"]`},
-		{`"test test1".split(",", "x")`, `to many arguments: got=2, want=1`},
+		{`"test test1".split(",", "x")`, `too many arguments: got=2, want=1`},
 		{`"test".split(1)`, `wrong argument type on position 1: got=INTEGER, want=STRING`},
 		{`"test ".strip()`, "test"},
 		{`" test ".strip()`, "test"},
@@ -256,9 +256,9 @@ func TestStringRubyMethods(t *testing.T) {
 		{`"abc".start_with?("z", "y")`, false},
 		{`"abc".end_with?("z", "c")`, true},
 		{`"abc".end_with?("z", "y")`, false},
-		{`"abc".start_with?()`, "to few arguments: got=0, want=1"},
-		{`"abc".include?()`, "to few arguments: got=0, want=1"},
-		{`"abc".empty?("x")`, "to many arguments: got=1, want=0"},
+		{`"abc".start_with?()`, "too few arguments: got=0, want=1"},
+		{`"abc".include?()`, "too few arguments: got=0, want=1"},
+		{`"abc".empty?("x")`, "too many arguments: got=1, want=0"},
 	}
 	testInput(t, tests)
 }
@@ -309,7 +309,7 @@ func TestStringBangConvention(t *testing.T) {
 
 		// A ! method takes the same arguments as its plain counterpart.
 		{`"abcd".chomp!("d")`, "abc"},
-		{`"a-b".replace!("-")`, "to few arguments: got=1, want=2"},
+		{`"a-b".replace!("-")`, "too few arguments: got=1, want=2"},
 	}
 	testInput(t, tests)
 }
