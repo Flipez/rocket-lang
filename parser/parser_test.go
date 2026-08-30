@@ -1105,3 +1105,82 @@ func TestUnterminatedBlockDoesNotCascade(t *testing.T) {
 		t.Errorf("expected the original paren error, got %q", p.Errors()[0])
 	}
 }
+
+// TestAmbiguousPrefixInfixIsComplete derives the ambiguous set from the
+// parser's own registration tables. A token registered both as a prefix and as
+// an infix can either open an expression or continue one, and only those tokens
+// need a line break to break the tie. Registering a new one without deciding
+// what a line break means for it is the mistake this catches.
+func TestAmbiguousPrefixInfixIsComplete(t *testing.T) {
+	_, p := createProgram("")
+
+	derived := map[string]bool{}
+	for tokenType := range p.prefixParseFns {
+		if _, both := p.infixParseFns[tokenType]; both {
+			derived[string(tokenType)] = true
+		}
+	}
+
+	declared := map[string]bool{}
+	for tokenType := range ambiguousPrefixInfix {
+		declared[string(tokenType)] = true
+	}
+
+	for name := range derived {
+		if !declared[name] {
+			t.Errorf("%s is registered both as a prefix and as an infix but is missing from ambiguousPrefixInfix: decide whether a line break before it starts a new statement", name)
+		}
+	}
+
+	for name := range declared {
+		if !derived[name] {
+			t.Errorf("%s is in ambiguousPrefixInfix but is not registered both ways, so a line break cannot change its meaning", name)
+		}
+	}
+}
+
+// TestLineBreakSeparatesStatements covers the fact that nothing terminates a
+// statement, so a line break is the only separator there is.
+func TestLineBreakSeparatesStatements(t *testing.T) {
+	tests := []struct {
+		name               string
+		input              string
+		expectedStatements int
+	}{
+		// `[` used to index the result of the previous line.
+		{"array literal after a call", "puts(\"a\")\n[1].each(puts)", 2},
+		{"array literal after an assignment", "a = 1\n[1,2]", 2},
+		{"array literal after an identifier", "a\n[1,2]", 2},
+		// `(` used to call the result of the previous line.
+		{"grouped expression after an assignment", "a = 1\n(1 + 2)", 2},
+		// `-` used to subtract from the previous line.
+		{"negative number after an assignment", "a = 1\n-2", 2},
+
+		// Inside an unclosed bracket the expression cannot have ended, so a
+		// line break there means nothing.
+		{"continuation inside parens", "puts(4\n - 1)", 1},
+		{"continuation inside brackets", "puts([1,2]\n [0])", 1},
+		{"multi-line array literal", "a = [\n  [1, 2],\n  [3, 4]\n]", 1},
+
+		// A token that is only ever an infix has no other reading, so a line
+		// break in front of it still continues the expression.
+		{"leading * continues", "a = 2\n* 3", 1},
+		{"leading + continues", "a = 2\n+ 3", 1},
+		{"leading . continues, so chaining still works", "x = [3,1,2]\n  .sort()", 1},
+
+		// An operator at the end of a line was never ambiguous.
+		{"trailing operator continues", "a = 1 +\n  2", 1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			program, p := createProgram(tt.input)
+			checkParserErrors(t, p)
+
+			if len(program.Statements) != tt.expectedStatements {
+				t.Errorf("expected %d statement(s), got %d for %q\ngot: %s",
+					tt.expectedStatements, len(program.Statements), tt.input, program.String())
+			}
+		})
+	}
+}

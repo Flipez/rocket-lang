@@ -248,3 +248,87 @@ func TestEmojiTokensStillWork(t *testing.T) {
 		}
 	}
 }
+
+// TestTokenPositions pins the line and column of every token in a small
+// multi-line program. Positions used to be taken after the token had been read,
+// so a token at the end of a line was tagged with the line after it -- which
+// made a line break invisible to the parser.
+func TestTokenPositions(t *testing.T) {
+	// 1: a
+	// 2: [1]
+	// 3: foo(b
+	// 4:  - 1)
+	input := "a\n[1]\nfoo(b\n - 1)"
+
+	expected := []struct {
+		expectedType     token.TokenType
+		expectedLiteral  string
+		expectedLine     int
+		expectedPosition int
+	}{
+		{token.IDENT, "a", 1, 1},
+		{token.LBRACKET, "[", 2, 1},
+		{token.INT, "1", 2, 2},
+		{token.RBRACKET, "]", 2, 3},
+		{token.IDENT, "foo", 3, 1},
+		{token.LPAREN, "(", 3, 4},
+		{token.IDENT, "b", 3, 5},
+		{token.MINUS, "-", 4, 2},
+		{token.INT, "1", 4, 4},
+		{token.RPAREN, ")", 4, 5},
+	}
+
+	l := New(input, "test")
+
+	for i, tt := range expected {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("token %d: type wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("token %d: literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+		if tok.LineNumber != tt.expectedLine || tok.LinePosition != tt.expectedPosition {
+			t.Errorf("token %d (%q): position wrong. expected=%d:%d, got=%d:%d",
+				i, tok.Literal, tt.expectedLine, tt.expectedPosition, tok.LineNumber, tok.LinePosition)
+		}
+	}
+}
+
+// TestPositionsAfterComment checks that a comment does not carry its own
+// position over to the token that follows it. The comment used to be skipped by
+// recursing into NextToken, which is easy to break when the position is
+// recorded by the caller.
+func TestPositionsAfterComment(t *testing.T) {
+	// 1: // a comment
+	// 2: x = 1 // trailing
+	// 3: // another
+	// 4: y
+	input := "// a comment\nx = 1 // trailing\n// another\ny"
+
+	expected := []struct {
+		literal  string
+		line     int
+		position int
+	}{
+		{"x", 2, 1},
+		{"=", 2, 3},
+		{"1", 2, 5},
+		{"y", 4, 1},
+	}
+
+	l := New(input, "test")
+
+	for i, tt := range expected {
+		tok := l.NextToken()
+
+		if tok.Literal != tt.literal {
+			t.Fatalf("token %d: literal wrong. expected=%q, got=%q", i, tt.literal, tok.Literal)
+		}
+		if tok.LineNumber != tt.line || tok.LinePosition != tt.position {
+			t.Errorf("token %d (%q): position wrong. expected=%d:%d, got=%d:%d",
+				i, tok.Literal, tt.line, tt.position, tok.LineNumber, tok.LinePosition)
+		}
+	}
+}

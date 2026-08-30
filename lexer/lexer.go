@@ -23,24 +23,64 @@ func New(input string, file string) *Lexer {
 }
 
 func (l *Lexer) readChar() {
+	// The newline is checked before it is overwritten, so the line advances as
+	// the lexer steps off the newline rather than onto it. Incrementing on the
+	// way in left currentLine pointing at the next line while the lexer was
+	// still sitting on the newline that ended the previous one, which is how a
+	// token at the end of a line came to be tagged with the line after it.
+	if l.ch == '\n' {
+		l.currentLine += 1
+		l.positionInLine = 0
+	}
+
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
 	} else {
 		l.ch = l.input[l.readPosition]
 	}
-	if l.ch == '\n' {
-		l.currentLine += 1
-		l.positionInLine = 0
-	}
+
 	l.position = l.readPosition
 	l.readPosition += 1
 	l.positionInLine += 1
 }
 
+// NextToken returns the next token, tagged with the position at which it
+// starts.
+//
+// The position has to be taken before the token is read, because reading it
+// moves the lexer past it: readIdentifier stops only once it has consumed the
+// character that ended the identifier, so an identifier at the end of a line
+// used to be tagged with the line *after* it. That made a line break invisible
+// to the parser, and a line break is the only thing that separates two
+// statements in a language without terminators.
 func (l *Lexer) NextToken() token.Token {
-	var tok token.Token
+	l.skipIgnored()
 
+	line, position := l.currentLine, l.positionInLine
+
+	tok := l.scanToken()
+	tok.LineNumber = line
+	tok.LinePosition = position
+	tok.File = l.file
+
+	return tok
+}
+
+// skipIgnored advances past anything that is not a token. A comment runs to the
+// end of its line, and may be followed by more whitespace and more comments.
+func (l *Lexer) skipIgnored() {
 	l.skipWhitespace()
+
+	for l.ch == '/' && l.peekChar() == '/' {
+		l.skipComment()
+		l.skipWhitespace()
+	}
+}
+
+// scanToken reads one token. It does not set the position: NextToken does that,
+// from where the token started.
+func (l *Lexer) scanToken() token.Token {
+	var tok token.Token
 
 	switch l.ch {
 	case '&':
@@ -84,13 +124,8 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Literal = string(l.ch)
 		}
 	case '/':
-		if l.peekChar() == '/' {
-			l.skipComment()
-			return l.NextToken()
-		} else {
-			tok.Type = token.SLASH
-			tok.Literal = string(l.ch)
-		}
+		tok.Type = token.SLASH
+		tok.Literal = string(l.ch)
 	case '+':
 		tok.Type = token.PLUS
 		tok.Literal = string(l.ch)
@@ -179,9 +214,6 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
-			tok.LineNumber = l.currentLine
-			tok.LinePosition = l.positionInLine
-			tok.File = l.file
 
 			return tok
 		} else if isDigit(l.ch) {
@@ -191,9 +223,6 @@ func (l *Lexer) NextToken() token.Token {
 			} else {
 				tok.Type = token.INT
 			}
-			tok.LineNumber = l.currentLine
-			tok.LinePosition = l.positionInLine
-			tok.File = l.file
 			return tok
 		} else if i := isEmoji(l.ch); i > 0 {
 			out := make([]byte, i)
@@ -205,9 +234,6 @@ func (l *Lexer) NextToken() token.Token {
 
 			tok.Literal = token.LookupLiteral(string(out))
 			tok.Type = token.LookupEmoji(string(out))
-			tok.LineNumber = l.currentLine
-			tok.LinePosition = l.positionInLine
-			tok.File = l.file
 
 			return tok
 		} else {
@@ -216,10 +242,8 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	}
 
-	tok.LineNumber = l.currentLine
-	tok.LinePosition = l.positionInLine
-	tok.File = l.file
 	l.readChar()
+
 	return tok
 }
 

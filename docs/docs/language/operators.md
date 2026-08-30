@@ -87,3 +87,66 @@ two:
 puts(true or (false and false))  // true
 puts((true or false) and false)  // false
 ```
+
+## Where one statement ends
+
+Nothing terminates a statement — there is no required semicolon — so a line
+break is the only separator there is. Almost always that is unremarkable:
+
+```js
+a = 1
+b = 2
+```
+
+It only becomes a question for the three tokens that can either *open* an
+expression or *continue* one:
+
+| Token | Opens | Continues |
+| ----- | ----- | --------- |
+| `[` | an array literal | an index |
+| `(` | a grouped expression | a call |
+| `-` | a negative number | a subtraction |
+
+**A line break in front of one of these selects the opening meaning**, so the
+line starts a new statement:
+
+```js
+puts("a")
+[1, 2].each(puts)   // two statements, as it reads
+```
+
+Without that rule the `[` would index the result of `puts`, which is `nil`.
+
+Every other operator has only the one meaning. `* 3` is not an expression on
+its own, so a line break in front of `*` cannot mean anything but continuation,
+and the same goes for `.` — which is what lets a chain be split across lines:
+
+```js
+sorted = [3, 1, 2]
+  .sort()
+```
+
+### Inside brackets a line break means nothing
+
+An unclosed `(`, `[` or `{` is proof that the expression has not ended, so line
+breaks inside one are insignificant:
+
+```js
+puts(4
+  - 1)         // 3, not two statements
+
+total = [
+  1,
+  2
+]
+```
+
+### An operator at the end of a line always continues
+
+The rule is about a line *starting* with an ambiguous token. Putting the
+operator at the end of the previous line is never ambiguous and always works:
+
+```js
+sum = 1 +
+  2            // 3
+```

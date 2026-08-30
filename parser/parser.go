@@ -57,7 +57,8 @@ type Parser struct {
 
 	lines []string
 
-	blockDepth int
+	blockDepth   int
+	bracketDepth int
 
 	curToken  token.Token
 	peekToken token.Token
@@ -137,6 +138,21 @@ func (p *Parser) noPrefixParseFnError(t token.Token) {
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
+
+	// How many brackets are open. Inside one, a line break cannot have ended an
+	// expression -- the unclosed bracket says as much -- so peekStartsStatement
+	// stands down and `puts(4\n - 1)` still subtracts.
+	switch p.curToken.Type {
+	case token.LPAREN, token.LBRACKET, token.LBRACE:
+		p.bracketDepth++
+	case token.RPAREN, token.RBRACKET, token.RBRACE:
+		// Clamped, so that a stray closing bracket in a program that is already
+		// failing to parse cannot drive the count negative and leave the guard
+		// permanently disabled for the rest of the file.
+		if p.bracketDepth > 0 {
+			p.bracketDepth--
+		}
+	}
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
