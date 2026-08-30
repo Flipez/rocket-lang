@@ -200,7 +200,7 @@ func TestErrorHandling(t *testing.T) {
 			`, "unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
-		{`{"name": "Monkey"}[def(x) { x }];`, "unusable as hash key: FUNCTION"},
+		{`{"name": "Monkey"}[def(x) x end];`, "unusable as hash key: FUNCTION"},
 		{"🔥 != 👍", "test:1:1: identifier not found: IDENT"},
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
