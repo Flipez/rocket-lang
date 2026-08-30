@@ -11,8 +11,18 @@ const config = {
   tagline: '',
   url: 'https://rocket-lang.org',
   baseUrl: '/',
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  // 'throw' is Docusaurus' own default, and the reason this is back: under
+  // 'warn' three blog links to /docs/builtins/json and /docs/builtins/http
+  // -- the generated pages are JSON.md and HTTP.md -- warned on every single
+  // build and were dead for years. A warning nobody reads is not a check.
+  onBrokenLinks: 'throw',
+  markdown: {
+    hooks: {
+      // Moved here from the top level, which Docusaurus deprecates and drops
+      // in v4. 'throw' for the same reason as onBrokenLinks above.
+      onBrokenMarkdownLinks: 'throw',
+    },
+  },
   favicon: 'img/favicon.ico',
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
