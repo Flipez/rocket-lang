@@ -24,18 +24,6 @@ the exact stdout. `go test -run TestRocketlangCode .` runs all of them; adding a
 pair of files is all it takes to add a case. Note the interpreter prints the
 program's final value, so most fixtures end in a bare `nil`.
 
-### Exercises and the playground
-
-```bash
-go test ./exercises              # solutions still produce the recorded output
-go test ./exercises -update      # re-record exercises/expected/ AND wasm/exercises.json
-exercises/run.sh                 # solve them by hand, stops at the first unsolved
-```
-
-`wasm/exercises.json` is the bundle the browser playground grades against; a
-test fails if it drifts from `exercises/expected/`. Always regenerate with
-`-update` rather than hand-editing either side.
-
 ### Docs
 
 `docs/` is a Docusaurus site with `onBrokenLinks: 'throw'`.
