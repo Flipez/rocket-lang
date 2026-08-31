@@ -1,7 +1,7 @@
 def new_account(owner, balance)
   return {
     "deposit":  def(n) balance = balance + n return balance end,
-    "describe": def() return owner + ": " + balance.to_s() end
+    "describe": def() return owner + ": " + balance.to_string() end
   }
 end
 

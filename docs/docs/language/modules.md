@@ -29,7 +29,7 @@ is not, and nothing about the names decides that.
 
 Since capitalization no longer carries meaning, there is no reason to capitalize
 an exported function. Names that match the language's own methods — `upcase`,
-`to_s`, `include?` — read more naturally:
+`to_string`, `include?` — read more naturally:
 
 ```js
 export def snake_case(s)

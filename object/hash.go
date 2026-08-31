@@ -538,7 +538,7 @@ func (h *Hash) GetIterator(_, _ int, _ bool) Iterator {
 }
 
 // ToStringObj renders the hash the way Inspect does. See Array.ToStringObj
-// for why this is not left to the generic to_s.
+// for why this is not left to the generic to_string.
 func (h *Hash) ToStringObj() *String {
 	return NewString(h.Inspect())
 }

@@ -6,7 +6,7 @@ increase = 0
 
 a = []
 foreach i, number in input
-  a.push(number.strip().to_i())
+  a.push(number.strip().to_integer())
 end
 input = a
 
@@ -26,7 +26,7 @@ increase = 0
 
 // A three-wide window rises exactly when the value entering it is larger than
 // the one leaving, so the sums need not be computed. Reading past the end used
-// to work only because nil.to_i() was 0.
+// to work only because nil.to_integer() was 0.
 foreach i, number in input
   if (i + 3 < input.size())
     if (input[i+3] > number)

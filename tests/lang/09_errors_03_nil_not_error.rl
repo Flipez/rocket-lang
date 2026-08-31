@@ -1,7 +1,7 @@
-value = "abc".to_i()
+value = "abc".to_integer()
 
 puts(value)
-puts("0".to_i())
+puts("0".to_integer())
 
 if value.nil?()
   puts("could not read a number")

@@ -948,8 +948,8 @@ func (ao *Array) GetIterator(start, step int, _ bool) Iterator {
 }
 
 // ToStringObj renders the array the way Inspect does, which is what Ruby's
-// Array#to_s does too. Without it the generic to_s fell through to an empty
-// string, so [1,2].to_s() was "" while to_json() worked.
+// Array#to_s does too. Without it the generic to_string fell through to an
+// empty string, so [1,2].to_string() was "" while to_json() worked.
 func (ao *Array) ToStringObj() *String {
 	return NewString(ao.Inspect())
 }

@@ -45,7 +45,7 @@ def new_account(owner, balance)
   return {
     "owner":    owner,
     "deposit":  def(n) balance = balance + n return balance end,
-    "describe": def() return owner + ": " + balance.to_s() end
+    "describe": def() return owner + ": " + balance.to_string() end
   }
 end
 
@@ -182,7 +182,7 @@ Calls the callback once per entry with the key and the value, and returns the ha
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+h.each(def(key, value) puts(key + "=" + value.to_string()) end)
 ' output='{"a": 1}
 a=1
 {"a": 1}
@@ -450,6 +450,33 @@ Returns the values of the hash, in the same unspecified order as `keys`.
 
 ## Generic Literal Methods
 
+### help()
+> Returns `NIL`
+
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+
+
+<CodeBlockSimple input='true.help()
+1.0.help()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	ceil([INTEGER])
+	divmod(FLOAT)
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	nan?()
+	negative?()
+	positive?()
+	round([INTEGER])
+	truncate([INTEGER])
+	zero?()
+nil
+' />
+
+
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
 
@@ -499,16 +526,16 @@ true
 ' />
 
 
-### to_f()
+### to_float()
 > Returns `FLOAT|NIL`
 
 Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
-<CodeBlockSimple input='1.to_f()
-"1.4".to_f()
-"abc".to_f()
-nil.to_f()
+<CodeBlockSimple input='1.to_float()
+"1.4".to_float()
+"abc".to_float()
+nil.to_float()
 ' output='1.0
 1.4
 nil
@@ -516,21 +543,21 @@ nil
 ' />
 
 
-### to_i()
+### to_integer()
 > Returns `INTEGER|NIL`
 
 Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
-<CodeBlockSimple input='true.to_i()
-false.to_i()
-1234.to_i()
-"4".to_i()
-"0".to_i()
-"0125".to_i()
-"0x2322".to_i()
-"0b1010".to_i()
-"test".to_i()
+<CodeBlockSimple input='true.to_integer()
+false.to_integer()
+1234.to_integer()
+"4".to_integer()
+"0".to_integer()
+"0125".to_integer()
+"0x2322".to_integer()
+"0b1010".to_integer()
+"test".to_integer()
 ' output='1
 0
 1234
@@ -556,18 +583,18 @@ a.to_json()
 ' />
 
 
-### to_s()
+### to_string()
 > Returns `STRING`
 
 Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
-<CodeBlockSimple input='true.to_s()
-1234.to_s()
-"test".to_s()
-1.4.to_s()
-nil.to_s()
-"0b1010".to_i().to_s()
+<CodeBlockSimple input='true.to_string()
+1234.to_string()
+"test".to_string()
+1.4.to_string()
+nil.to_string()
+"0b1010".to_integer().to_string()
 ' output='"true"
 "1234"
 "test"
@@ -608,27 +635,13 @@ puts.type_groups()
 ### wat()
 > Returns `NIL`
 
-Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+An alias of `help`, kept as an easter egg. This is the only alias in
+RocketLang; every other method has exactly one name.
 
 
-<CodeBlockSimple input='true.wat()
-1.0.wat()
-' output='BOOLEAN supports the following methods:
-nil
-FLOAT supports the following methods:
-	abs()
-	ceil([INTEGER])
-	divmod(FLOAT)
-	finite?()
-	floor([INTEGER])
-	infinite?()
-	nan?()
-	negative?()
-	positive?()
-	round([INTEGER])
-	truncate([INTEGER])
-	zero?()
-nil
-' />
+
+
+<CodeBlockSimple input='"test".wat()' />
+
 
 

@@ -17,9 +17,9 @@ func TestNullType(t *testing.T) {
 func TestNilObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1][1].nope()`, "test:1:7: undefined method `.nope()` for NIL"},
-		{`[1][1].to_s()`, ""},
-		{`[1][1].to_i()`, nil},
-		{`[1][1].to_f()`, nil},
+		{`[1][1].to_string()`, ""},
+		{`[1][1].to_integer()`, nil},
+		{`[1][1].to_float()`, nil},
 	}
 
 	testInput(t, tests)

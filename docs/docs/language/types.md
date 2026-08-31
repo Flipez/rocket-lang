@@ -32,9 +32,9 @@ Every value in RocketLang has a type, and `type()` reports it:
 
 Every type also answers the
 [generic methods](../literals/string#generic-literal-methods)
-`to_s`, `to_i`, `to_f`, `to_json`, `type`, `type_groups`, `methods`, `wat`,
-`is_a?` and `nil?` — except a `MODULE`, which only exposes what the module
-exports, so `lib.type()` is an error rather than `"MODULE"`.
+`to_string`, `to_integer`, `to_float`, `to_json`, `type`, `type_groups`,
+`methods`, `help`, `is_a?` and `nil?` — except a `MODULE`, which only exposes
+what the module exports, so `lib.type()` is an error rather than `"MODULE"`.
 
 ## Type groups
 

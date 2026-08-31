@@ -3,5 +3,5 @@ begin
 rescue e
   puts(e.type())
   puts(e.methods())
-  puts(e.msg() == e.to_s())
+  puts(e.msg() == e.to_string())
 end

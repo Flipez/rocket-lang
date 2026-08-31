@@ -37,11 +37,11 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.include?()`, `too few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
-		// to_s used to be "" because Hash was not Stringable. A single entry,
+		// to_string used to be "" because Hash was not Stringable. A single entry,
 		// because the order of a bigger hash is not defined.
-		{`{"a": 1}.to_s()`, `{"a": 1}`},
-		{`{"a": 1, "b": 2}.to_i()`, nil},
-		{`{"a": 1, "b": 2}.to_f()`, nil},
+		{`{"a": 1}.to_string()`, `{"a": 1}`},
+		{`{"a": 1, "b": 2}.to_integer()`, nil},
+		{`{"a": 1, "b": 2}.to_float()`, nil},
 	}
 
 	testInput(t, tests)

@@ -70,7 +70,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3,4,5,6,7,8].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
 		{`[1,2].slices(3)`, `[[1, 2]]`},
 		{`[1,2].slices(0)`, `invalid slice size, needs to be > 0`},
-		// A hash used to be rejected here because Hash had no to_s. Now it
+		// A hash used to be rejected here because Hash had no to_string. Now it
 		// renders like it does everywhere else, and only a type that genuinely
 		// has no string form -- a function -- is refused.
 		{"[1,2,3,{}].join()", "123{}"},
@@ -421,7 +421,7 @@ func TestArrayCallbackMethods(t *testing.T) {
 
 		{`a = [1,2,3]; a.reduce(0, def(sum, x) sum + x end)`, 6},
 		{`a = [1,2,3]; a.reduce(1, def(p, x) p * x end)`, 6},
-		{`a = [1,2]; a.reduce("", def(s, x) s + x.to_s() end)`, "12"},
+		{`a = [1,2]; a.reduce("", def(s, x) s + x.to_string() end)`, "12"},
 		// An empty array answers with the starting value, which is why it is
 		// required rather than taken from the first element.
 		{`a = []; a.reduce(7, def(sum, x) sum + x end)`, 7},

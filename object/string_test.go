@@ -36,36 +36,36 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test".find("e")`, 1},
 		{`"test".find()`, "too few arguments: got=0, want=1"},
 		{`"test".size()`, 4},
-		{`"test".to_i()`, nil},
-		{`"125".to_i()`, 125},
-		{`"test125".to_i()`, nil},
-		{`"0125".to_i()`, 85},
-		{`"1010".to_i()`, 1010},
-		{`"-1010".to_i()`, -1010},
-		{`"0x1022".to_i()`, 4130},
+		{`"test".to_integer()`, nil},
+		{`"125".to_integer()`, 125},
+		{`"test125".to_integer()`, nil},
+		{`"0125".to_integer()`, 85},
+		{`"1010".to_integer()`, 1010},
+		{`"-1010".to_integer()`, -1010},
+		{`"0x1022".to_integer()`, 4130},
 		// A bare "0" is decimal zero, not a leading-zero octal prefix with
 		// nothing after it. Getting this wrong gave it base 8, so adding it to
 		// any ordinary integer failed with "unequal base".
-		{`"0".to_i()`, 0},
-		{`"0".to_i().base()`, 10},
-		{`"0".to_i() + 1`, 1},
-		{`"-0".to_i() + 1`, 1},
+		{`"0".to_integer()`, 0},
+		{`"0".to_integer().base()`, 10},
+		{`"0".to_integer() + 1`, 1},
+		{`"-0".to_integer() + 1`, 1},
 		// A leading zero followed by a non-octal digit is a zero-padded
 		// decimal, not a malformed octal literal.
-		{`"08".to_i()`, 8},
-		{`"09".to_i().base()`, 10},
+		{`"08".to_integer()`, 8},
+		{`"09".to_integer().base()`, 10},
 		// Base prefixes are case insensitive; uppercase ones used to fall
 		// through to the legacy-octal branch and be tagged base 8.
-		{`"0X1022".to_i()`, 4130},
-		{`"0X1022".to_i().base()`, 16},
-		{`"0B101".to_i()`, 5},
-		{`"0B101".to_i().base()`, 2},
-		{`"0o17".to_i()`, 15},
-		{`"0O17".to_i().base()`, 8},
+		{`"0X1022".to_integer()`, 4130},
+		{`"0X1022".to_integer().base()`, 16},
+		{`"0B101".to_integer()`, 5},
+		{`"0B101".to_integer().base()`, 2},
+		{`"0o17".to_integer()`, 15},
+		{`"0O17".to_integer().base()`, 8},
 		// Legacy leading-zero octal keeps working.
-		{`"0125".to_i().base()`, 8},
-		{`"1022".to_f()`, 1022.0},
-		{`"1022".to_s()`, "1022"},
+		{`"0125".to_integer().base()`, 8},
+		{`"1022".to_float()`, 1022.0},
+		{`"1022".to_string()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},
 		{`"test".replace()`, "too few arguments: got=0, want=2"},
 		{`"test".replace("e")`, "too few arguments: got=1, want=2"},
@@ -82,7 +82,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test".type()`, "STRING"},
 		{`"test".nope()`, "test:1:7: undefined method `.nope()` for STRING"},
 		{`"test".methods().type()`, "ARRAY"},
-		{`("test".methods().size() > 0).to_s()`, "true"},
+		{`("test".methods().size() > 0).to_string()`, "true"},
 		{`"string".find("s")`, 0},
 		{`"string".find("string")`, 0},
 		{`"string".find("g")`, 5},
@@ -188,15 +188,15 @@ func TestStringInspect(t *testing.T) {
 // happens to produce 0.
 func TestStringConversionFailureIsNil(t *testing.T) {
 	tests := []inputTestCase{
-		{`"0".to_i()`, 0},
-		{`"abc".to_i()`, nil},
-		{`"".to_i()`, nil},
-		{`"12abc".to_i()`, nil},
-		{`"0.0".to_f()`, 0.0},
-		{`"abc".to_f()`, nil},
-		{`"".to_f()`, nil},
-		// to_s never fails, so nil keeps rendering as the empty string.
-		{`nil.to_s()`, ""},
+		{`"0".to_integer()`, 0},
+		{`"abc".to_integer()`, nil},
+		{`"".to_integer()`, nil},
+		{`"12abc".to_integer()`, nil},
+		{`"0.0".to_float()`, 0.0},
+		{`"abc".to_float()`, nil},
+		{`"".to_float()`, nil},
+		// to_string never fails, so nil keeps rendering as the empty string.
+		{`nil.to_string()`, ""},
 	}
 
 	testInput(t, tests)

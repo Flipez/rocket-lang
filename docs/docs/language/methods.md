@@ -3,8 +3,8 @@
 > 👉 The `!` convention became consistent across all types in `0.24`
 
 Every value in RocketLang is an object, and objects are used by calling methods
-on them. `methods()` lists what a value responds to, and `wat()` lists the same
-names with their arguments:
+on them. `methods()` lists what a value responds to, and `help()` lists the
+same names with their arguments:
 
 ```js
 🚀 > [1, 2, 3].methods()

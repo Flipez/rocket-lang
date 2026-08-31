@@ -37,7 +37,7 @@ puts(double(21))             // 42
 // Blocks close with `end`, and parentheses around a condition are optional.
 foreach i, member in crew
   if i > 0
-    puts(i.to_s() + ": " + member)
+    puts(i.to_string() + ": " + member)
   end
 end
 

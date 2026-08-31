@@ -12,9 +12,9 @@ example: |
 
   is_true = a != b;
 methods:
-  to_s:
+  to_string:
     description: "Converts a boolean into a String representation and returns `\"true\"` or `\"false\"` based on the value."
     input: |
-      true.to_s()
+      true.to_string()
     output: |
       "true"

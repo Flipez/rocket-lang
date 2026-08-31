@@ -41,9 +41,9 @@ export def Format(a, b)
     if (item.type() == "STRING")
       val = item
     else
-      val = item.to_s()
+      val = item.to_string()
     end
-    a = a.replace("{"+idx.to_s()+"}", val)
+    a = a.replace("{"+idx.to_string()+"}", val)
   end
   return a
 end

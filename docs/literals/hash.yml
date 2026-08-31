@@ -43,7 +43,7 @@ description: |
     return {
       "owner":    owner,
       "deposit":  def(n) balance = balance + n return balance end,
-      "describe": def() return owner + ": " + balance.to_s() end
+      "describe": def() return owner + ": " + balance.to_string() end
     }
   end
 
@@ -240,7 +240,7 @@ methods:
     description: "Calls the callback once per entry with the key and the value, and returns the hash so calls can be chained. The order the entries arrive in is **not** defined and differs between runs, the same caveat `keys` carries -- use it for a side effect per entry, not to build something ordered."
     input: |
       h = {"a": 1}
-      h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+      h.each(def(key, value) puts(key + "=" + value.to_string()) end)
     output: |
       {"a": 1}
       a=1

@@ -1,4 +1,4 @@
-hex = "0x10".to_i()
+hex = "0x10".to_integer()
 
 puts(hex)
 puts(hex.to_base(10))

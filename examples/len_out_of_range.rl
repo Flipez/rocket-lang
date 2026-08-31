@@ -13,9 +13,9 @@ stacks = [
 stacks2 = stacks
 
 foreach instruction in instructions
-  amount = instruction.split("from")[0].split("move")[-1].strip().to_i()
-  from = instruction.split("to")[0].split("from")[-1].strip().to_i()
-  to = instruction.split("to")[1].strip().to_i()
+  amount = instruction.split("from")[0].split("move")[-1].strip().to_integer()
+  from = instruction.split("to")[0].split("from")[-1].strip().to_integer()
+  to = instruction.split("to")[1].strip().to_integer()
 
   foreach i in amount
     stacks[to - 1].push(stacks[from - 1].pop())
@@ -29,9 +29,9 @@ end
 puts("Part 1: " + result)
 
 foreach instruction in instructions
-  amount = instruction.split("from")[0].split("move")[-1].strip().to_i()
-  from = instruction.split("to")[0].split("from")[-1].strip().to_i()
-  to = instruction.split("to")[1].strip().to_i()
+  amount = instruction.split("from")[0].split("move")[-1].strip().to_integer()
+  from = instruction.split("to")[0].split("from")[-1].strip().to_integer()
+  to = instruction.split("to")[1].strip().to_integer()
 
   temp_stack = []
 

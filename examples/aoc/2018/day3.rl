@@ -14,8 +14,8 @@ def parseClaim(line)
   size = parts[3].split("x")
   return {
     "id": parts[0][1:],
-    "start": [start[0].to_i(), start[1].to_i()],
-    "size": [size[0].to_i(), size[1].to_i()],
+    "start": [start[0].to_integer(), start[1].to_integer()],
+    "size": [size[0].to_integer(), size[1].to_integer()],
   }
 end
 

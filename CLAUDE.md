@@ -68,7 +68,7 @@ errors.
 `object.Object` is `Type() / Inspect() / InvokeMethod()`. Every value type
 registers its methods in its own file's `init()` into the package-level
 `objectMethods[TYPE]` map; `objectMethods["*"]` holds the methods every value
-has (`to_s`, `to_i`, `is_a?`, `methods`, `wat`, …) and is the fallback in
+has (`to_string`, `to_integer`, `is_a?`, `methods`, `help`, …) and is the fallback in
 `objectMethodLookup`.
 
 Argument checking is declarative, via `MethodLayout`: `Arg(...)`,

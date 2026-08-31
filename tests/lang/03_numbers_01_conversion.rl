@@ -1,3 +1,3 @@
-puts("125".to_i())
-puts("abc".to_i())
-puts("abc".to_i().nil?())
+puts("125".to_integer())
+puts("abc".to_integer())
+puts("abc".to_integer().nil?())

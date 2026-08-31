@@ -187,8 +187,8 @@ func TestObjectToAny(t *testing.T) {
 	}
 }
 
-// TestMethodListingIsSorted covers methods() and wat(), which used to read the
-// method names straight out of a map. That made the same program print a
+// TestMethodListingIsSorted covers methods() and help(), which used to read
+// the method names straight out of a map. That made the same program print a
 // different order on every run, so their output could not be relied on or
 // documented.
 func TestMethodListingIsSorted(t *testing.T) {
@@ -213,30 +213,36 @@ func TestMethodListingIsSorted(t *testing.T) {
 				"methods() of %s should not vary between calls", subject)
 		}
 
-		// wat() prints its listing and returns nil, so comparing return
+		// help() prints its listing and returns nil, so comparing return
 		// values would compare "nil" to "nil" and assert nothing. Captured so
 		// the listing does not end up in the test output.
-		var watResult object.Object
-		captureStdout(t, func() { watResult = testEval(`(` + subject + `).wat()`) })
-		require.Equal(t, object.ObjectType(object.NIL_OBJ), watResult.Type(),
-			"wat() of %s should return nil", subject)
+		var helpResult object.Object
+		captureStdout(t, func() { helpResult = testEval(`(` + subject + `).help()`) })
+		require.Equal(t, object.ObjectType(object.NIL_OBJ), helpResult.Type(),
+			"help() of %s should return nil", subject)
 
-		first := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
-		require.Equal(t, sortedWatListing(first), first,
-			"wat() of %s should list its methods sorted", subject)
+		first := captureStdout(t, func() { testEval(`(` + subject + `).help()`) })
+		require.Equal(t, sortedHelpListing(first), first,
+			"help() of %s should list its methods sorted", subject)
 
 		// One header line plus one line per method, so nothing is dropped from
 		// the listing or counted twice.
 		listed, ok := testEval(`(` + subject + `).methods()`).(*object.Array)
 		require.True(t, ok)
 		require.Len(t, strings.Split(strings.TrimSuffix(first, "\n"), "\n"), len(listed.Elements)+1,
-			"wat() of %s should print one line per method plus the header", subject)
+			"help() of %s should print one line per method plus the header", subject)
 
 		for range 20 {
-			printed := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+			printed := captureStdout(t, func() { testEval(`(` + subject + `).help()`) })
 			require.Equal(t, first, printed,
-				"wat() of %s should not vary between calls", subject)
+				"help() of %s should not vary between calls", subject)
 		}
+
+		// wat is the only alias in the language, kept as an easter egg; it must
+		// print the exact same listing help() does rather than a copy that could
+		// drift.
+		aliased := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+		require.Equal(t, first, aliased, "wat() of %s should match help()", subject)
 	}
 }
 
@@ -263,21 +269,21 @@ func sortedInspect(a *object.Array) string {
 }
 
 // TestGenericMethodsWorkEverywhere checks the methods every type answers to.
-// to_s used to fall through to an empty string for ARRAY, HASH, ERROR, FILE and
-// HTTP, because none of them implemented Stringable -- so [1,2].to_s() was ""
-// while [1,2].to_json() worked.
+// to_string used to fall through to an empty string for ARRAY, HASH, ERROR,
+// FILE and HTTP, because none of them implemented Stringable -- so
+// [1,2].to_string() was "" while [1,2].to_json() worked.
 func TestGenericMethodsWorkEverywhere(t *testing.T) {
 	tests := []inputTestCase{
-		{`[1,2].to_s()`, "[1, 2]"},
-		{`[].to_s()`, "[]"},
-		{`{"a": 1}.to_s()`, `{"a": 1}`},
-		{`"a".to_s()`, "a"},
-		{`1.to_s()`, "1"},
-		{`1.5.to_s()`, "1.5"},
-		{`true.to_s()`, "true"},
-		{`nil.to_s()`, ""},
-		// to_s on a matrix already worked and must keep working.
-		{`[[1,2]].to_m().to_s().size() > 0`, true},
+		{`[1,2].to_string()`, "[1, 2]"},
+		{`[].to_string()`, "[]"},
+		{`{"a": 1}.to_string()`, `{"a": 1}`},
+		{`"a".to_string()`, "a"},
+		{`1.to_string()`, "1"},
+		{`1.5.to_string()`, "1.5"},
+		{`true.to_string()`, "true"},
+		{`nil.to_string()`, ""},
+		// to_string on a matrix already worked and must keep working.
+		{`[[1,2]].to_m().to_string().size() > 0`, true},
 
 		// nil? asks the question that comparing against nil already allowed,
 		// but reads better in a chain.
@@ -318,18 +324,18 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 			continue
 		}
 
-		for _, method := range []string{"to_s", "to_json", "methods", "type", "wat", "nil?"} {
+		for _, method := range []string{"to_string", "to_json", "methods", "type", "help", "nil?"} {
 			got := testEval(literal + "." + method + "()")
 			if got.Type() == object.ERROR_OBJ {
 				t.Errorf("%s.%s() failed: %s", literal, method, got.Inspect())
 			}
 		}
 
-		// to_s must never be the empty string except for nil, whose string form
-		// genuinely is empty.
-		got := testEval(literal + ".to_s()")
+		// to_string must never be the empty string except for nil, whose string
+		// form genuinely is empty.
+		got := testEval(literal + ".to_string()")
 		if wantType != "NIL" && got.Inspect() == `""` {
-			t.Errorf("%s.to_s() is empty; the type is probably not Stringable", literal)
+			t.Errorf("%s.to_string() is empty; the type is probably not Stringable", literal)
 		}
 	}
 }
@@ -413,8 +419,8 @@ func TestArgumentStringStaysBare(t *testing.T) {
 	testInput(t, tests)
 }
 
-// captureStdout collects what fn writes to os.Stdout. wat() prints its listing
-// instead of returning it, so this is the only way to assert on it.
+// captureStdout collects what fn writes to os.Stdout. help() prints its
+// listing instead of returning it, so this is the only way to assert on it.
 func captureStdout(t *testing.T, fn func()) string {
 	t.Helper()
 
@@ -434,13 +440,13 @@ func captureStdout(t *testing.T, fn func()) string {
 	return string(printed)
 }
 
-// sortedWatListing returns the listing with its method lines sorted, giving the
-// expectation to compare the real output against. The header stays first.
+// sortedHelpListing returns the listing with its method lines sorted, giving
+// the expectation to compare the real output against. The header stays first.
 //
 // It sorts on the bare method name rather than the rendered line, because "("
 // sorts after "!" and would otherwise put chomp!([STRING]) ahead of
 // chomp([STRING]).
-func sortedWatListing(listing string) string {
+func sortedHelpListing(listing string) string {
 	lines := strings.Split(strings.TrimSuffix(listing, "\n"), "\n")
 	if len(lines) < 2 {
 		return listing
@@ -449,13 +455,13 @@ func sortedWatListing(listing string) string {
 	sorted := make([]string, len(lines)-1)
 	copy(sorted, lines[1:])
 	sort.SliceStable(sorted, func(i, j int) bool {
-		return watMethodName(sorted[i]) < watMethodName(sorted[j])
+		return helpMethodName(sorted[i]) < helpMethodName(sorted[j])
 	})
 
 	return lines[0] + "\n" + strings.Join(sorted, "\n") + "\n"
 }
 
-func watMethodName(line string) string {
+func helpMethodName(line string) string {
 	name := strings.TrimPrefix(line, "\t")
 	if open := strings.Index(name, "("); open >= 0 {
 		return name[:open]

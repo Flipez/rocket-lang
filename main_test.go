@@ -95,7 +95,7 @@ func TestExitCodes(t *testing.T) {
 		{"a rescued error", "begin\n  1 / 0\nrescue e\n  puts(\"handled\")\nend", exitOK},
 		// A failed conversion answers nil rather than erroring, so it is not a
 		// failure -- which is the distinction nil was introduced for.
-		{"a failed conversion", `puts("abc".to_i())`, exitOK},
+		{"a failed conversion", `puts("abc".to_integer())`, exitOK},
 		// An error stored in a variable was handled by the program deciding to
 		// keep it, and is not the final value.
 		{"an error that is not the last value", "begin\n  nil.nope()\nrescue e\nend\nputs(\"after\")", exitOK},

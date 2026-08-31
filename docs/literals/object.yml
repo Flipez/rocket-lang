@@ -45,30 +45,30 @@ methods:
       false
       false
       true
-  to_f:
+  to_float:
     description: "Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`."
     input: |
-      1.to_f()
-      "1.4".to_f()
-      "abc".to_f()
-      nil.to_f()
+      1.to_float()
+      "1.4".to_float()
+      "abc".to_float()
+      nil.to_float()
     output: |
       1.0
       1.4
       nil
       nil
-  to_i:
+  to_integer:
     description: "Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly."
     input: |
-      true.to_i()
-      false.to_i()
-      1234.to_i()
-      "4".to_i()
-      "0".to_i()
-      "0125".to_i()
-      "0x2322".to_i()
-      "0b1010".to_i()
-      "test".to_i()
+      true.to_integer()
+      false.to_integer()
+      1234.to_integer()
+      "4".to_integer()
+      "0".to_integer()
+      "0125".to_integer()
+      "0x2322".to_integer()
+      "0b1010".to_integer()
+      "test".to_integer()
     output: |
       1
       0
@@ -87,15 +87,15 @@ methods:
     output: |
       {"test": 1234}
       "{\"test\":1234}"
-  to_s:
+  to_string:
     description: "Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it."
     input: |
-      true.to_s()
-      1234.to_s()
-      "test".to_s()
-      1.4.to_s()
-      nil.to_s()
-      "0b1010".to_i().to_s()
+      true.to_string()
+      1234.to_string()
+      "test".to_string()
+      1.4.to_string()
+      nil.to_string()
+      "0b1010".to_integer().to_string()
     output: |
       "true"
       "1234"
@@ -109,11 +109,11 @@ methods:
       "test".type()
     output: |
       "STRING"
-  wat:
+  help:
     description: "Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading."
     input: |
-      true.wat()
-      1.0.wat()
+      true.help()
+      1.0.help()
     output: |
       BOOLEAN supports the following methods:
       nil
@@ -131,3 +131,9 @@ methods:
       	truncate([INTEGER])
       	zero?()
       nil
+  wat:
+    description: |
+      An alias of `help`, kept as an easter egg. This is the only alias in
+      RocketLang; every other method has exactly one name.
+    input: '"test".wat()'
+    output: ""

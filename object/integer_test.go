@@ -27,11 +27,11 @@ func TestIntegerObjectMethods(t *testing.T) {
 		{`(0 - 5).abs()`, 5},
 		{`0.abs()`, 0},
 		// abs keeps the integer's base.
-		{`"-0x10".to_i().abs().base()`, 16},
-		{`"0x10".to_i().abs().to_s()`, "0x10"},
-		{`2.to_s()`, "2"},
-		{`2.to_f()`, 2.0},
-		{`2.to_i()`, 2},
+		{`"-0x10".to_integer().abs().base()`, 16},
+		{`"0x10".to_integer().abs().to_string()`, "0x10"},
+		{`2.to_string()`, "2"},
+		{`2.to_float()`, 2.0},
+		{`2.to_integer()`, 2},
 		{`10.type()`, "INTEGER"},
 		{`2.nope()`, "test:1:2: undefined method `.nope()` for INTEGER"},
 		{"1.to_json()", "1"},
@@ -169,9 +169,9 @@ func TestIntegerRubyMethods(t *testing.T) {
 
 		// An arithmetic method rejects a mixed base for the same reason 0x10 + 4
 		// does.
-		{`"0x10".to_i().gcd(4)`, "infix operation with unequal base not allowed"},
-		{`"0x10".to_i().succ().base()`, 16},
-		{`"0b101".to_i().pred().base()`, 2},
+		{`"0x10".to_integer().gcd(4)`, "infix operation with unequal base not allowed"},
+		{`"0x10".to_integer().succ().base()`, 16},
+		{`"0b101".to_integer().pred().base()`, 2},
 	}
 	testInput(t, tests)
 }
@@ -203,9 +203,9 @@ func TestIntegerCallbackMethods(t *testing.T) {
 
 		// The counter keeps the receiver's base, and upto refuses a limit of
 		// another base for the same reason the infix operators do.
-		{`"0x10".to_i().times(def(i) end).base()`, 16},
-		{`out = []; "0b10".to_i().times(def(i) out.push(i.base()) end); out.to_json()`, "[2,2]"},
-		{`"0x10".to_i().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
+		{`"0x10".to_integer().times(def(i) end).base()`, 16},
+		{`out = []; "0b10".to_integer().times(def(i) out.push(i.base()) end); out.to_json()`, "[2,2]"},
+		{`"0x10".to_integer().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
 
 		{`3.times(def(i) i.nope() end)`, "test:1:17: undefined method `.nope()` for INTEGER"},
 		{`3.times(def(i, j) end)`, "too few arguments: got=1, want=2"},

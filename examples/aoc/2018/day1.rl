@@ -1,7 +1,7 @@
 def parseChanges(lines)
   changes = []
   foreach idx, line in lines
-    changes.push(line.strip().to_i())
+    changes.push(line.strip().to_integer())
   end
   return changes
 end

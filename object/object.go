@@ -365,7 +365,7 @@ func ListObjectMethods() map[ObjectType]map[string]ObjectMethod {
 
 func init() {
 	objectMethods["*"] = map[string]ObjectMethod{
-		"to_s": ObjectMethod{
+		"to_string": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),
@@ -379,7 +379,7 @@ func init() {
 				return NewString("")
 			},
 		},
-		"to_i": ObjectMethod{
+		"to_integer": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ, NIL_OBJ),
@@ -393,7 +393,7 @@ func init() {
 				return NIL
 			},
 		},
-		"to_f": ObjectMethod{
+		"to_float": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(FLOAT_OBJ, NIL_OBJ),
@@ -523,35 +523,6 @@ func init() {
 				return NewArray(result)
 			},
 		},
-		"wat": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(NIL_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				oms := objectMethods[o.Type()]
-				names := make([]string, 0, len(oms))
-				for name := range oms {
-					names = append(names, name)
-				}
-				// Sorted for the same reason as methods() above.
-				sort.Strings(names)
-
-				// Printed rather than returned. This listing exists to be read,
-				// and the REPL echoes a value through Inspect(), which escapes
-				// the newlines and tabs and put the whole thing on one line.
-				// puts() already prints a string's raw value for the same
-				// reason. methods() covers the case where the names are wanted
-				// as data.
-				fmt.Printf("%s supports the following methods:\n", o.Type())
-				for _, name := range names {
-					fmt.Printf("\t%s\n", oms[name].Layout.Usage(name))
-				}
-
-				return NIL
-			},
-		},
 		"type": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -563,6 +534,38 @@ func init() {
 			},
 		},
 	}
+
+	// help prints the receiver's method list. It is printed rather than
+	// returned because this listing exists to be read, and Inspect() would
+	// escape the newlines onto one line.
+	helpMethod := ObjectMethod{
+		Layout: MethodLayout{
+			ReturnPattern: Args(
+				Arg(NIL_OBJ),
+			),
+		},
+		method: func(o Object, _ []Object, _ Environment) Object {
+			oms := objectMethods[o.Type()]
+			names := make([]string, 0, len(oms))
+			for name := range oms {
+				names = append(names, name)
+			}
+			sort.Strings(names)
+
+			fmt.Printf("%s supports the following methods:\n", o.Type())
+			for _, name := range names {
+				fmt.Printf("\t%s\n", oms[name].Layout.Usage(name))
+			}
+
+			return NIL
+		},
+	}
+
+	objectMethods["*"]["help"] = helpMethod
+	// wat is the only alias in the language: a deliberate easter egg, kept
+	// because it predates help. It is not a precedent -- every other method
+	// has exactly one name.
+	objectMethods["*"]["wat"] = helpMethod
 }
 
 func objectMethodLookup(o Object, method string, env Environment, args []Object) Object {

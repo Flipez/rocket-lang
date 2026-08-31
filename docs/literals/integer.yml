@@ -16,7 +16,7 @@ methods:
     input: |
       3.abs()
       (0 - 5).abs()
-      "-0x10".to_i().abs()
+      "-0x10".to_integer().abs()
     output: |
       3
       5
@@ -24,7 +24,7 @@ methods:
   base:
     description: "Returns the base of the integer."
     input: |
-      "0b1010".to_i().base()
+      "0b1010".to_integer().base()
     output: |
       2
   bit_length:
@@ -160,7 +160,7 @@ methods:
   to_base:
     description: "Converts the integer into a integer with the given base"
     input: |
-      "0b1010".to_i().to_base(8)
+      "0b1010".to_integer().to_base(8)
     output: |
       0o12
   truncate:

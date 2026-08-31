@@ -20,7 +20,7 @@ calc = def (input, idx, floor)
   new_idx = idx - 1
   delta = char_to_value[input[new_idx]]
   if (delta == nil)
-    raise(1, new_idx.to_s())
+    raise(1, new_idx.to_string())
   end
   
   calc(input, new_idx, floor + delta)
