@@ -288,6 +288,9 @@ func TestArraySkip(t *testing.T) {
 		{`[1,2,3].skip(0)`, "[1, 2, 3]"},
 		{`[1,2,3].skip(99)`, "[]"},
 		{`[1,2,3].skip_last(99)`, "[]"},
+		// skip_last's ReturnPattern has to say ERROR too, or this path renders
+		// as returning ARRAY in the generated docs while actually erroring.
+		{`[1,2,3].skip_last(0 - 1)`, "skip_last needs a count of zero or more, got -1"},
 	}
 
 	testInput(t, tests)

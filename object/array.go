@@ -754,7 +754,7 @@ func init() {
 					Arg(INTEGER_OBJ),
 				),
 				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
+					Arg(ARRAY_OBJ, ERROR_OBJ),
 				),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {

@@ -661,7 +661,7 @@ Returns everything after the first n elements as a new array. Skipping more than
 
 
 ### skip_last(INTEGER)
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
 Returns everything except the last n elements as a new array. Skipping more than there are gives an empty array.
 
