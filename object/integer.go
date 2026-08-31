@@ -52,16 +52,6 @@ func init() {
 				return i
 			},
 		},
-		"base": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				return NewInteger(o.(*Integer).Base)
-			},
-		},
 		"to_base": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
@@ -105,7 +95,7 @@ func init() {
 				return i
 			},
 		},
-		"chr": ObjectMethod{
+		"to_character": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(STRING_OBJ, ERROR_OBJ),
@@ -265,7 +255,7 @@ func init() {
 				return NewIntegerWithBase(integerPow(i.Value, exponent, modulus), i.Base)
 			},
 		},
-		"succ": ObjectMethod{
+		"successor": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -277,7 +267,7 @@ func init() {
 				return NewIntegerWithBase(i.Value+1, i.Base)
 			},
 		},
-		"pred": ObjectMethod{
+		"predecessor": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -337,6 +327,8 @@ func init() {
 	integerPredicate("zero?", func(value int) bool { return value == 0 })
 	integerPredicate("positive?", func(value int) bool { return value > 0 })
 	integerPredicate("negative?", func(value int) bool { return value < 0 })
+
+	numberMath(INTEGER_OBJ, func(o Object) float64 { return float64(o.(*Integer).Value) })
 }
 
 // integerWalk registers upto or downto. Both hand back the receiver so a walk

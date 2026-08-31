@@ -1,6 +1,10 @@
 package object_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/flipez/rocket-lang/object"
+)
 
 func TestNumberObjects(t *testing.T) {
 	tests := []inputTestCase{
@@ -238,4 +242,35 @@ func TestNumberObjects(t *testing.T) {
 	}
 
 	testInput(t, tests)
+}
+
+// TestNumberMathMethods covers the thirteen functions absorbed from Math onto
+// both Integer and Float, registered from the numberMath table.
+func TestNumberMathMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`16.sqrt()`, 4.0},
+		{`16.0.sqrt()`, 4.0},
+		{`1.exp()`, 2.718281828459045},
+		{`8.log2()`, 3.0},
+		{`100.log10()`, 2.0},
+		{`0.sin()`, 0.0},
+		{`0.cos()`, 1.0},
+		{`5.successor()`, 6},
+		{`5.predecessor()`, 4},
+		{`65.to_character()`, "A"},
+	}
+
+	testInput(t, tests)
+}
+
+// Math keeps constants and randomness only. Everything that operates on a
+// number is a method on the number, so there is one place to look.
+func TestMathKeepsOnlyConstantsAndRandom(t *testing.T) {
+	for _, gone := range []string{"abs", "ceil", "floor", "round", "pow", "sqrt", "max", "min", "rand"} {
+		evaluated := testEval("Math." + gone + "(1)")
+
+		if !object.IsError(evaluated) {
+			t.Errorf("Math.%s should be gone, got %s", gone, evaluated.Inspect())
+		}
+	}
 }

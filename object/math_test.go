@@ -3,6 +3,8 @@ package object_test
 import (
 	"math"
 	"testing"
+
+	"github.com/flipez/rocket-lang/object"
 )
 
 func TestMathModule(t *testing.T) {
@@ -23,29 +25,18 @@ func TestMathModule(t *testing.T) {
 	testInput(t, tests)
 }
 
-func TestMathObjectMethods(t *testing.T) {
-	tests := []inputTestCase{
-		{`Math.abs(-2.0)`, math.Abs(-2.0)},
-		{`Math.acos(1.0)`, math.Acos(1.0)},
-		{`Math.asin(0.0)`, math.Asin(0.0)},
-		{`Math.atan(0.0)`, math.Atan(0.0)},
-		{`Math.ceil(1.49)`, math.Ceil(1.49)},
-		{`Math.copysign(3.2, -1.0)`, math.Copysign(3.2, -1.0)},
-		{`Math.cos(Math.Pi/2)`, math.Cos(math.Pi / 2)},
-		{`Math.exp(1.0)`, math.Exp(1.0)},
-		{`Math.floor(1.51)`, math.Floor(1.51)},
-		{`Math.log(2.7183)`, math.Log(2.7183)},
-		{`Math.log10(100.0)`, math.Log10(100.0)},
-		{`Math.log2(256.0)`, math.Log2(256.0)},
-		{`Math.max(5.0, 10.0)`, math.Max(5.0, 10.0)},
-		{`Math.min(5.0, 10.0)`, math.Min(5.0, 10.0)},
-		{`Math.pow(2.0, 3.0)`, math.Pow(2.0, 3.0)},
-		{`Math.remainder(100.0, 30.0)`, math.Remainder(100.0, 30.0)},
-		{`Math.round(73.3)`, math.Round(73.3)},
-		{`Math.sin(Math.Pi)`, math.Sin(math.Pi)},
-		{`Math.sqrt(3.0 * 3.0 + 4.0 * 4.0)`, math.Sqrt(3.0*3.0 + 4.0*4.0)},
-		{`Math.tan(0.0)`, math.Tan(0.0)},
+// TestMathRandom covers what is left of Math's functions once every
+// operation on a number moved onto the number itself: randomness, which has
+// no receiver to be a method of.
+func TestMathRandom(t *testing.T) {
+	evaluated := testEval(`Math.random()`)
+
+	result, ok := evaluated.(*object.Float)
+	if !ok {
+		t.Fatalf("object is not Float. got=%T (%+v)", evaluated, evaluated)
 	}
 
-	testInput(t, tests)
+	if result.Value < 0.0 || result.Value >= 1.0 {
+		t.Errorf("Math.random() out of range [0.0, 1.0): got=%f", result.Value)
+	}
 }

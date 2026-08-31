@@ -47,23 +47,26 @@ func TestStringObjectMethods(t *testing.T) {
 		// nothing after it. Getting this wrong gave it base 8, so adding it to
 		// any ordinary integer failed with "unequal base".
 		{`"0".to_integer()`, 0},
-		{`"0".to_integer().base()`, 10},
+		// A method's base is now only observable through the prefix its
+		// to_string() prints, since Integer#base was dropped in favour of
+		// to_base(n).
+		{`"0".to_integer().to_string()`, "0"},
 		{`"0".to_integer() + 1`, 1},
 		{`"-0".to_integer() + 1`, 1},
 		// A leading zero followed by a non-octal digit is a zero-padded
 		// decimal, not a malformed octal literal.
 		{`"08".to_integer()`, 8},
-		{`"09".to_integer().base()`, 10},
+		{`"09".to_integer().to_string()`, "9"},
 		// Base prefixes are case insensitive; uppercase ones used to fall
 		// through to the legacy-octal branch and be tagged base 8.
 		{`"0X1022".to_integer()`, 4130},
-		{`"0X1022".to_integer().base()`, 16},
+		{`"0X1022".to_integer().to_string()`, "0x1022"},
 		{`"0B101".to_integer()`, 5},
-		{`"0B101".to_integer().base()`, 2},
+		{`"0B101".to_integer().to_string()`, "0b101"},
 		{`"0o17".to_integer()`, 15},
-		{`"0O17".to_integer().base()`, 8},
+		{`"0O17".to_integer().to_string()`, "0o17"},
 		// Legacy leading-zero octal keeps working.
-		{`"0125".to_integer().base()`, 8},
+		{`"0125".to_integer().to_string()`, "0o125"},
 		{`"1022".to_float()`, 1022.0},
 		{`"1022".to_string()`, "1022"},
 		{`"test".replace("e", "s")`, "tsst"},

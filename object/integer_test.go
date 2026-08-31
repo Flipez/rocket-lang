@@ -27,7 +27,7 @@ func TestIntegerObjectMethods(t *testing.T) {
 		{`(0 - 5).abs()`, 5},
 		{`0.abs()`, 0},
 		// abs keeps the integer's base.
-		{`"-0x10".to_integer().abs().base()`, 16},
+		{`"-0x10".to_integer().abs().to_string()`, "0x10"},
 		{`"0x10".to_integer().abs().to_string()`, "0x10"},
 		{`2.to_string()`, "2"},
 		{`2.to_float()`, 2.0},
@@ -126,9 +126,9 @@ func TestIntegerRubyMethods(t *testing.T) {
 		{`(0 - 1).bit_length()`, 0},
 		{`(0 - 256).bit_length()`, 8},
 
-		{`1.succ()`, 2},
-		{`1.pred()`, 0},
-		{`(0 - 1).pred()`, -2},
+		{`1.successor()`, 2},
+		{`1.predecessor()`, 0},
+		{`(0 - 1).predecessor()`, -2},
 
 		{`4.even?()`, true},
 		{`5.even?()`, false},
@@ -140,8 +140,8 @@ func TestIntegerRubyMethods(t *testing.T) {
 		{`(0 - 1).negative?()`, true},
 		{`0.positive?()`, false},
 
-		{`65.chr()`, "A"},
-		{`(0 - 1).chr()`, "-1 is out of the range of a character"},
+		{`65.to_character()`, "A"},
+		{`(0 - 1).to_character()`, "-1 is out of the range of a character"},
 
 		// Rounding an integer only does something with a negative digit count.
 		{`555.ceil(0 - 1)`, 560},
@@ -170,8 +170,8 @@ func TestIntegerRubyMethods(t *testing.T) {
 		// An arithmetic method rejects a mixed base for the same reason 0x10 + 4
 		// does.
 		{`"0x10".to_integer().gcd(4)`, "infix operation with unequal base not allowed"},
-		{`"0x10".to_integer().succ().base()`, 16},
-		{`"0b101".to_integer().pred().base()`, 2},
+		{`"0x10".to_integer().successor().to_string()`, "0x11"},
+		{`"0b101".to_integer().predecessor().to_string()`, "0b100"},
 	}
 	testInput(t, tests)
 }
@@ -203,8 +203,8 @@ func TestIntegerCallbackMethods(t *testing.T) {
 
 		// The counter keeps the receiver's base, and upto refuses a limit of
 		// another base for the same reason the infix operators do.
-		{`"0x10".to_integer().times(def(i) end).base()`, 16},
-		{`out = []; "0b10".to_integer().times(def(i) out.append(i.base()) end); out.to_json()`, "[2,2]"},
+		{`"0x10".to_integer().times(def(i) end).to_string()`, "0x10"},
+		{`out = []; "0b10".to_integer().times(def(i) out.append(i.to_string()) end); out.to_json()`, `["0b0","0b1"]`},
 		{`"0x10".to_integer().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
 
 		{`3.times(def(i) i.nope() end)`, "test:1:17: undefined method `.nope()` for INTEGER"},

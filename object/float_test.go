@@ -42,8 +42,6 @@ func TestFloatObjectMethods(t *testing.T) {
 		{`(0.0 - 2.5).round()`, -3.0},
 		{`(0.0 - 3.7).ceil()`, -3.0},
 		{`(0.0 - 3.2).floor()`, -4.0},
-		// The method form agrees with the Math module form.
-		{`3.14.round().to_string() == Math.round(3.14).to_string()`, true},
 	}
 
 	testInput(t, tests)
@@ -88,6 +86,11 @@ func TestFloatRubyMethods(t *testing.T) {
 		// Still a FLOAT, not an INTEGER as in Ruby.
 		{`1.5.round().type()`, "FLOAT"},
 		{`1.5.truncate().type()`, "FLOAT"},
+
+		// pow exists on Float too, unlike Integer#pow it takes no modulus and
+		// accepts either an INTEGER or a FLOAT exponent.
+		{`2.0.pow(3.0)`, 8.0},
+		{`2.0.pow(3)`, 8.0},
 
 		{`0.0.zero?()`, true},
 		{`1.5.zero?()`, false},

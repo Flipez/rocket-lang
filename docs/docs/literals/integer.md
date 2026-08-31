@@ -35,14 +35,36 @@ Returns the absolute value, as an integer, keeping the base.
 ' />
 
 
-### base()
-> Returns `INTEGER`
+### acos()
+> Returns `FLOAT`
 
-Returns the base of the integer.
+Returns the arccosine, in radians, of the number, as a float.
 
 
-<CodeBlockSimple input='"0b1010".to_integer().base()
-' output='2
+<CodeBlockSimple input='1.acos()
+' output='0.0
+' />
+
+
+### asin()
+> Returns `FLOAT`
+
+Returns the arcsine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.asin()
+' output='0.0
+' />
+
+
+### atan()
+> Returns `FLOAT`
+
+Returns the arctangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.atan()
+' output='0.0
 ' />
 
 
@@ -76,14 +98,25 @@ Rounds up to a multiple of ten, given a negative digit count. An integer is alre
 ' />
 
 
-### chr()
-> Returns `STRING|ERROR`
+### copysign(NUMERIC)
+> Returns `FLOAT`
 
-Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error.
+Returns a float with the magnitude of the number and the sign of the argument.
 
 
-<CodeBlockSimple input='65.chr()
-' output='"A"
+<CodeBlockSimple input='3.copysign(0 - 1.0)
+' output='-3.0
+' />
+
+
+### cos()
+> Returns `FLOAT`
+
+Returns the cosine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.cos()
+' output='1.0
 ' />
 
 
@@ -142,6 +175,17 @@ false
 ' />
 
 
+### exp()
+> Returns `FLOAT`
+
+Returns e raised to the number, as a float.
+
+
+<CodeBlockSimple input='1.exp()
+' output='2.718281828459045
+' />
+
+
 ### floor([INTEGER])
 > Returns `INTEGER`
 
@@ -178,6 +222,39 @@ Returns the least common multiple of the two numbers, always positive.
 3.lcm(0 - 7)
 ' output='180
 21
+' />
+
+
+### log()
+> Returns `FLOAT`
+
+Returns the natural logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='1.log()
+' output='0.0
+' />
+
+
+### log10()
+> Returns `FLOAT`
+
+Returns the decimal logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='100.log10()
+' output='2.0
+' />
+
+
+### log2()
+> Returns `FLOAT`
+
+Returns the binary logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='8.log2()
+' output='3.0
 ' />
 
 
@@ -233,16 +310,27 @@ Returns the number raised to the given power. A second argument takes the result
 ' />
 
 
-### pred()
+### predecessor()
 > Returns `INTEGER`
 
 Returns the previous integer, keeping the base of the receiver.
 
 
-<CodeBlockSimple input='1.pred()
-0.pred()
+<CodeBlockSimple input='1.predecessor()
+0.predecessor()
 ' output='0
 -1
+' />
+
+
+### remainder(NUMERIC)
+> Returns `FLOAT`
+
+Returns the IEEE 754 floating-point remainder of the number divided by the argument, as a float.
+
+
+<CodeBlockSimple input='100.remainder(30.0)
+' output='10.0
 ' />
 
 
@@ -259,14 +347,47 @@ Rounds to the nearest multiple of ten, halves away from zero, given a negative d
 ' />
 
 
-### succ()
+### sin()
+> Returns `FLOAT`
+
+Returns the sine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.sin()
+' output='0.0
+' />
+
+
+### sqrt()
+> Returns `FLOAT`
+
+Returns the square root of the number, as a float.
+
+
+<CodeBlockSimple input='16.sqrt()
+' output='4.0
+' />
+
+
+### successor()
 > Returns `INTEGER`
 
 Returns the next integer, keeping the base of the receiver.
 
 
-<CodeBlockSimple input='1.succ()
+<CodeBlockSimple input='1.successor()
 ' output='2
+' />
+
+
+### tan()
+> Returns `FLOAT`
+
+Returns the tangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.tan()
+' output='0.0
 ' />
 
 
@@ -294,6 +415,17 @@ Converts the integer into a integer with the given base
 
 <CodeBlockSimple input='"0b1010".to_integer().to_base(8)
 ' output='0o12
+' />
+
+
+### to_character()
+> Returns `STRING|ERROR`
+
+Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error.
+
+
+<CodeBlockSimple input='65.to_character()
+' output='"A"
 ' />
 
 

@@ -83,6 +83,35 @@ func init() {
 				}
 			},
 		},
+		// pow is not part of numberMath's table: unlike the other absorbed
+		// functions, Integer already has its own pow with modulus support,
+		// so this one exists only to give Float the method Math.pow used to
+		// be the sole way to reach.
+		"pow": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(NUMERIC),
+				),
+				ReturnPattern: Args(
+					Arg(FLOAT_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				f := o.(*Float)
+
+				other, ok := args[0].(Floatable)
+				if !ok {
+					return NewErrorFormat("expected a number, got %s", args[0].Type())
+				}
+
+				exponent, ok := other.ToFloatObj().(*Float)
+				if !ok {
+					return NewErrorFormat("expected a number, got %s", args[0].Type())
+				}
+
+				return NewFloat(math.Pow(f.Value, exponent.Value))
+			},
+		},
 	}
 
 	// Rounding a float takes an optional number of decimal places. A negative
@@ -101,6 +130,8 @@ func init() {
 	floatPredicate("finite?", func(value float64) bool {
 		return !math.IsInf(value, 0) && !math.IsNaN(value)
 	})
+
+	numberMath(FLOAT_OBJ, func(o Object) float64 { return o.(*Float).Value })
 }
 
 // floatPredicate registers a method returning a BOOLEAN about the value.

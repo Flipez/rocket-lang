@@ -1,3 +1,3 @@
-puts(Math.sqrt(25.0))
+puts(25.0.sqrt())
 puts(Math.Pi.round(2))
-puts(Math.pow(2.0, 3.0))
+puts(2.0.pow(3.0))

@@ -20,6 +20,39 @@ Returns the absolute value, as a float.
 ' />
 
 
+### acos()
+> Returns `FLOAT`
+
+Returns the arccosine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='1.0.acos()
+' output='0.0
+' />
+
+
+### asin()
+> Returns `FLOAT`
+
+Returns the arcsine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.0.asin()
+' output='0.0
+' />
+
+
+### atan()
+> Returns `FLOAT`
+
+Returns the arctangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.0.atan()
+' output='0.0
+' />
+
+
 ### ceil([INTEGER])
 > Returns `FLOAT`
 
@@ -35,6 +68,28 @@ Returns the smallest float that is not less than the number. An optional digit c
 ' />
 
 
+### copysign(NUMERIC)
+> Returns `FLOAT`
+
+Returns a float with the magnitude of the number and the sign of the argument.
+
+
+<CodeBlockSimple input='3.2.copysign(0 - 1.0)
+' output='-3.2
+' />
+
+
+### cos()
+> Returns `FLOAT`
+
+Returns the cosine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.0.cos()
+' output='1.0
+' />
+
+
 ### divmod(FLOAT)
 > Returns `ARRAY|ERROR`
 
@@ -45,6 +100,17 @@ Returns the quotient and the remainder as a two-element array. Truncated toward 
 11.0.divmod(0.0 - 4.0)
 ' output='[2.0, 3.0]
 [-2.0, 3.0]
+' />
+
+
+### exp()
+> Returns `FLOAT`
+
+Returns e raised to the number, as a float.
+
+
+<CodeBlockSimple input='1.0.exp()
+' output='2.718281828459045
 ' />
 
 
@@ -85,6 +151,39 @@ Returns `1` for positive infinity, `-1` for negative infinity and `nil` otherwis
 ' />
 
 
+### log()
+> Returns `FLOAT`
+
+Returns the natural logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='1.0.log()
+' output='0.0
+' />
+
+
+### log10()
+> Returns `FLOAT`
+
+Returns the decimal logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='100.0.log10()
+' output='2.0
+' />
+
+
+### log2()
+> Returns `FLOAT`
+
+Returns the binary logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='8.0.log2()
+' output='3.0
+' />
+
+
 ### nan?()
 > Returns `BOOLEAN`
 
@@ -122,6 +221,28 @@ false
 ' />
 
 
+### pow(NUMERIC)
+> Returns `FLOAT`
+
+Returns the number raised to the given power, as a float. Unlike `Integer#pow` there is no modulus argument.
+
+
+<CodeBlockSimple input='2.0.pow(3.0)
+' output='8.0
+' />
+
+
+### remainder(NUMERIC)
+> Returns `FLOAT`
+
+Returns the IEEE 754 floating-point remainder of the number divided by the argument, as a float.
+
+
+<CodeBlockSimple input='100.0.remainder(30.0)
+' output='10.0
+' />
+
+
 ### round([INTEGER])
 > Returns `FLOAT`
 
@@ -134,6 +255,39 @@ Returns the number rounded to the nearest value, halves away from zero. Takes th
 ' output='2.0
 1.57
 560.0
+' />
+
+
+### sin()
+> Returns `FLOAT`
+
+Returns the sine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.0.sin()
+' output='0.0
+' />
+
+
+### sqrt()
+> Returns `FLOAT`
+
+Returns the square root of the number, as a float.
+
+
+<CodeBlockSimple input='16.0.sqrt()
+' output='4.0
+' />
+
+
+### tan()
+> Returns `FLOAT`
+
+Returns the tangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.0.tan()
+' output='0.0
 ' />
 
 
