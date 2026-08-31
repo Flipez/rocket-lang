@@ -146,7 +146,7 @@ would:
 
 ```
 append(ANY)
-get(HASHABLE, ANY)
+get(HASHABLE, [ANY])
 set(INTEGER, INTEGER, NUMERIC)
 ```
 

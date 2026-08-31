@@ -159,14 +159,26 @@ methods:
       Returns the value for `key`, or `nil` when the key is absent. Pass a
       second argument to get that instead of `nil`. Use `fetch` when a missing
       key is a mistake rather than an expected case.
-    input: '{"a": 1}.get("b", 0)'
-    output: "0"
+    input: |
+      h = {"a": 1}
+      h.get("a")
+      h.get("z")
+      h.get("z", 0)
+    output: |
+      {"a": 1}
+      1
+      nil
+      0
   fetch:
     description: |
       Returns the value for `key`, and raises when the key is absent. Use
       `get` when a missing key is an expected case.
-    input: '{"a": 1}.fetch("a")'
-    output: "1"
+    input: |
+      h = {"a": 1}
+      h.fetch("a")
+    output: |
+      {"a": 1}
+      1
   has_key?:
     description: "Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`."
     input: |

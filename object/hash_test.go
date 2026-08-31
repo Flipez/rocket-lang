@@ -37,6 +37,12 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 1, 1: "b"}.has_key?()`, `too few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
+		// get takes the default as optional: present with no default answers the
+		// value, absent with no default answers nil, absent with one answers it.
+		// That is the difference from fetch, which raises on the middle case.
+		{`{"a": 1}.get("a")`, 1},
+		{`{"a": 1}.get("z")`, nil},
+		{`{"a": 1}.get("z", 0)`, 0},
 		// to_string used to be "" because Hash was not Stringable. A single entry,
 		// because the order of a bigger hash is not defined.
 		{`{"a": 1}.to_string()`, `{"a": 1}`},

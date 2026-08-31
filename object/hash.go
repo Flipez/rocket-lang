@@ -172,7 +172,7 @@ func init() {
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(HASHABLE),
-					Arg(ANY),
+					OptArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -190,7 +190,13 @@ func init() {
 					return pair.Value
 				}
 
-				return args[1]
+				// Without a default a missing key is nil rather than an error.
+				// That is the difference from fetch(), which raises instead.
+				if len(args) > 1 {
+					return args[1]
+				}
+
+				return NIL
 			},
 		},
 		"each": ObjectMethod{
@@ -270,7 +276,7 @@ func init() {
 				}
 
 				// Without a fallback a missing key is an error rather than nil.
-				// That is the difference from get(), which always needs one.
+				// That is the difference from get(), which answers nil instead of erroring.
 				if len(args) > 1 {
 					return args[1]
 				}

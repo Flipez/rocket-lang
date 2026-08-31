@@ -26,7 +26,7 @@ The documentation gives each method as a signature, for example
 | `STRING...` | one or more of them |
 
 Where a method takes a whole family of types, the family is named rather than
-listed — `append(ANY)`, `get(HASHABLE, ANY)`, `set(INTEGER, INTEGER, NUMERIC)`.
+listed — `append(ANY)`, `get(HASHABLE, [ANY])`, `set(INTEGER, INTEGER, NUMERIC)`.
 Those names are **type groups**; see
 [Types and type groups](./types#type-groups) for what each one accepts and which
 types belong to it.

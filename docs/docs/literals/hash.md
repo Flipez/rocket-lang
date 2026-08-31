@@ -193,7 +193,11 @@ Returns the value for `key`, and raises when the key is absent. Use
 
 
 
-<CodeBlockSimple input='{"a": 1}.fetch("a")' output='1' />
+<CodeBlockSimple input='h = {"a": 1}
+h.fetch("a")
+' output='{"a": 1}
+1
+' />
 
 
 ### filter(CALLABLE)
@@ -230,7 +234,7 @@ h.size()
 ' />
 
 
-### get(HASHABLE, ANY)
+### get(HASHABLE, [ANY])
 > Returns `ANY`
 
 Returns the value for `key`, or `nil` when the key is absent. Pass a
@@ -239,7 +243,15 @@ key is a mistake rather than an expected case.
 
 
 
-<CodeBlockSimple input='{"a": 1}.get("b", 0)' output='0' />
+<CodeBlockSimple input='h = {"a": 1}
+h.get("a")
+h.get("z")
+h.get("z", 0)
+' output='{"a": 1}
+1
+nil
+0
+' />
 
 
 ### has_key?(HASHABLE)
