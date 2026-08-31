@@ -194,7 +194,7 @@ behaves like `append`:
 
 ```js
 🚀 > m = [[1, 2], [3, 4]].to_matrix()
-🚀 > m.set(0, 0, 9).set(1, 1, 9).to_a()
+🚀 > m.set(0, 0, 9).set(1, 1, 9).to_array()
 => [[9.0, 2.0], [3.0, 9.0]]
 ```
 

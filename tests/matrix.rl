@@ -11,4 +11,4 @@ puts(sum)
 diff = m2 - m1
 puts(diff)
 
-puts(result.to_a())
+puts(result.to_array())

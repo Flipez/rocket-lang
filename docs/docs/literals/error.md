@@ -16,7 +16,7 @@ It is possible for the user to create errors using 'raise(STRING)' which will re
 def test()
   puts(nope)
 rescue e
-  puts("Got error: '" + e.msg() + "'")
+  puts("Got error: '" + e.message() + "'")
 end
 
 test()
@@ -26,7 +26,7 @@ test()
 if (true)
   nope()
 rescue your_name
-  puts("Got error in if: '" + your_name.msg() + "'")
+  puts("Got error in if: '" + your_name.message() + "'")
 end
 
 => "Got error in if: 'identifier not found: nope'"
@@ -43,13 +43,13 @@ end
 
 ## Literal Specific Methods
 
-### msg()
+### message()
 > Returns `STRING`
 
 Returns the error message
 
 :::caution
-Please note that performing `.msg()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!
+Please note that performing `.message()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!
 :::
 
 

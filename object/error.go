@@ -18,7 +18,7 @@ func (e *Error) Type() ObjectType { return ERROR_OBJ }
 func (e *Error) Inspect() string  { return "ERROR: " + e.Message }
 
 // ToStringObj gives the message without the "ERROR: " prefix Inspect adds, so
-// to_string() matches msg(). Ruby's Exception#to_s does the same.
+// to_string() matches message(). Ruby's Exception#to_s does the same.
 func (e *Error) ToStringObj() *String {
 	return NewString(e.Message)
 }
@@ -28,7 +28,7 @@ func (e *Error) InvokeMethod(method string, env Environment, args ...Object) Obj
 
 func init() {
 	objectMethods[ERROR_OBJ] = map[string]ObjectMethod{
-		"msg": ObjectMethod{
+		"message": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(STRING_OBJ),

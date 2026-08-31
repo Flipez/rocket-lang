@@ -389,17 +389,6 @@ func TestMatrixTransposeMethod(t *testing.T) {
 	if transposed.Data[0][1] != 3 || transposed.Data[1][0] != 2 {
 		t.Errorf("transpose values incorrect")
 	}
-
-	// Test t() alias
-	result2 := m.InvokeMethod("t", *env)
-	transposed2, ok := result2.(*Matrix)
-	if !ok {
-		t.Fatalf("t() should return Matrix, got %T", result2)
-	}
-
-	if transposed2.Rows != 2 || transposed2.Cols != 2 {
-		t.Errorf("t() shape = %dx%d, want 2x2", transposed2.Rows, transposed2.Cols)
-	}
 }
 
 func TestMatrixGet(t *testing.T) {

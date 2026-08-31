@@ -259,7 +259,7 @@ func (m *Matrix) Col(index int) (*Array, error) {
 
 func init() {
 	objectMethods[MATRIX_OBJ] = map[string]ObjectMethod{
-		"to_a": {
+		"to_array": {
 			Layout: MethodLayout{
 				ReturnPattern: Args(Arg(ARRAY_OBJ)),
 			},
@@ -305,15 +305,6 @@ func init() {
 			},
 		},
 		"transpose": {
-			Layout: MethodLayout{
-				ReturnPattern: Args(Arg(MATRIX_OBJ)),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				m := o.(*Matrix)
-				return m.Transpose()
-			},
-		},
-		"t": {
 			Layout: MethodLayout{
 				ReturnPattern: Args(Arg(MATRIX_OBJ)),
 			},

@@ -45,7 +45,7 @@ end
 begin
   puts(1 / 0)
 rescue e
-  puts("caught: " + e.msg())
+  puts("caught: " + e.message())
 end
 ```
 

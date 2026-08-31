@@ -149,30 +149,14 @@ m.size()
 ' />
 
 
-### t()
-> Returns `MATRIX`
-
-Alias for transpose(). Returns the transposed matrix.
-
-
-<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_matrix()
-m.t()
-' output='2x2 matrix
-┌          ┐
-│ 1.0  3.0 │
-│ 2.0  4.0 │
-└          ┘
-' />
-
-
-### to_a()
+### to_array()
 > Returns `ARRAY`
 
 Converts the matrix back to a nested array representation.
 
 
 <CodeBlockSimple input='m = [[1, 2], [3, 4]].to_matrix()
-m.to_a()
+m.to_array()
 ' output='[[1.0, 2.0], [3.0, 4.0]]
 ' />
 

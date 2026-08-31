@@ -11,7 +11,7 @@ example: |
   def test()
     puts(nope)
   rescue e
-    puts("Got error: '" + e.msg() + "'")
+    puts("Got error: '" + e.message() + "'")
   end
 
   test()
@@ -21,7 +21,7 @@ example: |
   if (true)
     nope()
   rescue your_name
-    puts("Got error in if: '" + your_name.msg() + "'")
+    puts("Got error in if: '" + your_name.message() + "'")
   end
 
   => "Got error in if: 'identifier not found: nope'"
@@ -34,5 +34,5 @@ example: |
 
   => "rescue"
 methods:
-  msg:
-    description: "Returns the error message\n\n:::caution\nPlease note that performing `.msg()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::"
+  message:
+    description: "Returns the error message\n\n:::caution\nPlease note that performing `.message()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::"

@@ -114,7 +114,7 @@ func TestHashSet(t *testing.T) {
 
 // TestHashRubyMethods covers the methods added to close the gap with Ruby's
 // Hash. Only the order-independent ones: keys(), values() and anything built on
-// them still come back in map order, so to_a is left out until a hash keeps
+// them still come back in map order, so to_array is left out until a hash keeps
 // insertion order.
 func TestHashRubyMethods(t *testing.T) {
 	tests := []inputTestCase{

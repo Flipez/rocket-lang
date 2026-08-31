@@ -85,7 +85,7 @@ func TestArrayObjectMethods(t *testing.T) {
 		{"[1, nil].sum()", "element 1 is not INTEGERABLE, got NIL"},
 		{"['abc'].sum()", "element 0 does not convert to a number, got STRING"},
 		{`[[1, 2], [3, 4]].to_matrix()`, "2x2 matrix\n┌          ┐\n│ 1.0  2.0 │\n│ 3.0  4.0 │\n└          ┘"},
-		{`[[1, 2], [3, 4]].to_matrix().to_a()`, "[[1.0, 2.0], [3.0, 4.0]]"},
+		{`[[1, 2], [3, 4]].to_matrix().to_array()`, "[[1.0, 2.0], [3.0, 4.0]]"},
 		{`[1, 2].to_matrix()`, "failed to convert array to matrix: matrix must be created from 2D array"},
 		{`[[1, 2], [3]].to_matrix()`, "failed to convert array to matrix: row 1 has inconsistent length (expected 2, got 1)"},
 	}

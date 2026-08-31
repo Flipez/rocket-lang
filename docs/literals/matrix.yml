@@ -29,11 +29,11 @@ example: |
   │ 43.0  50.0 │
   └            ┘
 methods:
-  to_a:
+  to_array:
     description: "Converts the matrix back to a nested array representation."
     input: |
       m = [[1, 2], [3, 4]].to_matrix()
-      m.to_a()
+      m.to_array()
     output: |
       [[1.0, 2.0], [3.0, 4.0]]
   to_json:
@@ -82,17 +82,6 @@ methods:
       │ 1.0  4.0 │
       │ 2.0  5.0 │
       │ 3.0  6.0 │
-      └          ┘
-  t:
-    description: "Alias for transpose(). Returns the transposed matrix."
-    input: |
-      m = [[1, 2], [3, 4]].to_matrix()
-      m.t()
-    output: |
-      2x2 matrix
-      ┌          ┐
-      │ 1.0  3.0 │
-      │ 2.0  4.0 │
       └          ┘
   get:
     description: "Returns the element at the specified row and column (0-indexed)."

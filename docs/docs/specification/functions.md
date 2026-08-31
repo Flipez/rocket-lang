@@ -88,6 +88,6 @@ module rather than a function on screen. Like any other error it can be caught:
 begin
   add(1)
 rescue e
-  puts(e.msg())   // add: too few arguments: got=1, want=2
+  puts(e.message())   // add: too few arguments: got=1, want=2
 end
 ```

@@ -225,7 +225,7 @@ func TestErrorHandling(t *testing.T) {
 		{"nil.nope()", "test:1:4: undefined method `.nope()` for NIL"},
 		{"begin puts(nope) end", "test:1:12: identifier not found: nope"},
 		{"begin puts(nope) rescue e e.nope() end", "test:1:28: undefined method `.nope()` for ERROR"},
-		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "test:1:45: undefined method `.nope()` for STRING"},
+		{"a = begin puts(nope) rescue e e.message() end; a.nope()", "test:1:49: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},
 		{"foreach i in 'test' -> 3 \nputs(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
 		{"foreach i in 0 -> 'test' \nputs(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
@@ -1626,5 +1626,30 @@ func TestStringOperationsAgreeOnLength(t *testing.T) {
 		if sliced.Inspect() != "1" {
 			t.Errorf("%s: a one-character slice is %s characters long", sample, sliced.Inspect())
 		}
+	}
+}
+
+func TestErrorMessage(t *testing.T) {
+	evaluated := testEval(`begin
+  nil.nope()
+rescue e
+  e.message()
+end`)
+
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("expected a string, got %T (%s)", evaluated, evaluated.Inspect())
+	}
+	if !strings.Contains(str.Value, "undefined method") {
+		t.Errorf("unexpected message: %q", str.Value)
+	}
+}
+
+// t was an abbreviation of transpose, which is short already.
+func TestMatrixTIsGone(t *testing.T) {
+	evaluated := testEval(`[[1,2],[3,4]].to_matrix().t()`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("Matrix#t should be gone, got %s", evaluated.Inspect())
 	}
 }

@@ -512,8 +512,8 @@ func TestTypeGroups(t *testing.T) {
 		{`{"a": 1}.fetch("z", nil)`, nil},
 
 		// NUMERIC takes INTEGER or FLOAT.
-		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9); m.to_a().to_json()`, "[[9,2]]"},
-		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9.5); m.to_a().to_json()`, "[[9.5,2]]"},
+		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9); m.to_array().to_json()`, "[[9,2]]"},
+		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9.5); m.to_array().to_json()`, "[[9.5,2]]"},
 		{`[[1,2]].to_matrix().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
 		{`[[1,2]].to_matrix().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
 	}
