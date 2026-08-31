@@ -254,9 +254,9 @@ func TestStringRubyMethods(t *testing.T) {
 
 		{`"".empty?()`, true},
 		{`"a".empty?()`, false},
-		{`"abc".include?("b")`, true},
-		{`"abc".include?("z")`, false},
-		{`"abc".include?("")`, true},
+		{`"abc".contains?("b")`, true},
+		{`"abc".contains?("z")`, false},
+		{`"abc".contains?("")`, true},
 		{`"abc".starts_with?("ab")`, true},
 		{`"abc".starts_with?("z")`, false},
 		{`"abc".ends_with?("bc")`, true},
@@ -268,7 +268,7 @@ func TestStringRubyMethods(t *testing.T) {
 		{`"abc".ends_with?("z", "c")`, true},
 		{`"abc".ends_with?("z", "y")`, false},
 		{`"abc".starts_with?()`, "too few arguments: got=0, want=1"},
-		{`"abc".include?()`, "too few arguments: got=0, want=1"},
+		{`"abc".contains?()`, "too few arguments: got=0, want=1"},
 		{`"abc".empty?("x")`, "too many arguments: got=1, want=0"},
 	}
 	testInput(t, tests)
@@ -371,7 +371,7 @@ func TestStringPairsAreComplete(t *testing.T) {
 	}
 
 	// Predicates have nothing to change, so they must not have a ! form.
-	for _, name := range []string{"empty?", "include?", "starts_with?", "ends_with?"} {
+	for _, name := range []string{"empty?", "contains?", "starts_with?", "ends_with?"} {
 		if !names[name] {
 			t.Errorf("expected String to have %s()", name)
 		}

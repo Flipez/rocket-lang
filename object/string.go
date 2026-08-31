@@ -209,7 +209,7 @@ func init() {
 	stringPredicate("empty?", nil, func(value string, _ []Object) bool {
 		return value == ""
 	})
-	stringPredicate("include?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("contains?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
 		return strings.Contains(value, args[0].(*String).Value)
 	})
 	stringPredicate("starts_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {

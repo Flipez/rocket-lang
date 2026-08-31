@@ -157,11 +157,11 @@ methods:
       [1, [2, [3]]]
       [1, 2, 3]
       [1, 2, 3]
-  include?:
+  contains?:
     description: "Returns true or false wether the array contains the given element"
     input: |
-      [1,2,3].include?(4)
-      [1,2,3].include?(3)
+      [1,2,3].contains?(4)
+      [1,2,3].contains?(3)
     output: |
       false
       true

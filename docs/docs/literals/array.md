@@ -147,6 +147,19 @@ a
 ' />
 
 
+### contains?(ANY)
+> Returns `BOOLEAN`
+
+Returns true or false wether the array contains the given element
+
+
+<CodeBlockSimple input='[1,2,3].contains?(4)
+[1,2,3].contains?(3)
+' output='false
+true
+' />
+
+
 ### count([ANY])
 > Returns `INTEGER`
 
@@ -264,19 +277,6 @@ a
 ' output='[1, [2, [3]]]
 [1, 2, 3]
 [1, 2, 3]
-' />
-
-
-### include?(ANY)
-> Returns `BOOLEAN`
-
-Returns true or false wether the array contains the given element
-
-
-<CodeBlockSimple input='[1,2,3].include?(4)
-[1,2,3].include?(3)
-' output='false
-true
 ' />
 
 
@@ -846,7 +846,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []

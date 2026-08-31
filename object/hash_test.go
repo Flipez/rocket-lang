@@ -30,11 +30,11 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": "b"}.to_json()`, `{"a":"b"}`},
 		{`{1: "b"}.to_json()`, `{"1":"b"}`},
 		{`{true: "b"}.to_json()`, `{"true":"b"}`},
-		{`{"a": 1, 1: "b"}.include?("a")`, true},
-		{`{"a": 1, 1: "b"}.include?(1)`, true},
-		{`{"a": 1, 1: "b"}.include?("c")`, false},
-		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
-		{`{"a": 1, 1: "b"}.include?()`, `too few arguments: got=0, want=1`},
+		{`{"a": 1, 1: "b"}.has_key?("a")`, true},
+		{`{"a": 1, 1: "b"}.has_key?(1)`, true},
+		{`{"a": 1, 1: "b"}.has_key?("c")`, false},
+		{`{"a": 1, 1: "b"}.has_key?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
+		{`{"a": 1, 1: "b"}.has_key?()`, `too few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
 		// to_string used to be "" because Hash was not Stringable. A single entry,
@@ -124,11 +124,11 @@ func TestHashRubyMethods(t *testing.T) {
 		{`{"a": 1}.fetch("z")`, `key not found: "z"`},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 
-		// delete reports the value that went, or nil when nothing did.
-		{`h = {"a": 1}; h.delete("a")`, 1},
-		{`h = {"a": 1}; h.delete("a"); h.size()`, 0},
-		{`h = {"a": 1}; h.delete("z")`, nil},
-		{`h = {"a": 1}; h.delete("z"); h.size()`, 1},
+		// remove reports the value that went, or nil when nothing did.
+		{`h = {"a": 1}; h.remove("a")`, 1},
+		{`h = {"a": 1}; h.remove("a"); h.size()`, 0},
+		{`h = {"a": 1}; h.remove("z")`, nil},
+		{`h = {"a": 1}; h.remove("z"); h.size()`, 1},
 
 		{`h = {"a": 1}; h.clear().size()`, 0},
 		{`h = {"a": 1}; h.clear(); h.size()`, 0},
@@ -168,15 +168,15 @@ func TestHashBangPairsAreComplete(t *testing.T) {
 
 // TestHashCallbackMethods covers the Hash methods unlocked by the function
 // applier. The order entries arrive in is not defined, so nothing here depends
-// on it -- select and reject answer with a hash, and the counts are what matter.
+// on it -- filter and reject answer with a hash, and the counts are what matter.
 func TestHashCallbackMethods(t *testing.T) {
 	tests := []inputTestCase{
-		// select and reject receive the key and the value.
-		{`h = {"a": 1, "b": 2, "c": 3}; h.select(def(k, v) v > 1 end).size()`, 2},
+		// filter and reject receive the key and the value.
+		{`h = {"a": 1, "b": 2, "c": 3}; h.filter(def(k, v) v > 1 end).size()`, 2},
 		{`h = {"a": 1, "b": 2, "c": 3}; h.reject(def(k, v) v > 1 end).size()`, 1},
-		{`h = {"a": 1}; h.select(def(k, v) k == "a" end).size()`, 1},
-		{`h = {"a": 1, "b": 2}; h.select(def(k, v) v > 1 end); h.size()`, 2},
-		{`h = {"a": 1, "b": 2}; h.select!(def(k, v) v > 1 end); h.size()`, 1},
+		{`h = {"a": 1}; h.filter(def(k, v) k == "a" end).size()`, 1},
+		{`h = {"a": 1, "b": 2}; h.filter(def(k, v) v > 1 end); h.size()`, 2},
+		{`h = {"a": 1, "b": 2}; h.filter!(def(k, v) v > 1 end); h.size()`, 1},
 
 		// transform_values receives the value, transform_keys the key.
 		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end).get("a", 0)`, 10},

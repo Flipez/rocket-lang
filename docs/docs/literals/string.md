@@ -114,6 +114,19 @@ Returns the character codes of the string, always as an array with one entry per
 ' />
 
 
+### contains?(STRING)
+> Returns `BOOLEAN`
+
+Returns `true` when the string contains the given substring.
+
+
+<CodeBlockSimple input='"test".contains?("es")
+"test".contains?("xy")
+' output='true
+false
+' />
+
+
 ### count(STRING)
 > Returns `INTEGER`
 
@@ -161,19 +174,6 @@ Formats according to a format specifier and returns the resulting string
 
 <CodeBlockSimple input='"%s is %d".format("a", 1)
 ' output='"a is 1"
-' />
-
-
-### include?(STRING)
-> Returns `BOOLEAN`
-
-Returns `true` when the string contains the given substring.
-
-
-<CodeBlockSimple input='"test".include?("es")
-"test".include?("xy")
-' output='true
-false
 ' />
 
 
@@ -612,7 +612,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []

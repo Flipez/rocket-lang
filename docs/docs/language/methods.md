@@ -8,7 +8,7 @@ same names with their arguments:
 
 ```js
 🚀 > [1, 2, 3].methods()
-=> ["all?", "any?", "append", "chunks", "clear", "compact", "compact!", "concat", "count", "each", "empty?", "filter", "filter!", "first", "flatten", "flatten!", "include?", "index_of", "insert", "join", "last", "last_index_of", "map", "map!", "max", "max_by", "min", "min_by", "none?", "prepend", "reduce", "reject", "reject!", "remove", "remove_at", "remove_first", "remove_last", "reverse", "reverse!", "rotate", "rotate!", "size", "skip", "skip_last", "sort", "sort!", "sort_by", "sort_by!", "sum", "to_matrix", "unique", "unique!"]
+=> ["all?", "any?", "append", "chunks", "clear", "compact", "compact!", "concat", "contains?", "count", "each", "empty?", "filter", "filter!", "first", "flatten", "flatten!", "index_of", "insert", "join", "last", "last_index_of", "map", "map!", "max", "max_by", "min", "min_by", "none?", "prepend", "reduce", "reject", "reject!", "remove", "remove_at", "remove_first", "remove_last", "reverse", "reverse!", "rotate", "rotate!", "size", "skip", "skip_last", "sort", "sort!", "sort_by", "sort_by!", "sum", "to_matrix", "unique", "unique!"]
 ```
 
 Both are sorted by name. Before `0.24` they came out in a different order on
@@ -126,7 +126,7 @@ The pairs are:
 A method that cannot sensibly be done in place has no `!` form. `size()` and
 `split()` return something other than a string, so there is nothing for a
 `size!()` to mean. Neither do the predicates, which answer a question rather
-than change anything: `empty?`, `include?`, `starts_with?`, `ends_with?`,
+than change anything: `empty?`, `contains?`, `starts_with?`, `ends_with?`,
 `even?`, `odd?`, `zero?`, `positive?`, `negative?`, `nan?`, `finite?` and
 `nil?`.
 
@@ -205,7 +205,7 @@ returns what it took, so nothing is lost:
 | Returns the receiver | Returns what it removed |
 | -------------------- | ----------------------- |
 | `append`, `prepend`, `insert`, `concat`, `clear` (`ARRAY`) | `remove_last`, `remove_first`, `remove`, `remove_at` (`ARRAY`) |
-| `clear` (`HASH`) | `delete` (`HASH`) |
+| `clear` (`HASH`) | `remove` (`HASH`) |
 | `set` (`MATRIX`) | |
 
 A method that removes something answers `nil` when there was nothing to remove,

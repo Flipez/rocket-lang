@@ -112,7 +112,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []

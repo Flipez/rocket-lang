@@ -347,7 +347,7 @@ func init() {
 				return ao
 			},
 		},
-		"include?": ObjectMethod{
+		"contains?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(BOOLEAN_OBJ),

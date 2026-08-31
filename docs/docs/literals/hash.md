@@ -158,23 +158,6 @@ h.size()
 ' />
 
 
-### delete(HASHABLE)
-> Returns `ANY`
-
-Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss.
-
-
-<CodeBlockSimple input='h = {"a": 1}
-h.delete("a")
-h.size()
-h.delete("a")
-' output='{"a": 1}
-1
-0
-nil
-' />
-
-
 ### each(CALLABLE)
 > Returns `HASH|ERROR`
 
@@ -205,39 +188,68 @@ false
 ### fetch(HASHABLE, [ANY])
 > Returns `ANY`
 
-Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required. The key has to be `HASHABLE`; the fallback can be anything.
+Returns the value for `key`, and raises when the key is absent. Use
+`get` when a missing key is an expected case.
+
+
+
+<CodeBlockSimple input='{"a": 1}.fetch("a")' output='1' />
+
+
+### filter(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `filter!` to filter in place.
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.fetch("a")
-h.fetch("z", 0)
+h["b"] = 2
+h.filter(def(k, v) v > 1 end).size()
+h.size()
 ' output='{"a": 1}
+2
 1
-0
+2
+' />
+
+
+### filter!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Keeps only the entries the callback said yes to and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.filter!(def(k, v) v > 1 end).size()
+h.size()
+' output='{"a": 1}
+2
+1
+1
 ' />
 
 
 ### get(HASHABLE, ANY)
 > Returns `ANY`
 
-Returns the value stored under the given key, or the given default when there is no such entry. The key has to be `HASHABLE`; the default can be anything.
+Returns the value for `key`, or `nil` when the key is absent. Pass a
+second argument to get that instead of `nil`. Use `fetch` when a missing
+key is a mistake rather than an expected case.
 
 
-<CodeBlockSimple input='{"a": "1", "b": "2"}.get("a", 10)
-{"a": "1", "b": "2"}.get("c", 10)
-' output='"1"
-10
-' />
+
+<CodeBlockSimple input='{"a": 1}.get("b", 0)' output='0' />
 
 
-### include?(HASHABLE)
+### has_key?(HASHABLE)
 > Returns `BOOLEAN`
 
 Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`.
 
 
-<CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)
-{"a": 1, 1: "b"}.include?("c")
+<CodeBlockSimple input='{"a": 1, 1: "b"}.has_key?(1)
+{"a": 1, 1: "b"}.has_key?("c")
 ' output='true
 false
 ' />
@@ -304,7 +316,7 @@ h.size()
 ### reject(CALLABLE)
 > Returns `HASH|ERROR`
 
-Returns a new hash of the entries the callback said no to -- the mirror of `select`. Use `reject!` to filter in place.
+Returns a new hash of the entries the callback said no to -- the mirror of `filter`. Use `reject!` to filter in place.
 
 
 <CodeBlockSimple input='h = {"a": 1}
@@ -331,37 +343,20 @@ h.reject!(def(k, v) v > 1 end).size()
 ' />
 
 
-### select(CALLABLE)
-> Returns `HASH|ERROR`
+### remove(HASHABLE)
+> Returns `ANY`
 
-Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `select!` to filter in place.
-
-
-<CodeBlockSimple input='h = {"a": 1}
-h["b"] = 2
-h.select(def(k, v) v > 1 end).size()
-h.size()
-' output='{"a": 1}
-2
-1
-2
-' />
-
-
-### select!(CALLABLE)
-> Returns `HASH|ERROR`
-
-Keeps only the entries the callback said yes to and returns the hash, so calls can be chained.
+Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss.
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h["b"] = 2
-h.select!(def(k, v) v > 1 end).size()
+h.remove("a")
 h.size()
+h.remove("a")
 ' output='{"a": 1}
-2
 1
-1
+0
+nil
 ' />
 
 
@@ -502,7 +497,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []

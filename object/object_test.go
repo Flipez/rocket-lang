@@ -481,28 +481,28 @@ func TestTypeGroups(t *testing.T) {
 		{`a = [1]; a.append(1.5); a.to_json()`, "[1,1.5]"},
 		{`a = [1]; a.prepend(1.5); a.to_json()`, "[1.5,1]"},
 		{`a = [1]; a.insert(0, 1.5); a.to_json()`, "[1.5,1]"},
-		{`[1.5].include?(1.5)`, true},
+		{`[1.5].contains?(1.5)`, true},
 		{`[1.5].index_of(1.5)`, 0},
 		{`[1.5].last_index_of(1.5)`, 0},
 		{`[1.5].count(1.5)`, 1},
 		{`a = [1.5]; a.remove(1.5); a.to_json()`, "[]"},
 		{`a = [1]; a.append([[1,2]].to_matrix()); a.size()`, 2},
-		{`[1].include?([[1,2]].to_matrix())`, false},
+		{`[1].contains?([[1,2]].to_matrix())`, false},
 
-		// HASHABLE takes what can be a key. get and include? used to assert
+		// HASHABLE takes what can be a key. get and has_key? used to assert
 		// without checking, so {"a": 1}.get(nil, 0) panicked and took the
 		// process with it.
 		{`{"a": 1}.get(nil, 0)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.get([[1,2]].to_matrix(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
-		{`{"a": 1}.include?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.has_key?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
-		{`{"a": 1}.delete(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.remove(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		// All four take the same keys, which was not true before: get accepted
-		// a NIL and crashed, include? rejected a FLOAT, delete accepted one.
+		// a NIL and crashed, has_key? rejected a FLOAT, remove accepted one.
 		{`{1.5: "a"}.get(1.5, "missing")`, "a"},
-		{`{1.5: "a"}.include?(1.5)`, true},
+		{`{1.5: "a"}.has_key?(1.5)`, true},
 		{`{1.5: "a"}.fetch(1.5)`, "a"},
-		{`h = {1.5: "a"}; h.delete(1.5)`, "a"},
+		{`h = {1.5: "a"}; h.remove(1.5)`, "a"},
 		// A hash and an array are hashable, so they are keys too.
 		{`{[1]: "a"}.get([1], "missing")`, "a"},
 
@@ -655,8 +655,8 @@ func TestTypeGroupsMethod(t *testing.T) {
 		{`def() end.type_groups().to_json()`, `["CALLABLE"]`},
 		{`puts.type_groups().to_json()`, `["CALLABLE"]`},
 		// Nothing else is callable.
-		{`1.type_groups().include?("CALLABLE")`, false},
-		{`"a".type_groups().include?("CALLABLE")`, false},
+		{`1.type_groups().contains?("CALLABLE")`, false},
+		{`"a".type_groups().contains?("CALLABLE")`, false},
 
 		{`"a".type_groups("x")`, "too many arguments: got=1, want=0"},
 	}
@@ -683,13 +683,13 @@ func TestIsAAgreesWithTypeGroups(t *testing.T) {
 				require.Equal(t, "true", predicate.Inspect(),
 					"is_a?(ANY) should be true for %s", subject)
 				require.Equal(t, "false",
-					testEval(`(`+subject+`).type_groups().include?("ANY")`).Inspect(),
+					testEval(`(`+subject+`).type_groups().contains?("ANY")`).Inspect(),
 					"type_groups() should not list ANY for %s", subject)
 
 				continue
 			}
 
-			listed := testEval(`(` + subject + `).type_groups().include?("` + group + `")`)
+			listed := testEval(`(` + subject + `).type_groups().contains?("` + group + `")`)
 			require.Equal(t, listed.Inspect(), predicate.Inspect(),
 				"is_a?(%q) and type_groups() disagree for %s", group, subject)
 		}
@@ -727,4 +727,22 @@ func TestKnownObjectTypesAreComplete(t *testing.T) {
 			t.Errorf("type group %q is also listed as an object type", group)
 		}
 	}
+}
+
+// TestContains covers the split of the old include?, one name shared by three
+// types that meant two different things. String and Array test membership of
+// an element, so both answer to contains?. Hash tests membership of a key,
+// which contains? never said -- {"a": 1}.include?(1) gave no clue whether 1
+// was being looked for as a key or a value. Hash answers to has_key? instead.
+func TestContains(t *testing.T) {
+	tests := []inputTestCase{
+		{`"hello".contains?("ell")`, true},
+		{`"hello".contains?("z")`, false},
+		{`[1,2,3].contains?(2)`, true},
+		{`[1,2,3].contains?(9)`, false},
+		{`{"a": 1}.has_key?("a")`, true},
+		{`{"a": 1}.has_key?("b")`, false},
+	}
+
+	testInput(t, tests)
 }

@@ -57,7 +57,7 @@ type Floatable interface {
 //
 // Listing types by hand is what these replace. "Any value" used to be written
 // four different ways, no two of them the same set: append accepted FUNCTION but
-// not FLOAT, so [1].append(1.5) was an error, and include? accepted neither FLOAT
+// not FLOAT, so [1].append(1.5) was an error, and contains? accepted neither FLOAT
 // nor MATRIX. A group is checked by asking the object, so a type added later
 // joins without anyone remembering to update a list.
 const (

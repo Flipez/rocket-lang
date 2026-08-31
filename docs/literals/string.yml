@@ -200,11 +200,11 @@ methods:
       "%s is %d".format("a", 1)
     output: |
       "a is 1"
-  include?:
+  contains?:
     description: "Returns `true` when the string contains the given substring."
     input: |
-      "test".include?("es")
-      "test".include?("xy")
+      "test".contains?("es")
+      "test".contains?("xy")
     output: |
       true
       false

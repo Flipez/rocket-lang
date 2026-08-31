@@ -23,7 +23,7 @@ puts(name.split("-").size()) // 2
 // Arrays and hashes, both with methods of their own.
 crew = ["ada", "grace", "alan"]
 puts(crew.size())            // 3
-puts(crew.include?("ada"))   // true
+puts(crew.contains?("ada"))   // true
 
 ages = {"ada": 36, "grace": 45}
 puts(ages["grace"])          // 45

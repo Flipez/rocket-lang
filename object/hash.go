@@ -91,7 +91,7 @@ func (h *Hash) Set(key, value any) {
 // hashKeyOf turns an argument into a hash key. The HASHABLE argument pattern
 // already rejects anything that cannot be one, so the error is unreachable from
 // the interpreter; it exists so that widening a pattern can never again turn
-// into a panic. include? and get used to assert without checking, and
+// into a panic. has_key? and get used to assert without checking, and
 // {"a": 1}.get(nil, 0) brought the process down.
 func hashKeyOf(o Object) (HashKey, Object) {
 	hashable, ok := o.(Hashable)
@@ -144,7 +144,7 @@ func init() {
 				return NewArray(values)
 			},
 		},
-		"include?": ObjectMethod{
+		"has_key?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(BOOLEAN_OBJ),
@@ -278,7 +278,7 @@ func init() {
 				return NewErrorFormat("key not found: %s", args[0].Inspect())
 			},
 		},
-		"delete": ObjectMethod{
+		"remove": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(HASHABLE),
@@ -301,7 +301,7 @@ func init() {
 				}
 				delete(h.Pairs, hashed)
 
-				// The value that went, so a delete can be told from a miss.
+				// The value that went, so a removal can be told from a miss.
 				return pair.Value
 			},
 		},
@@ -342,7 +342,7 @@ func init() {
 		},
 	}
 
-	hashCallbackPair("select", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+	hashCallbackPair("filter", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
 		return filteredPairs(pairs, fn, env, true)
 	})
 	hashCallbackPair("reject", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
@@ -454,7 +454,7 @@ func hashCallbackPair(name string, transform func(pairs map[HashKey]HashPair, fn
 }
 
 // filteredPairs keeps the entries the callback answers for, which way round
-// decided by keep -- select keeps a yes, reject keeps a no.
+// decided by keep -- filter keeps a yes, reject keeps a no.
 func filteredPairs(pairs map[HashKey]HashPair, fn Object, env Environment, keep bool) (map[HashKey]HashPair, Object) {
 	out := make(map[HashKey]HashPair, len(pairs))
 
