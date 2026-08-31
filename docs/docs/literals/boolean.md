@@ -198,7 +198,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

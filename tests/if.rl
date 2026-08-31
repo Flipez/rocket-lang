@@ -1,3 +1,3 @@
 if (true)
-  puts("single if")
+  print("single if")
 end

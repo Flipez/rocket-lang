@@ -1,4 +1,4 @@
 foreach i in 3 => 1
-  puts(i)
+  print(i)
 end
-puts("go")
+print("go")

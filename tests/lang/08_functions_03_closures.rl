@@ -8,6 +8,6 @@ end
 a = new_account("robert", 100)
 b = new_account("someone", 0)
 
-puts(a.deposit(50))
-puts(a.describe())
-puts(b.describe())
+print(a.deposit(50))
+print(a.describe())
+print(b.describe())

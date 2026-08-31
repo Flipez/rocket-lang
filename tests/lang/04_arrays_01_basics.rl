@@ -1,5 +1,5 @@
 numbers = [10, 20, 30, 40]
 
-puts(numbers[0])
-puts(numbers[-1])
-puts(numbers[1:3])
+print(numbers[0])
+print(numbers[-1])
+print(numbers[1:3])

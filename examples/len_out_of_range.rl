@@ -26,7 +26,7 @@ result = ""
 foreach stack in stacks
   result = result + stack[-1]
 end
-puts("Part 1: " + result)
+print("Part 1: " + result)
 
 foreach instruction in instructions
   amount = instruction.split("from")[0].split("move")[-1].trim().to_integer()
@@ -49,6 +49,6 @@ result = ""
 foreach stack in stacks
   result = result + stack[-1]
 end
-puts("Part 2: " + result)
+print("Part 2: " + result)
 
 nil

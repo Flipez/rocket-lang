@@ -20,7 +20,7 @@ example: |
   sum = m1 + m2
   diff = m2 - m1
 
-  puts(result)
+  print(result)
 
   // should output
   2x2 matrix

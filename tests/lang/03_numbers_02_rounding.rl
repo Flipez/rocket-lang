@@ -1,5 +1,5 @@
 value = 1.567
 
-puts(value.ceil())
-puts(value.floor())
-puts(value.round(2))
+print(value.ceil())
+print(value.floor())
+print(value.round(2))

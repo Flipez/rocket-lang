@@ -17,35 +17,35 @@ useful and not so useful.
 ```js
 // Values carry methods.
 name = "rocket-lang"
-puts(name.uppercase())        // ROCKET-LANG
-puts(name.split("-").size()) // 2
+print(name.uppercase())        // ROCKET-LANG
+print(name.split("-").size()) // 2
 
 // Arrays and hashes, both with methods of their own.
 crew = ["ada", "grace", "alan"]
-puts(crew.size())            // 3
-puts(crew.contains?("ada"))   // true
+print(crew.size())            // 3
+print(crew.contains?("ada"))   // true
 
 ages = {"ada": 36, "grace": 45}
-puts(ages["grace"])          // 45
+print(ages["grace"])          // 45
 
 // Functions are values, so they can be passed around.
 double = def(n)
   return n * 2
 end
-puts(double(21))             // 42
+print(double(21))             // 42
 
 // Blocks close with `end`, and parentheses around a condition are optional.
 foreach i, member in crew
   if i > 0
-    puts(i.to_string() + ": " + member)
+    print(i.to_string() + ": " + member)
   end
 end
 
 // Errors are values you can catch.
 begin
-  puts(1 / 0)
+  print(1 / 0)
 rescue e
-  puts("caught: " + e.message())
+  print("caught: " + e.message())
 end
 ```
 
@@ -78,6 +78,6 @@ Run a file, evaluate a snippet, or start a REPL with no arguments at all:
 
 ```zsh
 $ rocket-lang program.rl
-$ rocket-lang -e 'puts("hi")'
+$ rocket-lang -e 'print("hi")'
 $ rocket-lang
 ```

@@ -21,32 +21,32 @@ func TestString(t *testing.T) {
 			"a = [1, 2, 3, true]",
 		},
 		{
-			"if (true)\n  puts(true)\nelse\n  puts(false)\nend",
-			"if (true)\n  puts(true)\nelse\n  puts(false)\nend",
+			"if (true)\n  print(true)\nelse\n  print(false)\nend",
+			"if (true)\n  print(true)\nelse\n  print(false)\nend",
 		},
 		{
-			`true ? puts(true) : puts(false)`,
-			`true ? puts(true) : puts(false)`,
+			`true ? print(true) : print(false)`,
+			`true ? print(true) : print(false)`,
 		},
 		{
-			"foreach i, e in [1, 2, 3] \n  puts(i)\nend",
-			"foreach i, e in [1, 2, 3] \n  puts(i)\nend",
+			"foreach i, e in [1, 2, 3] \n  print(i)\nend",
+			"foreach i, e in [1, 2, 3] \n  print(i)\nend",
 		},
 		{
-			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  puts(false)\nend",
-			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  puts(false)\nend",
+			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  print(false)\nend",
+			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  print(false)\nend",
 		},
 		{
-			"while (true)\n  puts(true)\nend",
-			"while (true)\n  puts(true)\nend",
+			"while (true)\n  print(true)\nend",
+			"while (true)\n  print(true)\nend",
 		},
 		{
-			"while (true)\n  puts(true)\nend",
-			"while (true)\n  puts(true)\nend",
+			"while (true)\n  print(true)\nend",
+			"while (true)\n  print(true)\nend",
 		},
 		{
-			"while\n  puts(true)\n",
-			"while (puts(true))\n  \nend",
+			"while\n  print(true)\n",
+			"while (print(true))\n  \nend",
 		},
 		{
 			"next",

@@ -414,7 +414,7 @@ func TestArrayEach(t *testing.T) {
 		{`a = [1]; a.each(def() end)`, "too many arguments: got=1, want=0"},
 
 		// A builtin is a value too, so it is callable.
-		{`a = [1]; a.each(puts).to_json()`, "[1]"},
+		{`a = [1]; a.each(print).to_json()`, "[1]"},
 
 		// CALLABLE refuses what cannot be called.
 		{`a = [1]; a.each(1)`, "wrong argument type on position 1: got=INTEGER, want=CALLABLE"},

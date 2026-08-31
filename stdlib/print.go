@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func putsFunction(env object.Environment, args ...object.Object) object.Object {
+func printFunction(env object.Environment, args ...object.Object) object.Object {
 	for _, arg := range args {
 		// For strings, print the actual value (not the quoted representation)
 		if str, ok := arg.(*object.String); ok {

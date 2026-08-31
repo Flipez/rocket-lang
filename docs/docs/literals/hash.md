@@ -9,11 +9,11 @@ single hash may mix key types freely: `STRING`, `INTEGER`, `FLOAT`,
 ```js
 h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
 
-puts(h["a"])     // 1
-puts(h[2])       // true
-puts(h[3.5])     // "float"
-puts(h[true])    // "bool"
-puts(h[[1, 2]])  // "array"
+print(h["a"])     // 1
+print(h[2])       // true
+print(h[3.5])     // "float"
+print(h[true])    // "bool"
+print(h[[1, 2]])  // "array"
 ```
 
 `NIL` and functions are not hashable and are rejected as keys, with
@@ -32,8 +32,8 @@ name can be *called* with one:
 ```js
 h = {"double": def(x) return x * 2 end}
 
-puts(h.double(21))     // 42
-puts(h["double"](21))  // the same thing
+print(h.double(21))     // 42
+print(h["double"](21))  // the same thing
 ```
 
 That makes a hash of functions read like the object it already is. The functions
@@ -52,10 +52,10 @@ end
 a = new_account("robert", 100)
 b = new_account("someone", 0)
 
-puts(a.deposit(50))   // 150
-puts(a.describe())    // "robert: 150"
-puts(b.describe())    // "someone: 0"
-puts(a.owner)         // "robert" -- plain data, read the same way
+print(a.deposit(50))   // 150
+print(a.describe())    // "robert: 150"
+print(b.describe())    // "someone: 0"
+print(a.owner)         // "robert" -- plain data, read the same way
 ```
 
 A real hash method always wins, so a hash of data cannot take over `size` or
@@ -64,8 +64,8 @@ A real hash method always wins, so a hash of data cannot take over `size` or
 ```js
 h = {"size": def() return 99 end}
 
-puts(h.size())      // 1  -- the hash method
-puts(h["size"]())   // 99 -- the stored function
+print(h.size())      // 1  -- the hash method
+print(h["size"]())   // 99 -- the stored function
 ```
 
 A name holding something that cannot be called says so, and a name that is not
@@ -90,15 +90,15 @@ people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
 
 // reassign of values
 h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
+print(h["a"])
+print(h[2])
 h["a"] = 3
 h["b"] = "moo"
-puts(h["a"])
-puts(h["b"])
-puts(h[2])h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
+print(h["a"])
+print(h["b"])
+print(h[2])h = {"a": 1, 2: true}
+print(h["a"])
+print(h[2])
 h["a"] = 3
 h["b"] = "moo"
 
@@ -165,7 +165,7 @@ Calls the callback once per entry with the key and the value, and returns the ha
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.each(def(key, value) puts(key + "=" + value.to_string()) end)
+h.each(def(key, value) print(key + "=" + value.to_string()) end)
 ' output='{"a": 1}
 a=1
 {"a": 1}
@@ -631,7 +631,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

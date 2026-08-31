@@ -9,8 +9,8 @@ A **double-quoted** string processes escape sequences: `\"` for a quote,
 `\n` for a newline, `\t` for a tab, `\r` for a carriage return.
 
 ```js
-puts("test\"string")   // test"string
-puts("a\tb")           // a<tab>b
+print("test\"string")   // test"string
+print("a\tb")           // a<tab>b
 ```
 
 A **single-quoted** string is raw: nothing is escaped and a backslash is an
@@ -18,8 +18,8 @@ ordinary character. This makes it convenient for text containing double
 quotes.
 
 ```js
-puts('test "string"')  // test "string"
-puts('a\tb')           // a\tb, a literal backslash and t
+print('test "string"')  // test "string"
+print('a\tb')           // a\tb, a literal backslash and t
 ```
 
 Because a single-quoted string performs no escaping, it cannot contain a
@@ -37,17 +37,17 @@ is_true = "test" == "test";
 is_false = "test" == "string";
 
 s = "abcdef"
-puts(s[2])
-puts(s[-2])
-puts(s[:2])
-puts(s[:-2])
-puts(s[2:])
-puts(s[-2:])
-puts(s[1:-2])
+print(s[2])
+print(s[-2])
+print(s[:2])
+print(s[:-2])
+print(s[2:])
+print(s[-2:])
+print(s[1:-2])
 
 s[2] = "C"
 s[-2] = "E"
-puts(s)
+print(s)
 
 // should output
 "c"
@@ -734,7 +734,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

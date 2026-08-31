@@ -1,4 +1,4 @@
-puts("a".type())
-puts(1.type())
-puts([1].type())
-puts(def() end.type())
+print("a".type())
+print(1.type())
+print([1].type())
+print(def() end.type())

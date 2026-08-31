@@ -80,7 +80,7 @@ const (
 	// NUMERIC accepts INTEGER and FLOAT.
 	NUMERIC = "NUMERIC"
 	// CALLABLE accepts what can be called: a function written in RocketLang, or
-	// a builtin such as puts, which is a value too.
+	// a builtin such as print, which is a value too.
 	CALLABLE = "CALLABLE"
 )
 

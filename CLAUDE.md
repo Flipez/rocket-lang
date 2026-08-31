@@ -11,7 +11,7 @@ the evaluator walks it.
 ```bash
 go build -o rocket-lang .        # build the interpreter
 go run . path/to/program.rl      # run a program
-go run . -e 'puts("hi")'         # run a snippet
+go run . -e 'print("hi")'        # run a snippet
 go run .                         # REPL
 
 go test ./...                    # all tests
@@ -90,7 +90,7 @@ A new value type must be added to `knownObjectTypes` in `object/object.go`, or
 
 ### Builtins, modules and imports
 
-`stdlib/std.go`'s `init()` registers global functions (`puts`, `raise`) and
+`stdlib/std.go`'s `init()` registers global functions (`print`, `raise`) and
 builtin modules (`Math`, `HTTP`, `JSON`, `IO`, `OS`, `Time`), each defined in
 its own `stdlib/<name>.go` as a `map[string]*object.BuiltinFunction` plus a
 properties map.

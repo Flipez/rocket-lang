@@ -41,5 +41,5 @@ end
 
 input = IO.open("day2.txt").lines()
 
-puts(part1(input))
-puts(part2(input))
+print(part1(input))
+print(part2(input))

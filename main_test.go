@@ -45,7 +45,7 @@ func TestRocketlangCode(t *testing.T) {
 		}
 
 		// CreateTemp's pattern arg rejects path separators, and match now carries
-		// one for fixtures grouped in subdirectories (e.g. "lang/01_puts.rl").
+		// one for fixtures grouped in subdirectories (e.g. "lang/01_print.rl").
 		tempPattern := strings.ReplaceAll(strings.TrimSuffix(match, ".rl"), "/", "_")
 		fakeStdout, err := os.CreateTemp("", tempPattern)
 		if err != nil {
@@ -80,7 +80,7 @@ func TestExitCodes(t *testing.T) {
 		source string
 		want   int
 	}{
-		{"a program that runs", `puts("fine")`, exitOK},
+		{"a program that runs", `print("fine")`, exitOK},
 		{"a program with no output", `a = 1`, exitOK},
 		// An empty program evaluates to nothing at all, which is a different
 		// branch from evaluating to a value.
@@ -89,16 +89,16 @@ func TestExitCodes(t *testing.T) {
 		// An error aborts the rest of the program and becomes its result, so
 		// the result being an error means nothing handled it.
 		{"an uncaught error", `nil.no_such_method()`, exitFailure},
-		{"an uncaught error part way through", `puts("before")` + "\n" + `nil.nope()`, exitFailure},
+		{"an uncaught error part way through", `print("before")` + "\n" + `nil.nope()`, exitFailure},
 		{"a parse error", `def f(`, exitFailure},
 		// A rescued error is handled, so the program succeeded.
-		{"a rescued error", "begin\n  1 / 0\nrescue e\n  puts(\"handled\")\nend", exitOK},
+		{"a rescued error", "begin\n  1 / 0\nrescue e\n  print(\"handled\")\nend", exitOK},
 		// A failed conversion answers nil rather than erroring, so it is not a
 		// failure -- which is the distinction nil was introduced for.
-		{"a failed conversion", `puts("abc".to_integer())`, exitOK},
+		{"a failed conversion", `print("abc".to_integer())`, exitOK},
 		// An error stored in a variable was handled by the program deciding to
 		// keep it, and is not the final value.
-		{"an error that is not the last value", "begin\n  nil.nope()\nrescue e\nend\nputs(\"after\")", exitOK},
+		{"an error that is not the last value", "begin\n  nil.nope()\nrescue e\nend\nprint(\"after\")", exitOK},
 	}
 
 	for _, tt := range tests {
@@ -125,7 +125,7 @@ func TestRunFileReportsAMissingFile(t *testing.T) {
 // TestRunFileRunsAFile checks the ordinary path still works through runFile.
 func TestRunFileRunsAFile(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "ok.rl")
-	if err := os.WriteFile(path, []byte(`puts("hello")`), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(`print("hello")`), 0o644); err != nil {
 		t.Fatal(err)
 	}
 

@@ -7,7 +7,7 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 ```js
 def hello()
-  puts(request["body"])
+  print(request["body"])
   response["body"] = "hello " + request["method"]
 end
 
@@ -234,7 +234,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

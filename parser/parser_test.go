@@ -874,7 +874,7 @@ func TestImportWithIntegerExpressionPathIsAParseError(t *testing.T) {
 }
 
 func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
-	l := lexer.New("foreach i in -5\n  puts(i)\nend", "test")
+	l := lexer.New("foreach i in -5\n  print(i)\nend", "test")
 	p := New(l)
 	p.ParseProgram()
 
@@ -962,7 +962,7 @@ func TestParsingAssignmentFailsWithInvalidLeftSide(t *testing.T) {
 func TestImportInExpressionPositionIsAParseError(t *testing.T) {
 	inputs := []string{
 		`x = import "lib"`,
-		`puts(import "lib")`,
+		`print(import "lib")`,
 		`a = [import "lib", 1]`,
 		`import "l" + name`,
 	}
@@ -1018,13 +1018,13 @@ func TestUnterminatedBlockIsAParseError(t *testing.T) {
 	inputs := []string{
 		`def h()
   return 1
-puts("after")`,
+print("after")`,
 		`if true
-  puts(1)`,
+  print(1)`,
 		`while false
-  puts(1)`,
+  print(1)`,
 		`foreach i in [1]
-  puts(i)`,
+  print(i)`,
 		// `else if` with a single `end`: the nested if consumes it, leaving
 		// the enclosing else unterminated.
 		`def g(a)
@@ -1148,7 +1148,7 @@ func TestLineBreakSeparatesStatements(t *testing.T) {
 		expectedStatements int
 	}{
 		// `[` used to index the result of the previous line.
-		{"array literal after a call", "puts(\"a\")\n[1].each(puts)", 2},
+		{"array literal after a call", "print(\"a\")\n[1].each(print)", 2},
 		{"array literal after an assignment", "a = 1\n[1,2]", 2},
 		{"array literal after an identifier", "a\n[1,2]", 2},
 		// `(` used to call the result of the previous line.
@@ -1158,8 +1158,8 @@ func TestLineBreakSeparatesStatements(t *testing.T) {
 
 		// Inside an unclosed bracket the expression cannot have ended, so a
 		// line break there means nothing.
-		{"continuation inside parens", "puts(4\n - 1)", 1},
-		{"continuation inside brackets", "puts([1,2]\n [0])", 1},
+		{"continuation inside parens", "print(4\n - 1)", 1},
+		{"continuation inside brackets", "print([1,2]\n [0])", 1},
 		{"multi-line array literal", "a = [\n  [1, 2],\n  [3, 4]\n]", 1},
 
 		// A token that is only ever an infix has no other reading, so a line
@@ -1198,23 +1198,23 @@ func TestCurlyBraceBlocksAreRejected(t *testing.T) {
 	}{
 		{
 			"foreach",
-			"foreach i in 3 { puts(i) }",
+			"foreach i in 3 { print(i) }",
 			"`{` opens a hash literal, not a block",
 		},
 		{
 			"if",
-			"if (true) { puts(\"y\") }",
+			"if (true) { print(\"y\") }",
 			"`{` opens a hash literal, not a block",
 		},
 		{
 			"while",
-			"while (false) { puts(1) }",
+			"while (false) { print(1) }",
 			"`{` opens a hash literal, not a block",
 		},
 		{
 			// `}` used to close the block here, and the program ran.
 			"a stray } cannot stand in for end",
-			"if (true)\n  puts(\"in\")\n}\nputs(\"after\")",
+			"if (true)\n  print(\"in\")\n}\nprint(\"after\")",
 			"expected `end` to close the block opened here",
 		},
 	}
@@ -1245,7 +1245,7 @@ func TestHashLiteralsStillParse(t *testing.T) {
 		`x = {"a": {"b": 1}}`,
 		"def make()\n  {\"a\": 1}\nend",
 		"def empty()\n  {}\nend",
-		`foreach k, v in {"a": 1}` + "\n  puts(k)\nend",
+		`foreach k, v in {"a": 1}` + "\n  print(k)\nend",
 	}
 
 	for _, input := range tests {

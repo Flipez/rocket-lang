@@ -2,5 +2,5 @@ foreach i in 5
   if (i == 2)
     break
   end
-  puts(i)
+  print(i)
 end

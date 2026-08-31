@@ -1,11 +1,11 @@
 foreach n in 1 => 15
   if n % 15 == 0
-    puts("fizzbuzz")
+    print("fizzbuzz")
   elif n % 3 == 0
-    puts("fizz")
+    print("fizz")
   elif n % 5 == 0
-    puts("buzz")
+    print("buzz")
   else
-    puts(n)
+    print(n)
   end
 end

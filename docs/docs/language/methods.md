@@ -47,7 +47,7 @@ A callback is a function literal, since there is no separate block syntax:
 A builtin is a value too, so it can be the callback:
 
 ```js
-🚀 > [1, 2].each(puts)
+🚀 > [1, 2].each(print)
 1
 2
 => [1, 2]

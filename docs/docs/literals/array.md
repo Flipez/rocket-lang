@@ -7,13 +7,13 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 ```js
 a = [1, 2, 3, 4, 5]
-puts(a[2])
-puts(a[-2])
-puts(a[:2])
-puts(a[:-2])
-puts(a[2:])
-puts(a[-2:])
-puts(a[1:-2])
+print(a[2])
+print(a[-2])
+print(a[:2])
+print(a[:-2])
+print(a[2:])
+print(a[-2:])
+print(a[1:-2])
 
 // should output
 [1, 2]
@@ -178,12 +178,12 @@ Without an argument this is `size`. With one it counts how often that element oc
 ### each(CALLABLE)
 > Returns `ARRAY|ERROR`
 
-Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `puts`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
+Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `print`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]
-a.each(def(x) puts(x * 2) end)
-a.each(def(x) if x == 2 break end puts(x) end).size()
+a.each(def(x) print(x * 2) end)
+a.each(def(x) if x == 2 break end print(x) end).size()
 ' output='[1, 2, 3]
 2
 4
@@ -968,7 +968,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

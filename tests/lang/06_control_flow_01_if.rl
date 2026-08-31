@@ -1,15 +1,15 @@
 n = 10
 
 if n > 100
-  puts("huge")
+  print("huge")
 elif n > 5
-  puts("big")
+  print("big")
 else
-  puts("small")
+  print("small")
 end
 
 if 0
-  puts("zero is truthy")
+  print("zero is truthy")
 else
-  puts("zero is falsy")
+  print("zero is falsy")
 end

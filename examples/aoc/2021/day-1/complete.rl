@@ -18,7 +18,7 @@ foreach i, number in input
   end
 end
 
-puts(increase)
+print(increase)
 
 // Part 2
 
@@ -35,4 +35,4 @@ foreach i, number in input
   end
 end
 
-puts(increase)
+print(increase)

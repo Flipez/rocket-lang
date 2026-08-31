@@ -6,5 +6,5 @@ def triple(x)
   x * 3
 end
 
-puts(double(3))
-puts(triple(3))
+print(double(3))
+print(triple(3))

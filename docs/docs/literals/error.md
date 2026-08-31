@@ -14,9 +14,9 @@ It is possible for the user to create errors using 'raise(STRING)' which will re
 
 ```js
 def test()
-  puts(nope)
+  print(nope)
 rescue e
-  puts("Got error: '" + e.message() + "'")
+  print("Got error: '" + e.message() + "'")
 end
 
 test()
@@ -26,15 +26,15 @@ test()
 if (true)
   nope()
 rescue your_name
-  puts("Got error in if: '" + your_name.message() + "'")
+  print("Got error in if: '" + your_name.message() + "'")
 end
 
 => "Got error in if: 'identifier not found: nope'"
 
 begin
-  puts(nope)
+  print(nope)
 rescue e
-  puts("rescue")
+  print("rescue")
 end
 
 => "rescue"
@@ -233,7 +233,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

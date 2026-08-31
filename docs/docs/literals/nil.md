@@ -3,7 +3,7 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 # Nil
 
 Nil is the representation of "nothing".
-It will be returned if something returns nothing (eg. puts or an empty break/next) and can also be generated with 'nil'.
+It will be returned if something returns nothing (eg. print or an empty break/next) and can also be generated with 'nil'.
 
 
 
@@ -186,7 +186,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]

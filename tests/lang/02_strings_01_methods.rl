@@ -1,5 +1,5 @@
 s = "hello"
 
-puts(s.uppercase())
-puts(s.size())
-puts(s.replace("l", "_"))
+print(s.uppercase())
+print(s.size())
+print(s.replace("l", "_"))

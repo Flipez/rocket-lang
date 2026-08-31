@@ -4,7 +4,7 @@ numbers.each(def(n)
   if n == 3
     break
   end
-  puts(n)
+  print(n)
 end)
 
 foreach n in numbers
@@ -14,5 +14,5 @@ foreach n in numbers
   if n == 4
     break
   end
-  puts(n)
+  print(n)
 end

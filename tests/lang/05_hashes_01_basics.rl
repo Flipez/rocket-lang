@@ -1,5 +1,5 @@
 h = {"a": 1, 2: true}
 
-puts(h["a"])
-puts(h[2])
-puts(h.get("z", 0))
+print(h["a"])
+print(h[2])
+print(h.get("z", 0))

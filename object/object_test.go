@@ -653,7 +653,7 @@ func TestTypeGroupsMethod(t *testing.T) {
 		// HASHABLE, which is the whole reason the element checks in join, sum,
 		// unique and sort exist.
 		{`def() end.type_groups().to_json()`, `["CALLABLE"]`},
-		{`puts.type_groups().to_json()`, `["CALLABLE"]`},
+		{`print.type_groups().to_json()`, `["CALLABLE"]`},
 		// Nothing else is callable.
 		{`1.type_groups().contains?("CALLABLE")`, false},
 		{`"a".type_groups().contains?("CALLABLE")`, false},

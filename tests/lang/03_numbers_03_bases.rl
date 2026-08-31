@@ -1,5 +1,5 @@
 hex = "0x10".to_integer()
 
-puts(hex)
-puts(hex.to_base(10))
-puts(hex + 4.to_base(16))
+print(hex)
+print(hex.to_base(10))
+print(hex + 4.to_base(16))

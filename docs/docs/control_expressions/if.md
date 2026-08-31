@@ -13,9 +13,9 @@ Parentheses around conditions are optional.
 
 <CodeBlockSimple input='a="test"
 if a.type() == "STRING"
-  puts("is a string")
+  print("is a string")
 else
-  puts("is not a string")
+  print("is not a string")
 end' output='is a string' />
 
 # Elif
@@ -23,9 +23,9 @@ end' output='is a string' />
 
 <CodeBlockSimple input='a = "test"
 if a.type() == "BOOLEAN"
-  puts("is a boolean")
+  print("is a boolean")
 elif a.type() == "STRING"
-  puts("is a string")
+  print("is a string")
 else
-  puts("i have no idea")
+  print("i have no idea")
 end' output='is a string' />

@@ -1,6 +1,6 @@
 numbers = [1, 2]
 
-numbers.each(puts)
+numbers.each(print)
 
 quadruple = def(x) x * 4 end
-puts(quadruple(21))
+print(quadruple(21))

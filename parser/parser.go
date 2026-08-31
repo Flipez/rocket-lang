@@ -141,7 +141,7 @@ func (p *Parser) nextToken() {
 
 	// How many brackets are open. Inside one, a line break cannot have ended an
 	// expression -- the unclosed bracket says as much -- so peekStartsStatement
-	// stands down and `puts(4\n - 1)` still subtracts.
+	// stands down and `print(4\n - 1)` still subtracts.
 	switch p.curToken.Type {
 	case token.LPAREN, token.LBRACKET, token.LBRACE:
 		p.bracketDepth++

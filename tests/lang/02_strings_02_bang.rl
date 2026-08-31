@@ -1,4 +1,4 @@
 s = "hello"
 
-puts(s.uppercase!())
-puts(s)
+print(s.uppercase!())
+print(s)

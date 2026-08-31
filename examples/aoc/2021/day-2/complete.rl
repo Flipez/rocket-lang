@@ -21,4 +21,4 @@ foreach i, line in input
   end
 end
 
-puts(hor * depth)
+print(hor * depth)

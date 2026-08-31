@@ -1,7 +1,7 @@
 foreach i in 1 -> 4
-  puts(i)
+  print(i)
 end
 
 foreach i in 5 => 5
-  puts(i)
+  print(i)
 end

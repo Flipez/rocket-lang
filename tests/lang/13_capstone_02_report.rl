@@ -6,6 +6,6 @@ servers = [
 
 active = servers.filter(def(s) s.get("active", false) end)
 
-puts(active.map(def(s) s.get("name", "") end).sort())
-puts(active.reduce(0, def(sum, s) sum + s.get("size", 0) end))
-puts(active.max_by(def(s) s.get("size", 0) end).get("name", ""))
+print(active.map(def(s) s.get("name", "") end).sort())
+print(active.reduce(0, def(sum, s) sum + s.get("size", 0) end))
+print(active.max_by(def(s) s.get("size", 0) end).get("name", ""))

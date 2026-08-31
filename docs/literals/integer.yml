@@ -254,8 +254,8 @@ methods:
   times:
     description: "Calls the callback with each integer from `0` up to one less than the receiver, and returns the receiver so calls can be chained. A count of zero or less calls nothing rather than erroring, which makes it safe to hand a computed count. The counter keeps the receiver's base."
     input: |
-      3.times(def(i) puts(i) end)
-      0.times(def(i) puts("never") end)
+      3.times(def(i) print(i) end)
+      0.times(def(i) print("never") end)
     output: |
       0
       1
@@ -265,8 +265,8 @@ methods:
   upto:
     description: "Calls the callback with each integer from the receiver up to the given limit, inclusive at both ends, and returns the receiver. A limit below the receiver calls nothing."
     input: |
-      1.upto(3, def(i) puts(i) end)
-      3.upto(1, def(i) puts("never") end)
+      1.upto(3, def(i) print(i) end)
+      3.upto(1, def(i) print("never") end)
     output: |
       1
       2
@@ -276,7 +276,7 @@ methods:
   downto:
     description: "Calls the callback with each integer from the receiver down to the given limit, inclusive at both ends, and returns the receiver. A limit above the receiver calls nothing."
     input: |
-      3.downto(1, def(i) puts(i) end)
+      3.downto(1, def(i) print(i) end)
     output: |
       3
       2

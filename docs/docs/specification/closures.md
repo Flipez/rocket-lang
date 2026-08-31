@@ -9,7 +9,7 @@ toc: true
 ```js
 newGreeter = def (greeting)
   return def (name)
-           puts(greeting + " " + name)
+           print(greeting + " " + name)
          end
 end
 

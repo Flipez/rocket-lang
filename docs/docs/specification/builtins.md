@@ -6,17 +6,17 @@ menu:
 toc: true
 ---
 # Builtin Functions
-## puts(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
+## print(STRING|ARRAY|HASH|BOOLEAN|INTEGER|NIL|FILE)
 
 Prints the string representation of the given object to STDOUT.
 
 ```js
-🚀 > puts("test")
+🚀 > print("test")
 "test"
 
-🚀 > puts([1,2,3])
+🚀 > print([1,2,3])
 [1, 2, 3]
 
-🚀 > puts(["test",true,3])
+🚀 > print(["test",true,3])
 ["test", true, 3]
 ```

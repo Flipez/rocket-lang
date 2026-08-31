@@ -1,7 +1,7 @@
 title: "HTTP"
 example: |
   def hello()
-    puts(request["body"])
+    print(request["body"])
     response["body"] = "hello " + request["method"]
   end
 

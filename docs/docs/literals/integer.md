@@ -154,7 +154,7 @@ Returns the quotient and the remainder as a two-element array. Both follow the `
 Calls the callback with each integer from the receiver down to the given limit, inclusive at both ends, and returns the receiver. A limit above the receiver calls nothing.
 
 
-<CodeBlockSimple input='3.downto(1, def(i) puts(i) end)
+<CodeBlockSimple input='3.downto(1, def(i) print(i) end)
 ' output='3
 2
 1
@@ -397,8 +397,8 @@ Returns the tangent, in radians, of the number, as a float.
 Calls the callback with each integer from `0` up to one less than the receiver, and returns the receiver so calls can be chained. A count of zero or less calls nothing rather than erroring, which makes it safe to hand a computed count. The counter keeps the receiver's base.
 
 
-<CodeBlockSimple input='3.times(def(i) puts(i) end)
-0.times(def(i) puts("never") end)
+<CodeBlockSimple input='3.times(def(i) print(i) end)
+0.times(def(i) print("never") end)
 ' output='0
 1
 2
@@ -448,8 +448,8 @@ Drops the last digits, rounding toward zero, given a negative digit count. No ar
 Calls the callback with each integer from the receiver up to the given limit, inclusive at both ends, and returns the receiver. A limit below the receiver calls nothing.
 
 
-<CodeBlockSimple input='1.upto(3, def(i) puts(i) end)
-3.upto(1, def(i) puts("never") end)
+<CodeBlockSimple input='1.upto(3, def(i) print(i) end)
+3.upto(1, def(i) print("never") end)
 ' output='1
 2
 3
@@ -648,7 +648,7 @@ Returns the type groups the value belongs to, sorted. `ANY` is not listed: every
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]
