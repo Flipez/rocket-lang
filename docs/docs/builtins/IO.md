@@ -18,6 +18,31 @@ Opens a file pointer to the file at the path, mode and permission can be set opt
 ' />
 
 
+### read_line()
+> Returns `STRING|NIL`
+
+Reads a single line from standard input, with the trailing newline removed. Returns `nil` at the end of input, which is not an error but the normal way a piped program ends.
+
+
+<CodeBlockSimple input='IO.read_line()
+' output='"hello"
+' />
+
+
+### write(ANY...)
+> Returns `NIL`
+
+Writes the given value(s) to standard output without appending a trailing newline. Strings are written as their raw value; use `print` when a trailing newline is wanted.
+
+
+<CodeBlockSimple input='IO.write("Progress")
+IO.write(".")
+IO.write(".")
+IO.write(".")
+' output='Progress...
+' />
+
+
 
 ## Properties
 | Name | Value |

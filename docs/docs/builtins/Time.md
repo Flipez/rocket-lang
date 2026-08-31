@@ -25,6 +25,17 @@ Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
 ' />
 
 
+### now()
+> Returns `INTEGER`
+
+Returns the current time as a unix timestamp.
+
+
+<CodeBlockSimple input='Time.now()
+' output='1668788502
+' />
+
+
 ### parse(STRING, STRING)
 > Returns `STRING`
 

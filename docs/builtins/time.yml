@@ -25,6 +25,12 @@ functions:
     output: |
       1647993600
       1647993600
+  now:
+    description: "Returns the current time as a unix timestamp."
+    input: |
+      Time.now()
+    output: |
+      1668788502
   sleep:
     description: "Stops the RocketLang routine for at least the stated duration in seconds"
     input: |
