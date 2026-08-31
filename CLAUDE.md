@@ -19,10 +19,11 @@ go test ./object -run TestString # one test in one package
 ./coverage.sh                    # what CI runs (per-package cover profiles -> coverage.txt)
 ```
 
-Language-level tests live in `tests/*.rl` with a sibling `*.expected` holding
-the exact stdout. `go test -run TestRocketlangCode .` runs all of them; adding a
-pair of files is all it takes to add a case. Note the interpreter prints the
-program's final value, so most fixtures end in a bare `nil`.
+Language-level tests live under `tests/` (most under `tests/lang/`) as a `.rl`
+file with a sibling `*.expected` holding the exact stdout; the harness walks
+every subdirectory. `go test -run TestRocketlangCode .` runs all of them;
+adding a pair of files is all it takes to add a case. Note the interpreter
+prints the program's final value, so most fixtures end in a bare `nil`.
 
 ### Docs
 

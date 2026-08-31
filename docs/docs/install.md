@@ -34,7 +34,7 @@ There is also a [Visual Studio Code Extension](https://marketplace.visualstudio.
 
 ```
 rocket-lang program.rl        # run a file
-rocket-lang -e 'print("hi")'   # run the code given
+rocket-lang -e 'print("hi")'  # run the code given
 rocket-lang                   # start the REPL
 ```
 

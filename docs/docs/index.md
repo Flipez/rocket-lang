@@ -17,13 +17,13 @@ useful and not so useful.
 ```js
 // Values carry methods.
 name = "rocket-lang"
-print(name.uppercase())        // ROCKET-LANG
+print(name.uppercase())       // ROCKET-LANG
 print(name.split("-").size()) // 2
 
 // Arrays and hashes, both with methods of their own.
 crew = ["ada", "grace", "alan"]
 print(crew.size())            // 3
-print(crew.contains?("ada"))   // true
+print(crew.contains?("ada"))  // true
 
 ages = {"ada": 36, "grace": 45}
 print(ages["grace"])          // 45

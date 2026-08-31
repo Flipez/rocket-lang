@@ -113,14 +113,14 @@ The pairs are:
 | `unique` | `unique!` | `ARRAY` |
 | `merge` | `merge!` | `HASH` |
 | `capitalize` | `capitalize!` | `STRING` |
-| `trim_line_end` | `trim_line_end!` | `STRING` |
-| `remove_last` | `remove_last!` | `STRING` |
 | `lowercase` | `lowercase!` | `STRING` |
-| `trim_start` | `trim_start!` | `STRING` |
+| `remove_last` | `remove_last!` | `STRING` |
 | `replace` | `replace!` | `STRING` |
-| `trim_end` | `trim_end!` | `STRING` |
-| `trim` | `trim!` | `STRING` |
 | `swap_case` | `swap_case!` | `STRING` |
+| `trim` | `trim!` | `STRING` |
+| `trim_end` | `trim_end!` | `STRING` |
+| `trim_line_end` | `trim_line_end!` | `STRING` |
+| `trim_start` | `trim_start!` | `STRING` |
 | `uppercase` | `uppercase!` | `STRING` |
 
 A method that cannot sensibly be done in place has no `!` form. `size()` and
