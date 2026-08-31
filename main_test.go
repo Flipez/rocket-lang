@@ -17,9 +17,18 @@ func TestRocketlangCode(t *testing.T) {
 
 	testDir := "tests"
 
-	matches, err := fs.Glob(os.DirFS(testDir), "*.rl")
+	var matches []string
+	err := fs.WalkDir(os.DirFS(testDir), ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && strings.HasSuffix(path, ".rl") {
+			matches = append(matches, path)
+		}
+		return nil
+	})
 	if err != nil {
-		t.Errorf("failed to read test dir 'tests/': %s", err)
+		t.Fatalf("failed to walk test dir 'tests/': %s", err)
 	}
 	for _, match := range matches {
 		filename := filepath.Join(testDir, match)
@@ -35,7 +44,10 @@ func TestRocketlangCode(t *testing.T) {
 			continue
 		}
 
-		fakeStdout, err := os.CreateTemp("", strings.TrimSuffix(match, ".rl"))
+		// CreateTemp's pattern arg rejects path separators, and match now carries
+		// one for fixtures grouped in subdirectories (e.g. "lang/01_puts.rl").
+		tempPattern := strings.ReplaceAll(strings.TrimSuffix(match, ".rl"), "/", "_")
+		fakeStdout, err := os.CreateTemp("", tempPattern)
 		if err != nil {
 			t.Errorf("%s: %s", match, err)
 			continue
