@@ -640,8 +640,24 @@ RocketLang; every other method has exactly one name.
 
 
 
-
-<CodeBlockSimple input='"test".wat()' />
-
+<CodeBlockSimple input='true.wat()
+1.0.wat()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	ceil([INTEGER])
+	divmod(FLOAT)
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	nan?()
+	negative?()
+	positive?()
+	round([INTEGER])
+	truncate([INTEGER])
+	zero?()
+nil
+' />
 
 
