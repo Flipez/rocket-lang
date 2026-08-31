@@ -230,10 +230,10 @@ func TestErrorHandling(t *testing.T) {
 		{"foreach i in 'test' -> 3 \nputs(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
 		{"foreach i in 0 -> 'test' \nputs(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
 		{"foreach i in 0 -> 5 ^ 'test' \nputs(i)\nend", "test:1:1: range rocket step has to be an integer, got STRING"},
-		{"[[1, 2]].to_m() + [[1], [2]].to_m()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
-		{"[[1, 2]].to_m() - [[1], [2]].to_m()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
-		{"[[1, 2]].to_m() * [[1, 2]].to_m()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
-		{"[[1, 2]].to_m() % [[1, 2]].to_m()", "unknown operator: MATRIX % MATRIX"},
+		{"[[1, 2]].to_matrix() + [[1], [2]].to_matrix()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_matrix() - [[1], [2]].to_matrix()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_matrix() * [[1, 2]].to_matrix()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
+		{"[[1, 2]].to_matrix() % [[1, 2]].to_matrix()", "unknown operator: MATRIX % MATRIX"},
 	}
 
 	for _, tt := range tests {
@@ -608,43 +608,43 @@ func TestMatrixIndexExpressions(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0]",
 			"[1.0, 2.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1]",
 			"[3.0, 4.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0][0]",
 			1.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0][1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0][1]",
 			2.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1][0]",
 			3.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1][1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1][1]",
 			4.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-1]",
 			"[3.0, 4.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-1][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-1][0]",
 			3.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-2]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-2]",
 			"[1.0, 2.0]",
 		},
 		{
-			"m = [[1, 2, 3], [4, 5, 6]].to_m(); m[0][2]",
+			"m = [[1, 2, 3], [4, 5, 6]].to_matrix(); m[0][2]",
 			3.0,
 		},
 	}
@@ -675,11 +675,11 @@ func TestMatrixIndexOutOfBounds(t *testing.T) {
 		expected string
 	}{
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[2]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[2]",
 			"row index 2 out of bounds [0, 2)",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-3]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-3]",
 			"row index -1 out of bounds [0, 2)",
 		},
 	}

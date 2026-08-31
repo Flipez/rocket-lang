@@ -23,7 +23,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "test:1:3: undefined method `.nope()` for HASH"},
 		{`{}.type()`, "HASH"},
-		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.push(key) \nend; b.size()", 2},
+		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.append(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},
@@ -192,8 +192,8 @@ func TestHashCallbackMethods(t *testing.T) {
 		// each hands back the hash, so it chains, and receives both halves.
 		{`h = {"a": 1}; h.each(def(k, v) end).size()`, 1},
 		{`h = {"a": 1}; h.each(def(k, v) end).type()`, "HASH"},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(k) end); out.to_json()`, `["a"]`},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(v) end); out.to_json()`, "[1]"},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append(k) end); out.to_json()`, `["a"]`},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append(v) end); out.to_json()`, "[1]"},
 		{`h = {"a": 1}; h.each(def(k, v) break end).size()`, 1},
 
 		// Arity is checked against what the method passes.

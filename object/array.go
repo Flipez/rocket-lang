@@ -15,7 +15,7 @@ type Array struct {
 func NewArray(slice []Object) *Array {
 	if slice == nil {
 		// A nil slice marshals as JSON null, so [].to_json() was "null" while
-		// an array emptied with pop was "[]" -- the same value, serialized two
+		// an array emptied with remove_last was "[]" -- the same value, serialized two
 		// ways depending on how it got there. An empty array literal arrives
 		// here with nothing, so normalise once at the door.
 		slice = make([]Object, 0)
@@ -194,7 +194,7 @@ func init() {
 				return NewInteger(result)
 			},
 		},
-		"uniq": ObjectMethod{
+		"unique": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
@@ -209,7 +209,7 @@ func init() {
 				return NewArray(unique)
 			},
 		},
-		"uniq!": ObjectMethod{
+		"unique!": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
@@ -227,7 +227,7 @@ func init() {
 				return ao
 			},
 		},
-		"index": ObjectMethod{
+		"index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -307,7 +307,7 @@ func init() {
 				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
-		"pop": ObjectMethod{
+		"remove_last": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -331,7 +331,7 @@ func init() {
 				return returnElement
 			},
 		},
-		"push": ObjectMethod{
+		"append": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
@@ -364,7 +364,7 @@ func init() {
 				return TRUE
 			},
 		},
-		"slices": ObjectMethod{
+		"chunks": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -382,19 +382,19 @@ func init() {
 
 				length := len(ao.Elements)
 
-				slices := NewArray(make([]Object, 0))
+				chunks := NewArray(make([]Object, 0))
 				for i := 0; i < length; i += size {
 					end := i + size
 					if end > length {
 						end = length
 					}
-					slices.Add(NewArray(ao.Elements[i:end]))
+					chunks.Add(NewArray(ao.Elements[i:end]))
 				}
 
-				return slices
+				return chunks
 			},
 		},
-		"to_m": ObjectMethod{
+		"to_matrix": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(MATRIX_OBJ, ERROR_OBJ),
@@ -503,7 +503,7 @@ func init() {
 				ao := o.(*Array)
 
 				// Without an argument this is size(). With one it counts how
-				// often that element occurs, which is what index() cannot tell
+				// often that element occurs, which is what index_of() cannot tell
 				// you.
 				if len(args) == 0 {
 					return NewInteger(len(ao.Elements))
@@ -519,7 +519,7 @@ func init() {
 				return NewInteger(count)
 			},
 		},
-		"rindex": ObjectMethod{
+		"last_index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(ANY),
@@ -531,7 +531,7 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				// -1 when absent, the same answer index() gives.
+				// -1 when absent, the same answer index_of() gives.
 				for i := len(ao.Elements) - 1; i >= 0; i-- {
 					if CompareObjects(ao.Elements[i], args[0]) {
 						return NewInteger(i)
@@ -561,7 +561,7 @@ func init() {
 				return extremeElement(o.(*Array).Elements, false)
 			},
 		},
-		"shift": ObjectMethod{
+		"remove_first": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -570,7 +570,7 @@ func init() {
 			method: func(o Object, _ []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				// The mirror of pop: it changes the array and hands back the
+				// The mirror of remove_last: it changes the array and hands back the
 				// element, so it has no ! either.
 				if len(ao.Elements) == 0 {
 					return NIL
@@ -582,7 +582,7 @@ func init() {
 				return first
 			},
 		},
-		"unshift": ObjectMethod{
+		"prepend": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(ANY),
@@ -632,7 +632,7 @@ func init() {
 				return ao
 			},
 		},
-		"delete": ObjectMethod{
+		"remove": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(ANY),
@@ -664,7 +664,7 @@ func init() {
 				return args[0]
 			},
 		},
-		"delete_at": ObjectMethod{
+		"remove_at": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -682,7 +682,7 @@ func init() {
 					at = length + at
 				}
 				// nil rather than an error for a position that is not there,
-				// the same answer first() and pop() give for an empty array.
+				// the same answer first() and remove_last() give for an empty array.
 				if at < 0 || at >= length {
 					return NIL
 				}
@@ -725,30 +725,7 @@ func init() {
 				return ao
 			},
 		},
-		"take": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ, ERROR_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				count := args[0].(*Integer).Value
-				if count < 0 {
-					return NewErrorFormat("negative count %d", count)
-				}
-				if count > len(ao.Elements) {
-					count = len(ao.Elements)
-				}
-
-				return NewArray(copyElements(ao.Elements[:count]))
-			},
-		},
-		"drop": ObjectMethod{
+		"skip": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -769,6 +746,31 @@ func init() {
 				}
 
 				return NewArray(copyElements(ao.Elements[count:]))
+			},
+		},
+		"skip_last": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				elements := o.(*Array).Elements
+				count := args[0].(*Integer).Value
+
+				if count < 0 {
+					return NewErrorFormat("skip_last needs a count of zero or more, got %d", count)
+				}
+
+				keep := len(elements) - count
+				if keep < 0 {
+					keep = 0
+				}
+
+				return NewArray(copyElements(elements[:keep]))
 			},
 		},
 	}
@@ -798,7 +800,7 @@ func init() {
 
 		return sortedByKeys(elements, keys, count)
 	})
-	arrayCallbackPair("select", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
+	arrayCallbackPair("filter", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
 		return filteredElements(elements, fn, env, true)
 	})
 	arrayCallbackPair("reject", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
@@ -976,7 +978,7 @@ func (a *arrayIterator) Next() (Object, Object, bool) {
 
 // requireElements returns an error naming the first element outside the group,
 // or nil. The four requirements on elements -- STRINGABLE for join, INTEGERABLE
-// for sum, HASHABLE for uniq and COMPARABLE for sort -- used to be four checks
+// for sum, HASHABLE for unique and COMPARABLE for sort -- used to be four checks
 // with four unrelated messages, one of which did not say which element was at
 // fault.
 func requireElements(elements []Object, group string) Object {
@@ -1051,7 +1053,7 @@ func mappedElements(elements []Object, fn Object, env Environment) ([]Object, Ob
 }
 
 // filteredElements keeps the elements the callback answers for. keep says which
-// way round: select keeps a yes, reject keeps a no. Truthiness is the language's
+// way round: filter keeps a yes, reject keeps a no. Truthiness is the language's
 // own -- only false and nil are false, so 0 and "" are yeses.
 func filteredElements(elements []Object, fn Object, env Environment, keep bool) ([]Object, Object) {
 	out := make([]Object, 0, len(elements))

@@ -3,7 +3,7 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 # Matrix
 
 A matrix is a 2-dimensional array of numbers used for linear algebra operations.
-Matrices are created by calling the to_m() method on nested arrays.
+Matrices are created by calling the to_matrix() method on nested arrays.
 
 Matrix supports mathematical operations:
 - Matrix multiplication: `m1 * m2`
@@ -18,8 +18,8 @@ Matrix indexing:
 
 
 ```js
-m1 = [[1, 2], [3, 4]].to_m()
-m2 = [[5, 6], [7, 8]].to_m()
+m1 = [[1, 2], [3, 4]].to_matrix()
+m2 = [[5, 6], [7, 8]].to_matrix()
 
 result = m1 * m2
 sum = m1 + m2
@@ -44,7 +44,7 @@ puts(result)
 Returns the specified column as an array (0-indexed).
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.col(1)
 ' output='[2.0, 5.0]
 ' />
@@ -56,7 +56,7 @@ m.col(1)
 Returns the number of columns in the matrix.
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.cols()
 ' output='3
 ' />
@@ -68,7 +68,7 @@ m.cols()
 Returns the element at the specified row and column (0-indexed).
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.get(0, 2)
 ' output='3.0
 ' />
@@ -80,7 +80,7 @@ m.get(0, 2)
 Returns the specified row as an array (0-indexed).
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.row(0)
 ' output='[1.0, 2.0, 3.0]
 ' />
@@ -92,7 +92,7 @@ m.row(0)
 Returns the number of rows in the matrix.
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.rows()
 ' output='2
 ' />
@@ -104,7 +104,7 @@ m.rows()
 Sets the element at the specified row and column (0-indexed) and returns the matrix, so calls can be chained.
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.set(0, 2, 99)
 m
 ' output='2x3 matrix
@@ -131,7 +131,7 @@ m
 Returns an array containing the dimensions [rows, cols] of the matrix.
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.shape()
 ' output='[2, 3]
 ' />
@@ -143,7 +143,7 @@ m.shape()
 Returns the total number of elements in the matrix (rows * cols).
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.size()
 ' output='6
 ' />
@@ -155,7 +155,7 @@ m.size()
 Alias for transpose(). Returns the transposed matrix.
 
 
-<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_m()
+<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_matrix()
 m.t()
 ' output='2x2 matrix
 ┌          ┐
@@ -171,7 +171,7 @@ m.t()
 Converts the matrix back to a nested array representation.
 
 
-<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_m()
+<CodeBlockSimple input='m = [[1, 2], [3, 4]].to_matrix()
 m.to_a()
 ' output='[[1.0, 2.0], [3.0, 4.0]]
 ' />
@@ -183,7 +183,7 @@ m.to_a()
 Returns the transposed matrix (rows and columns swapped).
 
 
-<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_m()
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.transpose()
 ' output='3x2 matrix
 ┌          ┐
@@ -365,7 +365,7 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `append(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()

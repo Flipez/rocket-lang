@@ -226,7 +226,7 @@ func init() {
 
 // stringPair registers a method and its in-place counterpart from one
 // transformation. Writing the pair out twice is what let Array#reverse mutate
-// while Array#uniq did not: the two halves drifted because nothing tied them
+// while Array#unique did not: the two halves drifted because nothing tied them
 // together. Here the ! method can only ever do what the plain one does.
 //
 // Both return a STRING. A ! method hands back the receiver so calls chain, which

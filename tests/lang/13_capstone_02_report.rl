@@ -4,7 +4,7 @@ servers = [
   {"name": "db-1",  "active": true,  "size": 2048}
 ]
 
-active = servers.select(def(s) s.get("active", false) end)
+active = servers.filter(def(s) s.get("active", false) end)
 
 puts(active.map(def(s) s.get("name", "") end).sort())
 puts(active.reduce(0, def(sum, s) sum + s.get("size", 0) end))

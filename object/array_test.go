@@ -31,22 +31,22 @@ func TestArrayObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1,2,3][0]`, 1},
 		{`[1,2,3].size()`, 3},
-		{`[1,2,3].pop()`, 3},
+		{`[1,2,3].remove_last()`, 3},
 		{`[1,2,3].type()`, "ARRAY"},
-		{`a = []; a.push(1); a`, "[1]"},
+		{`a = []; a.append(1); a`, "[1]"},
 		{`[].nope()`, "test:1:3: undefined method `.nope()` for ARRAY"},
-		{"a = [\"a\", \"b\"]; b = []; foreach i, item in a \n b.push(item) \nend; b.size()", 2},
-		{`[1,2,3].index(4)`, -1},
-		{`[1,2,3].index(3)`, 2},
-		{`[1,2,3].index(true)`, -1},
-		{`[1,2,3].index()`, "too few arguments: got=0, want=1"},
-		{"a = []; b = []; foreach i in a \n b.push(a[i]) \nend; a.size()==b.size()", true},
-		{`[1,1,2].uniq().size()`, 2},
-		{`[true,true,2].uniq().size()`, 2},
-		{`["test","test",2].uniq().size()`, 2},
+		{"a = [\"a\", \"b\"]; b = []; foreach i, item in a \n b.append(item) \nend; b.size()", 2},
+		{`[1,2,3].index_of(4)`, -1},
+		{`[1,2,3].index_of(3)`, 2},
+		{`[1,2,3].index_of(true)`, -1},
+		{`[1,2,3].index_of()`, "too few arguments: got=0, want=1"},
+		{"a = []; b = []; foreach i in a \n b.append(a[i]) \nend; a.size()==b.size()", true},
+		{`[1,1,2].unique().size()`, 2},
+		{`[true,true,2].unique().size()`, 2},
+		{`["test","test",2].unique().size()`, 2},
 		// nil is not hashable, so it cannot be de-duplicated. Written with a
 		// literal rather than relying on what a !-method hands back.
-		{`[nil].uniq()`, "element 0 is not HASHABLE, got NIL"},
+		{`[nil].unique()`, "element 0 is not HASHABLE, got NIL"},
 		{"[].first()", nil},
 		{"[1,2,3].first()", 1},
 		{"[].last()", nil},
@@ -66,10 +66,10 @@ func TestArrayObjectMethods(t *testing.T) {
 		{`[1,2,3].include?(3)`, true},
 		{`[1,2,3].include?(true)`, false},
 		{`[1,2,3].include?()`, "too few arguments: got=0, want=1"},
-		{`[1,2,3,4,5,6,7,8,9].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`},
-		{`[1,2,3,4,5,6,7,8].slices(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
-		{`[1,2].slices(3)`, `[[1, 2]]`},
-		{`[1,2].slices(0)`, `invalid slice size, needs to be > 0`},
+		{`[1,2,3,4,5,6,7,8,9].chunks(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`},
+		{`[1,2,3,4,5,6,7,8].chunks(3)`, `[[1, 2, 3], [4, 5, 6], [7, 8]]`},
+		{`[1,2].chunks(3)`, `[[1, 2]]`},
+		{`[1,2].chunks(0)`, `invalid slice size, needs to be > 0`},
 		// A hash used to be rejected here because Hash had no to_string. Now it
 		// renders like it does everywhere else, and only a type that genuinely
 		// has no string form -- a function -- is refused.
@@ -84,10 +84,10 @@ func TestArrayObjectMethods(t *testing.T) {
 		// nil and a non-numeric string both used to contribute a silent 0.
 		{"[1, nil].sum()", "element 1 is not INTEGERABLE, got NIL"},
 		{"['abc'].sum()", "element 0 does not convert to a number, got STRING"},
-		{`[[1, 2], [3, 4]].to_m()`, "2x2 matrix\n┌          ┐\n│ 1.0  2.0 │\n│ 3.0  4.0 │\n└          ┘"},
-		{`[[1, 2], [3, 4]].to_m().to_a()`, "[[1.0, 2.0], [3.0, 4.0]]"},
-		{`[1, 2].to_m()`, "failed to convert array to matrix: matrix must be created from 2D array"},
-		{`[[1, 2], [3]].to_m()`, "failed to convert array to matrix: row 1 has inconsistent length (expected 2, got 1)"},
+		{`[[1, 2], [3, 4]].to_matrix()`, "2x2 matrix\n┌          ┐\n│ 1.0  2.0 │\n│ 3.0  4.0 │\n└          ┘"},
+		{`[[1, 2], [3, 4]].to_matrix().to_a()`, "[[1.0, 2.0], [3.0, 4.0]]"},
+		{`[1, 2].to_matrix()`, "failed to convert array to matrix: matrix must be created from 2D array"},
+		{`[[1, 2], [3]].to_matrix()`, "failed to convert array to matrix: row 1 has inconsistent length (expected 2, got 1)"},
 	}
 
 	testInput(t, tests)
@@ -140,36 +140,36 @@ func TestArrayAdd(t *testing.T) {
 // TestArrayBangConvention covers the mutation convention #231 introduced: a
 // plain method leaves the receiver alone and returns a new array, a !-method
 // changes the receiver and hands it back so calls chain. Before this, reverse
-// and sort mutated without a bang while uniq did not, so the same name meant
+// and sort mutated without a bang while unique did not, so the same name meant
 // different things on Array and String.
 func TestArrayBangConvention(t *testing.T) {
 	tests := []inputTestCase{
 		// Plain methods are pure: the original is untouched.
 		{`a = [3,1,2]; a.reverse(); a.to_json()`, "[3,1,2]"},
 		{`a = [3,1,2]; a.sort(); a.to_json()`, "[3,1,2]"},
-		{`a = [1,1,2]; a.uniq(); a.to_json()`, "[1,1,2]"},
+		{`a = [1,1,2]; a.unique(); a.to_json()`, "[1,1,2]"},
 		{`[3,1,2].reverse().to_json()`, "[2,1,3]"},
 		{`[3,1,2].sort().to_json()`, "[1,2,3]"},
-		{`[1,1,2].uniq().to_json()`, "[1,2]"},
+		{`[1,1,2].unique().to_json()`, "[1,2]"},
 
 		// !-methods change the receiver.
 		{`a = [3,1,2]; a.reverse!(); a.to_json()`, "[2,1,3]"},
 		{`a = [3,1,2]; a.sort!(); a.to_json()`, "[1,2,3]"},
-		{`a = [1,1,2]; a.uniq!(); a.to_json()`, "[1,2]"},
+		{`a = [1,1,2]; a.unique!(); a.to_json()`, "[1,2]"},
 
 		// ...and hand it back, so they chain.
 		{`[3,1,2].sort!().reverse!().to_json()`, "[3,2,1]"},
-		{`[1].push(2).push(3).to_json()`, "[1,2,3]"},
+		{`[1].append(2).append(3).to_json()`, "[1,2,3]"},
 
-		// uniq keeps the order of first appearance. Building the result from a
+		// unique keeps the order of first appearance. Building the result from a
 		// map made this vary between runs.
-		{`[5,3,1,4,2,3].uniq().to_json()`, "[5,3,1,4,2]"},
-		{`[5,3,1,4,2,3].uniq!().to_json()`, "[5,3,1,4,2]"},
+		{`[5,3,1,4,2,3].unique().to_json()`, "[5,3,1,4,2]"},
+		{`[5,3,1,4,2,3].unique!().to_json()`, "[5,3,1,4,2]"},
 
-		// pop still mutates and hands back the element, as in Ruby: a pure pop
-		// would just be last().
-		{`a = [1,2,3]; a.pop()`, 3},
-		{`a = [1,2,3]; a.pop(); a.to_json()`, "[1,2]"},
+		// remove_last still mutates and hands back the element, as in Ruby: a
+		// pure remove_last would just be last().
+		{`a = [1,2,3]; a.remove_last()`, 3},
+		{`a = [1,2,3]; a.remove_last(); a.to_json()`, "[1,2]"},
 
 		// A sort that cannot compare its elements errors...
 		{`[1,"a"].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
@@ -189,21 +189,21 @@ func TestArrayBangConvention(t *testing.T) {
 
 // TestArrayRubyMethods covers the methods added to close the gap with Ruby's
 // Array. Only the ones that need no user-supplied function are here; map,
-// select and reject are not possible until an object method can call one.
+// filter and reject are not possible until an object method can call one.
 func TestArrayRubyMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[].empty?()`, true},
 		{`[1].empty?()`, false},
 
-		// count() is size(); count(x) is how often x occurs, which index()
+		// count() is size(); count(x) is how often x occurs, which index_of()
 		// cannot tell you.
 		{`[1,2,2,3].count()`, 4},
 		{`[1,2,2,3].count(2)`, 2},
 		{`[1,2,2,3].count(9)`, 0},
 
-		// -1 when absent, the answer index() already gave.
-		{`[1,2,2,3].rindex(2)`, 2},
-		{`[1,2,3].rindex(9)`, -1},
+		// -1 when absent, the answer index_of() already gave.
+		{`[1,2,2,3].last_index_of(2)`, 2},
+		{`[1,2,3].last_index_of(9)`, -1},
 
 		{`[3,1,2].min()`, 1},
 		{`[3,1,2].max()`, 3},
@@ -224,11 +224,9 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`[1,2,3].first()`, 1},
 		{`[1,2,3].last()`, 3},
 
-		{`[1,2,3].take(2)`, "[1, 2]"},
-		{`[1,2,3].drop(2)`, "[3]"},
-		{`[1,2,3].take(9)`, "[1, 2, 3]"},
-		{`[1,2,3].drop(9)`, "[]"},
-		{`[1,2,3].take(0 - 1)`, "negative count -1"},
+		{`[1,2,3].skip(2)`, "[3]"},
+		{`[1,2,3].skip(9)`, "[]"},
+		{`[1,2,3].skip(0 - 1)`, "negative count -1"},
 
 		{`[1,nil,2,nil].compact()`, "[1, 2]"},
 		{`[1,[2,[3]]].flatten()`, "[1, 2, 3]"},
@@ -241,11 +239,12 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`[1,2,3].rotate(4)`, "[2, 3, 1]"},
 		{`[].rotate()`, "[]"},
 
-		// shift mirrors pop: it changes the array and hands back the element.
-		{`a = [1,2,3]; a.shift()`, 1},
-		{`a = [1,2,3]; a.shift(); a.to_json()`, "[2,3]"},
-		{`[].shift()`, nil},
-		{`a = [2,3]; a.unshift(1).to_json()`, "[1,2,3]"},
+		// remove_first mirrors remove_last: it changes the array and hands back
+		// the element.
+		{`a = [1,2,3]; a.remove_first()`, 1},
+		{`a = [1,2,3]; a.remove_first(); a.to_json()`, "[2,3]"},
+		{`[].remove_first()`, nil},
+		{`a = [2,3]; a.prepend(1).to_json()`, "[1,2,3]"},
 
 		{`a = [1,2]; a.insert(1, 9).to_json()`, "[1,9,2]"},
 		{`a = [1,2]; a.insert(0, 9).to_json()`, "[9,1,2]"},
@@ -254,19 +253,19 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`a = [1,2]; a.insert(0 - 1, 9).to_json()`, "[1,2,9]"},
 		{`a = [1,2]; a.insert(3, 9)`, "index out of range, got 3 but array has only 2 elements"},
 
-		// delete takes out every occurrence and reports the element, or nil
+		// remove takes out every occurrence and reports the element, or nil
 		// when there was nothing to take out.
-		{`a = [1,2,1]; a.delete(1)`, 1},
-		{`a = [1,2,1]; a.delete(1); a.to_json()`, "[2]"},
-		{`a = [1,2]; a.delete(9)`, nil},
-		{`a = [1,2]; a.delete(9); a.to_json()`, "[1,2]"},
+		{`a = [1,2,1]; a.remove(1)`, 1},
+		{`a = [1,2,1]; a.remove(1); a.to_json()`, "[2]"},
+		{`a = [1,2]; a.remove(9)`, nil},
+		{`a = [1,2]; a.remove(9); a.to_json()`, "[1,2]"},
 
-		{`a = [1,2,3]; a.delete_at(1)`, 2},
-		{`a = [1,2,3]; a.delete_at(1); a.to_json()`, "[1,3]"},
-		{`a = [1,2,3]; a.delete_at(0 - 1)`, 3},
-		// A position that is not there gives nil, as first() and pop() do on an
-		// empty array.
-		{`[1,2].delete_at(9)`, nil},
+		{`a = [1,2,3]; a.remove_at(1)`, 2},
+		{`a = [1,2,3]; a.remove_at(1); a.to_json()`, "[1,3]"},
+		{`a = [1,2,3]; a.remove_at(0 - 1)`, 3},
+		// A position that is not there gives nil, as first() and remove_last()
+		// do on an empty array.
+		{`[1,2].remove_at(9)`, nil},
 
 		{`a = [1,2]; a.clear().to_json()`, "[]"},
 		{`a = [1]; a.concat([2,3]).to_json()`, "[1,2,3]"},
@@ -275,12 +274,33 @@ func TestArrayRubyMethods(t *testing.T) {
 		// A method handing back part of an array must hand back a copy. Without
 		// one the result shares memory with the original, and writing to the
 		// original changes the result underneath the caller.
-		{`a = [1,2,3]; b = a.drop(1); a[1] = 9; b.to_json()`, "[2,3]"},
-		{`a = [1,2,3]; b = a.take(2); a[0] = 9; b.to_json()`, "[1,2]"},
+		{`a = [1,2,3]; b = a.skip(1); a[1] = 9; b.to_json()`, "[2,3]"},
 		{`a = [1,2,3]; b = a.first(2); a[0] = 9; b.to_json()`, "[1,2]"},
 		{`a = [1,2,3]; b = a.last(2); a[2] = 9; b.to_json()`, "[2,3]"},
 	}
 	testInput(t, tests)
+}
+
+func TestArraySkip(t *testing.T) {
+	tests := []inputTestCase{
+		{`[1,2,3,4,5].skip(2)`, "[3, 4, 5]"},
+		{`[1,2,3,4,5].skip_last(2)`, "[1, 2, 3]"},
+		{`[1,2,3].skip(0)`, "[1, 2, 3]"},
+		{`[1,2,3].skip(99)`, "[]"},
+		{`[1,2,3].skip_last(99)`, "[]"},
+	}
+
+	testInput(t, tests)
+}
+
+// take was identical to first(n). Keeping both meant two names for one
+// behaviour, so it is gone; this pins that it stays gone.
+func TestArrayTakeIsGone(t *testing.T) {
+	evaluated := testEval(`[1,2,3].take(2)`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("take should no longer exist, got %s", evaluated.Inspect())
+	}
 }
 
 // TestArrayBangPairsAreComplete checks that the new pairs follow the same rule
@@ -320,8 +340,8 @@ func TestElementGroupErrors(t *testing.T) {
 		// Each one names the group, the index and what was found instead.
 		{`[def() end].join()`, "element 0 is not STRINGABLE, got FUNCTION"},
 		{`[1, def() end].join()`, "element 1 is not STRINGABLE, got FUNCTION"},
-		{`[nil].uniq()`, "element 0 is not HASHABLE, got NIL"},
-		{`[1, nil].uniq()`, "element 1 is not HASHABLE, got NIL"},
+		{`[nil].unique()`, "element 0 is not HASHABLE, got NIL"},
+		{`[1, nil].unique()`, "element 1 is not HASHABLE, got NIL"},
 		{`[1, nil].sum()`, "element 1 is not INTEGERABLE, got NIL"},
 		{`[nil].sort()`, "element 0 is not COMPARABLE, got NIL"},
 		{`[1, nil].sort()`, "element 1 is not COMPARABLE, got NIL"},
@@ -370,20 +390,20 @@ func TestArrayEach(t *testing.T) {
 		{`a = []; a.each(def(x) end).to_json()`, "[]"},
 
 		// The callback actually receives the element, which is the whole point.
-		{`out = []; a = [1,2,3]; a.each(def(x) out.push(x * 2) end); out.to_json()`, "[2,4,6]"},
-		{`out = []; a = ["x","y"]; a.each(def(s) out.push(s.uppercase()) end); out.to_json()`, `["X","Y"]`},
+		{`out = []; a = [1,2,3]; a.each(def(x) out.append(x * 2) end); out.to_json()`, "[2,4,6]"},
+		{`out = []; a = ["x","y"]; a.each(def(s) out.append(s.uppercase()) end); out.to_json()`, `["X","Y"]`},
 
 		// break ends the walk, next moves it along. A function does not consume
 		// either, so a callback can hand one back, and passing it through as a
 		// value would be meaningless.
-		{`out = []; a = [1,2,3,4]; a.each(def(x) if x == 3 break end out.push(x) end); out.to_json()`, "[1,2]"},
-		{`out = []; a = [1,2,3]; a.each(def(x) if x == 2 next end out.push(x) end); out.to_json()`, "[1,3]"},
+		{`out = []; a = [1,2,3,4]; a.each(def(x) if x == 3 break end out.append(x) end); out.to_json()`, "[1,2]"},
+		{`out = []; a = [1,2,3]; a.each(def(x) if x == 2 next end out.append(x) end); out.to_json()`, "[1,3]"},
 		// break still hands back the array, not the BREAK_VALUE.
 		{`a = [1,2]; a.each(def(x) break end).type()`, "ARRAY"},
 
 		// An error ends the walk and is handed on rather than swallowed.
 		{`a = [1]; a.each(def(x) x.no_such_method() end)`, "test:1:25: undefined method `.no_such_method()` for INTEGER"},
-		{`out = []; a = [1,2,3]; begin a.each(def(x) out.push(x); x.nope() end) rescue e end out.to_json()`, "[1]"},
+		{`out = []; a = [1,2,3]; begin a.each(def(x) out.append(x); x.nope() end) rescue e end out.to_json()`, "[1]"},
 
 		// Arity is the applier's business, and it reports it the way a call
 		// written out in full would.
@@ -400,7 +420,7 @@ func TestArrayEach(t *testing.T) {
 
 		// A closure keeps its own scope, so the callback sees where it was
 		// written rather than where it is called.
-		{`factor = 10; out = []; a = [1,2]; a.each(def(x) out.push(x * factor) end); out.to_json()`, "[10,20]"},
+		{`factor = 10; out = []; a = [1,2]; a.each(def(x) out.append(x * factor) end); out.to_json()`, "[10,20]"},
 	}
 	testInput(t, tests)
 }
@@ -411,13 +431,13 @@ func TestArrayEach(t *testing.T) {
 func TestArrayCallbackMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`a = [1,2,3]; a.map(def(x) x * 2 end).to_json()`, "[2,4,6]"},
-		{`a = [1,2,3,4]; a.select(def(x) x % 2 == 0 end).to_json()`, "[2,4]"},
+		{`a = [1,2,3,4]; a.filter(def(x) x % 2 == 0 end).to_json()`, "[2,4]"},
 		{`a = [1,2,3,4]; a.reject(def(x) x % 2 == 0 end).to_json()`, "[1,3]"},
 		// Only false and nil are false, so 0 and "" are yeses -- the language's
 		// own truthiness, the same as if and while use.
-		{`a = [1,2]; a.select(def(x) 0 end).to_json()`, "[1,2]"},
-		{`a = [1,2]; a.select(def(x) "" end).to_json()`, "[1,2]"},
-		{`a = [1,2]; a.select(def(x) nil end).to_json()`, "[]"},
+		{`a = [1,2]; a.filter(def(x) 0 end).to_json()`, "[1,2]"},
+		{`a = [1,2]; a.filter(def(x) "" end).to_json()`, "[1,2]"},
+		{`a = [1,2]; a.filter(def(x) nil end).to_json()`, "[]"},
 
 		{`a = [1,2,3]; a.reduce(0, def(sum, x) sum + x end)`, 6},
 		{`a = [1,2,3]; a.reduce(1, def(p, x) p * x end)`, 6},
@@ -452,8 +472,8 @@ func TestArrayCallbackMethods(t *testing.T) {
 		// filter is a no.
 		{`a = [1,2,3,4]; a.map(def(x) if x == 3 break end x end).to_json()`, "[1,2]"},
 		{`a = [1,2,3]; a.map(def(x) if x == 2 next end x end).to_json()`, "[1,null,3]"},
-		{`a = [1,2,3,4]; a.select(def(x) if x == 3 break end true end).to_json()`, "[1,2]"},
-		{`a = [1,2,3]; a.select(def(x) if x == 2 next end true end).to_json()`, "[1,3]"},
+		{`a = [1,2,3,4]; a.filter(def(x) if x == 3 break end true end).to_json()`, "[1,2]"},
+		{`a = [1,2,3]; a.filter(def(x) if x == 2 next end true end).to_json()`, "[1,3]"},
 		{`a = [1,2,3]; a.reduce(0, def(sum, x) if x == 3 break end sum + x end)`, 3},
 		{`a = [1,2,3]; a.reduce(0, def(sum, x) if x == 2 next end sum + x end)`, 4},
 		{`a = [1,2,3]; a.all?(def(x) if x == 3 break end x > 0 end)`, true},
@@ -461,14 +481,14 @@ func TestArrayCallbackMethods(t *testing.T) {
 		// The pure form leaves the receiver alone, the ! form changes it.
 		{`a = [1,2]; a.map(def(x) x * 2 end); a.to_json()`, "[1,2]"},
 		{`a = [1,2]; a.map!(def(x) x * 2 end); a.to_json()`, "[2,4]"},
-		{`a = [1,2,3]; a.select!(def(x) x > 1 end); a.to_json()`, "[2,3]"},
+		{`a = [1,2,3]; a.filter!(def(x) x > 1 end); a.to_json()`, "[2,3]"},
 		{`a = [1,2,3]; a.reject!(def(x) x > 1 end); a.to_json()`, "[1]"},
 		{`a = ["ccc","a"]; a.sort_by!(def(w) w.size() end); a.to_json()`, `["a","ccc"]`},
 		{`a = [1,2]; a.map!(def(x) x end).type()`, "ARRAY"},
 
 		// An error from a callback ends the walk and is passed on.
 		{`a = [1]; a.map(def(x) x.nope() end)`, "test:1:24: undefined method `.nope()` for INTEGER"},
-		{`a = [1]; a.select(def(x) x.nope() end)`, "test:1:27: undefined method `.nope()` for INTEGER"},
+		{`a = [1]; a.filter(def(x) x.nope() end)`, "test:1:27: undefined method `.nope()` for INTEGER"},
 		{`a = [1]; a.reduce(0, def(s, x) x.nope() end)`, "test:1:33: undefined method `.nope()` for INTEGER"},
 
 		// Arity and callability are reported the same way everywhere.
@@ -478,8 +498,8 @@ func TestArrayCallbackMethods(t *testing.T) {
 		{`a = [1]; a.reduce(0, "x")`, "wrong argument type on position 2: got=STRING, want=CALLABLE"},
 
 		// Chaining is the point of having them as methods.
-		{`a = [1,2,3,4,5]; a.select(def(x) x % 2 == 1 end).map(def(x) x * x end).sum()`, 35},
-		{`a = [1,2,3]; a.map(def(x) x * 2 end).select(def(x) x > 2 end).reduce(0, def(s, x) s + x end)`, 10},
+		{`a = [1,2,3,4,5]; a.filter(def(x) x % 2 == 1 end).map(def(x) x * x end).sum()`, 35},
+		{`a = [1,2,3]; a.map(def(x) x * 2 end).filter(def(x) x > 2 end).reduce(0, def(s, x) s + x end)`, 10},
 	}
 	testInput(t, tests)
 }

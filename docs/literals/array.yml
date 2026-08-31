@@ -58,7 +58,7 @@ methods:
       [1, 2, 3]
       [1, 2, 3]
   count:
-    description: "Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you."
+    description: "Without an argument this is `size`. With one it counts how often that element occurs, which is what `index_of` cannot tell you."
     input: |
       [1, 2, 2, 3].count()
       [1, 2, 2, 3].count(2)
@@ -67,37 +67,45 @@ methods:
       4
       2
       0
-  delete:
+  remove:
     description: "Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss."
     input: |
       a = [1, 2, 1]
-      a.delete(1)
+      a.remove(1)
       a
-      a.delete(9)
+      a.remove(9)
     output: |
       [1, 2, 1]
       1
       [2]
       nil
-  delete_at:
+  remove_at:
     description: "Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array."
     input: |
       a = [1, 2, 3]
-      a.delete_at(1)
+      a.remove_at(1)
       a
-      a.delete_at(9)
+      a.remove_at(9)
     output: |
       [1, 2, 3]
       2
       [1, 3]
       nil
-  drop:
-    description: "Returns everything after the first n elements as a new array. Dropping more than there are gives an empty array."
+  skip:
+    description: "Returns everything after the first n elements as a new array. Skipping more than there are gives an empty array."
     input: |
-      [1, 2, 3].drop(2)
-      [1, 2, 3].drop(9)
+      [1, 2, 3].skip(2)
+      [1, 2, 3].skip(9)
     output: |
       [3]
+      []
+  skip_last:
+    description: "Returns everything except the last n elements as a new array. Skipping more than there are gives an empty array."
+    input: |
+      [1, 2, 3].skip_last(2)
+      [1, 2, 3].skip_last(9)
+    output: |
+      [1]
       []
   each:
     description: "Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `puts`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on."
@@ -157,10 +165,10 @@ methods:
     output: |
       false
       true
-  index:
+  index_of:
     description: "Returns the index of the given element in the array if found. Otherwise return `-1`."
     input: |
-      ["a", "b", 1, 2].index(1)
+      ["a", "b", 1, 2].index_of(1)
     output: |
       2
   insert:
@@ -207,21 +215,21 @@ methods:
       1
       "a"
       nil
-  pop:
+  remove_last:
     description: "Removes the last element of the array and returns it."
     input: |
       a = [1,2,3]
-      a.pop()
+      a.remove_last()
       a
     output: |
       [1, 2, 3]
       3
       [1, 2]
-  push:
+  append:
     description: "Adds the given object as the last element and returns the array, so calls can be chained."
     input: |
       d = [1,2,3]
-      d.push("a")
+      d.append("a")
       d
     output: |
       [1, 2, 3]
@@ -247,11 +255,11 @@ methods:
       ["a", "b", 1, 2]
       [2, 1, "b", "a"]
       [2, 1, "b", "a"]
-  rindex:
-    description: "Returns the index of the last matching element, or `-1` when there is none. The mirror of `index`."
+  last_index_of:
+    description: "Returns the index of the last matching element, or `-1` when there is none. The mirror of `index_of`."
     input: |
-      [1, 2, 2, 3].rindex(2)
-      [1, 2, 3].rindex(9)
+      [1, 2, 2, 3].last_index_of(2)
+      [1, 2, 3].last_index_of(9)
     output: |
       2
       -1
@@ -279,11 +287,11 @@ methods:
       [1, 2, 3]
       [2, 3, 1]
       [2, 3, 1]
-  shift:
-    description: "Removes the first element and returns it, or `nil` for an empty array. The mirror of `pop`, and like `pop` it changes the array without a `!`, because there is no pure version of taking something out."
+  remove_first:
+    description: "Removes the first element and returns it, or `nil` for an empty array. The mirror of `remove_last`, and like `remove_last` it changes the array without a `!`, because there is no pure version of taking something out."
     input: |
       a = [1, 2, 3]
-      a.shift()
+      a.remove_first()
       a
     output: |
       [1, 2, 3]
@@ -295,10 +303,10 @@ methods:
       ["a", "b", 1, 2].size()
     output: |
       4
-  slices:
-    description: "Returns the elements of the array in slices with the size of the given integer"
+  chunks:
+    description: "Returns the elements of the array in chunks with the size of the given integer"
     input: |
-      [1,2,3,4,5,6,7,8].slices(3)
+      [1,2,3,4,5,6,7,8].chunks(3)
     output: |
       [[1, 2, 3], [4, 5, 6], [7, 8]]
   sort:
@@ -329,49 +337,41 @@ methods:
     output: |
       6
       3
-  take:
-    description: "Returns the first n elements as a new array. Asking for more than there are gives all of them. The result is a copy, so changing the original does not change it."
-    input: |
-      [1, 2, 3].take(2)
-      [1, 2, 3].take(9)
-    output: |
-      [1, 2]
-      [1, 2, 3]
-  to_m:
+  to_matrix:
     description: "Converts a nested array (2D array) to a Matrix object."
     input: |
-      [[1, 2], [3, 4]].to_m()
+      [[1, 2], [3, 4]].to_matrix()
     output: |
       2x2 matrix
       ┌          ┐
       │ 1.0  2.0 │
       │ 3.0  4.0 │
       └          ┘
-  uniq:
-    description: "Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `uniq!` to deduplicate in place."
+  unique:
+    description: "Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `unique!` to deduplicate in place."
     input: |
       c = ["a", 1, 1, 2]
-      c.uniq()
+      c.unique()
       c
     output: |
       ["a", 1, 1, 2]
       ["a", 1, 2]
       ["a", 1, 1, 2]
-  uniq!:
+  unique!:
     description: "Removes duplicates from the array in place and returns it, keeping the order of first appearance."
     input: |
       c = ["a", 1, 1, 2]
-      c.uniq!()
+      c.unique!()
       c
     output: |
       ["a", 1, 1, 2]
       ["a", 1, 2]
       ["a", 1, 2]
-  unshift:
-    description: "Adds an element to the front and returns the array, so calls can be chained. The mirror of `push`."
+  prepend:
+    description: "Adds an element to the front and returns the array, so calls can be chained. The mirror of `append`."
     input: |
       a = [2, 3]
-      a.unshift(1)
+      a.prepend(1)
       a
     output: |
       [2, 3]
@@ -397,28 +397,28 @@ methods:
       [1, 2, 3]
       [2, 4, 6]
       [2, 4, 6]
-  select:
-    description: "Returns a new array of the elements the callback said yes to. Only `false` and `nil` are no, so `0` and `\"\"` are yes. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. Use `select!` to filter in place."
+  filter:
+    description: "Returns a new array of the elements the callback said yes to. Only `false` and `nil` are no, so `0` and `\"\"` are yes. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. Use `filter!` to filter in place."
     input: |
       a = [1, 2, 3, 4]
-      a.select(def(x) x % 2 == 0 end)
+      a.filter(def(x) x % 2 == 0 end)
       a
     output: |
       [1, 2, 3, 4]
       [2, 4]
       [1, 2, 3, 4]
-  select!:
+  filter!:
     description: "Keeps only the elements the callback said yes to and returns the array, so calls can be chained."
     input: |
       a = [1, 2, 3, 4]
-      a.select!(def(x) x % 2 == 0 end)
+      a.filter!(def(x) x % 2 == 0 end)
       a
     output: |
       [1, 2, 3, 4]
       [2, 4]
       [2, 4]
   reject:
-    description: "Returns a new array of the elements the callback said no to -- the mirror of `select`. Use `reject!` to filter in place."
+    description: "Returns a new array of the elements the callback said no to -- the mirror of `filter`. Use `reject!` to filter in place."
     input: |
       a = [1, 2, 3, 4]
       a.reject(def(x) x % 2 == 0 end)

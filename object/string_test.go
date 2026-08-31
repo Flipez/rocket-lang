@@ -105,7 +105,7 @@ func TestStringObjectMethods(t *testing.T) {
 		{`a = "tESt"; a.lowercase!(); a`, "test"},
 		{`a = "test"; a.reverse!(); a`, "tset"},
 		{`a = " test "; a.trim!(); a`, "test"},
-		{"a = \"test\"; b = []; foreach char in a \n b.push(char) \nend; b.size()", 4},
+		{"a = \"test\"; b = []; foreach char in a \n b.append(char) \nend; b.size()", 4},
 		{`"test" * 2`, "testtest"},
 		{`2 * "test"`, "testtest"},
 		{`"test".to_json()`, `"test"`},

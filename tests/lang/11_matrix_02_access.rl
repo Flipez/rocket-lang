@@ -1,4 +1,4 @@
-m = [[1, 2], [3, 4]].to_m()
+m = [[1, 2], [3, 4]].to_matrix()
 
 puts(m.get(0, 1))
 puts(m.row(0))

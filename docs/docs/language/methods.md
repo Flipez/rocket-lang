@@ -8,7 +8,7 @@ same names with their arguments:
 
 ```js
 🚀 > [1, 2, 3].methods()
-=> ["first", "include?", "index", "join", "last", "pop", "push", "reverse", "reverse!", "size", "slices", "sort", "sort!", "sum", "to_m", "uniq", "uniq!"]
+=> ["all?", "any?", "append", "chunks", "clear", "compact", "compact!", "concat", "count", "each", "empty?", "filter", "filter!", "first", "flatten", "flatten!", "include?", "index_of", "insert", "join", "last", "last_index_of", "map", "map!", "max", "max_by", "min", "min_by", "none?", "prepend", "reduce", "reject", "reject!", "remove", "remove_at", "remove_first", "remove_last", "reverse", "reverse!", "rotate", "rotate!", "size", "skip", "skip_last", "sort", "sort!", "sort_by", "sort_by!", "sum", "to_matrix", "unique", "unique!"]
 ```
 
 Both are sorted by name. Before `0.24` they came out in a different order on
@@ -26,7 +26,7 @@ The documentation gives each method as a signature, for example
 | `STRING...` | one or more of them |
 
 Where a method takes a whole family of types, the family is named rather than
-listed — `push(ANY)`, `get(HASHABLE, ANY)`, `set(INTEGER, INTEGER, NUMERIC)`.
+listed — `append(ANY)`, `get(HASHABLE, ANY)`, `set(INTEGER, INTEGER, NUMERIC)`.
 Those names are **type groups**; see
 [Types and type groups](./types#type-groups) for what each one accepts and which
 types belong to it.
@@ -38,7 +38,7 @@ A callback is a function literal, since there is no separate block syntax:
 ```js
 🚀 > [1, 2, 3].map(def(x) x * 2 end)
 => [2, 4, 6]
-🚀 > [1, 2, 3, 4].select(def(x) x % 2 == 0 end)
+🚀 > [1, 2, 3, 4].filter(def(x) x % 2 == 0 end)
 => [2, 4]
 🚀 > [1, 2, 3].reduce(0, def(sum, x) sum + x end)
 => 6
@@ -59,7 +59,7 @@ Every one of them treats the callback's answer the same way:
 | --------------- | ------ |
 | a value | used — what that means is the method's business |
 | `break` | the walk ends here, and the answer covers what was walked |
-| `next` | the element contributed nothing: a `nil` from `map`, a no from `select` |
+| `next` | the element contributed nothing: a `nil` from `map`, a no from `filter` |
 | an error | the walk ends and the error is passed on |
 
 ```js
@@ -73,10 +73,10 @@ Every one of them treats the callback's answer the same way:
 the callback returns from the *callback*, since it is an ordinary function —
 there is no enclosing method to return from.
 
-Only `false` and `nil` are no, so `select` keeps a `0` and an empty string:
+Only `false` and `nil` are no, so `filter` keeps a `0` and an empty string:
 
 ```js
-🚀 > [1, 2].select(def(x) 0 end)
+🚀 > [1, 2].filter(def(x) 0 end)
 => [1, 2]
 ```
 
@@ -110,7 +110,7 @@ The pairs are:
 | `flatten` | `flatten!` | `ARRAY` |
 | `rotate` | `rotate!` | `ARRAY` |
 | `sort` | `sort!` | `ARRAY` |
-| `uniq` | `uniq!` | `ARRAY` |
+| `unique` | `unique!` | `ARRAY` |
 | `merge` | `merge!` | `HASH` |
 | `capitalize` | `capitalize!` | `STRING` |
 | `trim_line_end` | `trim_line_end!` | `STRING` |
@@ -180,20 +180,20 @@ counterpart — the name would mean nothing else:
 ```js
 🚀 > a = [1]
 => [1]
-🚀 > a.push(2).push(3)
+🚀 > a.append(2).append(3)
 => [1, 2, 3]
-🚀 > a.pop()
+🚀 > a.remove_last()
 => 3
 🚀 > a
 => [1, 2]
 ```
 
-`push` returns the array, so pushes chain. `pop` returns the element it removed,
-since that is the only thing worth having back. `set` on a `MATRIX` behaves like
-`push`:
+`append` returns the array, so appends chain. `remove_last` returns the element
+it removed, since that is the only thing worth having back. `set` on a `MATRIX`
+behaves like `append`:
 
 ```js
-🚀 > m = [[1, 2], [3, 4]].to_m()
+🚀 > m = [[1, 2], [3, 4]].to_matrix()
 🚀 > m.set(0, 0, 9).set(1, 1, 9).to_a()
 => [[9.0, 2.0], [3.0, 9.0]]
 ```
@@ -204,7 +204,7 @@ returns what it took, so nothing is lost:
 
 | Returns the receiver | Returns what it removed |
 | -------------------- | ----------------------- |
-| `push`, `unshift`, `insert`, `concat`, `clear` (`ARRAY`) | `pop`, `shift`, `delete`, `delete_at` (`ARRAY`) |
+| `append`, `prepend`, `insert`, `concat`, `clear` (`ARRAY`) | `remove_last`, `remove_first`, `remove`, `remove_at` (`ARRAY`) |
 | `clear` (`HASH`) | `delete` (`HASH`) |
 | `set` (`MATRIX`) | |
 
@@ -213,20 +213,20 @@ so a removal can be told from a miss:
 
 ```js
 🚀 > a = [1, 2, 1]
-🚀 > a.delete(1)
+🚀 > a.remove(1)
 => 1
 🚀 > a
 => [2]
-🚀 > a.delete(9)
+🚀 > a.remove(9)
 => nil
 ```
 
 ## Ordering
 
-`uniq` keeps the order in which elements first appear:
+`unique` keeps the order in which elements first appear:
 
 ```js
-🚀 > [5, 3, 1, 4, 2, 3].uniq()
+🚀 > [5, 3, 1, 4, 2, 3].unique()
 => [5, 3, 1, 4, 2]
 ```
 

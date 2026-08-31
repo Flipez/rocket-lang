@@ -49,19 +49,19 @@ they appear only in signatures and in error messages.
 
 | Group | Means | Where it appears |
 | ----- | ----- | ---------------- |
-| `ANY` | any value at all | `push`, `unshift`, `insert`, `include?`, `index`, `rindex`, `count` and `delete` on an `ARRAY`; the fallback of `HASH.get` and `fetch`; `format`; `puts` |
-| `HASHABLE` | can be used as a hash key | the key argument of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.uniq`; what `HASH.transform_keys` answers |
+| `ANY` | any value at all | `append`, `prepend`, `insert`, `include?`, `index_of`, `last_index_of`, `count` and `remove` on an `ARRAY`; the fallback of `HASH.get` and `fetch`; `format`; `puts` |
+| `HASHABLE` | can be used as a hash key | the key argument of `HASH.get`, `fetch`, `delete` and `include?`; the elements of `ARRAY.unique`; what `HASH.transform_keys` answers |
 | `COMPARABLE` | can be ordered against its own kind | the elements of `ARRAY.sort`, `min` and `max`; what `ARRAY.sort_by`, `min_by` and `max_by` answer |
 | `STRINGABLE` | has a string form | the elements of `ARRAY.join` |
 | `INTEGERABLE` | can be read as an integer | the elements of `ARRAY.sum` |
 | `NUMERIC` | a number | the value argument of `MATRIX.set` |
-| `CALLABLE` | a function, or a builtin such as `puts` — both are values | every callback: `ARRAY.each`, `map`, `select`, `reject`, `reduce`, `all?`, `sort_by`, `min_by`; `HASH.each`, `select`, `transform_values`, `transform_keys`; `INTEGER.times`, `upto`, `downto` |
+| `CALLABLE` | a function, or a builtin such as `puts` — both are values | every callback: `ARRAY.each`, `map`, `filter`, `reject`, `reduce`, `all?`, `sort_by`, `min_by`; `HASH.each`, `select`, `transform_values`, `transform_keys`; `INTEGER.times`, `upto`, `downto` |
 
 ### What belongs to what
 
 `ANY` is not a row or a column here: every value belongs to it, so it says
 nothing about any particular type. It exists for signatures, where
-`push(ANY)` means the argument accepts anything.
+`append(ANY)` means the argument accepts anything.
 
 
 | Type | `HASHABLE` | `COMPARABLE` | `STRINGABLE` | `INTEGERABLE` | `NUMERIC` | `CALLABLE` |
@@ -94,7 +94,7 @@ Two rows are worth a second look:
 A group is decided by asking the value what it can do, not by comparing it
 against a list of type names. A type added to the language therefore joins every
 group it qualifies for without anyone maintaining a list — which is how
-`push` once came to accept a `FUNCTION` but reject a `FLOAT`.
+`append` once came to accept a `FUNCTION` but reject a `FLOAT`.
 
 ### Asking a value
 
@@ -145,7 +145,7 @@ The documentation gives each method as a signature. A group sits where a type
 would:
 
 ```
-push(ANY)
+append(ANY)
 get(HASHABLE, ANY)
 set(INTEGER, INTEGER, NUMERIC)
 ```
@@ -161,7 +161,7 @@ the **elements** they are given, and they name the same groups:
 ```js
 🚀 > [def() end].join()
 => ERROR: element 0 is not STRINGABLE, got FUNCTION
-🚀 > [1, nil].uniq()
+🚀 > [1, nil].unique()
 => ERROR: element 1 is not HASHABLE, got NIL
 🚀 > [1, nil].sum()
 => ERROR: element 1 is not INTEGERABLE, got NIL

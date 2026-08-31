@@ -283,7 +283,7 @@ func TestGenericMethodsWorkEverywhere(t *testing.T) {
 		{`true.to_string()`, "true"},
 		{`nil.to_string()`, ""},
 		// to_string on a matrix already worked and must keep working.
-		{`[[1,2]].to_m().to_string().size() > 0`, true},
+		{`[[1,2]].to_matrix().to_string().size() > 0`, true},
 
 		// nil? asks the question that comparing against nil already allowed,
 		// but reads better in a chain.
@@ -313,7 +313,7 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 		"FLOAT":   `1.5`,
 		"HASH":    `{"a": 1}`,
 		"INTEGER": `1`,
-		"MATRIX":  `[[1,2]].to_m()`,
+		"MATRIX":  `[[1,2]].to_matrix()`,
 		"NIL":     `nil`,
 		"STRING":  `"a"`,
 	}
@@ -472,28 +472,28 @@ func helpMethodName(line string) string {
 
 // TestTypeGroups covers the argument groups introduced for #296. A group names
 // what an object must be able to do instead of listing the types that can do it,
-// which is how push came to accept FUNCTION but not FLOAT.
+// which is how append came to accept FUNCTION but not FLOAT.
 func TestTypeGroups(t *testing.T) {
 	tests := []inputTestCase{
 		// ANY takes everything, so these are no longer type errors. Each of
 		// them was one, because the hand-written list behind it had forgotten
 		// FLOAT and MATRIX.
-		{`a = [1]; a.push(1.5); a.to_json()`, "[1,1.5]"},
-		{`a = [1]; a.unshift(1.5); a.to_json()`, "[1.5,1]"},
+		{`a = [1]; a.append(1.5); a.to_json()`, "[1,1.5]"},
+		{`a = [1]; a.prepend(1.5); a.to_json()`, "[1.5,1]"},
 		{`a = [1]; a.insert(0, 1.5); a.to_json()`, "[1.5,1]"},
 		{`[1.5].include?(1.5)`, true},
-		{`[1.5].index(1.5)`, 0},
-		{`[1.5].rindex(1.5)`, 0},
+		{`[1.5].index_of(1.5)`, 0},
+		{`[1.5].last_index_of(1.5)`, 0},
 		{`[1.5].count(1.5)`, 1},
-		{`a = [1.5]; a.delete(1.5); a.to_json()`, "[]"},
-		{`a = [1]; a.push([[1,2]].to_m()); a.size()`, 2},
-		{`[1].include?([[1,2]].to_m())`, false},
+		{`a = [1.5]; a.remove(1.5); a.to_json()`, "[]"},
+		{`a = [1]; a.append([[1,2]].to_matrix()); a.size()`, 2},
+		{`[1].include?([[1,2]].to_matrix())`, false},
 
 		// HASHABLE takes what can be a key. get and include? used to assert
 		// without checking, so {"a": 1}.get(nil, 0) panicked and took the
 		// process with it.
 		{`{"a": 1}.get(nil, 0)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
-		{`{"a": 1}.get([[1,2]].to_m(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
+		{`{"a": 1}.get([[1,2]].to_matrix(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
 		{`{"a": 1}.include?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.delete(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
@@ -512,10 +512,10 @@ func TestTypeGroups(t *testing.T) {
 		{`{"a": 1}.fetch("z", nil)`, nil},
 
 		// NUMERIC takes INTEGER or FLOAT.
-		{`m = [[1,2]].to_m(); m.set(0, 0, 9); m.to_a().to_json()`, "[[9,2]]"},
-		{`m = [[1,2]].to_m(); m.set(0, 0, 9.5); m.to_a().to_json()`, "[[9.5,2]]"},
-		{`[[1,2]].to_m().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
-		{`[[1,2]].to_m().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
+		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9); m.to_a().to_json()`, "[[9,2]]"},
+		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9.5); m.to_a().to_json()`, "[[9.5,2]]"},
+		{`[[1,2]].to_matrix().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
+		{`[[1,2]].to_matrix().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
 	}
 	testInput(t, tests)
 }
@@ -530,9 +530,9 @@ func TestTypeGroupsRenderInSignatures(t *testing.T) {
 		want   string
 	}{
 		{
-			"push",
+			"append",
 			object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY))},
-			"push(ANY)",
+			"append(ANY)",
 		},
 		{
 			"fetch",
@@ -619,7 +619,7 @@ func TestIsA(t *testing.T) {
 		{`[1].is_a?("ARRAY")`, true},
 		{`{"a": 1}.is_a?("HASH")`, true},
 		{`def() end.is_a?("FUNCTION")`, true},
-		{`[[1,2]].to_m().is_a?("MATRIX")`, true},
+		{`[[1,2]].to_matrix().is_a?("MATRIX")`, true},
 
 		// A name that is neither is an error, not a false. A typo would
 		// otherwise answer "no" and read like a real result.
@@ -648,10 +648,10 @@ func TestTypeGroupsMethod(t *testing.T) {
 		{`[1].type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
 		{`{"a": 1}.type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
 		{`nil.type_groups().to_json()`, `["STRINGABLE"]`},
-		{`[[1,2]].to_m().type_groups().to_json()`, `["STRINGABLE"]`},
+		{`[[1,2]].to_matrix().type_groups().to_json()`, `["STRINGABLE"]`},
 		// A function is CALLABLE and nothing else -- not STRINGABLE, not
 		// HASHABLE, which is the whole reason the element checks in join, sum,
-		// uniq and sort exist.
+		// unique and sort exist.
 		{`def() end.type_groups().to_json()`, `["CALLABLE"]`},
 		{`puts.type_groups().to_json()`, `["CALLABLE"]`},
 		// Nothing else is callable.
@@ -669,7 +669,7 @@ func TestTypeGroupsMethod(t *testing.T) {
 func TestIsAAgreesWithTypeGroups(t *testing.T) {
 	subjects := []string{
 		`"a"`, `1`, `1.5`, `true`, `[1]`, `{"a": 1}`, `nil`,
-		`[[1,2]].to_m()`, `def() end`,
+		`[[1,2]].to_matrix()`, `def() end`,
 	}
 
 	for _, subject := range subjects {

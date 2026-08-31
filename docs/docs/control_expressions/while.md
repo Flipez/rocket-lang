@@ -73,7 +73,7 @@ Build up a value explicitly if you need one out of a loop:
 def doubled(items)
   result = []
   foreach item in items
-    result.push(item * 2)
+    result.append(item * 2)
   end
   return result
 end
