@@ -387,7 +387,7 @@ Returns a new hash with each key replaced by what the callback answered for it. 
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.transform_keys(def(k) k.upcase() end).get("A", 0)
+h.transform_keys(def(k) k.uppercase() end).get("A", 0)
 ' output='{"a": 1}
 1
 ' />
@@ -400,7 +400,7 @@ Replaces each key with what the callback answered and returns the hash, so calls
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+h.transform_keys!(def(k) k.uppercase() end).get("A", 0)
 ' output='{"a": 1}
 1
 ' />

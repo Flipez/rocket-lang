@@ -7,7 +7,7 @@ def part1(lines)
   doubles = 0
   tripples = 0
   foreach line in lines
-    line.strip!()
+    line.trim!()
     letters = {}
     foreach letter in line
       if (letters[letter] == nil)

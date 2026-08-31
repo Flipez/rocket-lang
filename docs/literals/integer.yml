@@ -48,7 +48,7 @@ methods:
       600
       555
   chr:
-    description: "Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error."
+    description: "Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error."
     input: |
       65.chr()
     output: |

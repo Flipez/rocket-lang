@@ -17,7 +17,7 @@ a = []
 
 foreach i, number in input
   // read each line into temporary array and cast it into an integer
-  a.push(number.strip().to_integer())
+  a.push(number.trim().to_integer())
 end
 
 // assign temporary array to input array

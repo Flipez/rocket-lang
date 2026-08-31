@@ -343,7 +343,7 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 // TestUsageMarksOptionalAndVariadicArgs covers what a rendered signature says
 // about its arguments. Usage() used to print only the types, so three different
 // contracts came out identically: count(STRING) takes exactly one, split(STRING)
-// takes zero or one, and start_with?(STRING) takes one or more.
+// takes zero or one, and starts_with?(STRING) takes one or more.
 func TestUsageMarksOptionalAndVariadicArgs(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -362,9 +362,9 @@ func TestUsageMarksOptionalAndVariadicArgs(t *testing.T) {
 			"split([STRING])",
 		},
 		{
-			"start_with?",
+			"starts_with?",
 			object.MethodLayout{ArgPattern: object.Args(object.OverloadArg(object.STRING_OBJ))},
-			"start_with?(STRING...)",
+			"starts_with?(STRING...)",
 		},
 		{
 			// A required argument followed by an optional one, as pow has.
@@ -414,7 +414,7 @@ func TestArgumentStringStaysBare(t *testing.T) {
 
 	tests := []inputTestCase{
 		{`"a".split(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
-		{`"a".start_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`"a".starts_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 	}
 	testInput(t, tests)
 }
@@ -444,8 +444,8 @@ func captureStdout(t *testing.T, fn func()) string {
 // the expectation to compare the real output against. The header stays first.
 //
 // It sorts on the bare method name rather than the rendered line, because "("
-// sorts after "!" and would otherwise put chomp!([STRING]) ahead of
-// chomp([STRING]).
+// sorts after "!" and would otherwise put trim_line_end!([STRING]) ahead of
+// trim_line_end([STRING]).
 func sortedHelpListing(listing string) string {
 	lines := strings.Split(strings.TrimSuffix(listing, "\n"), "\n")
 	if len(lines) < 2 {

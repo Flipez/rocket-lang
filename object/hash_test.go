@@ -182,9 +182,9 @@ func TestHashCallbackMethods(t *testing.T) {
 		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end).get("a", 0)`, 10},
 		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end); h.get("a", 0)`, 1},
 		{`h = {"a": 1}; h.transform_values!(def(v) v * 10 end); h.get("a", 0)`, 10},
-		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end).get("A", 0)`, 1},
-		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end); h.get("a", 0)`, 1},
-		{`h = {"a": 1}; h.transform_keys!(def(k) k.upcase() end); h.get("A", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.uppercase() end).get("A", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.uppercase() end); h.get("a", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys!(def(k) k.uppercase() end); h.get("A", 0)`, 1},
 		// A new key still has to be usable as one.
 		{`h = {"a": 1}; h.transform_keys(def(k) nil end)`, "unusable as hash key: NIL"},
 		{`h = {"a": 1}; h.transform_keys(def(k) next end)`, "a key cannot be nothing: the callback of transform_keys ran next"},

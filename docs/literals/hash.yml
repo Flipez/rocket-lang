@@ -311,7 +311,7 @@ methods:
     description: "Returns a new hash with each key replaced by what the callback answered for it. A new key still has to be `HASHABLE`, and two keys answering the same collapse into one entry -- which of them survives is not defined. Use `transform_keys!` to replace them in place."
     input: |
       h = {"a": 1}
-      h.transform_keys(def(k) k.upcase() end).get("A", 0)
+      h.transform_keys(def(k) k.uppercase() end).get("A", 0)
     output: |
       {"a": 1}
       1
@@ -319,7 +319,7 @@ methods:
     description: "Replaces each key with what the callback answered and returns the hash, so calls can be chained."
     input: |
       h = {"a": 1}
-      h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+      h.transform_keys!(def(k) k.uppercase() end).get("A", 0)
     output: |
       {"a": 1}
       1

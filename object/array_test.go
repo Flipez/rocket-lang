@@ -371,7 +371,7 @@ func TestArrayEach(t *testing.T) {
 
 		// The callback actually receives the element, which is the whole point.
 		{`out = []; a = [1,2,3]; a.each(def(x) out.push(x * 2) end); out.to_json()`, "[2,4,6]"},
-		{`out = []; a = ["x","y"]; a.each(def(s) out.push(s.upcase()) end); out.to_json()`, `["X","Y"]`},
+		{`out = []; a = ["x","y"]; a.each(def(s) out.push(s.uppercase()) end); out.to_json()`, `["X","Y"]`},
 
 		// break ends the walk, next moves it along. A function does not consume
 		// either, so a callback can hand one back, and passing it through as a

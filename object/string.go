@@ -35,7 +35,7 @@ func init() {
 				return NewInteger(strings.Count(s.Value, arg))
 			},
 		},
-		"find": ObjectMethod{
+		"index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
@@ -48,6 +48,22 @@ func init() {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 				return NewInteger(strings.Index(s.Value, arg))
+			},
+		},
+		"last_index_of": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				s := o.(*String)
+				arg := args[0].(*String).Value
+
+				return NewInteger(strings.LastIndex(s.Value, arg))
 			},
 		},
 		"format": ObjectMethod{
@@ -126,7 +142,7 @@ func init() {
 				return NewArray(result)
 			},
 		},
-		"ascii": ObjectMethod{
+		"codepoints": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
@@ -135,7 +151,7 @@ func init() {
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 
-				// One entry per rune, so ascii().size() matches size() and
+				// One entry per rune, so codepoints().size() matches size() and
 				// reverse(), which both count runes rather than bytes. Sizing
 				// this by len() instead used to leave the trailing slots of a
 				// multi-byte string nil, and Inspect then dereferenced them.
@@ -155,31 +171,31 @@ func init() {
 	stringPair("reverse", nil, func(value string, _ []Object) string {
 		return reverseString(value)
 	})
-	stringPair("upcase", nil, func(value string, _ []Object) string {
+	stringPair("uppercase", nil, func(value string, _ []Object) string {
 		return strings.ToUpper(value)
 	})
-	stringPair("downcase", nil, func(value string, _ []Object) string {
+	stringPair("lowercase", nil, func(value string, _ []Object) string {
 		return strings.ToLower(value)
 	})
 	stringPair("capitalize", nil, func(value string, _ []Object) string {
 		return capitalizeString(value)
 	})
-	stringPair("swapcase", nil, func(value string, _ []Object) string {
+	stringPair("swap_case", nil, func(value string, _ []Object) string {
 		return swapCaseString(value)
 	})
-	stringPair("strip", nil, func(value string, _ []Object) string {
+	stringPair("trim", nil, func(value string, _ []Object) string {
 		return strings.TrimSpace(value)
 	})
-	stringPair("lstrip", nil, func(value string, _ []Object) string {
+	stringPair("trim_start", nil, func(value string, _ []Object) string {
 		return strings.TrimLeftFunc(value, unicode.IsSpace)
 	})
-	stringPair("rstrip", nil, func(value string, _ []Object) string {
+	stringPair("trim_end", nil, func(value string, _ []Object) string {
 		return strings.TrimRightFunc(value, unicode.IsSpace)
 	})
-	stringPair("chop", nil, func(value string, _ []Object) string {
+	stringPair("remove_last", nil, func(value string, _ []Object) string {
 		return chopString(value)
 	})
-	stringPair("chomp", Args(OptArg(STRING_OBJ)), func(value string, args []Object) string {
+	stringPair("trim_line_end", Args(OptArg(STRING_OBJ)), func(value string, args []Object) string {
 		if len(args) == 0 {
 			return chompLineEnding(value)
 		}
@@ -196,12 +212,12 @@ func init() {
 	stringPredicate("include?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
 		return strings.Contains(value, args[0].(*String).Value)
 	})
-	stringPredicate("start_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("starts_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
 		return anyAffix(args, func(affix string) bool {
 			return strings.HasPrefix(value, affix)
 		})
 	})
-	stringPredicate("end_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("ends_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
 		return anyAffix(args, func(affix string) bool {
 			return strings.HasSuffix(value, affix)
 		})

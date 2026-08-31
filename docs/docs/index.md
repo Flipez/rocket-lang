@@ -17,7 +17,7 @@ useful and not so useful.
 ```js
 // Values carry methods.
 name = "rocket-lang"
-puts(name.upcase())          // ROCKET-LANG
+puts(name.uppercase())        // ROCKET-LANG
 puts(name.split("-").size()) // 2
 
 // Arrays and hashes, both with methods of their own.

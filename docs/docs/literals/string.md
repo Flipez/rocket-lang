@@ -69,21 +69,6 @@ puts(s)
 
 ## Literal Specific Methods
 
-### ascii()
-> Returns `ARRAY`
-
-Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use.
-
-
-<CodeBlockSimple input='"".ascii()
-"a".ascii()
-"abc".ascii()
-' output='[]
-[97]
-[97, 98, 99]
-' />
-
-
 ### capitalize()
 > Returns `STRING`
 
@@ -114,69 +99,18 @@ a
 ' />
 
 
-### chomp([STRING])
-> Returns `STRING`
+### codepoints()
+> Returns `ARRAY`
 
-Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
-
-
-<CodeBlockSimple input='a = "line\n"
-a.chomp()
-a.chomp() == "line"
-"abcdd".chomp("d")
-"a\n\n\n".chomp("")
-' output='"line\n"
-"line"
-true
-"abcd"
-"a"
-' />
+Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use.
 
 
-### chomp!([STRING])
-> Returns `STRING`
-
-Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`.
-
-
-<CodeBlockSimple input='a = "line\n"
-a.chomp!()
-a
-' output='"line\n"
-"line"
-"line"
-' />
-
-
-### chop()
-> Returns `STRING`
-
-Returns a copy with the last character removed. A trailing `\r\n` is removed as a unit so a line ending is never left half there. Chopping an empty string gives an empty string rather than an error.
-
-
-<CodeBlockSimple input='a = "abcd"
-a.chop()
-a
-"".chop()
-' output='"abcd"
-"abc"
-"abcd"
-""
-' />
-
-
-### chop!()
-> Returns `STRING`
-
-Removes the last character in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "abcd"
-a.chop!()
-a
-' output='"abcd"
-"abc"
-"abc"
+<CodeBlockSimple input='"".codepoints()
+"a".codepoints()
+"abc".codepoints()
+' output='[]
+[97]
+[97, 98, 99]
 ' />
 
 
@@ -188,36 +122,6 @@ Counts how often a given substring occurs in the string.
 
 <CodeBlockSimple input='"test".count("t")
 ' output='2
-' />
-
-
-### downcase()
-> Returns `STRING`
-
-Returns a copy with all uppercase letters replaced by their lowercase counterparts.
-
-
-<CodeBlockSimple input='a = "TEST"
-a.downcase()
-a
-' output='"TEST"
-"test"
-"TEST"
-' />
-
-
-### downcase!()
-> Returns `STRING`
-
-Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "TEST"
-a.downcase!()
-a
-' output='"TEST"
-"test"
-"test"
 ' />
 
 
@@ -234,29 +138,18 @@ false
 ' />
 
 
-### end_with?(STRING...)
+### ends_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string ends with any of the given strings.
 
 
-<CodeBlockSimple input='"test.rl".end_with?(".rl")
-"test.rl".end_with?(".go")
-"test.rl".end_with?(".go", ".rl")
+<CodeBlockSimple input='"test.rl".ends_with?(".rl")
+"test.rl".ends_with?(".go")
+"test.rl".ends_with?(".go", ".rl")
 ' output='true
 false
 true
-' />
-
-
-### find(STRING)
-> Returns `INTEGER`
-
-Returns the character index of a given string if found. Otherwise returns `-1`
-
-
-<CodeBlockSimple input='"test".find("e")
-' output='1
 ' />
 
 
@@ -284,6 +177,30 @@ false
 ' />
 
 
+### index_of(STRING)
+> Returns `INTEGER`
+
+Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`
+
+
+<CodeBlockSimple input='"test".index_of("e")
+' output='1
+' />
+
+
+### last_index_of(STRING)
+> Returns `INTEGER`
+
+Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`
+
+
+<CodeBlockSimple input='"hello".last_index_of("l")
+"hello".last_index_of("z")
+' output='3
+-1
+' />
+
+
 ### lines()
 > Returns `ARRAY`
 
@@ -295,33 +212,65 @@ Splits the string at newline escape sequence and return all chunks in an array. 
 ' />
 
 
-### lstrip()
+### lowercase()
 > Returns `STRING`
 
-Returns a copy with leading whitespace removed. See `rstrip` for the trailing end and `strip` for both.
+Returns a copy with all uppercase letters replaced by their lowercase counterparts.
 
 
-<CodeBlockSimple input='a = "  test  "
-a.lstrip()
+<CodeBlockSimple input='a = "TEST"
+a.lowercase()
 a
-' output='"  test  "
-"test  "
-"  test  "
+' output='"TEST"
+"test"
+"TEST"
 ' />
 
 
-### lstrip!()
+### lowercase!()
 > Returns `STRING`
 
-Removes leading whitespace in place and returns the string, so calls can be chained.
+Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained.
 
 
-<CodeBlockSimple input='a = "  test  "
-a.lstrip!()
+<CodeBlockSimple input='a = "TEST"
+a.lowercase!()
 a
-' output='"  test  "
-"test  "
-"test  "
+' output='"TEST"
+"test"
+"test"
+' />
+
+
+### remove_last()
+> Returns `STRING`
+
+Returns a copy with the last character removed. A trailing `\r\n` is removed as a unit so a line ending is never left half there. Removing the last character of an empty string gives an empty string rather than an error.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.remove_last()
+a
+"".remove_last()
+' output='"abcd"
+"abc"
+"abcd"
+""
+' />
+
+
+### remove_last!()
+> Returns `STRING`
+
+Removes the last character in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.remove_last!()
+a
+' output='"abcd"
+"abc"
+"abc"
 ' />
 
 
@@ -385,36 +334,6 @@ a
 ' />
 
 
-### rstrip()
-> Returns `STRING`
-
-Returns a copy with trailing whitespace removed. See `lstrip` for the leading end and `strip` for both.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.rstrip()
-a
-' output='"  test  "
-"  test"
-"  test  "
-' />
-
-
-### rstrip!()
-> Returns `STRING`
-
-Removes trailing whitespace in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.rstrip!()
-a
-' output='"  test  "
-"  test"
-"  test"
-' />
-
-
 ### size()
 > Returns `INTEGER`
 
@@ -439,59 +358,29 @@ Splits the string on a given seperator and returns all the chunks in an array. D
 ' />
 
 
-### start_with?(STRING...)
+### starts_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string starts with any of the given strings.
 
 
-<CodeBlockSimple input='"test.rl".start_with?("test")
-"test.rl".start_with?("prod")
-"test.rl".start_with?("prod", "test")
+<CodeBlockSimple input='"test.rl".starts_with?("test")
+"test.rl".starts_with?("prod")
+"test.rl".starts_with?("prod", "test")
 ' output='true
 false
 true
 ' />
 
 
-### strip()
+### swap_case()
 > Returns `STRING`
 
-Returns a copy with leading and trailing whitespace removed.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.strip()
-a
-' output='"  test  "
-"test"
-"  test  "
-' />
-
-
-### strip!()
-> Returns `STRING`
-
-Removes leading and trailing whitespace in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.strip!()
-a
-' output='"  test  "
-"test"
-"test"
-' />
-
-
-### swapcase()
-> Returns `STRING`
-
-Returns a copy with every uppercase character downcased and every lowercase character upcased.
+Returns a copy with every uppercase character lowercased and every lowercase character uppercased.
 
 
 <CodeBlockSimple input='a = "Hello World"
-a.swapcase()
+a.swap_case()
 a
 ' output='"Hello World"
 "hELLO wORLD"
@@ -499,14 +388,14 @@ a
 ' />
 
 
-### swapcase!()
+### swap_case!()
 > Returns `STRING`
 
 Swaps the case of every character in place and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "Hello World"
-a.swapcase!()
+a.swap_case!()
 a
 ' output='"Hello World"
 "hELLO wORLD"
@@ -514,14 +403,138 @@ a
 ' />
 
 
-### upcase()
+### trim()
+> Returns `STRING`
+
+Returns a copy with leading and trailing whitespace removed.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim()
+a
+' output='"  test  "
+"test"
+"  test  "
+' />
+
+
+### trim!()
+> Returns `STRING`
+
+Removes leading and trailing whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim!()
+a
+' output='"  test  "
+"test"
+"test"
+' />
+
+
+### trim_end()
+> Returns `STRING`
+
+Returns a copy with trailing whitespace removed. See `trim_start` for the leading end and `trim` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_end()
+a
+' output='"  test  "
+"  test"
+"  test  "
+' />
+
+
+### trim_end!()
+> Returns `STRING`
+
+Removes trailing whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_end!()
+a
+' output='"  test  "
+"  test"
+"  test"
+' />
+
+
+### trim_line_end([STRING])
+> Returns `STRING`
+
+Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.trim_line_end()
+a.trim_line_end() == "line"
+"abcdd".trim_line_end("d")
+"a\n\n\n".trim_line_end("")
+' output='"line\n"
+"line"
+true
+"abcd"
+"a"
+' />
+
+
+### trim_line_end!([STRING])
+> Returns `STRING`
+
+Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `trim_line_end`.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.trim_line_end!()
+a
+' output='"line\n"
+"line"
+"line"
+' />
+
+
+### trim_start()
+> Returns `STRING`
+
+Returns a copy with leading whitespace removed. See `trim_end` for the trailing end and `trim` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_start()
+a
+' output='"  test  "
+"test  "
+"  test  "
+' />
+
+
+### trim_start!()
+> Returns `STRING`
+
+Removes leading whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_start!()
+a
+' output='"  test  "
+"test  "
+"test  "
+' />
+
+
+### uppercase()
 > Returns `STRING`
 
 Returns a copy with all lowercase letters replaced by their uppercase counterparts.
 
 
 <CodeBlockSimple input='a = "test"
-a.upcase()
+a.uppercase()
 a
 ' output='"test"
 "TEST"
@@ -529,14 +542,14 @@ a
 ' />
 
 
-### upcase!()
+### uppercase!()
 > Returns `STRING`
 
 Replaces lowercase characters with their uppercase counterparts in place and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "test"
-a.upcase!()
+a.uppercase!()
 a
 ' output='"test"
 "TEST"

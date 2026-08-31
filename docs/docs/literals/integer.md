@@ -79,7 +79,7 @@ Rounds up to a multiple of ten, given a negative digit count. An integer is alre
 ### chr()
 > Returns `STRING|ERROR`
 
-Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error.
+Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error.
 
 
 <CodeBlockSimple input='65.chr()

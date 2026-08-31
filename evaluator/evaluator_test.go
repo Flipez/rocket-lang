@@ -1425,7 +1425,7 @@ puts(util.double(21))`),
 		{
 			name: "a ./ path resolves against the importing file",
 			files: map[string][]byte{
-				root + "/util.rl": []byte(`export def shout(s) return s.upcase() end`),
+				root + "/util.rl": []byte(`export def shout(s) return s.uppercase() end`),
 				root + "/main.rl": []byte(`import "./util" as helper
 puts(helper.shout("hi"))`),
 			},
@@ -1613,12 +1613,12 @@ func TestNonASCIIIndexing(t *testing.T) {
 func TestStringOperationsAgreeOnLength(t *testing.T) {
 	for _, sample := range []string{`"тест"`, `"こんにちは"`, `"café"`, `"plain"`, `"a👍b"`} {
 		size := testEval(sample + ".size()")
-		ascii := testEval(sample + ".ascii().size()")
+		codepoints := testEval(sample + ".codepoints().size()")
 		reversed := testEval(sample + ".reverse().size()")
 		sliced := testEval(sample + "[0:1].size()")
 
-		if size.Inspect() != ascii.Inspect() {
-			t.Errorf("%s: size() is %s but ascii() has %s entries", sample, size.Inspect(), ascii.Inspect())
+		if size.Inspect() != codepoints.Inspect() {
+			t.Errorf("%s: size() is %s but codepoints() has %s entries", sample, size.Inspect(), codepoints.Inspect())
 		}
 		if size.Inspect() != reversed.Inspect() {
 			t.Errorf("%s: size() is %s but reverse() is %s long", sample, size.Inspect(), reversed.Inspect())

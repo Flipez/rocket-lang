@@ -199,7 +199,7 @@ func (a Argument) String() string {
 
 // usage renders the argument as it appears in a signature. Brackets mean it may
 // be left out, a trailing ellipsis means more of the same may follow. Without
-// them count(STRING), split(STRING) and start_with?(STRING) all printed
+// them count(STRING), split(STRING) and starts_with?(STRING) all printed
 // identically while meaning "exactly one", "zero or one" and "one or more".
 //
 // This is deliberately not String(), which is used in the "wrong argument type"

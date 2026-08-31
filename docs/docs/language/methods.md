@@ -113,20 +113,20 @@ The pairs are:
 | `uniq` | `uniq!` | `ARRAY` |
 | `merge` | `merge!` | `HASH` |
 | `capitalize` | `capitalize!` | `STRING` |
-| `chomp` | `chomp!` | `STRING` |
-| `chop` | `chop!` | `STRING` |
-| `downcase` | `downcase!` | `STRING` |
-| `lstrip` | `lstrip!` | `STRING` |
+| `trim_line_end` | `trim_line_end!` | `STRING` |
+| `remove_last` | `remove_last!` | `STRING` |
+| `lowercase` | `lowercase!` | `STRING` |
+| `trim_start` | `trim_start!` | `STRING` |
 | `replace` | `replace!` | `STRING` |
-| `rstrip` | `rstrip!` | `STRING` |
-| `strip` | `strip!` | `STRING` |
-| `swapcase` | `swapcase!` | `STRING` |
-| `upcase` | `upcase!` | `STRING` |
+| `trim_end` | `trim_end!` | `STRING` |
+| `trim` | `trim!` | `STRING` |
+| `swap_case` | `swap_case!` | `STRING` |
+| `uppercase` | `uppercase!` | `STRING` |
 
 A method that cannot sensibly be done in place has no `!` form. `size()` and
 `split()` return something other than a string, so there is nothing for a
 `size!()` to mean. Neither do the predicates, which answer a question rather
-than change anything: `empty?`, `include?`, `start_with?`, `end_with?`,
+than change anything: `empty?`, `include?`, `starts_with?`, `ends_with?`,
 `even?`, `odd?`, `zero?`, `positive?`, `negative?`, `nan?`, `finite?` and
 `nil?`.
 
@@ -136,7 +136,7 @@ Since `0.24` every `!` method returns the object it just modified, rather than
 `nil`. That makes them chainable:
 
 ```js
-🚀 > "hello world".upcase!().reverse!()
+🚀 > "hello world".uppercase!().reverse!()
 => "DLROW OLLEH"
 ```
 

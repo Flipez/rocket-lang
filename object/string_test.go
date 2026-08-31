@@ -33,8 +33,8 @@ func TestStringObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`"test".count("e")`, 1},
 		{`"test".count()`, "too few arguments: got=0, want=1"},
-		{`"test".find("e")`, 1},
-		{`"test".find()`, "too few arguments: got=0, want=1"},
+		{`"test".index_of("e")`, 1},
+		{`"test".index_of()`, "too few arguments: got=0, want=1"},
 		{`"test".size()`, 4},
 		{`"test".to_integer()`, nil},
 		{`"125".to_integer()`, 125},
@@ -74,37 +74,37 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test test1".split(",")`, `["test test1"]`},
 		{`"test test1".split(",", "x")`, `too many arguments: got=2, want=1`},
 		{`"test".split(1)`, `wrong argument type on position 1: got=INTEGER, want=STRING`},
-		{`"test ".strip()`, "test"},
-		{`" test ".strip()`, "test"},
-		{`"test".strip()`, "test"},
-		{`"test".upcase()`, "TEST"},
-		{`"tESt".downcase()`, "test"},
+		{`"test ".trim()`, "test"},
+		{`" test ".trim()`, "test"},
+		{`"test".trim()`, "test"},
+		{`"test".uppercase()`, "TEST"},
+		{`"tESt".lowercase()`, "test"},
 		{`"test".type()`, "STRING"},
 		{`"test".nope()`, "test:1:7: undefined method `.nope()` for STRING"},
 		{`"test".methods().type()`, "ARRAY"},
 		{`("test".methods().size() > 0).to_string()`, "true"},
-		{`"string".find("s")`, 0},
-		{`"string".find("string")`, 0},
-		{`"string".find("g")`, 5},
-		{`"string".find("tr")`, 1},
-		{`"string".find("ng")`, 4},
-		{`"string".find("x")`, -1},
+		{`"string".index_of("s")`, 0},
+		{`"string".index_of("string")`, 0},
+		{`"string".index_of("g")`, 5},
+		{`"string".index_of("tr")`, 1},
+		{`"string".index_of("ng")`, 4},
+		{`"string".index_of("x")`, -1},
 		{`"ab".reverse()`, "ba"},
-		{`"abc".upcase()`, "ABC"},
-		{`"a b c".upcase()`, "A B C"},
-		{`"a%b!c".upcase()`, "A%B!C"},
-		{`"ABC".downcase()`, "abc"},
-		{`"A B C".downcase()`, "a b c"},
-		{`"A%B!C".downcase()`, "a%b!c"},
-		{`"     ".strip()`, ""},
+		{`"abc".uppercase()`, "ABC"},
+		{`"a b c".uppercase()`, "A B C"},
+		{`"a%b!c".uppercase()`, "A%B!C"},
+		{`"ABC".lowercase()`, "abc"},
+		{`"A B C".lowercase()`, "a b c"},
+		{`"A%B!C".lowercase()`, "a%b!c"},
+		{`"     ".trim()`, ""},
 		{`"
-                       string".strip()`, "string"},
+                       string".trim()`, "string"},
 		{`"abc".replace("a", "A")`, "Abc"},
 		{`"These are the days of summer".count("e")`, 5},
-		{`a = "test"; a.upcase!(); a`, "TEST"},
-		{`a = "tESt"; a.downcase!(); a`, "test"},
+		{`a = "test"; a.uppercase!(); a`, "TEST"},
+		{`a = "tESt"; a.lowercase!(); a`, "test"},
 		{`a = "test"; a.reverse!(); a`, "tset"},
-		{`a = " test "; a.strip!(); a`, "test"},
+		{`a = " test "; a.trim!(); a`, "test"},
 		{"a = \"test\"; b = []; foreach char in a \n b.push(char) \nend; b.size()", 4},
 		{`"test" * 2`, "testtest"},
 		{`2 * "test"`, "testtest"},
@@ -130,16 +130,27 @@ func TestStringObjectMethods(t *testing.T) {
 		{`"test%1.1f".format(1.3)`, "test1.3"},
 		{`"test%s".format("test")`, "testtest"},
 		{`"test%t".format(true)`, "testtrue"},
-		// ascii always returns an ARRAY. It used to return a bare INTEGER for
-		// a one-character string and -1 for an empty one, so callers had to
-		// branch on the length of their own input.
-		{`"".ascii()`, `[]`},
-		{`"a".ascii()`, `[97]`},
-		{`"abc".ascii()`, `[97, 98, 99]`},
-		{`"abc".ascii().size() == "abc".size()`, true},
+		// codepoints always returns an ARRAY. It used to return a bare INTEGER
+		// for a one-character string and -1 for an empty one, so callers had
+		// to branch on the length of their own input.
+		{`"".codepoints()`, `[]`},
+		{`"a".codepoints()`, `[97]`},
+		{`"abc".codepoints()`, `[97, 98, 99]`},
+		{`"abc".codepoints().size() == "abc".size()`, true},
 		// Sizing the result by byte length left the trailing slots of a
 		// multi-character string nil, which segfaulted on Inspect.
-		{`"\xc3\xa9".ascii().size() == "\xc3\xa9".size()`, true},
+		{`"\xc3\xa9".codepoints().size() == "\xc3\xa9".size()`, true},
+	}
+
+	testInput(t, tests)
+}
+
+func TestStringIndexOf(t *testing.T) {
+	tests := []inputTestCase{
+		{`"hello".index_of("l")`, 2},
+		{`"hello".last_index_of("l")`, 3},
+		{`"hello".index_of("z")`, -1},
+		{`"hello".last_index_of("z")`, -1},
 	}
 
 	testInput(t, tests)
@@ -211,52 +222,52 @@ func TestStringRubyMethods(t *testing.T) {
 		// capitalize downcases the rest, so a capital in the middle is lost.
 		{`"hello World!".capitalize()`, "Hello world!"},
 		{`"".capitalize()`, ""},
-		{`"hELLO".swapcase()`, "Hello"},
-		{`"Hello World".swapcase()`, "hELLO wORLD"},
+		{`"hELLO".swap_case()`, "Hello"},
+		{`"Hello World".swap_case()`, "hELLO wORLD"},
 
-		{`"  a  ".lstrip()`, "a  "},
-		{`"  a  ".rstrip()`, "  a"},
-		{`"a".lstrip()`, "a"},
-		{`"\t\n a".lstrip()`, "a"},
+		{`"  a  ".trim_start()`, "a  "},
+		{`"  a  ".trim_end()`, "  a"},
+		{`"a".trim_start()`, "a"},
+		{`"\t\n a".trim_start()`, "a"},
 
-		// chomp with no argument removes one CR, LF or CRLF...
-		{`"abc\r".chomp()`, "abc"},
-		{`"abc\n".chomp()`, "abc"},
-		{`"abc\r\n".chomp()`, "abc"},
+		// trim_line_end with no argument removes one CR, LF or CRLF...
+		{`"abc\r".trim_line_end()`, "abc"},
+		{`"abc\n".trim_line_end()`, "abc"},
+		{`"abc\r\n".trim_line_end()`, "abc"},
 		// ...but "\n\r" loses only the "\r", as in Ruby.
-		{`"abc\n\r".chomp()`, "abc\n"},
-		{`"abc".chomp()`, "abc"},
+		{`"abc\n\r".trim_line_end()`, "abc\n"},
+		{`"abc".trim_line_end()`, "abc"},
 		// With a separator it removes one trailing occurrence.
-		{`"abcd".chomp("d")`, "abc"},
-		{`"abcdd".chomp("d")`, "abcd"},
+		{`"abcd".trim_line_end("d")`, "abc"},
+		{`"abcdd".trim_line_end("d")`, "abcd"},
 		// The empty separator is Ruby's "drop every trailing blank line".
-		{`"abc\n\n\n".chomp("")`, "abc"},
-		{`"abc\r\n\r\n\r\n".chomp("")`, "abc"},
+		{`"abc\n\n\n".trim_line_end("")`, "abc"},
+		{`"abc\r\n\r\n\r\n".trim_line_end("")`, "abc"},
 		// It leaves bare CRs alone, which is the part that is easy to get wrong.
-		{`"abc\r\r\r".chomp("")`, "abc\r\r\r"},
+		{`"abc\r\r\r".trim_line_end("")`, "abc\r\r\r"},
 
-		{`"abcd".chop()`, "abc"},
-		// A trailing CRLF goes as a unit, so chop never splits a line ending.
-		{`"abc\r\n".chop()`, "abc"},
-		{`"".chop()`, ""},
-		{`"a".chop()`, ""},
+		{`"abcd".remove_last()`, "abc"},
+		// A trailing CRLF goes as a unit, so remove_last never splits a line ending.
+		{`"abc\r\n".remove_last()`, "abc"},
+		{`"".remove_last()`, ""},
+		{`"a".remove_last()`, ""},
 
 		{`"".empty?()`, true},
 		{`"a".empty?()`, false},
 		{`"abc".include?("b")`, true},
 		{`"abc".include?("z")`, false},
 		{`"abc".include?("")`, true},
-		{`"abc".start_with?("ab")`, true},
-		{`"abc".start_with?("z")`, false},
-		{`"abc".end_with?("bc")`, true},
-		{`"abc".end_with?("z")`, false},
-		// start_with? and end_with? take more than one candidate and are true
-		// if any of them matches, as Ruby's do.
-		{`"abc".start_with?("z", "y", "a")`, true},
-		{`"abc".start_with?("z", "y")`, false},
-		{`"abc".end_with?("z", "c")`, true},
-		{`"abc".end_with?("z", "y")`, false},
-		{`"abc".start_with?()`, "too few arguments: got=0, want=1"},
+		{`"abc".starts_with?("ab")`, true},
+		{`"abc".starts_with?("z")`, false},
+		{`"abc".ends_with?("bc")`, true},
+		{`"abc".ends_with?("z")`, false},
+		// starts_with? and ends_with? take more than one candidate and are true
+		// if any of them matches, as Ruby's start_with? and end_with? do.
+		{`"abc".starts_with?("z", "y", "a")`, true},
+		{`"abc".starts_with?("z", "y")`, false},
+		{`"abc".ends_with?("z", "c")`, true},
+		{`"abc".ends_with?("z", "y")`, false},
+		{`"abc".starts_with?()`, "too few arguments: got=0, want=1"},
 		{`"abc".include?()`, "too few arguments: got=0, want=1"},
 		{`"abc".empty?("x")`, "too many arguments: got=1, want=0"},
 	}
@@ -272,43 +283,43 @@ func TestStringBangConvention(t *testing.T) {
 	tests := []inputTestCase{
 		// Plain methods are pure.
 		{`s = "hello World"; s.capitalize(); s`, "hello World"},
-		{`s = "hello World"; s.swapcase(); s`, "hello World"},
-		{`s = "  a  "; s.lstrip(); s`, "  a  "},
-		{`s = "  a  "; s.rstrip(); s`, "  a  "},
-		{`s = "abc\n"; s.chomp(); s`, "abc\n"},
-		{`s = "abcd"; s.chop(); s`, "abcd"},
+		{`s = "hello World"; s.swap_case(); s`, "hello World"},
+		{`s = "  a  "; s.trim_start(); s`, "  a  "},
+		{`s = "  a  "; s.trim_end(); s`, "  a  "},
+		{`s = "abc\n"; s.trim_line_end(); s`, "abc\n"},
+		{`s = "abcd"; s.remove_last(); s`, "abcd"},
 		{`s = "a-b"; s.replace("-", "+"); s`, "a-b"},
 
 		// ! methods change the receiver.
 		{`s = "hello World"; s.capitalize!(); s`, "Hello world"},
-		{`s = "hello World"; s.swapcase!(); s`, "HELLO wORLD"},
-		{`s = "  a  "; s.lstrip!(); s`, "a  "},
-		{`s = "  a  "; s.rstrip!(); s`, "  a"},
-		{`s = "abc\n"; s.chomp!(); s`, "abc"},
-		{`s = "abcd"; s.chop!(); s`, "abc"},
+		{`s = "hello World"; s.swap_case!(); s`, "HELLO wORLD"},
+		{`s = "  a  "; s.trim_start!(); s`, "a  "},
+		{`s = "  a  "; s.trim_end!(); s`, "  a"},
+		{`s = "abc\n"; s.trim_line_end!(); s`, "abc"},
+		{`s = "abcd"; s.remove_last!(); s`, "abc"},
 		{`s = "a-b"; s.replace!("-", "+"); s`, "a+b"},
 
 		// ...and return it, so they chain even when a call changes nothing.
-		{`"  hello World  ".strip!().capitalize!().swapcase!()`, "hELLO WORLD"},
-		{`"ABC".upcase!().reverse!()`, "CBA"},
-		{`"a-b\n".chomp!().replace!("-", "+").upcase!()`, "A+B"},
-		{`"abc".chomp!().chomp!()`, "abc"},
+		{`"  hello World  ".trim!().capitalize!().swap_case!()`, "hELLO WORLD"},
+		{`"ABC".uppercase!().reverse!()`, "CBA"},
+		{`"a-b\n".trim_line_end!().replace!("-", "+").uppercase!()`, "A+B"},
+		{`"abc".trim_line_end!().trim_line_end!()`, "abc"},
 
 		// Every ! method returns a STRING rather than NIL.
-		{`"a".upcase!().type()`, "STRING"},
-		{`"a".downcase!().type()`, "STRING"},
+		{`"a".uppercase!().type()`, "STRING"},
+		{`"a".lowercase!().type()`, "STRING"},
 		{`"a".capitalize!().type()`, "STRING"},
-		{`"a".swapcase!().type()`, "STRING"},
-		{`"a".strip!().type()`, "STRING"},
-		{`"a".lstrip!().type()`, "STRING"},
-		{`"a".rstrip!().type()`, "STRING"},
+		{`"a".swap_case!().type()`, "STRING"},
+		{`"a".trim!().type()`, "STRING"},
+		{`"a".trim_start!().type()`, "STRING"},
+		{`"a".trim_end!().type()`, "STRING"},
 		{`"a".reverse!().type()`, "STRING"},
-		{`"a".chomp!().type()`, "STRING"},
-		{`"a".chop!().type()`, "STRING"},
+		{`"a".trim_line_end!().type()`, "STRING"},
+		{`"a".remove_last!().type()`, "STRING"},
 		{`"a".replace!("a", "b").type()`, "STRING"},
 
 		// A ! method takes the same arguments as its plain counterpart.
-		{`"abcd".chomp!("d")`, "abc"},
+		{`"abcd".trim_line_end!("d")`, "abc"},
 		{`"a-b".replace!("-")`, "too few arguments: got=1, want=2"},
 	}
 	testInput(t, tests)
@@ -348,8 +359,8 @@ func TestStringPairsAreComplete(t *testing.T) {
 	// The pairs that must exist. Listed explicitly so that dropping one is a
 	// failure rather than a silently smaller loop.
 	for _, name := range []string{
-		"capitalize", "chomp", "chop", "downcase", "lstrip",
-		"replace", "reverse", "rstrip", "strip", "swapcase", "upcase",
+		"capitalize", "trim_line_end", "remove_last", "lowercase", "trim_start",
+		"replace", "reverse", "trim_end", "trim", "swap_case", "uppercase",
 	} {
 		if !names[name] {
 			t.Errorf("expected String to have %s()", name)
@@ -360,7 +371,7 @@ func TestStringPairsAreComplete(t *testing.T) {
 	}
 
 	// Predicates have nothing to change, so they must not have a ! form.
-	for _, name := range []string{"empty?", "include?", "start_with?", "end_with?"} {
+	for _, name := range []string{"empty?", "include?", "starts_with?", "ends_with?"} {
 		if !names[name] {
 			t.Errorf("expected String to have %s()", name)
 		}

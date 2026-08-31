@@ -28,7 +28,7 @@ mixed casing above is deliberate: `A` and `lower` are both exported, `Private`
 is not, and nothing about the names decides that.
 
 Since capitalization no longer carries meaning, there is no reason to capitalize
-an exported function. Names that match the language's own methods — `upcase`,
+an exported function. Names that match the language's own methods — `uppercase`,
 `to_string`, `include?` — read more naturally:
 
 ```js
