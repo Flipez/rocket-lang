@@ -394,7 +394,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "nope", "0644").read(1)`, "test:1:46: undefined method `.read()` for ERROR"},
-		{"a = Time.unix(); Time.sleep(2); b = Time.unix(); b - a", 2},
+		{"a = Time.now(); Time.sleep(2); b = Time.now(); b - a", 2},
 	}
 
 	for _, tt := range tests {

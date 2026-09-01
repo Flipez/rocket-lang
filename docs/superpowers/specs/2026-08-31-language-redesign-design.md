@@ -518,11 +518,11 @@ method survives. `File` is unchanged.
 | — | `IO.write` (new — output without a newline) |
 | — | `IO.read_line` (new) |
 | — | `Time.now` (new) |
+| `Time.unix` | **deleted** — byte-identical to `Time.now` (both were `time.Now().Unix()`); shipping a fresh duplicate would contradict this release's point of removing one-behaviour-two-spellings |
 
 `Math` retains its constants: `Pi`, `E`, `Phi`, `Sqrt2`, `SqrtE`, `SqrtPi`, `SqrtPhi`,
 `Ln2`, `Log2E`, `Ln10`, `Log10E`. `IO.open`, `JSON.parse`, `OS.exit`, `Time.format`,
-`Time.parse`, `Time.sleep`, `Time.unix`, `HTTP.new` and the `Time` layout constants are
-unchanged.
+`Time.parse`, `Time.sleep`, `HTTP.new` and the `Time` layout constants are unchanged.
 
 ## Implementation notes
 
