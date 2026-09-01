@@ -307,46 +307,6 @@ func init() {
 				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
-		"remove_last": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				if length == 0 {
-					return NIL
-				}
-
-				newElements := make([]Object, length-1)
-				copy(newElements, ao.Elements[:(length-1)])
-
-				returnElement := ao.Elements[length-1]
-
-				ao.Elements = newElements
-
-				return returnElement
-			},
-		},
-		"append": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append(ao.Elements, args[0])
-
-				return ao
-			},
-		},
 		"contains?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -557,170 +517,6 @@ func init() {
 				return extremeElement(o.(*Array).Elements, false)
 			},
 		},
-		"remove_first": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				// The mirror of remove_last: it changes the array and hands back the
-				// element, so it has no ! either.
-				if len(ao.Elements) == 0 {
-					return NIL
-				}
-
-				first := ao.Elements[0]
-				ao.Elements = copyElements(ao.Elements[1:])
-
-				return first
-			},
-		},
-		"prepend": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append([]Object{args[0]}, ao.Elements...)
-
-				return ao
-			},
-		},
-		"insert": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ, ERROR_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				at := args[0].(*Integer).Value
-				if at < 0 {
-					at = length + at + 1
-				}
-				// Inserting at length appends. Anything past that would need
-				// the array padded with nils, which is a surprise rather than a
-				// convenience.
-				if at < 0 || at > length {
-					return NewErrorFormat("index out of range, got %d but array has only %d elements", args[0].(*Integer).Value, length)
-				}
-
-				elements := make([]Object, 0, length+1)
-				elements = append(elements, ao.Elements[:at]...)
-				elements = append(elements, args[1])
-				elements = append(elements, ao.Elements[at:]...)
-				ao.Elements = elements
-
-				return ao
-			},
-		},
-		"remove": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				kept := make([]Object, 0, len(ao.Elements))
-				found := false
-				for _, element := range ao.Elements {
-					if CompareObjects(element, args[0]) {
-						found = true
-						continue
-					}
-					kept = append(kept, element)
-				}
-				ao.Elements = kept
-
-				// The element when something went, nil when nothing did, so the
-				// caller can tell the two apart.
-				if !found {
-					return NIL
-				}
-
-				return args[0]
-			},
-		},
-		"remove_at": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				at := args[0].(*Integer).Value
-				if at < 0 {
-					at = length + at
-				}
-				// nil rather than an error for a position that is not there,
-				// the same answer first() and remove_last() give for an empty array.
-				if at < 0 || at >= length {
-					return NIL
-				}
-
-				removed := ao.Elements[at]
-				elements := make([]Object, 0, length-1)
-				elements = append(elements, ao.Elements[:at]...)
-				elements = append(elements, ao.Elements[at+1:]...)
-				ao.Elements = elements
-
-				return removed
-			},
-		},
-		"clear": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = make([]Object, 0)
-
-				return ao
-			},
-		},
-		"concat": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append(ao.Elements, args[0].(*Array).Elements...)
-
-				return ao
-			},
-		},
 		"skip": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
@@ -820,6 +616,41 @@ func init() {
 
 		return rotatedElements(elements, by), nil
 	})
+
+	// remove_last and remove_first used to mutate and hand back the removed
+	// element, which is how one of them ended up meaning the opposite of
+	// String#remove_last: a pure copy. Paired like every other transform now,
+	// so a "pop" needs last()/first() first and a remove_last!()/remove_first!()
+	// after -- two calls where one used to do, but no name means two things.
+	arrayPair("remove_last", nil, func(elements []Object, _ []Object) ([]Object, Object) {
+		return removedLastElements(elements), nil
+	})
+	arrayPair("remove_first", nil, func(elements []Object, _ []Object) ([]Object, Object) {
+		return removedFirstElements(elements), nil
+	})
+	arrayPair("append", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append(copyElements(elements), args[0]), nil
+	})
+	arrayPair("prepend", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append([]Object{args[0]}, elements...), nil
+	})
+	arrayPair("insert", Args(Arg(INTEGER_OBJ), Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return insertedElements(elements, args[0].(*Integer).Value, args[1])
+	})
+	arrayPair("remove", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return removedElements(elements, args[0]), nil
+	})
+	arrayPair("remove_at", Args(Arg(INTEGER_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		return removedAtElements(elements, args[0].(*Integer).Value), nil
+	})
+	arrayPair("concat", Args(Arg(ARRAY_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append(copyElements(elements), args[0].(*Array).Elements...), nil
+	})
+
+	// clear is not paired: a pure clear() would just be [], which carries no
+	// information, and a bang-only clear! would itself break the rule that a !
+	// method needs a non-mutating partner. `a = []` already says what a pure
+	// clear would.
 }
 
 // arrayPair registers a method and its in-place counterpart from one
@@ -864,6 +695,84 @@ func arrayPair(name string, argPattern []Argument, transform func(elements []Obj
 func copyElements(src []Object) []Object {
 	out := make([]Object, len(src))
 	copy(out, src)
+
+	return out
+}
+
+// removedLastElements returns every element but the last, or a copy left
+// unchanged when there is none to drop -- the same tolerance chopString has
+// for an empty string.
+func removedLastElements(src []Object) []Object {
+	if len(src) == 0 {
+		return copyElements(src)
+	}
+
+	return copyElements(src[:len(src)-1])
+}
+
+// removedFirstElements mirrors removedLastElements from the front.
+func removedFirstElements(src []Object) []Object {
+	if len(src) == 0 {
+		return copyElements(src)
+	}
+
+	return copyElements(src[1:])
+}
+
+// insertedElements returns a copy with value inserted at rawAt. A negative
+// index counts back from the end, so -1 inserts before the last element.
+// Inserting at length appends; past that is an error rather than padding the
+// array with nils, which would be a surprise rather than a convenience.
+func insertedElements(src []Object, rawAt int, value Object) ([]Object, Object) {
+	length := len(src)
+
+	at := rawAt
+	if at < 0 {
+		at = length + at + 1
+	}
+	if at < 0 || at > length {
+		return nil, NewErrorFormat("index out of range, got %d but array has only %d elements", rawAt, length)
+	}
+
+	out := make([]Object, 0, length+1)
+	out = append(out, src[:at]...)
+	out = append(out, value)
+	out = append(out, src[at:]...)
+
+	return out, nil
+}
+
+// removedElements returns a copy without every element equal to target -- all
+// occurrences go, not just the first, which is what remove has always done.
+func removedElements(src []Object, target Object) []Object {
+	kept := make([]Object, 0, len(src))
+	for _, element := range src {
+		if CompareObjects(element, target) {
+			continue
+		}
+		kept = append(kept, element)
+	}
+
+	return kept
+}
+
+// removedAtElements returns a copy without the element at rawAt. A negative
+// index counts back from the end. A position that is not there comes back
+// unchanged, the same tolerance remove() has for a target that is not found.
+func removedAtElements(src []Object, rawAt int) []Object {
+	length := len(src)
+
+	at := rawAt
+	if at < 0 {
+		at = length + at
+	}
+	if at < 0 || at >= length {
+		return copyElements(src)
+	}
+
+	out := make([]Object, 0, length-1)
+	out = append(out, src[:at]...)
+	out = append(out, src[at+1:]...)
 
 	return out
 }

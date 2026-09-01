@@ -280,46 +280,6 @@ func init() {
 				return NewErrorFormat("key not found: %s", args[0].Inspect())
 			},
 		},
-		"remove": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(HASHABLE),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				h := o.(*Hash)
-
-				hashed, err := hashKeyOf(args[0])
-				if err != nil {
-					return err
-				}
-
-				pair, found := h.Pairs[hashed]
-				if !found {
-					return NIL
-				}
-				delete(h.Pairs, hashed)
-
-				// The value that went, so a removal can be told from a miss.
-				return pair.Value
-			},
-		},
-		"clear": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(HASH_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				h := o.(*Hash)
-				h.Pairs = make(map[HashKey]HashPair)
-
-				return h
-			},
-		},
 		"invert": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
@@ -417,6 +377,26 @@ func init() {
 
 		return kept, nil
 	})
+
+	// remove used to delete from the receiver and hand back the value that
+	// went, which is the same shape Array#remove_last had: mutation with no
+	// bang. Paired now, so the value that went is only available before the
+	// bang form removes it -- get(key) first, then remove!(key).
+	hashPair("remove", Args(Arg(HASHABLE)), func(pairs map[HashKey]HashPair, args []Object) (map[HashKey]HashPair, Object) {
+		hashed, err := hashKeyOf(args[0])
+		if err != nil {
+			return nil, err
+		}
+
+		out := copyPairs(pairs)
+		delete(out, hashed)
+
+		return out, nil
+	})
+
+	// clear is not paired, for the same reason Array's is not: a pure clear()
+	// would just be {}, and a bang-only clear! would have no non-mutating
+	// partner. `h = {}` already says what a pure clear would.
 }
 
 // hashCallbackPair registers a method taking a callback and its in-place

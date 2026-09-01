@@ -478,15 +478,15 @@ func TestTypeGroups(t *testing.T) {
 		// ANY takes everything, so these are no longer type errors. Each of
 		// them was one, because the hand-written list behind it had forgotten
 		// FLOAT and MATRIX.
-		{`a = [1]; a.append(1.5); a.to_json()`, "[1,1.5]"},
-		{`a = [1]; a.prepend(1.5); a.to_json()`, "[1.5,1]"},
-		{`a = [1]; a.insert(0, 1.5); a.to_json()`, "[1.5,1]"},
+		{`a = [1]; a.append!(1.5); a.to_json()`, "[1,1.5]"},
+		{`a = [1]; a.prepend!(1.5); a.to_json()`, "[1.5,1]"},
+		{`a = [1]; a.insert!(0, 1.5); a.to_json()`, "[1.5,1]"},
 		{`[1.5].contains?(1.5)`, true},
 		{`[1.5].index_of(1.5)`, 0},
 		{`[1.5].last_index_of(1.5)`, 0},
 		{`[1.5].count(1.5)`, 1},
-		{`a = [1.5]; a.remove(1.5); a.to_json()`, "[]"},
-		{`a = [1]; a.append([[1,2]].to_matrix()); a.size()`, 2},
+		{`a = [1.5]; a.remove!(1.5); a.to_json()`, "[]"},
+		{`a = [1]; a.append!([[1,2]].to_matrix()); a.size()`, 2},
 		{`[1].contains?([[1,2]].to_matrix())`, false},
 
 		// HASHABLE takes what can be a key. get and has_key? used to assert
@@ -502,7 +502,7 @@ func TestTypeGroups(t *testing.T) {
 		{`{1.5: "a"}.get(1.5, "missing")`, "a"},
 		{`{1.5: "a"}.has_key?(1.5)`, true},
 		{`{1.5: "a"}.fetch(1.5)`, "a"},
-		{`h = {1.5: "a"}; h.remove(1.5)`, "a"},
+		{`h = {1.5: "a"}; h.remove(1.5).get(1.5, "missing")`, "missing"},
 		// A hash and an array are hashable, so they are keys too.
 		{`{[1]: "a"}.get([1], "missing")`, "a"},
 

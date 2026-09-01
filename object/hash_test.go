@@ -23,7 +23,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "test:1:3: undefined method `.nope()` for HASH"},
 		{`{}.type()`, "HASH"},
-		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.append(key) \nend; b.size()", 2},
+		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.append!(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},
@@ -131,14 +131,12 @@ func TestHashRubyMethods(t *testing.T) {
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.fetch("z", 0)`, "too many arguments: got=2, want=1"},
 
-		// remove reports the value that went, or nil when nothing did.
-		{`h = {"a": 1}; h.remove("a")`, 1},
-		{`h = {"a": 1}; h.remove("a"); h.size()`, 0},
-		{`h = {"a": 1}; h.remove("z")`, nil},
-		{`h = {"a": 1}; h.remove("z"); h.size()`, 1},
-
-		{`h = {"a": 1}; h.clear().size()`, 0},
-		{`h = {"a": 1}; h.clear(); h.size()`, 0},
+		// remove returns a new hash without the key, leaving the receiver
+		// untouched. A key that is not there comes back unchanged rather than
+		// erroring; use remove! to delete in place.
+		{`h = {"a": 1}; h.remove("a").size()`, 0},
+		{`h = {"a": 1}; h.remove("a"); h.size()`, 1},
+		{`h = {"a": 1}; h.remove("z").size()`, 1},
 
 		{`{"a": 1}.merge({"b": 2}).size()`, 2},
 		// The argument wins a clash.
@@ -155,22 +153,38 @@ func TestHashRubyMethods(t *testing.T) {
 	testInput(t, tests)
 }
 
-// TestHashBangPairsAreComplete checks the convention on Hash's two pairs.
+// TestHashBangPairsAreComplete checks the convention on Hash's pairs.
 func TestHashBangPairsAreComplete(t *testing.T) {
 	tests := []inputTestCase{
 		// Pure.
 		{`h = {"a": 1}; h.merge({"b": 2}); h.size()`, 1},
 		{`h = {"a": nil}; h.compact(); h.size()`, 1},
+		{`h = {"a": 1}; h.remove("a"); h.size()`, 1},
 
 		// In place.
 		{`h = {"a": 1}; h.merge!({"b": 2}); h.size()`, 2},
 		{`h = {"a": nil}; h.compact!(); h.size()`, 0},
+		{`h = {"a": 1}; h.remove!("a"); h.size()`, 0},
 
 		// ...and they chain, because each returns the hash.
 		{`{"a": 1}.merge!({"b": nil}).compact!().size()`, 1},
 		{`{"a": 1}.merge!({"b": 2}).type()`, "HASH"},
+		{`{"a": 1, "b": 2}.remove!("a").type()`, "HASH"},
+		{`{"a": 1, "b": 2}.remove!("a").size()`, 1},
 	}
 	testInput(t, tests)
+}
+
+// clear returned an empty hash, which carries no information of its own -- {}
+// already says the same thing. A bang-only clear! would have no pure
+// counterpart, which is exactly what the pair rule forbids, so clear is gone
+// rather than paired; this pins that it stays gone.
+func TestHashClearIsGone(t *testing.T) {
+	evaluated := testEval(`{"a": 1}.clear()`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("clear should no longer exist, got %s", evaluated.Inspect())
+	}
 }
 
 // TestHashCallbackMethods covers the Hash methods unlocked by the function
@@ -199,8 +213,8 @@ func TestHashCallbackMethods(t *testing.T) {
 		// each hands back the hash, so it chains, and receives both halves.
 		{`h = {"a": 1}; h.each(def(k, v) end).size()`, 1},
 		{`h = {"a": 1}; h.each(def(k, v) end).type()`, "HASH"},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append(k) end); out.to_json()`, `["a"]`},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append(v) end); out.to_json()`, "[1]"},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append!(k) end); out.to_json()`, `["a"]`},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append!(v) end); out.to_json()`, "[1]"},
 		{`h = {"a": 1}; h.each(def(k, v) break end).size()`, 1},
 
 		// Arity is checked against what the method passes.

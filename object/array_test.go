@@ -31,16 +31,16 @@ func TestArrayObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`[1,2,3][0]`, 1},
 		{`[1,2,3].size()`, 3},
-		{`[1,2,3].remove_last()`, 3},
+		{`[1,2,3].remove_last()`, "[1, 2]"},
 		{`[1,2,3].type()`, "ARRAY"},
-		{`a = []; a.append(1); a`, "[1]"},
+		{`a = []; a.append!(1); a`, "[1]"},
 		{`[].nope()`, "test:1:3: undefined method `.nope()` for ARRAY"},
-		{"a = [\"a\", \"b\"]; b = []; foreach i, item in a \n b.append(item) \nend; b.size()", 2},
+		{"a = [\"a\", \"b\"]; b = []; foreach i, item in a \n b.append!(item) \nend; b.size()", 2},
 		{`[1,2,3].index_of(4)`, -1},
 		{`[1,2,3].index_of(3)`, 2},
 		{`[1,2,3].index_of(true)`, -1},
 		{`[1,2,3].index_of()`, "too few arguments: got=0, want=1"},
-		{"a = []; b = []; foreach i in a \n b.append(a[i]) \nend; a.size()==b.size()", true},
+		{"a = []; b = []; foreach i in a \n b.append!(a[i]) \nend; a.size()==b.size()", true},
 		{`[1,1,2].unique().size()`, 2},
 		{`[true,true,2].unique().size()`, 2},
 		{`["test","test",2].unique().size()`, 2},
@@ -166,11 +166,6 @@ func TestArrayBangConvention(t *testing.T) {
 		{`[5,3,1,4,2,3].unique().to_json()`, "[5,3,1,4,2]"},
 		{`[5,3,1,4,2,3].unique!().to_json()`, "[5,3,1,4,2]"},
 
-		// remove_last still mutates and hands back the element, as in Ruby: a
-		// pure remove_last would just be last().
-		{`a = [1,2,3]; a.remove_last()`, 3},
-		{`a = [1,2,3]; a.remove_last(); a.to_json()`, "[1,2]"},
-
 		// A sort that cannot compare its elements errors...
 		{`[1,"a"].sort()`, "elements must all be one COMPARABLE type, got INTEGER at 0 and STRING at 1"},
 		// ...and leaves the array alone rather than half-ordered. The error has
@@ -238,11 +233,12 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`[1,2,3].rotate(4)`, "[2, 3, 1]"},
 		{`[].rotate()`, "[]"},
 
-		// remove_first mirrors remove_last: it changes the array and hands back
-		// the element.
-		{`a = [1,2,3]; a.remove_first()`, 1},
-		{`a = [1,2,3]; a.remove_first(); a.to_json()`, "[2,3]"},
-		{`[].remove_first()`, nil},
+		// remove_first mirrors remove_last: a new array without the first
+		// element, leaving the receiver untouched. An empty array has no first
+		// element to drop, so it comes back unchanged.
+		{`a = [1,2,3]; a.remove_first().to_json()`, "[2,3]"},
+		{`[].remove_first().to_json()`, "[]"},
+
 		{`a = [2,3]; a.prepend(1).to_json()`, "[1,2,3]"},
 
 		{`a = [1,2]; a.insert(1, 9).to_json()`, "[1,9,2]"},
@@ -252,21 +248,17 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`a = [1,2]; a.insert(0 - 1, 9).to_json()`, "[1,2,9]"},
 		{`a = [1,2]; a.insert(3, 9)`, "index out of range, got 3 but array has only 2 elements"},
 
-		// remove takes out every occurrence and reports the element, or nil
-		// when there was nothing to take out.
-		{`a = [1,2,1]; a.remove(1)`, 1},
-		{`a = [1,2,1]; a.remove(1); a.to_json()`, "[2]"},
-		{`a = [1,2]; a.remove(9)`, nil},
-		{`a = [1,2]; a.remove(9); a.to_json()`, "[1,2]"},
+		// remove takes out every occurrence. A target that is not there comes
+		// back unchanged rather than erroring.
+		{`a = [1,2,1]; a.remove(1).to_json()`, "[2]"},
+		{`a = [1,2]; a.remove(9).to_json()`, "[1,2]"},
 
-		{`a = [1,2,3]; a.remove_at(1)`, 2},
-		{`a = [1,2,3]; a.remove_at(1); a.to_json()`, "[1,3]"},
-		{`a = [1,2,3]; a.remove_at(0 - 1)`, 3},
-		// A position that is not there gives nil, as first() and remove_last()
-		// do on an empty array.
-		{`[1,2].remove_at(9)`, nil},
+		{`a = [1,2,3]; a.remove_at(1).to_json()`, "[1,3]"},
+		{`a = [1,2,3]; a.remove_at(0 - 1).to_json()`, "[1,2]"},
+		// A position that is not there comes back unchanged rather than
+		// erroring, the same tolerance remove() has for a miss.
+		{`[1,2].remove_at(9).to_json()`, "[1,2]"},
 
-		{`a = [1,2]; a.clear().to_json()`, "[]"},
 		{`a = [1]; a.concat([2,3]).to_json()`, "[1,2,3]"},
 		{`a = [1]; a.concat([]).to_json()`, "[1]"},
 
@@ -305,6 +297,18 @@ func TestArrayTakeIsGone(t *testing.T) {
 	}
 }
 
+// clear returned an empty array, which carries no information of its own --
+// [] already says the same thing. A bang-only clear! would have no pure
+// counterpart, which is exactly what the pair rule forbids, so clear is gone
+// rather than paired; this pins that it stays gone.
+func TestArrayClearIsGone(t *testing.T) {
+	evaluated := testEval(`[1,2].clear()`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("clear should no longer exist, got %s", evaluated.Inspect())
+	}
+}
+
 // TestArrayBangPairsAreComplete checks that the new pairs follow the same rule
 // as the old ones: the plain method leaves the receiver alone, the ! method
 // changes it and hands it back so calls chain.
@@ -329,6 +333,39 @@ func TestArrayBangPairsAreComplete(t *testing.T) {
 		{`[1,[2,[3]]].flatten!(1).to_json()`, "[1,2,[3]]"},
 		{`[1,2,3].rotate!(2).to_json()`, "[3,1,2]"},
 		{`[1,2].flatten!(0 - 1)`, "negative depth -1"},
+
+		// remove_last, remove_first, append, prepend, insert, remove, remove_at
+		// and concat used to mutate without a bang -- the same shape that let
+		// String#remove_last and Array#remove_last mean opposite things.
+		// Paired now: pure leaves the receiver alone...
+		{`a = [1,2,3]; a.remove_last(); a.to_json()`, "[1,2,3]"},
+		{`a = [1,2,3]; a.remove_first(); a.to_json()`, "[1,2,3]"},
+		{`a = [1,2,3]; a.append(4); a.to_json()`, "[1,2,3]"},
+		{`a = [2,3]; a.prepend(1); a.to_json()`, "[2,3]"},
+		{`a = [1,2]; a.insert(1, 9); a.to_json()`, "[1,2]"},
+		{`a = [1,2,1]; a.remove(1); a.to_json()`, "[1,2,1]"},
+		{`a = [1,2,3]; a.remove_at(1); a.to_json()`, "[1,2,3]"},
+		{`a = [1]; a.concat([2,3]); a.to_json()`, "[1]"},
+
+		// ...and ! mutates and hands back the receiver.
+		{`a = [1,2,3]; a.remove_last!(); a.to_json()`, "[1,2]"},
+		{`a = [1,2,3]; a.remove_first!(); a.to_json()`, "[2,3]"},
+		{`a = [1,2,3]; a.append!(4); a.to_json()`, "[1,2,3,4]"},
+		{`a = [2,3]; a.prepend!(1); a.to_json()`, "[1,2,3]"},
+		{`a = [1,2]; a.insert!(1, 9); a.to_json()`, "[1,9,2]"},
+		{`a = [1,2,1]; a.remove!(1); a.to_json()`, "[2]"},
+		{`a = [1,2,3]; a.remove_at!(1); a.to_json()`, "[1,3]"},
+		{`a = [1]; a.concat!([2,3]); a.to_json()`, "[1,2,3]"},
+
+		// ...and they chain too.
+		{`[1,2,3].append!(4).remove_first!().to_json()`, "[2,3,4]"},
+		{`[1,2].insert!(1, 9).remove_at!(0).to_json()`, "[9,2]"},
+		{`[1,2].append!(3).type()`, "ARRAY"},
+
+		// A pop needs two calls now: peek with last()/first(), then mutate.
+		// There is no return-the-removed-element shortcut any more.
+		{`a = [1,2,3]; last = a.last(); a.remove_last!(); last`, 3},
+		{`a = [1,2,3]; last = a.last(); a.remove_last!(); a.to_json()`, "[1,2]"},
 	}
 	testInput(t, tests)
 }
@@ -392,20 +429,20 @@ func TestArrayEach(t *testing.T) {
 		{`a = []; a.each(def(x) end).to_json()`, "[]"},
 
 		// The callback actually receives the element, which is the whole point.
-		{`out = []; a = [1,2,3]; a.each(def(x) out.append(x * 2) end); out.to_json()`, "[2,4,6]"},
-		{`out = []; a = ["x","y"]; a.each(def(s) out.append(s.uppercase()) end); out.to_json()`, `["X","Y"]`},
+		{`out = []; a = [1,2,3]; a.each(def(x) out.append!(x * 2) end); out.to_json()`, "[2,4,6]"},
+		{`out = []; a = ["x","y"]; a.each(def(s) out.append!(s.uppercase()) end); out.to_json()`, `["X","Y"]`},
 
 		// break ends the walk, next moves it along. A function does not consume
 		// either, so a callback can hand one back, and passing it through as a
 		// value would be meaningless.
-		{`out = []; a = [1,2,3,4]; a.each(def(x) if x == 3 break end out.append(x) end); out.to_json()`, "[1,2]"},
-		{`out = []; a = [1,2,3]; a.each(def(x) if x == 2 next end out.append(x) end); out.to_json()`, "[1,3]"},
+		{`out = []; a = [1,2,3,4]; a.each(def(x) if x == 3 break end out.append!(x) end); out.to_json()`, "[1,2]"},
+		{`out = []; a = [1,2,3]; a.each(def(x) if x == 2 next end out.append!(x) end); out.to_json()`, "[1,3]"},
 		// break still hands back the array, not the BREAK_VALUE.
 		{`a = [1,2]; a.each(def(x) break end).type()`, "ARRAY"},
 
 		// An error ends the walk and is handed on rather than swallowed.
 		{`a = [1]; a.each(def(x) x.no_such_method() end)`, "test:1:25: undefined method `.no_such_method()` for INTEGER"},
-		{`out = []; a = [1,2,3]; begin a.each(def(x) out.append(x); x.nope() end) rescue e end out.to_json()`, "[1]"},
+		{`out = []; a = [1,2,3]; begin a.each(def(x) out.append!(x); x.nope() end) rescue e end out.to_json()`, "[1]"},
 
 		// Arity is the applier's business, and it reports it the way a call
 		// written out in full would.
@@ -422,7 +459,7 @@ func TestArrayEach(t *testing.T) {
 
 		// A closure keeps its own scope, so the callback sees where it was
 		// written rather than where it is called.
-		{`factor = 10; out = []; a = [1,2]; a.each(def(x) out.append(x * factor) end); out.to_json()`, "[10,20]"},
+		{`factor = 10; out = []; a = [1,2]; a.each(def(x) out.append!(x * factor) end); out.to_json()`, "[10,20]"},
 	}
 	testInput(t, tests)
 }

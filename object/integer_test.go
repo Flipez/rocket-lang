@@ -181,30 +181,30 @@ func TestIntegerRubyMethods(t *testing.T) {
 func TestIntegerCallbackMethods(t *testing.T) {
 	tests := []inputTestCase{
 		// times counts 0 to n-1, so 3.times sees 0, 1, 2.
-		{`out = []; 3.times(def(i) out.append(i) end); out.to_json()`, "[0,1,2]"},
+		{`out = []; 3.times(def(i) out.append!(i) end); out.to_json()`, "[0,1,2]"},
 		{`3.times(def(i) end)`, 3},
 		{`3.times(def(i) end).type()`, "INTEGER"},
 		// A count of zero or less calls nothing rather than erroring, which is
 		// what makes it safe to hand a computed count.
-		{`out = []; 0.times(def(i) out.append(i) end); out.to_json()`, "[]"},
-		{`out = []; (0 - 3).times(def(i) out.append(i) end); out.to_json()`, "[]"},
+		{`out = []; 0.times(def(i) out.append!(i) end); out.to_json()`, "[]"},
+		{`out = []; (0 - 3).times(def(i) out.append!(i) end); out.to_json()`, "[]"},
 
 		// upto and downto are inclusive at both ends.
-		{`out = []; 1.upto(3, def(i) out.append(i) end); out.to_json()`, "[1,2,3]"},
-		{`out = []; 3.downto(1, def(i) out.append(i) end); out.to_json()`, "[3,2,1]"},
-		{`out = []; 2.upto(2, def(i) out.append(i) end); out.to_json()`, "[2]"},
+		{`out = []; 1.upto(3, def(i) out.append!(i) end); out.to_json()`, "[1,2,3]"},
+		{`out = []; 3.downto(1, def(i) out.append!(i) end); out.to_json()`, "[3,2,1]"},
+		{`out = []; 2.upto(2, def(i) out.append!(i) end); out.to_json()`, "[2]"},
 		// A limit on the wrong side calls nothing instead of running away.
-		{`out = []; 3.upto(1, def(i) out.append(i) end); out.to_json()`, "[]"},
-		{`out = []; 1.downto(3, def(i) out.append(i) end); out.to_json()`, "[]"},
+		{`out = []; 3.upto(1, def(i) out.append!(i) end); out.to_json()`, "[]"},
+		{`out = []; 1.downto(3, def(i) out.append!(i) end); out.to_json()`, "[]"},
 		{`1.upto(3, def(i) end)`, 1},
 
-		{`out = []; 9.times(def(i) if i == 3 break end out.append(i) end); out.to_json()`, "[0,1,2]"},
-		{`out = []; 1.upto(9, def(i) if i == 3 break end out.append(i) end); out.to_json()`, "[1,2]"},
+		{`out = []; 9.times(def(i) if i == 3 break end out.append!(i) end); out.to_json()`, "[0,1,2]"},
+		{`out = []; 1.upto(9, def(i) if i == 3 break end out.append!(i) end); out.to_json()`, "[1,2]"},
 
 		// The counter keeps the receiver's base, and upto refuses a limit of
 		// another base for the same reason the infix operators do.
 		{`"0x10".to_integer().times(def(i) end).to_string()`, "0x10"},
-		{`out = []; "0b10".to_integer().times(def(i) out.append(i.to_string()) end); out.to_json()`, `["0b0","0b1"]`},
+		{`out = []; "0b10".to_integer().times(def(i) out.append!(i.to_string()) end); out.to_json()`, `["0b0","0b1"]`},
 		{`"0x10".to_integer().upto(4, def(i) end)`, "infix operation with unequal base not allowed"},
 
 		{`3.times(def(i) i.nope() end)`, "test:1:17: undefined method `.nope()` for INTEGER"},
