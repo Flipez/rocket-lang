@@ -181,13 +181,13 @@ methods:
       false
       true
   index_of:
-    description: "Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`"
+    description: "Returns the byte offset of the first occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree."
     input: |
       "test".index_of("e")
     output: |
       1
   last_index_of:
-    description: "Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`"
+    description: "Returns the byte offset of the last occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree."
     input: |
       "hello".last_index_of("l")
       "hello".last_index_of("z")

@@ -180,7 +180,7 @@ Formats according to a format specifier and returns the resulting string
 ### index_of(STRING)
 > Returns `INTEGER`
 
-Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`
+Returns the byte offset of the first occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree.
 
 
 <CodeBlockSimple input='"test".index_of("e")
@@ -191,7 +191,7 @@ Returns the character index of the first occurrence of a given string if found. 
 ### last_index_of(STRING)
 > Returns `INTEGER`
 
-Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`
+Returns the byte offset of the last occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree.
 
 
 <CodeBlockSimple input='"hello".last_index_of("l")
@@ -572,15 +572,29 @@ Prints the type's literal-specific methods with their argument and return types,
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil
@@ -756,15 +770,29 @@ RocketLang; every other method has exactly one name.
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil

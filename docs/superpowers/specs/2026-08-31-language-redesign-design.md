@@ -486,7 +486,7 @@ method survives. `File` is unchanged.
 |---|---|
 | `puts` | `print` |
 | `raise` | `raise` |
-| `OS.raise` | **deleted** — the global already does it |
+| `OS.raise` | **deleted** — not a clean duplicate: `OS.raise(code, message)` let the caller pick the exit code, the global `raise` always exits 1 when uncaught. Reconstructible as `print(msg); OS.exit(n)`, so nothing is lost, but the two were not equivalent |
 | `Math.rand` | `Math.random` |
 | `Math.abs`, `.ceil`, `.floor`, `.round` | **deleted** — already duplicated on both Integer and Float |
 | `Math.pow` | **deleted**, but only after adding `Float#pow` — verified missing, so `Integer` had it and `Float` did not |

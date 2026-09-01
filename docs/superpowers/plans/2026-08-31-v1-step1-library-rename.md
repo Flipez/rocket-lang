@@ -1319,11 +1319,12 @@ helper — the evaluator is not importable from here without a cycle. Assert aga
 registration maps directly, which is simpler anyway:
 
 ```go
-// OS.raise duplicated the global raise. Two spellings of one behaviour is
-// exactly what v1.0 removes.
+// OS.raise let the caller pick the process's exit code; the global raise
+// always exits 1 when uncaught, so they were not equivalent. The capability
+// is reconstructible as print(msg); OS.exit(n), which is why it goes anyway.
 func TestOSRaiseIsGone(t *testing.T) {
 	if _, exists := Modules["OS"].Functions["raise"]; exists {
-		t.Error("OS.raise should be gone; the global raise already does this")
+		t.Error("OS.raise should be gone; use print(msg); OS.exit(n)")
 	}
 }
 

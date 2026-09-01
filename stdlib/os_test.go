@@ -44,11 +44,12 @@ func TestOSExitUsesTheGivenCode(t *testing.T) {
 	}
 }
 
-// OS.raise duplicated the global raise. Two spellings of one behaviour is
-// exactly what v1.0 removes.
+// OS.raise let the caller pick the process's exit code; the global raise
+// always exits 1 when uncaught, so the two were not equivalent. It goes
+// anyway because the capability is reconstructible as print(msg); OS.exit(n).
 func TestOSRaiseIsGone(t *testing.T) {
 	if _, exists := Modules["OS"].Functions["raise"]; exists {
-		t.Error("OS.raise should be gone; the global raise already does this")
+		t.Error("OS.raise should be gone; use print(msg); OS.exit(n)")
 	}
 }
 
