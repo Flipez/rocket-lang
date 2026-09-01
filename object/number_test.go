@@ -252,8 +252,8 @@ func TestNumberObjects(t *testing.T) {
 // every entry, not just six of them, is checked.
 func TestNumberMathMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`16.sqrt()`, 4.0},
-		{`16.0.sqrt()`, 4.0},
+		{`9.sqrt()`, 3.0},
+		{`9.0.sqrt()`, 3.0},
 		{`1.exp()`, 2.718281828459045},
 		{`1.0.exp()`, 2.718281828459045},
 		{`4.log()`, 1.3862943611198906},
@@ -262,18 +262,18 @@ func TestNumberMathMethods(t *testing.T) {
 		{`8.0.log2()`, 3.0},
 		{`100.log10()`, 2.0},
 		{`100.0.log10()`, 2.0},
-		{`0.sin()`, 0.0},
-		{`0.0.sin()`, 0.0},
-		{`0.cos()`, 1.0},
-		{`0.0.cos()`, 1.0},
-		{`0.tan()`, 0.0},
-		{`0.0.tan()`, 0.0},
-		{`0.asin()`, 0.0},
-		{`0.0.asin()`, 0.0},
-		{`1.acos()`, 0.0},
-		{`1.0.acos()`, 0.0},
-		{`0.atan()`, 0.0},
-		{`0.0.atan()`, 0.0},
+		{`1.sin()`, 0.8414709848078965},
+		{`1.0.sin()`, 0.8414709848078965},
+		{`1.cos()`, 0.5403023058681398},
+		{`1.0.cos()`, 0.5403023058681398},
+		{`1.tan()`, 1.557407724654902},
+		{`1.0.tan()`, 1.557407724654902},
+		{`1.asin()`, 1.5707963267948966},
+		{`1.0.asin()`, 1.5707963267948966},
+		{`0.acos()`, 1.5707963267948966},
+		{`0.5.acos()`, 1.0471975511965976},
+		{`1.atan()`, 0.7853981633974483},
+		{`1.0.atan()`, 0.7853981633974483},
 
 		// copysign(NUMERIC) and remainder(NUMERIC) are the two binary entries
 		// in the table; each needs its own case because the unary cases above
