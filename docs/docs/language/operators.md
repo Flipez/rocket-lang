@@ -28,17 +28,17 @@ Dividing two integers gives an integer, as in Ruby. The result is truncated
 toward zero rather than rounded.
 
 ```js
-print(4 / 2)   // 2
-print(5 / 2)   // 2, not 2.5
+print(4 / 2)   # 2
+print(5 / 2)   # 2, not 2.5
 ```
 
 Mixing an integer with a float promotes the result to a float, so make one
 side a float when you want the fractional part:
 
 ```js
-print(4.0 / 2)   // 2.0
-print(4 / 2.0)   // 2.0
-print(5 / 2.0)   // 2.5
+print(4.0 / 2)   # 2.0
+print(4 / 2.0)   # 2.0
+print(5 / 2.0)   # 2.5
 ```
 
 Truncation means a negative quotient rounds toward zero: `-5 / 2` is `-2`, not
@@ -84,8 +84,8 @@ false)`, which would be `true`. Parenthesise whenever a condition mixes the
 two:
 
 ```js
-print(true or (false and false))  // true
-print((true or false) and false)  // false
+print(true or (false and false))  # true
+print((true or false) and false)  # false
 ```
 
 ## Where one statement ends
@@ -112,7 +112,7 @@ line starts a new statement:
 
 ```js
 print("a")
-[1, 2].each(print)   // two statements, as it reads
+[1, 2].each(print)   # two statements, as it reads
 ```
 
 Without that rule the `[` would index the result of `print`, which is `nil`.
@@ -133,7 +133,7 @@ breaks inside one are insignificant:
 
 ```js
 print(4
-  - 1)         // 3, not two statements
+  - 1)         # 3, not two statements
 
 total = [
   1,
@@ -148,5 +148,5 @@ operator at the end of the previous line is never ambiguous and always works:
 
 ```js
 sum = 1 +
-  2            // 3
+  2            # 3
 ```

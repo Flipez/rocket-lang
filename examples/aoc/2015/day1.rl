@@ -1,9 +1,9 @@
-"// A solution for part 1 of https://adventofcode.com/2015/day/1"
-"// Last Updated: 2022.01.18"
-"// RocketLang Version: 0.14.1"
-"// ------------------------------------"
-part_one = def (input) 
-  "// There is a foreach loop now but I wanted to stick as close to the original version as possible"
+# A solution for part 1 of https://adventofcode.com/2015/day/1
+# Last Updated: 2022.01.18
+# RocketLang Version: 0.14.1
+# ------------------------------------
+part_one = def (input)
+  # There is a for loop now but I wanted to stick as close to the original version as possible
   calc(input, input.size(), 0)
 end
 
@@ -12,31 +12,31 @@ calc = def (input, idx, floor)
     "(": 1,
     ")": -1
   }
-  
+
   if (idx == 0)
     return floor
   end
-  
+
   new_idx = idx - 1
   delta = char_to_value[input[new_idx]]
   if (delta == nil)
     raise(1, new_idx.to_string())
   end
-  
+
   calc(input, new_idx, floor + delta)
 end
 
-"// Test some inputs to check that our code is correct..."
+# Test some inputs to check that our code is correct...
 if (part_one("(())") != 0)
   print("Assertion ((( => 0 failed")
 end
 
-"// ... for multiple known results."
+# ... for multiple known results.
 if (part_one(")())())") != -3)
   print("Assertion )())()) => -3 failed")
 end
 
-"// We can now read data from files so using 'real' input data is much easier"
+# We can now read data from files so using 'real' input data is much easier
 real_input = IO.open("day1.input").content().trim()
 
 print("Solution Day 1 Part 1: ")

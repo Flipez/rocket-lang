@@ -61,7 +61,7 @@ begin
 rescue e
   print("handled")
 end
-// exits 0
+# exits 0
 ```
 
 Diagnostics — a parse error, an unreadable file — go to standard error. The

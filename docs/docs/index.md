@@ -15,33 +15,33 @@ useful and not so useful.
 # Quick Start
 
 ```js
-// Values carry methods.
+# Values carry methods.
 name = "rocket-lang"
-print(name.uppercase())       // ROCKET-LANG
-print(name.split("-").size()) // 2
+print(name.uppercase())       # ROCKET-LANG
+print(name.split("-").size()) # 2
 
-// Arrays and hashes, both with methods of their own.
+# Arrays and hashes, both with methods of their own.
 crew = ["ada", "grace", "alan"]
-print(crew.size())            // 3
-print(crew.contains?("ada"))  // true
+print(crew.size())            # 3
+print(crew.contains?("ada"))  # true
 
 ages = {"ada": 36, "grace": 45}
-print(ages["grace"])          // 45
+print(ages["grace"])          # 45
 
-// Functions are values, so they can be passed around.
+# Functions are values, so they can be passed around.
 double = def(n)
   return n * 2
 end
-print(double(21))             // 42
+print(double(21))             # 42
 
-// Blocks close with `end`, and parentheses around a condition are optional.
-foreach i, member in crew
+# Blocks close with `end`, and parentheses around a condition are optional.
+for i, member in crew
   if i > 0
     print(i.to_string() + ": " + member)
   end
 end
 
-// Errors are values you can catch.
+# Errors are values you can catch.
 begin
   print(1 / 0)
 rescue e

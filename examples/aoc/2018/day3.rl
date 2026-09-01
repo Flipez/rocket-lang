@@ -2,7 +2,7 @@ import "../util" as util
 
 def add(a, b)
   c = []
-  foreach i in a.size()
+  for i in a.size()
     c[i] = a[i] + b[i]
   end
   return c
@@ -21,15 +21,15 @@ end
 
 def newFabric(size)
   fabric = util.Make("ARRAY", size)
-  foreach rIdx in fabric.size()
+  for rIdx in fabric.size()
     fabric[rIdx] = util.Make("ARRAY", size)
   end
   return fabric
 end
 
 def fabricAddClaim(fabric, claim)
-  foreach y in claim["size"][1]
-    foreach x in claim["size"][0]
+  for y in claim["size"][1]
+    for x in claim["size"][0]
       r = fabric[claim["start"][1]+y]
       c = r[claim["start"][0]+x]
       c.append!(claim["id"])
@@ -40,12 +40,12 @@ end
 
 def part1(lines)
   fabric = newFabric(1000)
-  foreach line in lines
+  for line in lines
     fabricAddClaim(fabric, parseClaim(line))
   end
   count = 0
-  foreach row in fabric
-    foreach col in row
+  for row in fabric
+    for col in row
       if (col.size() > 1)
         count = count + 1
       end
@@ -57,16 +57,16 @@ end
 def part2(lines)
   claims = []
   fabric = newFabric(1000)
-  foreach line in lines
+  for line in lines
     claim = parseClaim(line)
     claims.append!(claim)
     fabricAddClaim(fabric, claim)
   end
 
-  foreach claim in claims
+  for claim in claims
     save = true
-    foreach y in claim["size"][1]
-      foreach x in claim["size"][0]
+    for y in claim["size"][1]
+      for x in claim["size"][0]
         buf = fabric[claim["start"][1]+y]
         if (buf[claim["start"][0]+x].size() > 1)
           save = false

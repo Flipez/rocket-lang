@@ -9,8 +9,8 @@ A **double-quoted** string processes escape sequences: `\"` for a quote,
 `\n` for a newline, `\t` for a tab, `\r` for a carriage return.
 
 ```js
-print("test\"string")   // test"string
-print("a\tb")           // a<tab>b
+print("test\"string")   # test"string
+print("a\tb")           # a<tab>b
 ```
 
 A **single-quoted** string is raw: nothing is escaped and a backslash is an
@@ -18,8 +18,8 @@ ordinary character. This makes it convenient for text containing double
 quotes.
 
 ```js
-print('test "string"')  // test "string"
-print('a\tb')           // a\tb, a literal backslash and t
+print('test "string"')  # test "string"
+print('a\tb')           # a\tb, a literal backslash and t
 ```
 
 Because a single-quoted string performs no escaping, it cannot contain a
@@ -49,7 +49,7 @@ s[2] = "C"
 s[-2] = "E"
 print(s)
 
-// should output
+# should output
 "c"
 "e"
 "ab"
@@ -59,10 +59,10 @@ print(s)
 "bcd"
 "abCdEf"
 
-// you can also use single quotes
+# you can also use single quotes
 'test "string" with doublequotes'
 
-// and you can scape a double quote in a double quote string
+# and you can scape a double quote in a double quote string
 "te\"st" == 'te"st'
 
 ```

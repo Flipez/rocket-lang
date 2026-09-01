@@ -16,8 +16,8 @@ server.handle("/", hello)
 
 server.listen(3000)
 
-// Example request hash:
-// {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}
+# Example request hash:
+# {"protocol": "HTTP/1.1", "protocolMajor": 1, "protocolMinor": 1, "body": "servus", "method": "POST", "host": "localhost:3000", "contentLength": 6}
 
 ```
 

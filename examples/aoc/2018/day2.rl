@@ -6,10 +6,10 @@ end
 def part1(lines)
   doubles = 0
   tripples = 0
-  foreach line in lines
+  for line in lines
     line.trim!()
     letters = {}
-    foreach letter in line
+    for letter in line
       if (letters[letter] == nil)
         letters[letter] = 1
       else
@@ -18,7 +18,7 @@ def part1(lines)
     end
     doubleLetters = false
     trippleLetters = false
-    foreach count in letters.values()
+    for count in letters.values()
       if (count == 2)
         doubleLetters = true
       end
@@ -37,13 +37,13 @@ def part1(lines)
 end
 
 def part2(lines)
-  foreach idx, id in lines
-    foreach i in lines[idx:]
+  for idx, id in lines
+    for i in lines[idx:]
       this = id
       naxt = i
       differ = 0
       same = ""
-      foreach idx, letter in this
+      for idx, letter in this
         if (letter != naxt[idx])
           differ = differ + 1
         else

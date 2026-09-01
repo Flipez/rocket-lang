@@ -34,7 +34,7 @@ func CallFunction(fn Object, env Environment, args ...Object) Object {
 }
 
 // CallbackStopped reports a callback that ran `break`, and a method walking a
-// collection should stop -- the way break ends a foreach.
+// collection should stop -- the way break ends a for.
 //
 // break and next inside a function are not consumed by it, so a callback can
 // hand one back: `def() break end` returns a BREAK_VALUE. Treating that as an
@@ -46,7 +46,7 @@ func CallbackStopped(o Object) bool {
 }
 
 // CallbackSkipped reports a callback that ran `next`. The element produced
-// nothing, the way next moves a foreach along.
+// nothing, the way next moves a for along.
 func CallbackSkipped(o Object) bool {
 	return o != nil && o.Type() == NEXT_VALUE_OBJ
 }
@@ -64,7 +64,7 @@ const (
 	// filtering, it is a no.
 	SkipElement
 	// StopWalk means the callback ran `break`: iteration ends here and the
-	// answer reflects what was processed, the way break ends a foreach.
+	// answer reflects what was processed, the way break ends a for.
 	StopWalk
 	// Failed means the callback errored, and the error is the result.
 	Failed

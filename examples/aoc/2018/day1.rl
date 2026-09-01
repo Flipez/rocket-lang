@@ -1,6 +1,6 @@
 def parseChanges(lines)
   changes = []
-  foreach idx, line in lines
+  for idx, line in lines
     changes.append!(line.trim().to_integer())
   end
   return changes
@@ -8,7 +8,7 @@ end
 
 def part1(input)
   freq = 0
-  foreach idx, change in parseChanges(input)
+  for idx, change in parseChanges(input)
     freq = freq + change
   end
   return freq
@@ -18,7 +18,7 @@ def part2(input)
   freqs = [0]
   changes = parseChanges(input)
   while (true)
-    foreach idx, change in changes
+    for idx, change in changes
       lastFreq = freqs[-1] + change
       if (freqs.index_of(lastFreq) != -1)
         return lastFreq
