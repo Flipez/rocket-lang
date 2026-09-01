@@ -156,6 +156,40 @@ func TestUncaughtErrorGoesToStderr(t *testing.T) {
 	}
 }
 
+// TestUncaughtErrorEscapesNestedFrames covers what tests/while.expected used
+// to assert before uncaught errors moved to stderr: while.rl's test_three()
+// divides by zero inside a while loop inside a function call, and that error
+// has to survive escaping both the loop body and the function frame to reach
+// the top level. The fixture harness only captures stdout, so once the error
+// stopped appearing there, nothing was left checking that it still happens at
+// all, nor that a second error kind (division by zero, not the undefined
+// method TestUncaughtErrorGoesToStderr already covers) is reported correctly.
+func TestUncaughtErrorEscapesNestedFrames(t *testing.T) {
+	source := "def divide_by_zero()\n" +
+		"  a = 0\n" +
+		"  while (a != 3)\n" +
+		"    a = a % 0\n" +
+		"  end\n" +
+		"end\n" +
+		"divide_by_zero()"
+
+	var code int
+	stdout, stderr := captureOutputs(t, func() int {
+		code = runProgram(source, "test")
+		return code
+	})
+
+	if stdout != "" {
+		t.Errorf("expected nothing on stdout, got %q", stdout)
+	}
+	if !strings.Contains(stderr, "division by zero not allowed") {
+		t.Errorf("expected the error message on stderr, got %q", stderr)
+	}
+	if code != exitFailure {
+		t.Errorf("exit code %d, want %d", code, exitFailure)
+	}
+}
+
 // TestRunFileReportsAMissingFile covers the case that was silent: no output at
 // all and a successful exit.
 func TestRunFileReportsAMissingFile(t *testing.T) {
