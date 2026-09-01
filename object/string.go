@@ -18,6 +18,58 @@ func NewString(s string) *String {
 	return &String{Value: s}
 }
 
+// runeIndex finds needle as a contiguous rune subsequence of haystack and
+// returns its rune index, or -1 if absent. Searching in rune space -- rather
+// than finding a byte offset with strings.Index and converting it afterward
+// -- keeps the answer honest when needle is invalid UTF-8 (for example a raw
+// non-UTF-8 byte read by IO.read_line): a byte offset that matched inside the
+// needle's garbled encoding was not necessarily a rune boundary in haystack,
+// which pointed s[index_of(...)] at the wrong character. An invalid needle
+// decodes to the replacement rune, which cannot equal a validly-decoded rune
+// in haystack, so it is correctly reported as absent instead of misplaced.
+func runeIndex(haystack, needle []rune) int {
+	n := len(needle)
+	if n == 0 {
+		return 0
+	}
+
+	for i := 0; i+n <= len(haystack); i++ {
+		if runeSliceEqual(haystack[i:i+n], needle) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+// runeLastIndex is runeIndex's mirror for last_index_of: same rune-space
+// search, scanning from the end so a repeated needle resolves to its last
+// occurrence.
+func runeLastIndex(haystack, needle []rune) int {
+	n := len(needle)
+	if n == 0 {
+		return len(haystack)
+	}
+
+	for i := len(haystack) - n; i >= 0; i-- {
+		if runeSliceEqual(haystack[i:i+n], needle) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func runeSliceEqual(a, b []rune) bool {
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
@@ -48,15 +100,11 @@ func init() {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 
-				// strings.Index returns a byte offset, but every other String
-				// method (size, s[i], slicing, reverse) counts in runes, so a
-				// multi-byte match landed on the wrong index -- convert here.
-				byteOffset := strings.Index(s.Value, arg)
-				if byteOffset < 0 {
-					return NewInteger(-1)
-				}
-
-				return NewInteger(utf8.RuneCountInString(s.Value[:byteOffset]))
+				// Every other String method (size, s[i], slicing, reverse)
+				// counts in runes, so this searches in rune space too; see
+				// runeIndex's comment for why that also matters for a
+				// malformed needle.
+				return NewInteger(runeIndex([]rune(s.Value), []rune(arg)))
 			},
 		},
 		"last_index_of": ObjectMethod{
@@ -72,14 +120,8 @@ func init() {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 
-				// Same byte-offset-vs-rune-index outlier as index_of; convert
-				// before returning so it matches size/slicing/reverse.
-				byteOffset := strings.LastIndex(s.Value, arg)
-				if byteOffset < 0 {
-					return NewInteger(-1)
-				}
-
-				return NewInteger(utf8.RuneCountInString(s.Value[:byteOffset]))
+				// Same rune-space search as index_of; see runeIndex's comment.
+				return NewInteger(runeLastIndex([]rune(s.Value), []rune(arg)))
 			},
 		},
 		"format": ObjectMethod{

@@ -161,6 +161,8 @@ func TestStringIndexOf(t *testing.T) {
 		{`"日本語".index_of("本")`, 1},
 		{`"日本語".index_of("missing")`, -1},
 		{`"日本語本".last_index_of("本")`, 3},
+		// last_index_of's not-found case, on a multi-byte string.
+		{`"日本語".last_index_of("missing")`, -1},
 		// The property this fix exists to restore: find where a substring
 		// is, then look there, and get it back -- on a multi-byte string.
 		{`s = "日本語"; s[s.index_of("語")]`, "語"},
@@ -168,6 +170,32 @@ func TestStringIndexOf(t *testing.T) {
 	}
 
 	testInput(t, tests)
+}
+
+// TestStringIndexOfInvalidUTF8Needle covers a needle that cannot come from a
+// RocketLang string literal: raw, non-UTF-8 bytes, the shape of whatever
+// IO.read_line hands back from stdin with no validation. strings.Index can
+// still match such a needle at a byte offset that is not a rune boundary in
+// the haystack's own (valid) decoding, which used to make index_of report a
+// position that pointed at the wrong character instead of "not present".
+// Searching in rune space closes that: an invalid needle decodes to the
+// replacement rune U+FFFD, which cannot equal a validly-decoded rune in the
+// haystack, so it is correctly -1.
+func TestStringIndexOfInvalidUTF8Needle(t *testing.T) {
+	env := *object.NewEnvironment()
+
+	// "X" + U+0080 (valid 2-byte UTF-8: 0xC2 0x80) + "Y" -- 3 runes, 4 bytes.
+	haystack := object.NewString("X" + string(rune(128)) + "Y")
+	// A lone 0x80 byte: a continuation byte with no leading byte, invalid on
+	// its own. strings.Index would find it inside haystack's 0xC2 0x80 pair,
+	// at byte offset 2 -- not a rune boundary.
+	invalidNeedle := object.NewString("\x80")
+
+	result := haystack.InvokeMethod("index_of", env, invalidNeedle)
+	testIntegerObject(t, result, -1)
+
+	result = haystack.InvokeMethod("last_index_of", env, invalidNeedle)
+	testIntegerObject(t, result, -1)
 }
 
 func TestStringHashKey(t *testing.T) {
