@@ -997,8 +997,12 @@ has_key? on Hash; Hash#delete becomes remove and Hash#select becomes filter."
 Rule 4: a number's own operations are methods on the number; `Math` keeps only constants
 and randomness.
 
-**Verified duplicates** (both a `Math` function and a number method exist today):
-`abs`, `ceil`, `floor`, `round`, `pow` — the `Math` copies are deleted outright.
+**Verified duplicates** (a `Math` function and a method on BOTH number types exist today):
+`abs`, `ceil`, `floor`, `round` — the `Math` copies are deleted outright.
+
+**`pow` is NOT a clean duplicate.** `Integer#pow` exists; `Float#pow` does **not** — verified:
+`2.0.pow(3.0)` gives `undefined method .pow() for FLOAT`. So `Float#pow` must be added
+before `Math.pow` is deleted, or raising a float to a power becomes unsayable.
 
 **Verified as `Math`-only**, so they move to `Integer` and `Float`: `sqrt`, `exp`, `log`,
 `log2`, `log10`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `copysign`, `remainder`.

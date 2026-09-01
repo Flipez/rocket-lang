@@ -488,7 +488,8 @@ method survives. `File` is unchanged.
 | `raise` | `raise` |
 | `OS.raise` | **deleted** — the global already does it |
 | `Math.rand` | `Math.random` |
-| `Math.abs`, `.ceil`, `.floor`, `.round`, `.pow` | **deleted** — already duplicated by number methods |
+| `Math.abs`, `.ceil`, `.floor`, `.round` | **deleted** — already duplicated on both Integer and Float |
+| `Math.pow` | **deleted**, but only after adding `Float#pow` — verified missing, so `Integer` had it and `Float` did not |
 | `Math.sqrt`, `.exp`, `.log`, `.log2`, `.log10`, `.sin`, `.cos`, `.tan`, `.asin`, `.acos`, `.atan`, `.copysign`, `.remainder` | **moved** to number methods |
 | `Math.max`, `Math.min` | **deleted** — `[a, b].max` |
 | — | `IO.write` (new — output without a newline) |
