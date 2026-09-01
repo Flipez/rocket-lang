@@ -11,9 +11,9 @@ h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
 
 print(h["a"])     // 1
 print(h[2])       // true
-print(h[3.5])     // "float"
-print(h[true])    // "bool"
-print(h[[1, 2]])  // "array"
+print(h[3.5])     // float
+print(h[true])    // bool
+print(h[[1, 2]])  // array
 ```
 
 `NIL` and functions are not hashable and are rejected as keys, with
@@ -53,9 +53,9 @@ a = new_account("robert", 100)
 b = new_account("someone", 0)
 
 print(a.deposit(50))   // 150
-print(a.describe())    // "robert: 150"
-print(b.describe())    // "someone: 0"
-print(a.owner)         // "robert" -- plain data, read the same way
+print(a.describe())    // robert: 150
+print(b.describe())    // someone: 0
+print(a.owner)         // robert -- plain data, read the same way
 ```
 
 A real hash method always wins, so a hash of data cannot take over `size` or
