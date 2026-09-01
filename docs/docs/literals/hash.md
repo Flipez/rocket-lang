@@ -109,21 +109,6 @@ true
 
 ## Literal Specific Methods
 
-### clear()
-> Returns `HASH`
-
-Removes every entry and returns the hash, so calls can be chained.
-
-
-<CodeBlockSimple input='h = {"a": 1}
-h.clear()
-h.size()
-' output='{"a": 1}
-{}
-0
-' />
-
-
 ### compact()
 > Returns `HASH|ERROR`
 
@@ -352,19 +337,32 @@ h.reject!(def(k, v) v > 1 end).size()
 
 
 ### remove(HASHABLE)
-> Returns `ANY`
+> Returns `HASH|ERROR`
 
-Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss.
+Returns a new hash without the entry for `key`, leaving the hash itself unchanged. A key that is not there comes back unchanged rather than erroring. Use `remove!` to delete in place.
 
 
 <CodeBlockSimple input='h = {"a": 1}
 h.remove("a")
 h.size()
-h.remove("a")
 ' output='{"a": 1}
+{}
 1
+' />
+
+
+### remove!(HASHABLE)
+> Returns `HASH|ERROR`
+
+Deletes the entry for `key` in place and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.remove!("a")
+h.size()
+' output='{"a": 1}
+{}
 0
-nil
 ' />
 
 

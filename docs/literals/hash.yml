@@ -100,16 +100,6 @@ example: |
   moo
   true
 methods:
-  clear:
-    description: "Removes every entry and returns the hash, so calls can be chained."
-    input: |
-      h = {"a": 1}
-      h.clear()
-      h.size()
-    output: |
-      {"a": 1}
-      {}
-      0
   compact:
     description: "Returns a new hash without the entries whose value is `nil`. The hash itself is unchanged; use `compact!` to remove them in place."
     input: |
@@ -131,17 +121,25 @@ methods:
       0
       0
   remove:
-    description: "Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss."
+    description: "Returns a new hash without the entry for `key`, leaving the hash itself unchanged. A key that is not there comes back unchanged rather than erroring. Use `remove!` to delete in place."
     input: |
       h = {"a": 1}
       h.remove("a")
       h.size()
-      h.remove("a")
     output: |
       {"a": 1}
+      {}
       1
+  remove!:
+    description: "Deletes the entry for `key` in place and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h.remove!("a")
+      h.size()
+    output: |
+      {"a": 1}
+      {}
       0
-      nil
   empty?:
     description: "Returns `true` when the hash has no entries."
     input: |

@@ -410,12 +410,12 @@ Unchanged: `count`, `format`, `size`, `split`, `lines`, `reverse`/`!`, `capitali
 |---|---|
 | `index` | `index_of` |
 | `rindex` | `last_index_of` |
-| `push` | `append` |
-| `pop` | `remove_last` |
-| `unshift` | `prepend` |
-| `shift` | `remove_first` |
-| `delete` | `remove` |
-| `delete_at` | `remove_at` |
+| `push` | `append` / `append!` |
+| `pop` | `remove_last` / `remove_last!` |
+| `unshift` | `prepend` / `prepend!` |
+| `shift` | `remove_first` / `remove_first!` |
+| `delete` | `remove` / `remove!` |
+| `delete_at` | `remove_at` / `remove_at!` |
 | `include?` | `contains?` |
 | `uniq` / `uniq!` | `unique` / `unique!` |
 | `slices` | `chunks` |
@@ -425,24 +425,47 @@ Unchanged: `count`, `format`, `size`, `split`, `lines`, `reverse`/`!`, `capitali
 | `select` / `select!` | `filter` / `filter!` |
 | — | `skip_last(n)` (new, pairs with `skip`) |
 
+`push`, `pop`, `unshift`, `shift`, `delete` and `delete_at` used to mutate the
+receiver without a bang, which is how `remove_last` came to mean the opposite of
+`String#remove_last` — one pure, one mutating, same name. Fixed by pairing all
+nine methods that mutated bare: `remove_last`, `remove_first`, `append`,
+`prepend`, `insert`, `remove`, `remove_at` and `concat` are now pure — a new
+array, the receiver untouched — and each gained a `!` counterpart that mutates
+in place and returns the receiver, the shape `sort`/`sort!` already had. A bang
+method hands back the receiver, not the removed element, so a pop now costs two
+calls: `last = a.last(); a.remove_last!()`.
+
+`clear` is **deleted** rather than paired: a pure `clear()` would just be `[]`,
+which carries no information, and a bang-only `clear!` would have no
+non-mutating partner — exactly what the pair rule forbids. `a = []` already
+says what a pure `clear` would.
+
 Unchanged: `join`, `reverse`/`!`, `size`, `sort`/`!`, `sort_by`/`!`, `sum`, `first`,
-`last`, `min`, `max`, `min_by`, `max_by`, `count`, `insert`, `clear`, `concat`,
-`empty?`, `reduce`, `each`, `map`/`!`, `reject`/`!`, `compact`/`!`, `flatten`/`!`,
-`rotate`/`!`, `all?`, `any?`, `none?`.
+`last`, `min`, `max`, `min_by`, `max_by`, `count`, `empty?`, `reduce`, `each`,
+`map`/`!`, `reject`/`!`, `compact`/`!`, `flatten`/`!`, `rotate`/`!`, `all?`, `any?`,
+`none?`.
 
 ### Hash
 
 | v0.23 | v1.0 |
 |---|---|
 | `include?` | `has_key?` |
-| `delete` | `remove` |
+| `delete` | `remove` / `remove!` |
 | `select` / `select!` | `filter` / `filter!` |
 
 `get` and `fetch` keep their names and gain a stated rule: **`get(key)` returns `nil`
 when the key is missing, `get(key, default)` returns the default, and `fetch(key)`
 raises.**
 
-Unchanged: `keys`, `values`, `each`, `size`, `empty?`, `clear`, `invert`, `merge`/`!`,
+`delete` used to mutate the receiver without a bang. `remove` is now pure — a new
+hash, the receiver untouched — with a `remove!` counterpart that deletes in place
+and returns the receiver, matching Array's `remove`/`remove!`.
+
+`clear` is **deleted** rather than paired, for the same reason Array's is: a pure
+`clear()` would just be `{}`, and a bang-only `clear!` would have no non-mutating
+partner. `h = {}` already says what a pure `clear` would.
+
+Unchanged: `keys`, `values`, `each`, `size`, `empty?`, `invert`, `merge`/`!`,
 `reject`/`!`, `compact`/`!`, `transform_keys`/`!`, `transform_values`/`!`.
 
 ### Integer and Float

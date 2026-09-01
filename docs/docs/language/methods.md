@@ -8,7 +8,7 @@ same names with their arguments:
 
 ```js
 🚀 > [1, 2, 3].methods()
-=> ["all?", "any?", "append", "chunks", "clear", "compact", "compact!", "concat", "contains?", "count", "each", "empty?", "filter", "filter!", "first", "flatten", "flatten!", "index_of", "insert", "join", "last", "last_index_of", "map", "map!", "max", "max_by", "min", "min_by", "none?", "prepend", "reduce", "reject", "reject!", "remove", "remove_at", "remove_first", "remove_last", "reverse", "reverse!", "rotate", "rotate!", "size", "skip", "skip_last", "sort", "sort!", "sort_by", "sort_by!", "sum", "to_matrix", "unique", "unique!"]
+=> ["all?", "any?", "append", "append!", "chunks", "compact", "compact!", "concat", "concat!", "contains?", "count", "each", "empty?", "filter", "filter!", "first", "flatten", "flatten!", "index_of", "insert", "insert!", "join", "last", "last_index_of", "map", "map!", "max", "max_by", "min", "min_by", "none?", "prepend", "prepend!", "reduce", "reject", "reject!", "remove", "remove!", "remove_at", "remove_at!", "remove_first", "remove_first!", "remove_last", "remove_last!", "reverse", "reverse!", "rotate", "rotate!", "size", "skip", "skip_last", "sort", "sort!", "sort_by", "sort_by!", "sum", "to_matrix", "unique", "unique!"]
 ```
 
 Both are sorted by name. Before `0.24` they came out in a different order on
@@ -112,9 +112,16 @@ The pairs are:
 | `sort` | `sort!` | `ARRAY` |
 | `unique` | `unique!` | `ARRAY` |
 | `merge` | `merge!` | `HASH` |
+| `append` | `append!` | `ARRAY` |
+| `prepend` | `prepend!` | `ARRAY` |
+| `insert` | `insert!` | `ARRAY` |
+| `concat` | `concat!` | `ARRAY` |
+| `remove_first` | `remove_first!` | `ARRAY` |
+| `remove` | `remove!` | `ARRAY`, `HASH` |
+| `remove_at` | `remove_at!` | `ARRAY` |
 | `capitalize` | `capitalize!` | `STRING` |
 | `lowercase` | `lowercase!` | `STRING` |
-| `remove_last` | `remove_last!` | `STRING` |
+| `remove_last` | `remove_last!` | `ARRAY`, `STRING` |
 | `replace` | `replace!` | `STRING` |
 | `swap_case` | `swap_case!` | `STRING` |
 | `trim` | `trim!` | `STRING` |
@@ -172,25 +179,30 @@ half-ordered:
 => [1, "x", 2]
 ```
 
-## Mutating methods without a `!`
+## `MATRIX#set` mutates without a `!`
 
-A few methods change the object without a `!`, because they have no pure
-counterpart — the name would mean nothing else:
+`append`, `remove_last` and the rest of `ARRAY` and `HASH` used to change the
+receiver without a `!` — the same gap that let `remove_last` mean the opposite
+of `String#remove_last`. They are paired now like everything else: the plain
+method leaves the receiver alone and returns a new value, the `!` method
+changes the receiver and hands it back. A pop is two calls where mutating
+`remove_last` used to be one:
 
 ```js
-🚀 > a = [1]
-=> [1]
-🚀 > a.append(2).append(3)
+🚀 > a = [1, 2, 3]
 => [1, 2, 3]
-🚀 > a.remove_last()
+🚀 > last = a.last()
 => 3
-🚀 > a
+🚀 > a.remove_last!()
 => [1, 2]
+🚀 > last
+=> 3
 ```
 
-`append` returns the array, so appends chain. `remove_last` returns the element
-it removed, since that is the only thing worth having back. `set` on a `MATRIX`
-behaves like `append`:
+`MATRIX#set` is the one method left that changes its receiver with no `!`. A
+matrix is a fixed grid rather than a growing collection, so there is no new
+matrix worth returning instead of the one already there — only the value at a
+position changes:
 
 ```js
 🚀 > m = [[1, 2], [3, 4]].to_matrix()
@@ -198,28 +210,7 @@ behaves like `append`:
 => [[9.0, 2.0], [3.0, 9.0]]
 ```
 
-The rule these follow is what the method has to give back. One that puts
-something in returns the receiver, so it chains; one that takes something out
-returns what it took, so nothing is lost:
-
-| Returns the receiver | Returns what it removed |
-| -------------------- | ----------------------- |
-| `append`, `prepend`, `insert`, `concat`, `clear` (`ARRAY`) | `remove_last`, `remove_first`, `remove`, `remove_at` (`ARRAY`) |
-| `clear` (`HASH`) | `remove` (`HASH`) |
-| `set` (`MATRIX`) | |
-
-A method that removes something answers `nil` when there was nothing to remove,
-so a removal can be told from a miss:
-
-```js
-🚀 > a = [1, 2, 1]
-🚀 > a.remove(1)
-=> 1
-🚀 > a
-=> [2]
-🚀 > a.remove(9)
-=> nil
-```
+It returns the receiver, the same as a `!` method would, so calls chain.
 
 ## Ordering
 

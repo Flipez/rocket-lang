@@ -17,7 +17,7 @@ a = []
 
 foreach i, number in input
   // read each line into temporary array and cast it into an integer
-  a.append(number.trim().to_integer())
+  a.append!(number.trim().to_integer())
 end
 
 // assign temporary array to input array
@@ -48,7 +48,7 @@ Build up a value explicitly if you need one out of a loop:
 def doubled(items)
   result = []
   foreach item in items
-    result.append(item * 2)
+    result.append!(item * 2)
   end
   return result
 end

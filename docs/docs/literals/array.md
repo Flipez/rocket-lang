@@ -62,13 +62,28 @@ false
 
 
 ### append(ANY)
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
-Adds the given object as the last element and returns the array, so calls can be chained.
+Returns a new array with the given object added as the last element, leaving the array itself unchanged. Use `append!` to add in place.
 
 
 <CodeBlockSimple input='d = [1,2,3]
 d.append("a")
+d
+' output='[1, 2, 3]
+[1, 2, 3, "a"]
+[1, 2, 3]
+' />
+
+
+### append!(ANY)
+> Returns `ARRAY|ERROR`
+
+Adds the given object as the last element in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='d = [1,2,3]
+d.append!("a")
 d
 ' output='[1, 2, 3]
 [1, 2, 3, "a"]
@@ -84,21 +99,6 @@ Returns the elements of the array in chunks with the size of the given integer
 
 <CodeBlockSimple input='[1,2,3,4,5,6,7,8].chunks(3)
 ' output='[[1, 2, 3], [4, 5, 6], [7, 8]]
-' />
-
-
-### clear()
-> Returns `ARRAY`
-
-Removes every element and returns the array, so calls can be chained.
-
-
-<CodeBlockSimple input='a = [1, 2]
-a.clear()
-a
-' output='[1, 2]
-[]
-[]
 ' />
 
 
@@ -133,13 +133,28 @@ a
 
 
 ### concat(ARRAY)
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
-Appends every element of the given array and returns the array, so calls can be chained.
+Returns a new array with every element of the given array appended, leaving the array itself unchanged. Use `concat!` to append in place.
 
 
 <CodeBlockSimple input='a = [1]
 a.concat([2, 3])
+a
+' output='[1]
+[1, 2, 3]
+[1]
+' />
+
+
+### concat!(ARRAY)
+> Returns `ARRAY|ERROR`
+
+Appends every element of the given array in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1]
+a.concat!([2, 3])
 a
 ' output='[1]
 [1, 2, 3]
@@ -292,7 +307,7 @@ Returns the index of the given element in the array if found. Otherwise return `
 ### insert(INTEGER, ANY)
 > Returns `ARRAY|ERROR`
 
-Inserts an element at the given index and returns the array. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`.
+Returns a new array with an element inserted at the given index, leaving the array itself unchanged. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`. Use `insert!` to insert in place.
 
 
 <CodeBlockSimple input='a = [1, 2]
@@ -301,8 +316,23 @@ a.insert(0 - 1, 8)
 a
 ' output='[1, 2]
 [1, 9, 2]
-[1, 9, 2, 8]
-[1, 9, 2, 8]
+[1, 2, 8]
+[1, 2]
+' />
+
+
+### insert!(INTEGER, ANY)
+> Returns `ARRAY|ERROR`
+
+Inserts an element at the given index in place and returns the array, so calls can be chained. Takes the same index rules as `insert`.
+
+
+<CodeBlockSimple input='a = [1, 2]
+a.insert!(1, 9)
+a
+' output='[1, 2]
+[1, 9, 2]
+[1, 9, 2]
 ' />
 
 
@@ -445,13 +475,28 @@ false
 
 
 ### prepend(ANY)
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
-Adds an element to the front and returns the array, so calls can be chained. The mirror of `append`.
+Returns a new array with an element added to the front, leaving the array itself unchanged. The mirror of `append`. Use `prepend!` to add in place.
 
 
 <CodeBlockSimple input='a = [2, 3]
 a.prepend(1)
+a
+' output='[2, 3]
+[1, 2, 3]
+[2, 3]
+' />
+
+
+### prepend!(ANY)
+> Returns `ARRAY|ERROR`
+
+Adds an element to the front in place and returns the array, so calls can be chained. The mirror of `append!`.
+
+
+<CodeBlockSimple input='a = [2, 3]
+a.prepend!(1)
 a
 ' output='[2, 3]
 [1, 2, 3]
@@ -507,9 +552,9 @@ a
 
 
 ### remove(ANY)
-> Returns `ANY`
+> Returns `ARRAY|ERROR`
 
-Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss.
+Returns a new array without every element equal to the argument, leaving the array itself unchanged. An argument that matches nothing comes back unchanged rather than erroring. Use `remove!` to remove in place.
 
 
 <CodeBlockSimple input='a = [1, 2, 1]
@@ -517,16 +562,31 @@ a.remove(1)
 a
 a.remove(9)
 ' output='[1, 2, 1]
-1
 [2]
-nil
+[1, 2, 1]
+[1, 2, 1]
+' />
+
+
+### remove!(ANY)
+> Returns `ARRAY|ERROR`
+
+Removes every element equal to the argument in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 1]
+a.remove!(1)
+a
+' output='[1, 2, 1]
+[2]
+[2]
 ' />
 
 
 ### remove_at(INTEGER)
-> Returns `ANY`
+> Returns `ARRAY|ERROR`
 
-Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array.
+Returns a new array without the element at the given index, leaving the array itself unchanged. A negative index counts back from the end. An index that is not there comes back unchanged rather than erroring. Use `remove_at!` to remove in place.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]
@@ -534,38 +594,83 @@ a.remove_at(1)
 a
 a.remove_at(9)
 ' output='[1, 2, 3]
-2
 [1, 3]
-nil
+[1, 2, 3]
+[1, 2, 3]
+' />
+
+
+### remove_at!(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Removes the element at the given index in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_at!(1)
+a
+' output='[1, 2, 3]
+[1, 3]
+[1, 3]
 ' />
 
 
 ### remove_first()
-> Returns `ANY`
+> Returns `ARRAY|ERROR`
 
-Removes the first element and returns it, or `nil` for an empty array. The mirror of `remove_last`, and like `remove_last` it changes the array without a `!`, because there is no pure version of taking something out.
+Returns a new array without its first element, leaving the array itself unchanged. The mirror of `remove_last`. An empty array has no first element to drop, so it comes back unchanged. Use `remove_first!` to remove in place.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]
 a.remove_first()
 a
 ' output='[1, 2, 3]
-1
+[2, 3]
+[1, 2, 3]
+' />
+
+
+### remove_first!()
+> Returns `ARRAY|ERROR`
+
+Removes the first element of the array in place and returns the array, so calls can be chained. The mirror of `remove_last!`.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_first!()
+a
+' output='[1, 2, 3]
+[2, 3]
 [2, 3]
 ' />
 
 
 ### remove_last()
-> Returns `ANY`
+> Returns `ARRAY|ERROR`
 
-Removes the last element of the array and returns it.
+Returns a new array without its last element, leaving the array itself unchanged. An empty array has no last element to drop, so it comes back unchanged. Use `remove_last!` to remove in place.
 
 
 <CodeBlockSimple input='a = [1,2,3]
 a.remove_last()
 a
 ' output='[1, 2, 3]
-3
+[1, 2]
+[1, 2, 3]
+' />
+
+
+### remove_last!()
+> Returns `ARRAY|ERROR`
+
+Removes the last element of the array in place and returns the array, so calls can be chained. Popping the removed value takes two calls now: `last()` to look at it, then `remove_last!()` to take it out.
+
+
+<CodeBlockSimple input='a = [1,2,3]
+a.remove_last!()
+a
+' output='[1, 2, 3]
+[1, 2]
 [1, 2]
 ' />
 
