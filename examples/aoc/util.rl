@@ -9,17 +9,17 @@ export def Make(type, size)
   if (size > 0)
     foreach i in size
       if (type == "BOOLEAN")
-        a.append(true)
+        a.append!(true)
       elif (type == "STRING")
-        a.append("")
+        a.append!("")
       elif (type == "INTEGER")
-        a.append(0)
+        a.append!(0)
       elif (type == "FLOAT")
-        a.append(0.0)
+        a.append!(0.0)
       elif (type == "ARRAY")
-        a.append([])
+        a.append!([])
       elif (type == "HASH")
-        a.append({})
+        a.append!({})
       end
     end
   end

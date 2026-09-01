@@ -32,7 +32,7 @@ def fabricAddClaim(fabric, claim)
     foreach x in claim["size"][0]
       r = fabric[claim["start"][1]+y]
       c = r[claim["start"][0]+x]
-      c.append(claim["id"])
+      c.append!(claim["id"])
     end
   end
 end
@@ -59,7 +59,7 @@ def part2(lines)
   fabric = newFabric(1000)
   foreach line in lines
     claim = parseClaim(line)
-    claims.append(claim)
+    claims.append!(claim)
     fabricAddClaim(fabric, claim)
   end
 

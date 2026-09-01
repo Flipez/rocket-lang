@@ -6,7 +6,7 @@ increase = 0
 
 a = []
 foreach i, number in input
-  a.append(number.trim().to_integer())
+  a.append!(number.trim().to_integer())
 end
 input = a
 

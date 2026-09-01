@@ -18,7 +18,9 @@ foreach instruction in instructions
   to = instruction.split("to")[1].trim().to_integer()
 
   foreach i in amount
-    stacks[to - 1].append(stacks[from - 1].remove_last())
+    item = stacks[from - 1].last()
+    stacks[from - 1].remove_last!()
+    stacks[to - 1].append!(item)
   end
 end
 
@@ -36,11 +38,13 @@ foreach instruction in instructions
   temp_stack = []
 
   foreach i in amount
-    temp_stack.append(stacks2[from - 1].remove_last())
+    item = stacks2[from - 1].last()
+    stacks2[from - 1].remove_last!()
+    temp_stack.append!(item)
   end
   temp_stack.reverse!()
   foreach item in temp_stack
-    stacks2[to - 1].append(item)
+    stacks2[to - 1].append!(item)
   end
 
 end
