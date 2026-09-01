@@ -1,4 +1,4 @@
-foreach n in 1 => 15
+for n in 1 => 15
   if n % 15 == 0
     print("fizzbuzz")
   elif n % 3 == 0

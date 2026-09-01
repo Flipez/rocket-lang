@@ -1,6 +1,6 @@
 letters = ["a", "b"]
 
-foreach i, letter in letters
+for i, letter in letters
   print(i.to_string() + ":" + letter)
 end
 

@@ -85,7 +85,7 @@ func TestExitCodes(t *testing.T) {
 		// An empty program evaluates to nothing at all, which is a different
 		// branch from evaluating to a value.
 		{"an empty program", ``, exitOK},
-		{"only a comment", `// nothing here`, exitOK},
+		{"only a comment", `# nothing here`, exitOK},
 		// An error aborts the rest of the program and becomes its result, so
 		// the result being an error means nothing handled it.
 		{"an uncaught error", `nil.no_such_method()`, exitFailure},
@@ -109,6 +109,50 @@ func TestExitCodes(t *testing.T) {
 				t.Errorf("exit code %d, want %d", got, tt.want)
 			}
 		})
+	}
+}
+
+// TestFinalValueIsNotPrinted covers the change from a script echoing its last
+// value the way the REPL does. An ordinary value is silent; a script is not a
+// REPL and nothing else in the language prints a value it was not asked to.
+func TestFinalValueIsNotPrinted(t *testing.T) {
+	tests := []struct {
+		name   string
+		source string
+	}{
+		{"a bare literal", `42`},
+		{"an arithmetic result after other statements", `a = 1` + "\n" + `a + a`},
+		{"a string pulled out of a rescued error", "begin\n  nil.nope()\nrescue e\n  e.message()\nend"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stdout, stderr := captureOutputs(t, func() int { return runProgram(tt.source, "test") })
+
+			if stdout != "" {
+				t.Errorf("expected nothing on stdout, got %q", stdout)
+			}
+			if stderr != "" {
+				t.Errorf("expected nothing on stderr, got %q", stderr)
+			}
+		})
+	}
+}
+
+// TestUncaughtErrorGoesToStderr covers the hazard in reporting an uncaught
+// error only through the final-value print: deleting that print without
+// replacing it would make a crash exit 1 with no message anywhere. The
+// message has to survive, and on the right stream -- stdout is where a
+// program's own output goes, stderr is where parser errors already went, and
+// an uncaught error is a diagnostic, not output.
+func TestUncaughtErrorGoesToStderr(t *testing.T) {
+	stdout, stderr := captureOutputs(t, func() int { return runProgram(`nil.nope()`, "test") })
+
+	if stdout != "" {
+		t.Errorf("expected nothing on stdout, got %q", stdout)
+	}
+	if !strings.Contains(stderr, "undefined method") {
+		t.Errorf("expected the error message on stderr, got %q", stderr)
 	}
 }
 
@@ -153,4 +197,44 @@ func captureRun(t *testing.T, fn func() int) int {
 	}()
 
 	return fn()
+}
+
+// captureOutputs runs fn with stdout and stderr sent to separate temporary
+// files, and returns what each ended up holding, so a test can tell the two
+// apart -- captureRun's shared sink cannot.
+func captureOutputs(t *testing.T, fn func() int) (stdout, stderr string) {
+	t.Helper()
+
+	outSink, err := os.CreateTemp(t.TempDir(), "stdout")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	errSink, err := os.CreateTemp(t.TempDir(), "stderr")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	originalOut, originalErr := os.Stdout, os.Stderr
+	os.Stdout, os.Stderr = outSink, errSink
+
+	defer func() {
+		os.Stdout, os.Stderr = originalOut, originalErr
+		outSink.Close()
+		errSink.Close()
+	}()
+
+	fn()
+
+	outBytes, err := os.ReadFile(outSink.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	errBytes, err := os.ReadFile(errSink.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return string(outBytes), string(errBytes)
 }

@@ -7,7 +7,7 @@ numbers.each(def(n)
   print(n)
 end)
 
-foreach n in numbers
+for n in numbers
   if n == 2
     next
   end
