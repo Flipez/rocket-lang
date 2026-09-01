@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -98,4 +99,47 @@ func TestEveryBuiltinFunctionIsDocumented(t *testing.T) {
 
 		reportUndocumented(t, path, docKeys(t, path, "functions"), names)
 	}
+}
+
+// globalFunctionHeading matches a "## name(...)" heading in the hand-written
+// builtins.md, the same shape generate.go's own templates use for a module
+// function. print and raise are the only entries in stdlib.Functions -- they
+// sit outside every module, so no builtins/*.yml exists for them and nothing
+// generates their page; this file is hand-maintained instead.
+var globalFunctionHeading = regexp.MustCompile(`(?m)^## (\w+)\(`)
+
+// docHeadings reads a markdown file for every name introduced by a
+// "## name(...)" heading. It returns nil when the file is missing, which the
+// caller reports as every name being undocumented.
+func docHeadings(t *testing.T, path string) map[string]bool {
+	t.Helper()
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Errorf("%s: %s", path, err)
+		return nil
+	}
+
+	keys := make(map[string]bool)
+	for _, match := range globalFunctionHeading.FindAllStringSubmatch(string(content), -1) {
+		keys[match[1]] = true
+	}
+
+	return keys
+}
+
+// TestEveryGlobalFunctionIsDocumented guards stdlib.Functions, the one
+// surface the two guards above never touch: print and raise are registered
+// directly, with no module and so no builtins/*.yml, which is exactly how
+// raise came to have no documentation anywhere while OS.raise's removal was
+// being explained as if the two were interchangeable.
+func TestEveryGlobalFunctionIsDocumented(t *testing.T) {
+	const path = "docs/specification/builtins.md"
+
+	names := make([]string, 0, len(stdlib.Functions))
+	for function := range stdlib.Functions {
+		names = append(names, function)
+	}
+
+	reportUndocumented(t, path, docHeadings(t, path), names)
 }

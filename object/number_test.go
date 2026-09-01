@@ -244,17 +244,53 @@ func TestNumberObjects(t *testing.T) {
 	testInput(t, tests)
 }
 
-// TestNumberMathMethods covers the thirteen functions absorbed from Math onto
-// both Integer and Float, registered from the numberMath table.
+// TestNumberMathMethods covers all thirteen functions absorbed from Math onto
+// both Integer and Float, registered from the numberMath table. Each is
+// pinned on both receiver types -- the table exists because thirteen
+// near-identical blocks is thirteen chances for one of them to call the wrong
+// function, and a wiring mistake like "asin": math.Acos would only show up if
+// every entry, not just six of them, is checked.
 func TestNumberMathMethods(t *testing.T) {
 	tests := []inputTestCase{
 		{`16.sqrt()`, 4.0},
 		{`16.0.sqrt()`, 4.0},
 		{`1.exp()`, 2.718281828459045},
+		{`1.0.exp()`, 2.718281828459045},
+		{`4.log()`, 1.3862943611198906},
+		{`4.0.log()`, 1.3862943611198906},
 		{`8.log2()`, 3.0},
+		{`8.0.log2()`, 3.0},
 		{`100.log10()`, 2.0},
+		{`100.0.log10()`, 2.0},
 		{`0.sin()`, 0.0},
+		{`0.0.sin()`, 0.0},
 		{`0.cos()`, 1.0},
+		{`0.0.cos()`, 1.0},
+		{`0.tan()`, 0.0},
+		{`0.0.tan()`, 0.0},
+		{`0.asin()`, 0.0},
+		{`0.0.asin()`, 0.0},
+		{`1.acos()`, 0.0},
+		{`1.0.acos()`, 0.0},
+		{`0.atan()`, 0.0},
+		{`0.0.atan()`, 0.0},
+
+		// copysign(NUMERIC) and remainder(NUMERIC) are the two binary entries
+		// in the table; each needs its own case because the unary cases above
+		// cannot exercise the second argument at all.
+		{`3.copysign(0 - 1)`, -3.0},
+		{`3.0.copysign(0.0 - 1.0)`, -3.0},
+		{`3.copysign(1)`, 3.0},
+		{`100.remainder(30)`, 10.0},
+		{`100.0.remainder(30.0)`, 10.0},
+
+		// The ArgPattern restricts the second argument to NUMERIC, so a
+		// non-number is rejected before either function runs.
+		{`3.copysign(nil)`, "wrong argument type on position 1: got=NIL, want=NUMERIC"},
+		{`3.0.copysign("x")`, "wrong argument type on position 1: got=STRING, want=NUMERIC"},
+		{`100.remainder(nil)`, "wrong argument type on position 1: got=NIL, want=NUMERIC"},
+		{`100.0.remainder("x")`, "wrong argument type on position 1: got=STRING, want=NUMERIC"},
+
 		{`5.successor()`, 6},
 		{`5.predecessor()`, 4},
 		{`65.to_character()`, "A"},
