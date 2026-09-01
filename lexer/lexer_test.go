@@ -301,11 +301,11 @@ func TestTokenPositions(t *testing.T) {
 // recursing into NextToken, which is easy to break when the position is
 // recorded by the caller.
 func TestPositionsAfterComment(t *testing.T) {
-	// 1: // a comment
-	// 2: x = 1 // trailing
-	// 3: // another
+	// 1: # a comment
+	// 2: x = 1 # trailing
+	// 3: # another
 	// 4: y
-	input := "// a comment\nx = 1 // trailing\n// another\ny"
+	input := "# a comment\nx = 1 # trailing\n# another\ny"
 
 	expected := []struct {
 		literal  string
