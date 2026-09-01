@@ -79,7 +79,7 @@ def doubled(items)
 end
 ```
 
-Until `0.24`, `for` returned the value it was iterating, so `b` above was
+Until `0.24`, `foreach` (as `for` was then called) returned the value it was iterating, so `b` above was
 `[1, 2, 3, 4, 5]` — the same array that went in. That did not hold once the
 loop hit a `break`, which produced `nil` instead, and `while` never returned
 anything but `nil`.
