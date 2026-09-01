@@ -102,7 +102,7 @@ print(h[2])
 1
 true
 3
-"moo"
+moo
 true
 
 ```

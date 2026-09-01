@@ -97,7 +97,7 @@ example: |
   1
   true
   3
-  "moo"
+  moo
   true
 methods:
   clear:

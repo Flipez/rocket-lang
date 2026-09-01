@@ -72,7 +72,7 @@ print(s)
 ### capitalize()
 > Returns `STRING`
 
-Returns a copy with the first character upcased and every following character downcased, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost.
+Returns a copy with the first character replaced by its uppercase counterpart and every other character replaced by its lowercase counterpart, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost.
 
 
 <CodeBlockSimple input='a = "hello World!"
@@ -87,7 +87,7 @@ a
 ### capitalize!()
 > Returns `STRING`
 
-Upcases the first character and downcases the rest in place, and returns the string, so calls can be chained.
+Replaces the first character with its uppercase counterpart and every other character with its lowercase counterpart, in place, and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "hello World!"
