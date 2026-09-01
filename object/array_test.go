@@ -195,9 +195,8 @@ func TestArrayRubyMethods(t *testing.T) {
 		{`[].empty?()`, true},
 		{`[1].empty?()`, false},
 
-		// count() is size(); count(x) is how often x occurs, which index_of()
-		// cannot tell you.
-		{`[1,2,2,3].count()`, 4},
+		// count(x) is how often x occurs, which index_of() cannot tell you.
+		// size() (no argument) is the one that answers "how many are there".
 		{`[1,2,2,3].count(2)`, 2},
 		{`[1,2,2,3].count(9)`, 0},
 

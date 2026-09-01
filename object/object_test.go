@@ -506,10 +506,9 @@ func TestTypeGroups(t *testing.T) {
 		// A hash and an array are hashable, so they are keys too.
 		{`{[1]: "a"}.get([1], "missing")`, "a"},
 
-		// The fallback value of get and fetch is ANY, not HASHABLE -- it is
-		// never used as a key.
+		// The fallback value of get is ANY, not HASHABLE -- it is never used
+		// as a key. fetch has no fallback argument at all; see hash_test.go.
 		{`{"a": 1}.get("z", nil)`, nil},
-		{`{"a": 1}.fetch("z", nil)`, nil},
 
 		// NUMERIC takes INTEGER or FLOAT.
 		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9); m.to_array().to_json()`, "[[9,2]]"},
@@ -521,7 +520,7 @@ func TestTypeGroups(t *testing.T) {
 }
 
 // TestTypeGroupsRenderInSignatures checks that a group prints as its own name
-// rather than expanding. Hash#fetch used to render as a 118-character union of
+// rather than expanding. Hash#get used to render as a 118-character union of
 // nine types repeated twice, which told the reader nothing.
 func TestTypeGroupsRenderInSignatures(t *testing.T) {
 	tests := []struct {
@@ -535,12 +534,12 @@ func TestTypeGroupsRenderInSignatures(t *testing.T) {
 			"append(ANY)",
 		},
 		{
-			"fetch",
+			"get",
 			object.MethodLayout{ArgPattern: object.Args(
 				object.Arg(object.HASHABLE),
 				object.OptArg(object.ANY),
 			)},
-			"fetch(HASHABLE, [ANY])",
+			"get(HASHABLE, [ANY])",
 		},
 		{
 			"set",

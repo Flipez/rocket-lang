@@ -181,7 +181,7 @@ false
 ' />
 
 
-### fetch(HASHABLE, [ANY])
+### fetch(HASHABLE)
 > Returns `ANY`
 
 Returns the value for `key`, and raises when the key is absent. Use

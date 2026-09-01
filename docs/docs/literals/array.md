@@ -160,17 +160,15 @@ true
 ' />
 
 
-### count([ANY])
+### count(ANY)
 > Returns `INTEGER`
 
-Without an argument this is `size`. With one it counts how often that element occurs, which is what `index_of` cannot tell you.
+Counts how often the given element occurs, which is what `index_of` cannot tell you. For how many elements there are in total, use `size`.
 
 
-<CodeBlockSimple input='[1, 2, 2, 3].count()
-[1, 2, 2, 3].count(2)
+<CodeBlockSimple input='[1, 2, 2, 3].count(2)
 [1, 2, 2, 3].count(9)
-' output='4
-2
+' output='2
 0
 ' />
 

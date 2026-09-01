@@ -257,7 +257,6 @@ func init() {
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(HASHABLE),
-					OptArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -275,12 +274,9 @@ func init() {
 					return pair.Value
 				}
 
-				// Without a fallback a missing key is an error rather than nil.
-				// That is the difference from get(), which answers nil instead of erroring.
-				if len(args) > 1 {
-					return args[1]
-				}
-
+				// A missing key is an error rather than nil or a default.
+				// That is the whole difference from get(), which never raises;
+				// a default argument here would just be get() a second time.
 				return NewErrorFormat("key not found: %s", args[0].Inspect())
 			},
 		},

@@ -493,7 +493,7 @@ func init() {
 		"count": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					OptArg(ANY),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -502,13 +502,9 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				// Without an argument this is size(). With one it counts how
-				// often that element occurs, which is what index_of() cannot tell
-				// you.
-				if len(args) == 0 {
-					return NewInteger(len(ao.Elements))
-				}
-
+				// How often the argument occurs, which is what index_of()
+				// cannot tell you. size() (no argument) already answers "how
+				// many are there"; count() must not duplicate it.
 				count := 0
 				for _, element := range ao.Elements {
 					if CompareObjects(element, args[0]) {

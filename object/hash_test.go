@@ -123,12 +123,13 @@ func TestHashRubyMethods(t *testing.T) {
 		{`{}.empty?()`, true},
 		{`{"a": 1}.empty?()`, false},
 
-		// fetch errors on a missing key unless given a fallback. That is the
-		// difference from get(), which always requires one.
+		// fetch always errors on a missing key; it has no fallback argument.
+		// That is the whole difference from get(), which never raises. A
+		// second argument here would just make fetch a second get().
 		{`{"a": 1}.fetch("a")`, 1},
-		{`{"a": 1}.fetch("z", 0)`, 0},
 		{`{"a": 1}.fetch("z")`, `key not found: "z"`},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.fetch("z", 0)`, "too many arguments: got=2, want=1"},
 
 		// remove reports the value that went, or nil when nothing did.
 		{`h = {"a": 1}; h.remove("a")`, 1},
