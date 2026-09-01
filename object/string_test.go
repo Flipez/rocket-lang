@@ -154,6 +154,17 @@ func TestStringIndexOf(t *testing.T) {
 		{`"hello".last_index_of("l")`, 3},
 		{`"hello".index_of("z")`, -1},
 		{`"hello".last_index_of("z")`, -1},
+		// index_of/last_index_of must count runes like every other String
+		// method (size, s[i], slicing, reverse), not bytes. "語" starts at
+		// byte 6 in "日本語" but rune (character) index 2.
+		{`"日本語".index_of("語")`, 2},
+		{`"日本語".index_of("本")`, 1},
+		{`"日本語".index_of("missing")`, -1},
+		{`"日本語本".last_index_of("本")`, 3},
+		// The property this fix exists to restore: find where a substring
+		// is, then look there, and get it back -- on a multi-byte string.
+		{`s = "日本語"; s[s.index_of("語")]`, "語"},
+		{`s = "日本語本"; s[s.last_index_of("本")]`, "本"},
 	}
 
 	testInput(t, tests)

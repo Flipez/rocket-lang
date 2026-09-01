@@ -180,7 +180,7 @@ Formats according to a format specifier and returns the resulting string
 ### index_of(STRING)
 > Returns `INTEGER`
 
-Returns the byte offset of the first occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree.
+Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`.
 
 
 <CodeBlockSimple input='"test".index_of("e")
@@ -191,7 +191,7 @@ Returns the byte offset of the first occurrence of a given string if found. Othe
 ### last_index_of(STRING)
 > Returns `INTEGER`
 
-Returns the byte offset of the last occurrence of a given string if found. Otherwise returns `-1`. This is a byte offset, not a character count like `size` -- on a string with multi-byte characters the two can disagree.
+Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`.
 
 
 <CodeBlockSimple input='"hello".last_index_of("l")

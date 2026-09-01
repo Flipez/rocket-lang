@@ -47,7 +47,16 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return NewInteger(strings.Index(s.Value, arg))
+
+				// strings.Index returns a byte offset, but every other String
+				// method (size, s[i], slicing, reverse) counts in runes, so a
+				// multi-byte match landed on the wrong index -- convert here.
+				byteOffset := strings.Index(s.Value, arg)
+				if byteOffset < 0 {
+					return NewInteger(-1)
+				}
+
+				return NewInteger(utf8.RuneCountInString(s.Value[:byteOffset]))
 			},
 		},
 		"last_index_of": ObjectMethod{
@@ -63,7 +72,14 @@ func init() {
 				s := o.(*String)
 				arg := args[0].(*String).Value
 
-				return NewInteger(strings.LastIndex(s.Value, arg))
+				// Same byte-offset-vs-rune-index outlier as index_of; convert
+				// before returning so it matches size/slicing/reverse.
+				byteOffset := strings.LastIndex(s.Value, arg)
+				if byteOffset < 0 {
+					return NewInteger(-1)
+				}
+
+				return NewInteger(utf8.RuneCountInString(s.Value[:byteOffset]))
 			},
 		},
 		"format": ObjectMethod{
