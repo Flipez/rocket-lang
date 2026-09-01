@@ -5,7 +5,7 @@ import (
 	"github.com/flipez/rocket-lang/object"
 )
 
-func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
+func evalFor(fle *ast.For, env *object.Environment) object.Object {
 	val := Eval(fle.Value, env)
 
 	if val.Type() != object.INTEGER_OBJ && fle.Start != nil {
@@ -70,7 +70,7 @@ func evalForeach(fle *ast.Foreach, env *object.Environment) object.Object {
 		ret, idx, ok = iterator.Next()
 	}
 
-	// Loops evaluate to nil. foreach used to hand back the value it was
+	// Loops evaluate to nil. for used to hand back the value it was
 	// iterating, which was the caller's own input and became nil the moment
 	// the loop broke early.
 	return object.NIL

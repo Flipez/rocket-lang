@@ -22,8 +22,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalImport(node, env)
 	case *ast.Begin:
 		return evalBlock(node.Block, env)
-	case *ast.Foreach:
-		return evalForeach(node, env)
+	case *ast.For:
+		return evalFor(node, env)
 	case *ast.While:
 		return evalWhile(node, env)
 	case *ast.Return:

@@ -227,9 +227,9 @@ func TestErrorHandling(t *testing.T) {
 		{"begin print(nope) rescue e e.nope() end", "test:1:29: undefined method `.nope()` for ERROR"},
 		{"a = begin print(nope) rescue e e.message() end; a.nope()", "test:1:50: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},
-		{"foreach i in 'test' -> 3 \nprint(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
-		{"foreach i in 0 -> 'test' \nprint(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
-		{"foreach i in 0 -> 5 ^ 'test' \nprint(i)\nend", "test:1:1: range rocket step has to be an integer, got STRING"},
+		{"for i in 'test' -> 3 \nprint(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
+		{"for i in 0 -> 'test' \nprint(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
+		{"for i in 0 -> 5 ^ 'test' \nprint(i)\nend", "test:1:1: range rocket step has to be an integer, got STRING"},
 		{"[[1, 2]].to_matrix() + [[1], [2]].to_matrix()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
 		{"[[1, 2]].to_matrix() - [[1], [2]].to_matrix()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
 		{"[[1, 2]].to_matrix() * [[1, 2]].to_matrix()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
@@ -1196,16 +1196,16 @@ func TestRelativeImportWithoutSourceFile(t *testing.T) {
 	testIntegerObject(t, evaluated, 5)
 }
 
-// TestLoopsReturnNil covers the change from foreach handing back the value it
+// TestLoopsReturnNil covers the change from for handing back the value it
 // was iterating. That value was the caller's own input, and it silently became
 // nil as soon as the loop broke early, so the two loop forms disagreed with
-// each other and foreach disagreed with itself.
+// each other and for disagreed with itself.
 func TestLoopsReturnNil(t *testing.T) {
 	inputs := []string{
-		`foreach i in 5 end`,
-		`foreach i in [7, 8] end`,
-		`foreach i in "hi" end`,
-		`foreach i in 5
+		`for i in 5 end`,
+		`for i in [7, 8] end`,
+		`for i in "hi" end`,
+		`for i in 5
 			if i == 2
 				break
 			end
