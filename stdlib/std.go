@@ -8,7 +8,7 @@ var Functions = map[string]*object.BuiltinFunction{}
 var Modules = map[string]*object.BuiltinModule{}
 
 func init() {
-	RegisterFunction("puts", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY))}, putsFunction)
+	RegisterFunction("print", object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY))}, printFunction)
 	RegisterFunction(
 		"raise",
 		object.MethodLayout{

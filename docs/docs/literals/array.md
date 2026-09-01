@@ -7,13 +7,13 @@ import CodeBlockSimple from '@site/components/CodeBlockSimple'
 
 ```js
 a = [1, 2, 3, 4, 5]
-puts(a[2])
-puts(a[-2])
-puts(a[:2])
-puts(a[:-2])
-puts(a[2:])
-puts(a[-2:])
-puts(a[1:-2])
+print(a[2])
+print(a[-2])
+print(a[:2])
+print(a[:-2])
+print(a[2:])
+print(a[-2:])
+print(a[1:-2])
 
 // should output
 [1, 2]
@@ -61,18 +61,44 @@ false
 ' />
 
 
-### clear()
+### append(ANY)
+> Returns `ARRAY|ERROR`
+
+Returns a new array with the given object added as the last element, leaving the array itself unchanged. Use `append!` to add in place.
+
+
+<CodeBlockSimple input='d = [1,2,3]
+d.append("a")
+d
+' output='[1, 2, 3]
+[1, 2, 3, "a"]
+[1, 2, 3]
+' />
+
+
+### append!(ANY)
+> Returns `ARRAY|ERROR`
+
+Adds the given object as the last element in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='d = [1,2,3]
+d.append!("a")
+d
+' output='[1, 2, 3]
+[1, 2, 3, "a"]
+[1, 2, 3, "a"]
+' />
+
+
+### chunks(INTEGER)
 > Returns `ARRAY`
 
-Removes every element and returns the array, so calls can be chained.
+Returns the elements of the array in chunks with the size of the given integer
 
 
-<CodeBlockSimple input='a = [1, 2]
-a.clear()
-a
-' output='[1, 2]
-[]
-[]
+<CodeBlockSimple input='[1,2,3,4,5,6,7,8].chunks(3)
+' output='[[1, 2, 3], [4, 5, 6], [7, 8]]
 ' />
 
 
@@ -107,9 +133,9 @@ a
 
 
 ### concat(ARRAY)
-> Returns `ARRAY`
+> Returns `ARRAY|ERROR`
 
-Appends every element of the given array and returns the array, so calls can be chained.
+Returns a new array with every element of the given array appended, leaving the array itself unchanged. Use `concat!` to append in place.
 
 
 <CodeBlockSimple input='a = [1]
@@ -117,81 +143,60 @@ a.concat([2, 3])
 a
 ' output='[1]
 [1, 2, 3]
+[1]
+' />
+
+
+### concat!(ARRAY)
+> Returns `ARRAY|ERROR`
+
+Appends every element of the given array in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1]
+a.concat!([2, 3])
+a
+' output='[1]
+[1, 2, 3]
 [1, 2, 3]
 ' />
 
 
-### count([ANY])
+### contains?(ANY)
+> Returns `BOOLEAN`
+
+Returns true or false wether the array contains the given element
+
+
+<CodeBlockSimple input='[1,2,3].contains?(4)
+[1,2,3].contains?(3)
+' output='false
+true
+' />
+
+
+### count(ANY)
 > Returns `INTEGER`
 
-Without an argument this is `size`. With one it counts how often that element occurs, which is what `index` cannot tell you.
+Counts how often the given element occurs, which is what `index_of` cannot tell you. For how many elements there are in total, use `size`.
 
 
-<CodeBlockSimple input='[1, 2, 2, 3].count()
-[1, 2, 2, 3].count(2)
+<CodeBlockSimple input='[1, 2, 2, 3].count(2)
 [1, 2, 2, 3].count(9)
-' output='4
-2
+' output='2
 0
-' />
-
-
-### delete(ANY)
-> Returns `ANY`
-
-Removes every element equal to the argument and returns that argument, or `nil` when there was nothing to remove, so a removal can be told from a miss.
-
-
-<CodeBlockSimple input='a = [1, 2, 1]
-a.delete(1)
-a
-a.delete(9)
-' output='[1, 2, 1]
-1
-[2]
-nil
-' />
-
-
-### delete_at(INTEGER)
-> Returns `ANY`
-
-Removes the element at the given index and returns it. A negative index counts back from the end. An index that is not there gives `nil`, the same answer `first` gives for an empty array.
-
-
-<CodeBlockSimple input='a = [1, 2, 3]
-a.delete_at(1)
-a
-a.delete_at(9)
-' output='[1, 2, 3]
-2
-[1, 3]
-nil
-' />
-
-
-### drop(INTEGER)
-> Returns `ARRAY|ERROR`
-
-Returns everything after the first n elements as a new array. Dropping more than there are gives an empty array.
-
-
-<CodeBlockSimple input='[1, 2, 3].drop(2)
-[1, 2, 3].drop(9)
-' output='[3]
-[]
 ' />
 
 
 ### each(CALLABLE)
 > Returns `ARRAY|ERROR`
 
-Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `puts`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
+Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `print`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]
-a.each(def(x) puts(x * 2) end)
-a.each(def(x) if x == 2 break end puts(x) end).size()
+a.each(def(x) print(x * 2) end)
+a.each(def(x) if x == 2 break end print(x) end).size()
 ' output='[1, 2, 3]
 2
 4
@@ -212,6 +217,36 @@ Returns `true` when the array has no elements.
 [1].empty?()
 ' output='true
 false
+' />
+
+
+### filter(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Returns a new array of the elements the callback said yes to. Only `false` and `nil` are no, so `0` and `""` are yes. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. Use `filter!` to filter in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.filter(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[2, 4]
+[1, 2, 3, 4]
+' />
+
+
+### filter!(CALLABLE)
+> Returns `ARRAY|ERROR`
+
+Keeps only the elements the callback said yes to and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3, 4]
+a.filter!(def(x) x % 2 == 0 end)
+a
+' output='[1, 2, 3, 4]
+[2, 4]
+[2, 4]
 ' />
 
 
@@ -258,26 +293,13 @@ a
 ' />
 
 
-### include?(ANY)
-> Returns `BOOLEAN`
-
-Returns true or false wether the array contains the given element
-
-
-<CodeBlockSimple input='[1,2,3].include?(4)
-[1,2,3].include?(3)
-' output='false
-true
-' />
-
-
-### index(ANY)
+### index_of(ANY)
 > Returns `INTEGER`
 
 Returns the index of the given element in the array if found. Otherwise return `-1`.
 
 
-<CodeBlockSimple input='["a", "b", 1, 2].index(1)
+<CodeBlockSimple input='["a", "b", 1, 2].index_of(1)
 ' output='2
 ' />
 
@@ -285,7 +307,7 @@ Returns the index of the given element in the array if found. Otherwise return `
 ### insert(INTEGER, ANY)
 > Returns `ARRAY|ERROR`
 
-Inserts an element at the given index and returns the array. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`.
+Returns a new array with an element inserted at the given index, leaving the array itself unchanged. A negative index counts back from the end, so `-1` appends. An index past the end is an error rather than a silent padding with `nil`. Use `insert!` to insert in place.
 
 
 <CodeBlockSimple input='a = [1, 2]
@@ -294,8 +316,23 @@ a.insert(0 - 1, 8)
 a
 ' output='[1, 2]
 [1, 9, 2]
-[1, 9, 2, 8]
-[1, 9, 2, 8]
+[1, 2, 8]
+[1, 2]
+' />
+
+
+### insert!(INTEGER, ANY)
+> Returns `ARRAY|ERROR`
+
+Inserts an element at the given index in place and returns the array, so calls can be chained. Takes the same index rules as `insert`.
+
+
+<CodeBlockSimple input='a = [1, 2]
+a.insert!(1, 9)
+a
+' output='[1, 2]
+[1, 9, 2]
+[1, 9, 2]
 ' />
 
 
@@ -320,6 +357,19 @@ Returns the last element of the array.
 
 <CodeBlockSimple input='["a", "b", 1, 2].last()
 ' output='2
+' />
+
+
+### last_index_of(ANY)
+> Returns `INTEGER`
+
+Returns the index of the last matching element, or `-1` when there is none. The mirror of `index_of`.
+
+
+<CodeBlockSimple input='[1, 2, 2, 3].last_index_of(2)
+[1, 2, 3].last_index_of(9)
+' output='2
+-1
 ' />
 
 
@@ -424,33 +474,33 @@ false
 ' />
 
 
-### pop()
-> Returns `ANY`
+### prepend(ANY)
+> Returns `ARRAY|ERROR`
 
-Removes the last element of the array and returns it.
+Returns a new array with an element added to the front, leaving the array itself unchanged. The mirror of `append`. Use `prepend!` to add in place.
 
 
-<CodeBlockSimple input='a = [1,2,3]
-a.pop()
+<CodeBlockSimple input='a = [2, 3]
+a.prepend(1)
 a
-' output='[1, 2, 3]
-3
-[1, 2]
+' output='[2, 3]
+[1, 2, 3]
+[2, 3]
 ' />
 
 
-### push(ANY)
-> Returns `ARRAY`
+### prepend!(ANY)
+> Returns `ARRAY|ERROR`
 
-Adds the given object as the last element and returns the array, so calls can be chained.
+Adds an element to the front in place and returns the array, so calls can be chained. The mirror of `append!`.
 
 
-<CodeBlockSimple input='d = [1,2,3]
-d.push("a")
-d
-' output='[1, 2, 3]
-[1, 2, 3, "a"]
-[1, 2, 3, "a"]
+<CodeBlockSimple input='a = [2, 3]
+a.prepend!(1)
+a
+' output='[2, 3]
+[1, 2, 3]
+[1, 2, 3]
 ' />
 
 
@@ -474,7 +524,7 @@ a.reduce(1, def(product, x) product * x end)
 ### reject(CALLABLE)
 > Returns `ARRAY|ERROR`
 
-Returns a new array of the elements the callback said no to -- the mirror of `select`. Use `reject!` to filter in place.
+Returns a new array of the elements the callback said no to -- the mirror of `filter`. Use `reject!` to filter in place.
 
 
 <CodeBlockSimple input='a = [1, 2, 3, 4]
@@ -498,6 +548,130 @@ a
 ' output='[1, 2, 3, 4]
 [1, 3]
 [1, 3]
+' />
+
+
+### remove(ANY)
+> Returns `ARRAY|ERROR`
+
+Returns a new array without every element equal to the argument, leaving the array itself unchanged. An argument that matches nothing comes back unchanged rather than erroring. Use `remove!` to remove in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 1]
+a.remove(1)
+a
+a.remove(9)
+' output='[1, 2, 1]
+[2]
+[1, 2, 1]
+[1, 2, 1]
+' />
+
+
+### remove!(ANY)
+> Returns `ARRAY|ERROR`
+
+Removes every element equal to the argument in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 1]
+a.remove!(1)
+a
+' output='[1, 2, 1]
+[2]
+[2]
+' />
+
+
+### remove_at(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns a new array without the element at the given index, leaving the array itself unchanged. A negative index counts back from the end. An index that is not there comes back unchanged rather than erroring. Use `remove_at!` to remove in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_at(1)
+a
+a.remove_at(9)
+' output='[1, 2, 3]
+[1, 3]
+[1, 2, 3]
+[1, 2, 3]
+' />
+
+
+### remove_at!(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Removes the element at the given index in place and returns the array, so calls can be chained.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_at!(1)
+a
+' output='[1, 2, 3]
+[1, 3]
+[1, 3]
+' />
+
+
+### remove_first()
+> Returns `ARRAY|ERROR`
+
+Returns a new array without its first element, leaving the array itself unchanged. The mirror of `remove_last`. An empty array has no first element to drop, so it comes back unchanged. Use `remove_first!` to remove in place.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_first()
+a
+' output='[1, 2, 3]
+[2, 3]
+[1, 2, 3]
+' />
+
+
+### remove_first!()
+> Returns `ARRAY|ERROR`
+
+Removes the first element of the array in place and returns the array, so calls can be chained. The mirror of `remove_last!`.
+
+
+<CodeBlockSimple input='a = [1, 2, 3]
+a.remove_first!()
+a
+' output='[1, 2, 3]
+[2, 3]
+[2, 3]
+' />
+
+
+### remove_last()
+> Returns `ARRAY|ERROR`
+
+Returns a new array without its last element, leaving the array itself unchanged. An empty array has no last element to drop, so it comes back unchanged. Use `remove_last!` to remove in place.
+
+
+<CodeBlockSimple input='a = [1,2,3]
+a.remove_last()
+a
+' output='[1, 2, 3]
+[1, 2]
+[1, 2, 3]
+' />
+
+
+### remove_last!()
+> Returns `ARRAY|ERROR`
+
+Removes the last element of the array in place and returns the array, so calls can be chained. Popping the removed value takes two calls now: `last()` to look at it, then `remove_last!()` to take it out.
+
+
+<CodeBlockSimple input='a = [1,2,3]
+a.remove_last!()
+a
+' output='[1, 2, 3]
+[1, 2]
+[1, 2]
 ' />
 
 
@@ -528,19 +702,6 @@ a
 ' output='["a", "b", 1, 2]
 [2, 1, "b", "a"]
 [2, 1, "b", "a"]
-' />
-
-
-### rindex(ANY)
-> Returns `INTEGER`
-
-Returns the index of the last matching element, or `-1` when there is none. The mirror of `index`.
-
-
-<CodeBlockSimple input='[1, 2, 2, 3].rindex(2)
-[1, 2, 3].rindex(9)
-' output='2
--1
 ' />
 
 
@@ -578,51 +739,6 @@ a
 ' />
 
 
-### select(CALLABLE)
-> Returns `ARRAY|ERROR`
-
-Returns a new array of the elements the callback said yes to. Only `false` and `nil` are no, so `0` and `""` are yes. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. Use `select!` to filter in place.
-
-
-<CodeBlockSimple input='a = [1, 2, 3, 4]
-a.select(def(x) x % 2 == 0 end)
-a
-' output='[1, 2, 3, 4]
-[2, 4]
-[1, 2, 3, 4]
-' />
-
-
-### select!(CALLABLE)
-> Returns `ARRAY|ERROR`
-
-Keeps only the elements the callback said yes to and returns the array, so calls can be chained.
-
-
-<CodeBlockSimple input='a = [1, 2, 3, 4]
-a.select!(def(x) x % 2 == 0 end)
-a
-' output='[1, 2, 3, 4]
-[2, 4]
-[2, 4]
-' />
-
-
-### shift()
-> Returns `ANY`
-
-Removes the first element and returns it, or `nil` for an empty array. The mirror of `pop`, and like `pop` it changes the array without a `!`, because there is no pure version of taking something out.
-
-
-<CodeBlockSimple input='a = [1, 2, 3]
-a.shift()
-a
-' output='[1, 2, 3]
-1
-[2, 3]
-' />
-
-
 ### size()
 > Returns `INTEGER`
 
@@ -634,14 +750,29 @@ Returns the amount of elements in the array.
 ' />
 
 
-### slices(INTEGER)
-> Returns `ARRAY`
+### skip(INTEGER)
+> Returns `ARRAY|ERROR`
 
-Returns the elements of the array in slices with the size of the given integer
+Returns everything after the first n elements as a new array. Skipping more than there are gives an empty array.
 
 
-<CodeBlockSimple input='[1,2,3,4,5,6,7,8].slices(3)
-' output='[[1, 2, 3], [4, 5, 6], [7, 8]]
+<CodeBlockSimple input='[1, 2, 3].skip(2)
+[1, 2, 3].skip(9)
+' output='[3]
+[]
+' />
+
+
+### skip_last(INTEGER)
+> Returns `ARRAY|ERROR`
+
+Returns everything except the last n elements as a new array. Skipping more than there are gives an empty array.
+
+
+<CodeBlockSimple input='[1, 2, 3].skip_last(2)
+[1, 2, 3].skip_last(9)
+' output='[1]
+[]
 ' />
 
 
@@ -718,26 +849,13 @@ Adds the elements up. Every element has to be `INTEGERABLE`, which is wider than
 ' />
 
 
-### take(INTEGER)
-> Returns `ARRAY|ERROR`
-
-Returns the first n elements as a new array. Asking for more than there are gives all of them. The result is a copy, so changing the original does not change it.
-
-
-<CodeBlockSimple input='[1, 2, 3].take(2)
-[1, 2, 3].take(9)
-' output='[1, 2]
-[1, 2, 3]
-' />
-
-
-### to_m()
+### to_matrix()
 > Returns `MATRIX|ERROR`
 
 Converts a nested array (2D array) to a Matrix object.
 
 
-<CodeBlockSimple input='[[1, 2], [3, 4]].to_m()
+<CodeBlockSimple input='[[1, 2], [3, 4]].to_matrix()
 ' output='2x2 matrix
 ┌          ┐
 │ 1.0  2.0 │
@@ -746,14 +864,14 @@ Converts a nested array (2D array) to a Matrix object.
 ' />
 
 
-### uniq()
+### unique()
 > Returns `ARRAY|ERROR`
 
-Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `uniq!` to deduplicate in place.
+Returns a new array with duplicates removed, keeping the order of first appearance. Every element has to be `HASHABLE`, otherwise an error is returned naming the element at fault. Use `unique!` to deduplicate in place.
 
 
 <CodeBlockSimple input='c = ["a", 1, 1, 2]
-c.uniq()
+c.unique()
 c
 ' output='["a", 1, 1, 2]
 ["a", 1, 2]
@@ -761,14 +879,14 @@ c
 ' />
 
 
-### uniq!()
+### unique!()
 > Returns `ARRAY|ERROR`
 
 Removes duplicates from the array in place and returns it, keeping the order of first appearance.
 
 
 <CodeBlockSimple input='c = ["a", 1, 1, 2]
-c.uniq!()
+c.unique!()
 c
 ' output='["a", 1, 1, 2]
 ["a", 1, 2]
@@ -776,23 +894,49 @@ c
 ' />
 
 
-### unshift(ANY)
-> Returns `ARRAY`
-
-Adds an element to the front and returns the array, so calls can be chained. The mirror of `push`.
-
-
-<CodeBlockSimple input='a = [2, 3]
-a.unshift(1)
-a
-' output='[2, 3]
-[1, 2, 3]
-[1, 2, 3]
-' />
-
-
 
 ## Generic Literal Methods
+
+### help()
+> Returns `NIL`
+
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+
+
+<CodeBlockSimple input='true.help()
+1.0.help()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	acos()
+	asin()
+	atan()
+	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
+	divmod(FLOAT)
+	exp()
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	log()
+	log10()
+	log2()
+	nan?()
+	negative?()
+	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
+	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
+	truncate([INTEGER])
+	zero?()
+nil
+' />
+
 
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
@@ -819,7 +963,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []
@@ -843,16 +987,16 @@ true
 ' />
 
 
-### to_f()
+### to_float()
 > Returns `FLOAT|NIL`
 
 Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
-<CodeBlockSimple input='1.to_f()
-"1.4".to_f()
-"abc".to_f()
-nil.to_f()
+<CodeBlockSimple input='1.to_float()
+"1.4".to_float()
+"abc".to_float()
+nil.to_float()
 ' output='1.0
 1.4
 nil
@@ -860,21 +1004,21 @@ nil
 ' />
 
 
-### to_i()
+### to_integer()
 > Returns `INTEGER|NIL`
 
 Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
-<CodeBlockSimple input='true.to_i()
-false.to_i()
-1234.to_i()
-"4".to_i()
-"0".to_i()
-"0125".to_i()
-"0x2322".to_i()
-"0b1010".to_i()
-"test".to_i()
+<CodeBlockSimple input='true.to_integer()
+false.to_integer()
+1234.to_integer()
+"4".to_integer()
+"0".to_integer()
+"0125".to_integer()
+"0x2322".to_integer()
+"0b1010".to_integer()
+"test".to_integer()
 ' output='1
 0
 1234
@@ -900,18 +1044,18 @@ a.to_json()
 ' />
 
 
-### to_s()
+### to_string()
 > Returns `STRING`
 
 Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
-<CodeBlockSimple input='true.to_s()
-1234.to_s()
-"test".to_s()
-1.4.to_s()
-nil.to_s()
-"0b1010".to_i().to_s()
+<CodeBlockSimple input='true.to_string()
+1234.to_string()
+"test".to_string()
+1.4.to_string()
+nil.to_string()
+"0b1010".to_integer().to_string()
 ' output='"true"
 "1234"
 "test"
@@ -935,13 +1079,13 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `append(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]
@@ -952,7 +1096,9 @@ puts.type_groups()
 ### wat()
 > Returns `NIL`
 
-Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+An alias of `help`, kept as an easter egg. This is the only alias in
+RocketLang; every other method has exactly one name.
+
 
 
 <CodeBlockSimple input='true.wat()
@@ -961,15 +1107,29 @@ Prints the type's literal-specific methods with their argument and return types,
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil

@@ -94,8 +94,8 @@ var ambiguousPrefixInfix = map[token.TokenType]bool{
 //
 // Nothing terminates a statement in RocketLang, so a line break is the only
 // separator there is, and it is only worth consulting for a token that could go
-// either way. Without this, `puts("a")` on one line followed by
-// `[1].each(puts)` on the next indexed the result of puts -- silently, since
+// either way. Without this, `print("a")` on one line followed by
+// `[1].each(print)` on the next indexed the result of print -- silently, since
 // indexing nil is a runtime error rather than a syntax one.
 func (p *Parser) peekStartsStatement() bool {
 	return p.bracketDepth == 0 &&

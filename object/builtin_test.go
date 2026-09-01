@@ -8,7 +8,7 @@ import (
 
 func TestBuiltinObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
-		{`puts.nope()`, "test:1:5: undefined method `.nope()` for BUILTIN_FUNCTION"},
+		{`print.nope()`, "test:1:6: undefined method `.nope()` for BUILTIN_FUNCTION"},
 	}
 
 	testInput(t, tests)
@@ -16,7 +16,7 @@ func TestBuiltinObjectMethods(t *testing.T) {
 
 func TestBuiltinType(t *testing.T) {
 	tests := []inputTestCase{
-		{"puts", "puts"},
+		{"print", "print"},
 	}
 
 	for _, tt := range tests {

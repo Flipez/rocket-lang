@@ -91,7 +91,7 @@ func (h *Hash) Set(key, value any) {
 // hashKeyOf turns an argument into a hash key. The HASHABLE argument pattern
 // already rejects anything that cannot be one, so the error is unreachable from
 // the interpreter; it exists so that widening a pattern can never again turn
-// into a panic. include? and get used to assert without checking, and
+// into a panic. has_key? and get used to assert without checking, and
 // {"a": 1}.get(nil, 0) brought the process down.
 func hashKeyOf(o Object) (HashKey, Object) {
 	hashable, ok := o.(Hashable)
@@ -144,7 +144,7 @@ func init() {
 				return NewArray(values)
 			},
 		},
-		"include?": ObjectMethod{
+		"has_key?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(BOOLEAN_OBJ),
@@ -172,7 +172,7 @@ func init() {
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(HASHABLE),
-					Arg(ANY),
+					OptArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -190,7 +190,13 @@ func init() {
 					return pair.Value
 				}
 
-				return args[1]
+				// Without a default a missing key is nil rather than an error.
+				// That is the difference from fetch(), which raises instead.
+				if len(args) > 1 {
+					return args[1]
+				}
+
+				return NIL
 			},
 		},
 		"each": ObjectMethod{
@@ -251,7 +257,6 @@ func init() {
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(HASHABLE),
-					OptArg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(ANY),
@@ -269,53 +274,10 @@ func init() {
 					return pair.Value
 				}
 
-				// Without a fallback a missing key is an error rather than nil.
-				// That is the difference from get(), which always needs one.
-				if len(args) > 1 {
-					return args[1]
-				}
-
+				// A missing key is an error rather than nil or a default.
+				// That is the whole difference from get(), which never raises;
+				// a default argument here would just be get() a second time.
 				return NewErrorFormat("key not found: %s", args[0].Inspect())
-			},
-		},
-		"delete": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(HASHABLE),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				h := o.(*Hash)
-
-				hashed, err := hashKeyOf(args[0])
-				if err != nil {
-					return err
-				}
-
-				pair, found := h.Pairs[hashed]
-				if !found {
-					return NIL
-				}
-				delete(h.Pairs, hashed)
-
-				// The value that went, so a delete can be told from a miss.
-				return pair.Value
-			},
-		},
-		"clear": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(HASH_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				h := o.(*Hash)
-				h.Pairs = make(map[HashKey]HashPair)
-
-				return h
 			},
 		},
 		"invert": ObjectMethod{
@@ -342,7 +304,7 @@ func init() {
 		},
 	}
 
-	hashCallbackPair("select", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
+	hashCallbackPair("filter", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
 		return filteredPairs(pairs, fn, env, true)
 	})
 	hashCallbackPair("reject", func(pairs map[HashKey]HashPair, fn Object, env Environment) (map[HashKey]HashPair, Object) {
@@ -415,6 +377,26 @@ func init() {
 
 		return kept, nil
 	})
+
+	// remove used to delete from the receiver and hand back the value that
+	// went, which is the same shape Array#remove_last had: mutation with no
+	// bang. Paired now, so the value that went is only available before the
+	// bang form removes it -- get(key) first, then remove!(key).
+	hashPair("remove", Args(Arg(HASHABLE)), func(pairs map[HashKey]HashPair, args []Object) (map[HashKey]HashPair, Object) {
+		hashed, err := hashKeyOf(args[0])
+		if err != nil {
+			return nil, err
+		}
+
+		out := copyPairs(pairs)
+		delete(out, hashed)
+
+		return out, nil
+	})
+
+	// clear is not paired, for the same reason Array's is not: a pure clear()
+	// would just be {}, and a bang-only clear! would have no non-mutating
+	// partner. `h = {}` already says what a pure clear would.
 }
 
 // hashCallbackPair registers a method taking a callback and its in-place
@@ -454,7 +436,7 @@ func hashCallbackPair(name string, transform func(pairs map[HashKey]HashPair, fn
 }
 
 // filteredPairs keeps the entries the callback answers for, which way round
-// decided by keep -- select keeps a yes, reject keeps a no.
+// decided by keep -- filter keeps a yes, reject keeps a no.
 func filteredPairs(pairs map[HashKey]HashPair, fn Object, env Environment, keep bool) (map[HashKey]HashPair, Object) {
 	out := make(map[HashKey]HashPair, len(pairs))
 
@@ -538,7 +520,7 @@ func (h *Hash) GetIterator(_, _ int, _ bool) Iterator {
 }
 
 // ToStringObj renders the hash the way Inspect does. See Array.ToStringObj
-// for why this is not left to the generic to_s.
+// for why this is not left to the generic to_string.
 func (h *Hash) ToStringObj() *String {
 	return NewString(h.Inspect())
 }

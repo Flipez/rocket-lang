@@ -202,6 +202,19 @@ func (m *Matrix) Multiply(other *Matrix) (*Matrix, error) {
 	return NewMatrix(result), nil
 }
 
+// Copy deep-copies the matrix, allocating a fresh row slice for every row.
+// Data is [][]float64: copying only the outer slice would leave every row
+// shared with the original, so a caller mutating the copy would silently
+// mutate m too.
+func (m *Matrix) Copy() *Matrix {
+	data := make([][]float64, m.Rows)
+	for i := range data {
+		data[i] = make([]float64, m.Cols)
+		copy(data[i], m.Data[i])
+	}
+	return NewMatrix(data)
+}
+
 func (m *Matrix) Transpose() *Matrix {
 	result := make([][]float64, m.Cols)
 	for i := 0; i < m.Cols; i++ {
@@ -235,6 +248,18 @@ func (m *Matrix) Set(row, col int, value float64) error {
 	return nil
 }
 
+// numericArgToFloat converts a NUMERIC method argument (already validated by
+// ArgPattern to be an *Integer or *Float) to a float64.
+func numericArgToFloat(o Object) float64 {
+	switch v := o.(type) {
+	case *Float:
+		return v.Value
+	case *Integer:
+		return float64(v.Value)
+	}
+	return 0
+}
+
 func (m *Matrix) Row(index int) (*Array, error) {
 	if index < 0 || index >= m.Rows {
 		return nil, fmt.Errorf("row index %d out of bounds [0, %d)", index, m.Rows)
@@ -259,7 +284,7 @@ func (m *Matrix) Col(index int) (*Array, error) {
 
 func init() {
 	objectMethods[MATRIX_OBJ] = map[string]ObjectMethod{
-		"to_a": {
+		"to_array": {
 			Layout: MethodLayout{
 				ReturnPattern: Args(Arg(ARRAY_OBJ)),
 			},
@@ -313,15 +338,6 @@ func init() {
 				return m.Transpose()
 			},
 		},
-		"t": {
-			Layout: MethodLayout{
-				ReturnPattern: Args(Arg(MATRIX_OBJ)),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				m := o.(*Matrix)
-				return m.Transpose()
-			},
-		},
 		"get": {
 			Layout: MethodLayout{
 				ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(INTEGER_OBJ)),
@@ -341,20 +357,37 @@ func init() {
 		"set": {
 			Layout: MethodLayout{
 				ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(INTEGER_OBJ), Arg(NUMERIC)),
-				ReturnPattern: Args(Arg(NIL_OBJ, ERROR_OBJ)),
+				ReturnPattern: Args(Arg(MATRIX_OBJ, ERROR_OBJ)),
 			},
 			method: func(o Object, args []Object, _ Environment) Object {
 				m := o.(*Matrix)
 				row := int(args[0].(*Integer).Value)
 				col := int(args[1].(*Integer).Value)
-				var value float64
-				if IsNumber(args[2]) {
-					if f, ok := args[2].(*Float); ok {
-						value = f.Value
-					} else if i, ok := args[2].(*Integer); ok {
-						value = float64(i.Value)
-					}
+				value := numericArgToFloat(args[2])
+
+				// Copy() deep-copies every row so the returned matrix does not
+				// alias the receiver's [][]float64 rows; without that, this
+				// "pure" set would still mutate m through the shared row slices.
+				copied := m.Copy()
+				err := copied.Set(row, col, value)
+				if err != nil {
+					return NewErrorFormat("%s", err.Error())
 				}
+
+				return copied
+			},
+		},
+		"set!": {
+			Layout: MethodLayout{
+				ArgPattern:    Args(Arg(INTEGER_OBJ), Arg(INTEGER_OBJ), Arg(NUMERIC)),
+				ReturnPattern: Args(Arg(MATRIX_OBJ, ERROR_OBJ)),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				m := o.(*Matrix)
+				row := int(args[0].(*Integer).Value)
+				col := int(args[1].(*Integer).Value)
+				value := numericArgToFloat(args[2])
+
 				err := m.Set(row, col, value)
 				if err != nil {
 					return NewErrorFormat("%s", err.Error())

@@ -14,7 +14,7 @@ Print numbers from 0 to 3:
 ```js
 🚀 > a = 0
 🚀 > while a != 4
-  puts(a)
+  print(a)
   a = a + 1
 end
 
@@ -35,7 +35,7 @@ while i < 10
     i = i + 1
     next
   end
-  puts(i)
+  print(i)
   if i == 6
     break
   end
@@ -56,7 +56,7 @@ Loops evaluate to `nil`, whether they run to completion or exit early through
 ```js
 def iterate(items)
   foreach item in items
-    puts(item)
+    print(item)
   end
 end
 
@@ -73,7 +73,7 @@ Build up a value explicitly if you need one out of a loop:
 def doubled(items)
   result = []
   foreach item in items
-    result.push(item * 2)
+    result.append!(item * 2)
   end
   return result
 end

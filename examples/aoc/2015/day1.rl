@@ -20,7 +20,7 @@ calc = def (input, idx, floor)
   new_idx = idx - 1
   delta = char_to_value[input[new_idx]]
   if (delta == nil)
-    raise(1, new_idx.to_s())
+    raise(1, new_idx.to_string())
   end
   
   calc(input, new_idx, floor + delta)
@@ -28,16 +28,16 @@ end
 
 "// Test some inputs to check that our code is correct..."
 if (part_one("(())") != 0)
-  puts("Assertion ((( => 0 failed")
+  print("Assertion ((( => 0 failed")
 end
 
 "// ... for multiple known results."
 if (part_one(")())())") != -3)
-  puts("Assertion )())()) => -3 failed")
+  print("Assertion )())()) => -3 failed")
 end
 
 "// We can now read data from files so using 'real' input data is much easier"
-real_input = IO.open("day1.input").content().strip()
+real_input = IO.open("day1.input").content().trim()
 
-puts("Solution Day 1 Part 1: ")
-puts(part_one(real_input))
+print("Solution Day 1 Part 1: ")
+print(part_one(real_input))

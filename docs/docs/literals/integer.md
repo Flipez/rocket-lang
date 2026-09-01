@@ -28,21 +28,43 @@ Returns the absolute value, as an integer, keeping the base.
 
 <CodeBlockSimple input='3.abs()
 (0 - 5).abs()
-"-0x10".to_i().abs()
+"-0x10".to_integer().abs()
 ' output='3
 5
 0x10
 ' />
 
 
-### base()
-> Returns `INTEGER`
+### acos()
+> Returns `FLOAT`
 
-Returns the base of the integer.
+Returns the arccosine, in radians, of the number, as a float.
 
 
-<CodeBlockSimple input='"0b1010".to_i().base()
-' output='2
+<CodeBlockSimple input='1.acos()
+' output='0.0
+' />
+
+
+### asin()
+> Returns `FLOAT`
+
+Returns the arcsine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.asin()
+' output='0.0
+' />
+
+
+### atan()
+> Returns `FLOAT`
+
+Returns the arctangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.atan()
+' output='0.0
 ' />
 
 
@@ -76,14 +98,25 @@ Rounds up to a multiple of ten, given a negative digit count. An integer is alre
 ' />
 
 
-### chr()
-> Returns `STRING|ERROR`
+### copysign(NUMERIC)
+> Returns `FLOAT`
 
-Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error.
+Returns a float with the magnitude of the number and the sign of the argument.
 
 
-<CodeBlockSimple input='65.chr()
-' output='"A"
+<CodeBlockSimple input='3.copysign(0 - 1.0)
+' output='-3.0
+' />
+
+
+### cos()
+> Returns `FLOAT`
+
+Returns the cosine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.cos()
+' output='1.0
 ' />
 
 
@@ -121,7 +154,7 @@ Returns the quotient and the remainder as a two-element array. Both follow the `
 Calls the callback with each integer from the receiver down to the given limit, inclusive at both ends, and returns the receiver. A limit above the receiver calls nothing.
 
 
-<CodeBlockSimple input='3.downto(1, def(i) puts(i) end)
+<CodeBlockSimple input='3.downto(1, def(i) print(i) end)
 ' output='3
 2
 1
@@ -139,6 +172,17 @@ Returns `true` when the number divides by two exactly.
 5.even?()
 ' output='true
 false
+' />
+
+
+### exp()
+> Returns `FLOAT`
+
+Returns e raised to the number, as a float.
+
+
+<CodeBlockSimple input='1.exp()
+' output='2.718281828459045
 ' />
 
 
@@ -178,6 +222,39 @@ Returns the least common multiple of the two numbers, always positive.
 3.lcm(0 - 7)
 ' output='180
 21
+' />
+
+
+### log()
+> Returns `FLOAT`
+
+Returns the natural logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='1.log()
+' output='0.0
+' />
+
+
+### log10()
+> Returns `FLOAT`
+
+Returns the decimal logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='100.log10()
+' output='2.0
+' />
+
+
+### log2()
+> Returns `FLOAT`
+
+Returns the binary logarithm of the number, as a float.
+
+
+<CodeBlockSimple input='8.log2()
+' output='3.0
 ' />
 
 
@@ -233,16 +310,27 @@ Returns the number raised to the given power. A second argument takes the result
 ' />
 
 
-### pred()
+### predecessor()
 > Returns `INTEGER`
 
 Returns the previous integer, keeping the base of the receiver.
 
 
-<CodeBlockSimple input='1.pred()
-0.pred()
+<CodeBlockSimple input='1.predecessor()
+0.predecessor()
 ' output='0
 -1
+' />
+
+
+### remainder(NUMERIC)
+> Returns `FLOAT`
+
+Returns the IEEE 754 floating-point remainder of the number divided by the argument, as a float.
+
+
+<CodeBlockSimple input='100.remainder(30.0)
+' output='10.0
 ' />
 
 
@@ -259,14 +347,47 @@ Rounds to the nearest multiple of ten, halves away from zero, given a negative d
 ' />
 
 
-### succ()
+### sin()
+> Returns `FLOAT`
+
+Returns the sine, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.sin()
+' output='0.0
+' />
+
+
+### sqrt()
+> Returns `FLOAT`
+
+Returns the square root of the number, as a float.
+
+
+<CodeBlockSimple input='16.sqrt()
+' output='4.0
+' />
+
+
+### successor()
 > Returns `INTEGER`
 
 Returns the next integer, keeping the base of the receiver.
 
 
-<CodeBlockSimple input='1.succ()
+<CodeBlockSimple input='1.successor()
 ' output='2
+' />
+
+
+### tan()
+> Returns `FLOAT`
+
+Returns the tangent, in radians, of the number, as a float.
+
+
+<CodeBlockSimple input='0.tan()
+' output='0.0
 ' />
 
 
@@ -276,8 +397,8 @@ Returns the next integer, keeping the base of the receiver.
 Calls the callback with each integer from `0` up to one less than the receiver, and returns the receiver so calls can be chained. A count of zero or less calls nothing rather than erroring, which makes it safe to hand a computed count. The counter keeps the receiver's base.
 
 
-<CodeBlockSimple input='3.times(def(i) puts(i) end)
-0.times(def(i) puts("never") end)
+<CodeBlockSimple input='3.times(def(i) print(i) end)
+0.times(def(i) print("never") end)
 ' output='0
 1
 2
@@ -292,8 +413,19 @@ Calls the callback with each integer from `0` up to one less than the receiver, 
 Converts the integer into a integer with the given base
 
 
-<CodeBlockSimple input='"0b1010".to_i().to_base(8)
+<CodeBlockSimple input='"0b1010".to_integer().to_base(8)
 ' output='0o12
+' />
+
+
+### to_character()
+> Returns `STRING|ERROR`
+
+Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error.
+
+
+<CodeBlockSimple input='65.to_character()
+' output='"A"
 ' />
 
 
@@ -316,8 +448,8 @@ Drops the last digits, rounding toward zero, given a negative digit count. No ar
 Calls the callback with each integer from the receiver up to the given limit, inclusive at both ends, and returns the receiver. A limit below the receiver calls nothing.
 
 
-<CodeBlockSimple input='1.upto(3, def(i) puts(i) end)
-3.upto(1, def(i) puts("never") end)
+<CodeBlockSimple input='1.upto(3, def(i) print(i) end)
+3.upto(1, def(i) print("never") end)
 ' output='1
 2
 3
@@ -341,6 +473,47 @@ false
 
 
 ## Generic Literal Methods
+
+### help()
+> Returns `NIL`
+
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+
+
+<CodeBlockSimple input='true.help()
+1.0.help()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	acos()
+	asin()
+	atan()
+	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
+	divmod(FLOAT)
+	exp()
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	log()
+	log10()
+	log2()
+	nan?()
+	negative?()
+	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
+	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
+	truncate([INTEGER])
+	zero?()
+nil
+' />
+
 
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
@@ -367,7 +540,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []
@@ -391,16 +564,16 @@ true
 ' />
 
 
-### to_f()
+### to_float()
 > Returns `FLOAT|NIL`
 
 Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
-<CodeBlockSimple input='1.to_f()
-"1.4".to_f()
-"abc".to_f()
-nil.to_f()
+<CodeBlockSimple input='1.to_float()
+"1.4".to_float()
+"abc".to_float()
+nil.to_float()
 ' output='1.0
 1.4
 nil
@@ -408,21 +581,21 @@ nil
 ' />
 
 
-### to_i()
+### to_integer()
 > Returns `INTEGER|NIL`
 
 Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
-<CodeBlockSimple input='true.to_i()
-false.to_i()
-1234.to_i()
-"4".to_i()
-"0".to_i()
-"0125".to_i()
-"0x2322".to_i()
-"0b1010".to_i()
-"test".to_i()
+<CodeBlockSimple input='true.to_integer()
+false.to_integer()
+1234.to_integer()
+"4".to_integer()
+"0".to_integer()
+"0125".to_integer()
+"0x2322".to_integer()
+"0b1010".to_integer()
+"test".to_integer()
 ' output='1
 0
 1234
@@ -448,18 +621,18 @@ a.to_json()
 ' />
 
 
-### to_s()
+### to_string()
 > Returns `STRING`
 
 Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
-<CodeBlockSimple input='true.to_s()
-1234.to_s()
-"test".to_s()
-1.4.to_s()
-nil.to_s()
-"0b1010".to_i().to_s()
+<CodeBlockSimple input='true.to_string()
+1234.to_string()
+"test".to_string()
+1.4.to_string()
+nil.to_string()
+"0b1010".to_integer().to_string()
 ' output='"true"
 "1234"
 "test"
@@ -483,13 +656,13 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `append(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]
@@ -500,7 +673,9 @@ puts.type_groups()
 ### wat()
 > Returns `NIL`
 
-Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+An alias of `help`, kept as an easter egg. This is the only alias in
+RocketLang; every other method has exactly one name.
+
 
 
 <CodeBlockSimple input='true.wat()
@@ -509,15 +684,29 @@ Prints the type's literal-specific methods with their argument and return types,
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil

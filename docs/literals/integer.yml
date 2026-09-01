@@ -16,17 +16,29 @@ methods:
     input: |
       3.abs()
       (0 - 5).abs()
-      "-0x10".to_i().abs()
+      "-0x10".to_integer().abs()
     output: |
       3
       5
       0x10
-  base:
-    description: "Returns the base of the integer."
+  acos:
+    description: "Returns the arccosine, in radians, of the number, as a float."
     input: |
-      "0b1010".to_i().base()
+      1.acos()
     output: |
-      2
+      0.0
+  asin:
+    description: "Returns the arcsine, in radians, of the number, as a float."
+    input: |
+      0.asin()
+    output: |
+      0.0
+  atan:
+    description: "Returns the arctangent, in radians, of the number, as a float."
+    input: |
+      0.atan()
+    output: |
+      0.0
   bit_length:
     description: "Returns how many bits are needed to represent the number, not counting the sign. A negative number needs as many as its complement, so `-256` is 8 bits just like `255`."
     input: |
@@ -47,12 +59,18 @@ methods:
       560
       600
       555
-  chr:
-    description: "Returns the character with this code point, as a string. The inverse of a single entry of `string.ascii()`. A value outside the range of a character is an error."
+  copysign:
+    description: "Returns a float with the magnitude of the number and the sign of the argument."
     input: |
-      65.chr()
+      3.copysign(0 - 1.0)
     output: |
-      "A"
+      -3.0
+  cos:
+    description: "Returns the cosine, in radians, of the number, as a float."
+    input: |
+      0.cos()
+    output: |
+      1.0
   digits:
     description: "Returns the digits of the number, least significant first, in base 10 or in a given base. A negative number has no digits and gives an error."
     input: |
@@ -79,6 +97,12 @@ methods:
     output: |
       true
       false
+  exp:
+    description: "Returns e raised to the number, as a float."
+    input: |
+      1.exp()
+    output: |
+      2.718281828459045
   floor:
     description: "Rounds down to a multiple of ten, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
     input: |
@@ -103,6 +127,24 @@ methods:
     output: |
       180
       21
+  log:
+    description: "Returns the natural logarithm of the number, as a float."
+    input: |
+      1.log()
+    output: |
+      0.0
+  log10:
+    description: "Returns the decimal logarithm of the number, as a float."
+    input: |
+      100.log10()
+    output: |
+      2.0
+  log2:
+    description: "Returns the binary logarithm of the number, as a float."
+    input: |
+      8.log2()
+    output: |
+      3.0
   negative?:
     description: "Returns `true` when the number is less than zero."
     input: |
@@ -135,14 +177,20 @@ methods:
     output: |
       8
       3
-  pred:
+  predecessor:
     description: "Returns the previous integer, keeping the base of the receiver."
     input: |
-      1.pred()
-      0.pred()
+      1.predecessor()
+      0.predecessor()
     output: |
       0
       -1
+  remainder:
+    description: "Returns the IEEE 754 floating-point remainder of the number divided by the argument, as a float."
+    input: |
+      100.remainder(30.0)
+    output: |
+      10.0
   round:
     description: "Rounds to the nearest multiple of ten, halves away from zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
     input: |
@@ -151,18 +199,42 @@ methods:
     output: |
       560
       550
-  succ:
+  sin:
+    description: "Returns the sine, in radians, of the number, as a float."
+    input: |
+      0.sin()
+    output: |
+      0.0
+  sqrt:
+    description: "Returns the square root of the number, as a float."
+    input: |
+      16.sqrt()
+    output: |
+      4.0
+  successor:
     description: "Returns the next integer, keeping the base of the receiver."
     input: |
-      1.succ()
+      1.successor()
     output: |
       2
+  tan:
+    description: "Returns the tangent, in radians, of the number, as a float."
+    input: |
+      0.tan()
+    output: |
+      0.0
   to_base:
     description: "Converts the integer into a integer with the given base"
     input: |
-      "0b1010".to_i().to_base(8)
+      "0b1010".to_integer().to_base(8)
     output: |
       0o12
+  to_character:
+    description: "Returns the character with this code point, as a string. The inverse of a single entry of `string.codepoints()`. A value outside the range of a character is an error."
+    input: |
+      65.to_character()
+    output: |
+      "A"
   truncate:
     description: "Drops the last digits, rounding toward zero, given a negative digit count. No argument, or a count of zero or more, returns the number unchanged."
     input: |
@@ -182,8 +254,8 @@ methods:
   times:
     description: "Calls the callback with each integer from `0` up to one less than the receiver, and returns the receiver so calls can be chained. A count of zero or less calls nothing rather than erroring, which makes it safe to hand a computed count. The counter keeps the receiver's base."
     input: |
-      3.times(def(i) puts(i) end)
-      0.times(def(i) puts("never") end)
+      3.times(def(i) print(i) end)
+      0.times(def(i) print("never") end)
     output: |
       0
       1
@@ -193,8 +265,8 @@ methods:
   upto:
     description: "Calls the callback with each integer from the receiver up to the given limit, inclusive at both ends, and returns the receiver. A limit below the receiver calls nothing."
     input: |
-      1.upto(3, def(i) puts(i) end)
-      3.upto(1, def(i) puts("never") end)
+      1.upto(3, def(i) print(i) end)
+      3.upto(1, def(i) print("never") end)
     output: |
       1
       2
@@ -204,7 +276,7 @@ methods:
   downto:
     description: "Calls the callback with each integer from the receiver down to the given limit, inclusive at both ends, and returns the receiver. A limit above the receiver calls nothing."
     input: |
-      3.downto(1, def(i) puts(i) end)
+      3.downto(1, def(i) print(i) end)
     output: |
       3
       2

@@ -15,7 +15,7 @@ type Array struct {
 func NewArray(slice []Object) *Array {
 	if slice == nil {
 		// A nil slice marshals as JSON null, so [].to_json() was "null" while
-		// an array emptied with pop was "[]" -- the same value, serialized two
+		// an array emptied with remove_last was "[]" -- the same value, serialized two
 		// ways depending on how it got there. An empty array literal arrives
 		// here with nothing, so normalise once at the door.
 		slice = make([]Object, 0)
@@ -194,7 +194,7 @@ func init() {
 				return NewInteger(result)
 			},
 		},
-		"uniq": ObjectMethod{
+		"unique": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
@@ -209,7 +209,7 @@ func init() {
 				return NewArray(unique)
 			},
 		},
-		"uniq!": ObjectMethod{
+		"unique!": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ, ERROR_OBJ),
@@ -227,7 +227,7 @@ func init() {
 				return ao
 			},
 		},
-		"index": ObjectMethod{
+		"index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -307,47 +307,7 @@ func init() {
 				return ao.Elements[len(ao.Elements)-1]
 			},
 		},
-		"pop": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				if length == 0 {
-					return NIL
-				}
-
-				newElements := make([]Object, length-1)
-				copy(newElements, ao.Elements[:(length-1)])
-
-				returnElement := ao.Elements[length-1]
-
-				ao.Elements = newElements
-
-				return returnElement
-			},
-		},
-		"push": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append(ao.Elements, args[0])
-
-				return ao
-			},
-		},
-		"include?": ObjectMethod{
+		"contains?": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(BOOLEAN_OBJ),
@@ -364,7 +324,7 @@ func init() {
 				return TRUE
 			},
 		},
-		"slices": ObjectMethod{
+		"chunks": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -382,19 +342,19 @@ func init() {
 
 				length := len(ao.Elements)
 
-				slices := NewArray(make([]Object, 0))
+				chunks := NewArray(make([]Object, 0))
 				for i := 0; i < length; i += size {
 					end := i + size
 					if end > length {
 						end = length
 					}
-					slices.Add(NewArray(ao.Elements[i:end]))
+					chunks.Add(NewArray(ao.Elements[i:end]))
 				}
 
-				return slices
+				return chunks
 			},
 		},
-		"to_m": ObjectMethod{
+		"to_matrix": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(MATRIX_OBJ, ERROR_OBJ),
@@ -493,7 +453,7 @@ func init() {
 		"count": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
-					OptArg(ANY),
+					Arg(ANY),
 				),
 				ReturnPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -502,13 +462,9 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				// Without an argument this is size(). With one it counts how
-				// often that element occurs, which is what index() cannot tell
-				// you.
-				if len(args) == 0 {
-					return NewInteger(len(ao.Elements))
-				}
-
+				// How often the argument occurs, which is what index_of()
+				// cannot tell you. size() (no argument) already answers "how
+				// many are there"; count() must not duplicate it.
 				count := 0
 				for _, element := range ao.Elements {
 					if CompareObjects(element, args[0]) {
@@ -519,7 +475,7 @@ func init() {
 				return NewInteger(count)
 			},
 		},
-		"rindex": ObjectMethod{
+		"last_index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(ANY),
@@ -531,7 +487,7 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				ao := o.(*Array)
 
-				// -1 when absent, the same answer index() gives.
+				// -1 when absent, the same answer index_of() gives.
 				for i := len(ao.Elements) - 1; i >= 0; i-- {
 					if CompareObjects(ao.Elements[i], args[0]) {
 						return NewInteger(i)
@@ -561,194 +517,7 @@ func init() {
 				return extremeElement(o.(*Array).Elements, false)
 			},
 		},
-		"shift": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				// The mirror of pop: it changes the array and hands back the
-				// element, so it has no ! either.
-				if len(ao.Elements) == 0 {
-					return NIL
-				}
-
-				first := ao.Elements[0]
-				ao.Elements = copyElements(ao.Elements[1:])
-
-				return first
-			},
-		},
-		"unshift": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append([]Object{args[0]}, ao.Elements...)
-
-				return ao
-			},
-		},
-		"insert": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ, ERROR_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				at := args[0].(*Integer).Value
-				if at < 0 {
-					at = length + at + 1
-				}
-				// Inserting at length appends. Anything past that would need
-				// the array padded with nils, which is a surprise rather than a
-				// convenience.
-				if at < 0 || at > length {
-					return NewErrorFormat("index out of range, got %d but array has only %d elements", args[0].(*Integer).Value, length)
-				}
-
-				elements := make([]Object, 0, length+1)
-				elements = append(elements, ao.Elements[:at]...)
-				elements = append(elements, args[1])
-				elements = append(elements, ao.Elements[at:]...)
-				ao.Elements = elements
-
-				return ao
-			},
-		},
-		"delete": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ANY),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				kept := make([]Object, 0, len(ao.Elements))
-				found := false
-				for _, element := range ao.Elements {
-					if CompareObjects(element, args[0]) {
-						found = true
-						continue
-					}
-					kept = append(kept, element)
-				}
-				ao.Elements = kept
-
-				// The element when something went, nil when nothing did, so the
-				// caller can tell the two apart.
-				if !found {
-					return NIL
-				}
-
-				return args[0]
-			},
-		},
-		"delete_at": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ANY),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				length := len(ao.Elements)
-
-				at := args[0].(*Integer).Value
-				if at < 0 {
-					at = length + at
-				}
-				// nil rather than an error for a position that is not there,
-				// the same answer first() and pop() give for an empty array.
-				if at < 0 || at >= length {
-					return NIL
-				}
-
-				removed := ao.Elements[at]
-				elements := make([]Object, 0, length-1)
-				elements = append(elements, ao.Elements[:at]...)
-				elements = append(elements, ao.Elements[at+1:]...)
-				ao.Elements = elements
-
-				return removed
-			},
-		},
-		"clear": ObjectMethod{
-			Layout: MethodLayout{
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, _ []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = make([]Object, 0)
-
-				return ao
-			},
-		},
-		"concat": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-				ao.Elements = append(ao.Elements, args[0].(*Array).Elements...)
-
-				return ao
-			},
-		},
-		"take": ObjectMethod{
-			Layout: MethodLayout{
-				ArgPattern: Args(
-					Arg(INTEGER_OBJ),
-				),
-				ReturnPattern: Args(
-					Arg(ARRAY_OBJ, ERROR_OBJ),
-				),
-			},
-			method: func(o Object, args []Object, _ Environment) Object {
-				ao := o.(*Array)
-
-				count := args[0].(*Integer).Value
-				if count < 0 {
-					return NewErrorFormat("negative count %d", count)
-				}
-				if count > len(ao.Elements) {
-					count = len(ao.Elements)
-				}
-
-				return NewArray(copyElements(ao.Elements[:count]))
-			},
-		},
-		"drop": ObjectMethod{
+		"skip": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(INTEGER_OBJ),
@@ -769,6 +538,31 @@ func init() {
 				}
 
 				return NewArray(copyElements(ao.Elements[count:]))
+			},
+		},
+		"skip_last": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(ARRAY_OBJ, ERROR_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				elements := o.(*Array).Elements
+				count := args[0].(*Integer).Value
+
+				if count < 0 {
+					return NewErrorFormat("skip_last needs a count of zero or more, got %d", count)
+				}
+
+				keep := len(elements) - count
+				if keep < 0 {
+					keep = 0
+				}
+
+				return NewArray(copyElements(elements[:keep]))
 			},
 		},
 	}
@@ -798,7 +592,7 @@ func init() {
 
 		return sortedByKeys(elements, keys, count)
 	})
-	arrayCallbackPair("select", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
+	arrayCallbackPair("filter", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
 		return filteredElements(elements, fn, env, true)
 	})
 	arrayCallbackPair("reject", func(elements []Object, fn Object, env Environment) ([]Object, Object) {
@@ -822,6 +616,41 @@ func init() {
 
 		return rotatedElements(elements, by), nil
 	})
+
+	// remove_last and remove_first used to mutate and hand back the removed
+	// element, which is how one of them ended up meaning the opposite of
+	// String#remove_last: a pure copy. Paired like every other transform now,
+	// so a "pop" needs last()/first() first and a remove_last!()/remove_first!()
+	// after -- two calls where one used to do, but no name means two things.
+	arrayPair("remove_last", nil, func(elements []Object, _ []Object) ([]Object, Object) {
+		return removedLastElements(elements), nil
+	})
+	arrayPair("remove_first", nil, func(elements []Object, _ []Object) ([]Object, Object) {
+		return removedFirstElements(elements), nil
+	})
+	arrayPair("append", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append(copyElements(elements), args[0]), nil
+	})
+	arrayPair("prepend", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append([]Object{args[0]}, elements...), nil
+	})
+	arrayPair("insert", Args(Arg(INTEGER_OBJ), Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return insertedElements(elements, args[0].(*Integer).Value, args[1])
+	})
+	arrayPair("remove", Args(Arg(ANY)), func(elements []Object, args []Object) ([]Object, Object) {
+		return removedElements(elements, args[0]), nil
+	})
+	arrayPair("remove_at", Args(Arg(INTEGER_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		return removedAtElements(elements, args[0].(*Integer).Value), nil
+	})
+	arrayPair("concat", Args(Arg(ARRAY_OBJ)), func(elements []Object, args []Object) ([]Object, Object) {
+		return append(copyElements(elements), args[0].(*Array).Elements...), nil
+	})
+
+	// clear is not paired: a pure clear() would just be [], which carries no
+	// information, and a bang-only clear! would itself break the rule that a !
+	// method needs a non-mutating partner. `a = []` already says what a pure
+	// clear would.
 }
 
 // arrayPair registers a method and its in-place counterpart from one
@@ -866,6 +695,84 @@ func arrayPair(name string, argPattern []Argument, transform func(elements []Obj
 func copyElements(src []Object) []Object {
 	out := make([]Object, len(src))
 	copy(out, src)
+
+	return out
+}
+
+// removedLastElements returns every element but the last, or a copy left
+// unchanged when there is none to drop -- the same tolerance chopString has
+// for an empty string.
+func removedLastElements(src []Object) []Object {
+	if len(src) == 0 {
+		return copyElements(src)
+	}
+
+	return copyElements(src[:len(src)-1])
+}
+
+// removedFirstElements mirrors removedLastElements from the front.
+func removedFirstElements(src []Object) []Object {
+	if len(src) == 0 {
+		return copyElements(src)
+	}
+
+	return copyElements(src[1:])
+}
+
+// insertedElements returns a copy with value inserted at rawAt. A negative
+// index counts back from the end, so -1 inserts before the last element.
+// Inserting at length appends; past that is an error rather than padding the
+// array with nils, which would be a surprise rather than a convenience.
+func insertedElements(src []Object, rawAt int, value Object) ([]Object, Object) {
+	length := len(src)
+
+	at := rawAt
+	if at < 0 {
+		at = length + at + 1
+	}
+	if at < 0 || at > length {
+		return nil, NewErrorFormat("index out of range, got %d but array has only %d elements", rawAt, length)
+	}
+
+	out := make([]Object, 0, length+1)
+	out = append(out, src[:at]...)
+	out = append(out, value)
+	out = append(out, src[at:]...)
+
+	return out, nil
+}
+
+// removedElements returns a copy without every element equal to target -- all
+// occurrences go, not just the first, which is what remove has always done.
+func removedElements(src []Object, target Object) []Object {
+	kept := make([]Object, 0, len(src))
+	for _, element := range src {
+		if CompareObjects(element, target) {
+			continue
+		}
+		kept = append(kept, element)
+	}
+
+	return kept
+}
+
+// removedAtElements returns a copy without the element at rawAt. A negative
+// index counts back from the end. A position that is not there comes back
+// unchanged, the same tolerance remove() has for a target that is not found.
+func removedAtElements(src []Object, rawAt int) []Object {
+	length := len(src)
+
+	at := rawAt
+	if at < 0 {
+		at = length + at
+	}
+	if at < 0 || at >= length {
+		return copyElements(src)
+	}
+
+	out := make([]Object, 0, length-1)
+	out = append(out, src[:at]...)
+	out = append(out, src[at+1:]...)
 
 	return out
 }
@@ -948,8 +855,8 @@ func (ao *Array) GetIterator(start, step int, _ bool) Iterator {
 }
 
 // ToStringObj renders the array the way Inspect does, which is what Ruby's
-// Array#to_s does too. Without it the generic to_s fell through to an empty
-// string, so [1,2].to_s() was "" while to_json() worked.
+// Array#to_s does too. Without it the generic to_string fell through to an
+// empty string, so [1,2].to_string() was "" while to_json() worked.
 func (ao *Array) ToStringObj() *String {
 	return NewString(ao.Inspect())
 }
@@ -976,7 +883,7 @@ func (a *arrayIterator) Next() (Object, Object, bool) {
 
 // requireElements returns an error naming the first element outside the group,
 // or nil. The four requirements on elements -- STRINGABLE for join, INTEGERABLE
-// for sum, HASHABLE for uniq and COMPARABLE for sort -- used to be four checks
+// for sum, HASHABLE for unique and COMPARABLE for sort -- used to be four checks
 // with four unrelated messages, one of which did not say which element was at
 // fault.
 func requireElements(elements []Object, group string) Object {
@@ -1051,7 +958,7 @@ func mappedElements(elements []Object, fn Object, env Environment) ([]Object, Ob
 }
 
 // filteredElements keeps the elements the callback answers for. keep says which
-// way round: select keeps a yes, reject keeps a no. Truthiness is the language's
+// way round: filter keeps a yes, reject keeps a no. Truthiness is the language's
 // own -- only false and nil are false, so 0 and "" are yeses.
 func filteredElements(elements []Object, fn Object, env Environment, keep bool) ([]Object, Object) {
 	out := make([]Object, 0, len(elements))

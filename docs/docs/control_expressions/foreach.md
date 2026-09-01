@@ -17,7 +17,7 @@ a = []
 
 foreach i, number in input
   // read each line into temporary array and cast it into an integer
-  a.push(number.strip().to_i())
+  a.append!(number.trim().to_integer())
 end
 
 // assign temporary array to input array
@@ -31,7 +31,7 @@ Loops evaluate to `nil`, whether they run to completion or exit early through
 ```js
 def iterate(items)
   foreach item in items
-    puts(item)
+    print(item)
   end
 end
 
@@ -48,7 +48,7 @@ Build up a value explicitly if you need one out of a loop:
 def doubled(items)
   result = []
   foreach item in items
-    result.push(item * 2)
+    result.append!(item * 2)
   end
   return result
 end
@@ -68,7 +68,7 @@ after the loop finishes:
 foreach j in [1, 2, 3]
 end
 
-puts(j)  // ERROR: identifier not found: j
+print(j)  // ERROR: identifier not found: j
 ```
 
 If a variable of that name already exists outside the loop, though, the loop
@@ -81,7 +81,7 @@ i = 100
 foreach i in [1, 2, 3]
 end
 
-puts(i)  // 3, not 100
+print(i)  // 3, not 100
 ```
 
 This follows from how assignment works generally: assigning to a name that
@@ -94,7 +94,7 @@ Count form zero to a given number (excluding):
 
 ```js
 🚀 > foreach i in 5
-  puts(i)
+  print(i)
 end
 
 0
@@ -102,22 +102,22 @@ end
 2
 3
 4
-=> 5
+=> nil
 ```
 
 ## Using a string
 Iterate over a string:
 
 ```js
-🚀 > foreach i in "test" 
-  puts(i)
+🚀 > foreach i in "test"
+  print(i)
 end
 
-"t"
-"e"
-"s"
-"t" 
-=> "test"
+t
+e
+s
+t
+=> nil
 ```
 
 ## Using break and next
@@ -128,14 +128,14 @@ foreach i in 5
   if (i == 2)
     next
   end
-  puts(i)
+  print(i)
 end
 
 foreach i in 5
   if (i == 2)
     break
   end
-  puts(i)
+  print(i)
 end
 
 // Returns
@@ -154,7 +154,7 @@ You can use the so called `rocket range` operator to create an individual range 
 
 ```js
 foreach i in 0 -> 5
-  puts(i)
+  print(i)
 end
 
 // outputs
@@ -169,7 +169,7 @@ There is also an inclusive alternative:
 
 ```js
 foreach i in 0 => 5
-  puts(i)
+  print(i)
 end
 
 // outputs
@@ -187,7 +187,7 @@ You can specify stepping to change the default of `1`
 
 ```js
 foreach i in 0 -> 5 ^ 2
-  puts(i)
+  print(i)
 end
 
 // outputs
@@ -202,7 +202,7 @@ Ranges do support going from a higher value to a lower one
 
 ```js
 foreach i in 5 -> 0 ^ 2
-  puts(i)
+  print(i)
 end
 
 // outputs

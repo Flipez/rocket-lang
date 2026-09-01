@@ -7,7 +7,7 @@ import Link from "@docusaurus/Link";
 import clsx from "clsx";
 import { GetStarted } from "./GetStarted";
 
-const WelcomeCode = `🚀 » puts("hello from rocket-lang!")
+const WelcomeCode = `🚀 » print("hello from rocket-lang!")
 hello from rocket-lang!
 » nil
 
@@ -66,7 +66,7 @@ const JSONExample = `🚀 » JSON.parse('{"test": 123}')
 `;
 
 const HTTPExample = `def hello()
-  puts(request["body"])
+  print(request["body"])
   response["body"] = "hello " + request["method"]
 end
 
@@ -104,7 +104,7 @@ const TimeExample = `🚀 » Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006"
 
 const ClosuresExample = `newGreeter = def (greeting)
   return def (name)
-    puts(greeting + " " + name)
+    print(greeting + " " + name)
   end
 end
 

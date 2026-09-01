@@ -6,7 +6,7 @@ aim = 0
 
 foreach i, line in input
   command = line.split(" ")[0]
-  value = line.strip().split(" ")[1].to_i()
+  value = line.trim().split(" ")[1].to_integer()
   if (command == "forward")
     hor = hor + value
     depth = depth + (value * aim)
@@ -21,4 +21,4 @@ foreach i, line in input
   end
 end
 
-puts(hor * depth)
+print(hor * depth)

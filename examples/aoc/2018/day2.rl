@@ -7,7 +7,7 @@ def part1(lines)
   doubles = 0
   tripples = 0
   foreach line in lines
-    line.strip!()
+    line.trim!()
     letters = {}
     foreach letter in line
       if (letters[letter] == nil)
@@ -59,5 +59,5 @@ end
 
 input = IO.open("day2.txt").lines()
 
-puts(part1(input))
-puts(part2(input))
+print(part1(input))
+print(part2(input))

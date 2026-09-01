@@ -34,7 +34,7 @@ There is also a [Visual Studio Code Extension](https://marketplace.visualstudio.
 
 ```
 rocket-lang program.rl        # run a file
-rocket-lang -e 'puts("hi")'   # run the code given
+rocket-lang -e 'print("hi")'  # run the code given
 rocket-lang                   # start the REPL
 ```
 
@@ -48,7 +48,7 @@ rocket-lang                   # start the REPL
 | an error nothing handled | `1` |
 | the program did not parse | `1` |
 | the file could not be read | `1` |
-| `OS.exit(n)` or `OS.raise(n, …)` | `n` |
+| `OS.exit(n)` | `n` |
 
 So `rocket-lang build.rl && deploy.sh` no longer runs the deploy after a crash.
 
@@ -59,7 +59,7 @@ exits `0`, and so does a conversion answering `nil`, which is what `nil` is for:
 begin
   1 / 0
 rescue e
-  puts("handled")
+  print("handled")
 end
 // exits 0
 ```

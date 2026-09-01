@@ -28,8 +28,8 @@ mixed casing above is deliberate: `A` and `lower` are both exported, `Private`
 is not, and nothing about the names decides that.
 
 Since capitalization no longer carries meaning, there is no reason to capitalize
-an exported function. Names that match the language's own methods — `upcase`,
-`to_s`, `include?` — read more naturally:
+an exported function. Names that match the language's own methods — `uppercase`,
+`to_string`, `contains?` — read more naturally:
 
 ```js
 export def snake_case(s)
@@ -149,7 +149,7 @@ else
   import "./config_stage" as config
 end
 
-puts(config.Url)
+print(config.Url)
 ```
 
 Only one branch runs, so only one binding is made, and it is visible after the
@@ -205,8 +205,8 @@ next to the others, so an import between them works exactly as it does on disk:
 import "util"
 import "./greet" as greet
 
-puts(util.double(21))
-puts(greet.hello("robert"))
+print(util.double(21))
+print(greet.hello("robert"))
 ```
 
 ```js

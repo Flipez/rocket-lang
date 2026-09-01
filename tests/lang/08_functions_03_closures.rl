@@ -1,0 +1,13 @@
+def new_account(owner, balance)
+  return {
+    "deposit":  def(n) balance = balance + n return balance end,
+    "describe": def() return owner + ": " + balance.to_string() end
+  }
+end
+
+a = new_account("robert", 100)
+b = new_account("someone", 0)
+
+print(a.deposit(50))
+print(a.describe())
+print(b.describe())

@@ -124,13 +124,13 @@ func TestResultsAreInspected(t *testing.T) {
 		{`"abc"`, "» \"abc\"\n"},
 		{`[1, "a"]`, "» [1, \"a\"]\n"},
 		{`nil`, "» nil\n"},
-		{`puts("hi")`, "» nil\n"},
+		{`print("hi")`, "» nil\n"},
 		{`1.5`, "» 1.5\n"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.line, func(t *testing.T) {
-			// puts writes to stdout rather than to the session, so only the
+			// print writes to stdout rather than to the session, so only the
 			// result line is compared.
 			if output := run(tt.line); output != tt.expected {
 				t.Errorf("for %q expected %q, got %q", tt.line, tt.expected, output)

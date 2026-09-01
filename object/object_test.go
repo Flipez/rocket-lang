@@ -187,8 +187,8 @@ func TestObjectToAny(t *testing.T) {
 	}
 }
 
-// TestMethodListingIsSorted covers methods() and wat(), which used to read the
-// method names straight out of a map. That made the same program print a
+// TestMethodListingIsSorted covers methods() and help(), which used to read
+// the method names straight out of a map. That made the same program print a
 // different order on every run, so their output could not be relied on or
 // documented.
 func TestMethodListingIsSorted(t *testing.T) {
@@ -213,30 +213,36 @@ func TestMethodListingIsSorted(t *testing.T) {
 				"methods() of %s should not vary between calls", subject)
 		}
 
-		// wat() prints its listing and returns nil, so comparing return
+		// help() prints its listing and returns nil, so comparing return
 		// values would compare "nil" to "nil" and assert nothing. Captured so
 		// the listing does not end up in the test output.
-		var watResult object.Object
-		captureStdout(t, func() { watResult = testEval(`(` + subject + `).wat()`) })
-		require.Equal(t, object.ObjectType(object.NIL_OBJ), watResult.Type(),
-			"wat() of %s should return nil", subject)
+		var helpResult object.Object
+		captureStdout(t, func() { helpResult = testEval(`(` + subject + `).help()`) })
+		require.Equal(t, object.ObjectType(object.NIL_OBJ), helpResult.Type(),
+			"help() of %s should return nil", subject)
 
-		first := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
-		require.Equal(t, sortedWatListing(first), first,
-			"wat() of %s should list its methods sorted", subject)
+		first := captureStdout(t, func() { testEval(`(` + subject + `).help()`) })
+		require.Equal(t, sortedHelpListing(first), first,
+			"help() of %s should list its methods sorted", subject)
 
 		// One header line plus one line per method, so nothing is dropped from
 		// the listing or counted twice.
 		listed, ok := testEval(`(` + subject + `).methods()`).(*object.Array)
 		require.True(t, ok)
 		require.Len(t, strings.Split(strings.TrimSuffix(first, "\n"), "\n"), len(listed.Elements)+1,
-			"wat() of %s should print one line per method plus the header", subject)
+			"help() of %s should print one line per method plus the header", subject)
 
 		for range 20 {
-			printed := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+			printed := captureStdout(t, func() { testEval(`(` + subject + `).help()`) })
 			require.Equal(t, first, printed,
-				"wat() of %s should not vary between calls", subject)
+				"help() of %s should not vary between calls", subject)
 		}
+
+		// wat is the only alias in the language, kept as an easter egg; it must
+		// print the exact same listing help() does rather than a copy that could
+		// drift.
+		aliased := captureStdout(t, func() { testEval(`(` + subject + `).wat()`) })
+		require.Equal(t, first, aliased, "wat() of %s should match help()", subject)
 	}
 }
 
@@ -263,21 +269,21 @@ func sortedInspect(a *object.Array) string {
 }
 
 // TestGenericMethodsWorkEverywhere checks the methods every type answers to.
-// to_s used to fall through to an empty string for ARRAY, HASH, ERROR, FILE and
-// HTTP, because none of them implemented Stringable -- so [1,2].to_s() was ""
-// while [1,2].to_json() worked.
+// to_string used to fall through to an empty string for ARRAY, HASH, ERROR,
+// FILE and HTTP, because none of them implemented Stringable -- so
+// [1,2].to_string() was "" while [1,2].to_json() worked.
 func TestGenericMethodsWorkEverywhere(t *testing.T) {
 	tests := []inputTestCase{
-		{`[1,2].to_s()`, "[1, 2]"},
-		{`[].to_s()`, "[]"},
-		{`{"a": 1}.to_s()`, `{"a": 1}`},
-		{`"a".to_s()`, "a"},
-		{`1.to_s()`, "1"},
-		{`1.5.to_s()`, "1.5"},
-		{`true.to_s()`, "true"},
-		{`nil.to_s()`, ""},
-		// to_s on a matrix already worked and must keep working.
-		{`[[1,2]].to_m().to_s().size() > 0`, true},
+		{`[1,2].to_string()`, "[1, 2]"},
+		{`[].to_string()`, "[]"},
+		{`{"a": 1}.to_string()`, `{"a": 1}`},
+		{`"a".to_string()`, "a"},
+		{`1.to_string()`, "1"},
+		{`1.5.to_string()`, "1.5"},
+		{`true.to_string()`, "true"},
+		{`nil.to_string()`, ""},
+		// to_string on a matrix already worked and must keep working.
+		{`[[1,2]].to_matrix().to_string().size() > 0`, true},
 
 		// nil? asks the question that comparing against nil already allowed,
 		// but reads better in a chain.
@@ -307,7 +313,7 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 		"FLOAT":   `1.5`,
 		"HASH":    `{"a": 1}`,
 		"INTEGER": `1`,
-		"MATRIX":  `[[1,2]].to_m()`,
+		"MATRIX":  `[[1,2]].to_matrix()`,
 		"NIL":     `nil`,
 		"STRING":  `"a"`,
 	}
@@ -318,18 +324,18 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 			continue
 		}
 
-		for _, method := range []string{"to_s", "to_json", "methods", "type", "wat", "nil?"} {
+		for _, method := range []string{"to_string", "to_json", "methods", "type", "help", "nil?"} {
 			got := testEval(literal + "." + method + "()")
 			if got.Type() == object.ERROR_OBJ {
 				t.Errorf("%s.%s() failed: %s", literal, method, got.Inspect())
 			}
 		}
 
-		// to_s must never be the empty string except for nil, whose string form
-		// genuinely is empty.
-		got := testEval(literal + ".to_s()")
+		// to_string must never be the empty string except for nil, whose string
+		// form genuinely is empty.
+		got := testEval(literal + ".to_string()")
 		if wantType != "NIL" && got.Inspect() == `""` {
-			t.Errorf("%s.to_s() is empty; the type is probably not Stringable", literal)
+			t.Errorf("%s.to_string() is empty; the type is probably not Stringable", literal)
 		}
 	}
 }
@@ -337,7 +343,7 @@ func TestEveryTypeAnswersTheGenericMethods(t *testing.T) {
 // TestUsageMarksOptionalAndVariadicArgs covers what a rendered signature says
 // about its arguments. Usage() used to print only the types, so three different
 // contracts came out identically: count(STRING) takes exactly one, split(STRING)
-// takes zero or one, and start_with?(STRING) takes one or more.
+// takes zero or one, and starts_with?(STRING) takes one or more.
 func TestUsageMarksOptionalAndVariadicArgs(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -356,9 +362,9 @@ func TestUsageMarksOptionalAndVariadicArgs(t *testing.T) {
 			"split([STRING])",
 		},
 		{
-			"start_with?",
+			"starts_with?",
 			object.MethodLayout{ArgPattern: object.Args(object.OverloadArg(object.STRING_OBJ))},
-			"start_with?(STRING...)",
+			"starts_with?(STRING...)",
 		},
 		{
 			// A required argument followed by an optional one, as pow has.
@@ -408,13 +414,13 @@ func TestArgumentStringStaysBare(t *testing.T) {
 
 	tests := []inputTestCase{
 		{`"a".split(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
-		{`"a".start_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
+		{`"a".starts_with?(1)`, "wrong argument type on position 1: got=INTEGER, want=STRING"},
 	}
 	testInput(t, tests)
 }
 
-// captureStdout collects what fn writes to os.Stdout. wat() prints its listing
-// instead of returning it, so this is the only way to assert on it.
+// captureStdout collects what fn writes to os.Stdout. help() prints its
+// listing instead of returning it, so this is the only way to assert on it.
 func captureStdout(t *testing.T, fn func()) string {
 	t.Helper()
 
@@ -434,13 +440,13 @@ func captureStdout(t *testing.T, fn func()) string {
 	return string(printed)
 }
 
-// sortedWatListing returns the listing with its method lines sorted, giving the
-// expectation to compare the real output against. The header stays first.
+// sortedHelpListing returns the listing with its method lines sorted, giving
+// the expectation to compare the real output against. The header stays first.
 //
 // It sorts on the bare method name rather than the rendered line, because "("
-// sorts after "!" and would otherwise put chomp!([STRING]) ahead of
-// chomp([STRING]).
-func sortedWatListing(listing string) string {
+// sorts after "!" and would otherwise put trim_line_end!([STRING]) ahead of
+// trim_line_end([STRING]).
+func sortedHelpListing(listing string) string {
 	lines := strings.Split(strings.TrimSuffix(listing, "\n"), "\n")
 	if len(lines) < 2 {
 		return listing
@@ -449,13 +455,13 @@ func sortedWatListing(listing string) string {
 	sorted := make([]string, len(lines)-1)
 	copy(sorted, lines[1:])
 	sort.SliceStable(sorted, func(i, j int) bool {
-		return watMethodName(sorted[i]) < watMethodName(sorted[j])
+		return helpMethodName(sorted[i]) < helpMethodName(sorted[j])
 	})
 
 	return lines[0] + "\n" + strings.Join(sorted, "\n") + "\n"
 }
 
-func watMethodName(line string) string {
+func helpMethodName(line string) string {
 	name := strings.TrimPrefix(line, "\t")
 	if open := strings.Index(name, "("); open >= 0 {
 		return name[:open]
@@ -466,56 +472,57 @@ func watMethodName(line string) string {
 
 // TestTypeGroups covers the argument groups introduced for #296. A group names
 // what an object must be able to do instead of listing the types that can do it,
-// which is how push came to accept FUNCTION but not FLOAT.
+// which is how append came to accept FUNCTION but not FLOAT.
 func TestTypeGroups(t *testing.T) {
 	tests := []inputTestCase{
 		// ANY takes everything, so these are no longer type errors. Each of
 		// them was one, because the hand-written list behind it had forgotten
 		// FLOAT and MATRIX.
-		{`a = [1]; a.push(1.5); a.to_json()`, "[1,1.5]"},
-		{`a = [1]; a.unshift(1.5); a.to_json()`, "[1.5,1]"},
-		{`a = [1]; a.insert(0, 1.5); a.to_json()`, "[1.5,1]"},
-		{`[1.5].include?(1.5)`, true},
-		{`[1.5].index(1.5)`, 0},
-		{`[1.5].rindex(1.5)`, 0},
+		{`a = [1]; a.append!(1.5); a.to_json()`, "[1,1.5]"},
+		{`a = [1]; a.prepend!(1.5); a.to_json()`, "[1.5,1]"},
+		{`a = [1]; a.insert!(0, 1.5); a.to_json()`, "[1.5,1]"},
+		{`[1.5].contains?(1.5)`, true},
+		{`[1.5].index_of(1.5)`, 0},
+		{`[1.5].last_index_of(1.5)`, 0},
 		{`[1.5].count(1.5)`, 1},
-		{`a = [1.5]; a.delete(1.5); a.to_json()`, "[]"},
-		{`a = [1]; a.push([[1,2]].to_m()); a.size()`, 2},
-		{`[1].include?([[1,2]].to_m())`, false},
+		{`a = [1.5]; a.remove!(1.5); a.to_json()`, "[]"},
+		{`a = [1]; a.append!([[1,2]].to_matrix()); a.size()`, 2},
+		{`[1].contains?([[1,2]].to_matrix())`, false},
 
-		// HASHABLE takes what can be a key. get and include? used to assert
+		// HASHABLE takes what can be a key. get and has_key? used to assert
 		// without checking, so {"a": 1}.get(nil, 0) panicked and took the
 		// process with it.
 		{`{"a": 1}.get(nil, 0)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
-		{`{"a": 1}.get([[1,2]].to_m(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
-		{`{"a": 1}.include?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.get([[1,2]].to_matrix(), 0)`, "wrong argument type on position 1: got=MATRIX, want=HASHABLE"},
+		{`{"a": 1}.has_key?(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
-		{`{"a": 1}.delete(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.remove(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
 		// All four take the same keys, which was not true before: get accepted
-		// a NIL and crashed, include? rejected a FLOAT, delete accepted one.
+		// a NIL and crashed, has_key? rejected a FLOAT, remove accepted one.
 		{`{1.5: "a"}.get(1.5, "missing")`, "a"},
-		{`{1.5: "a"}.include?(1.5)`, true},
+		{`{1.5: "a"}.has_key?(1.5)`, true},
 		{`{1.5: "a"}.fetch(1.5)`, "a"},
-		{`h = {1.5: "a"}; h.delete(1.5)`, "a"},
+		{`h = {1.5: "a"}; h.remove(1.5).get(1.5, "missing")`, "missing"},
 		// A hash and an array are hashable, so they are keys too.
 		{`{[1]: "a"}.get([1], "missing")`, "a"},
 
-		// The fallback value of get and fetch is ANY, not HASHABLE -- it is
-		// never used as a key.
+		// The fallback value of get is ANY, not HASHABLE -- it is never used
+		// as a key. fetch has no fallback argument at all; see hash_test.go.
 		{`{"a": 1}.get("z", nil)`, nil},
-		{`{"a": 1}.fetch("z", nil)`, nil},
 
-		// NUMERIC takes INTEGER or FLOAT.
-		{`m = [[1,2]].to_m(); m.set(0, 0, 9); m.to_a().to_json()`, "[[9,2]]"},
-		{`m = [[1,2]].to_m(); m.set(0, 0, 9.5); m.to_a().to_json()`, "[[9.5,2]]"},
-		{`[[1,2]].to_m().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
-		{`[[1,2]].to_m().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
+		// NUMERIC takes INTEGER or FLOAT. set() is pure -- it returns a new
+		// matrix rather than mutating the receiver, so the assertion reads
+		// the return value instead of the original m.
+		{`[[1,2]].to_matrix().set(0, 0, 9).to_array().to_json()`, "[[9,2]]"},
+		{`[[1,2]].to_matrix().set(0, 0, 9.5).to_array().to_json()`, "[[9.5,2]]"},
+		{`[[1,2]].to_matrix().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
+		{`[[1,2]].to_matrix().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
 	}
 	testInput(t, tests)
 }
 
 // TestTypeGroupsRenderInSignatures checks that a group prints as its own name
-// rather than expanding. Hash#fetch used to render as a 118-character union of
+// rather than expanding. Hash#get used to render as a 118-character union of
 // nine types repeated twice, which told the reader nothing.
 func TestTypeGroupsRenderInSignatures(t *testing.T) {
 	tests := []struct {
@@ -524,17 +531,17 @@ func TestTypeGroupsRenderInSignatures(t *testing.T) {
 		want   string
 	}{
 		{
-			"push",
+			"append",
 			object.MethodLayout{ArgPattern: object.Args(object.Arg(object.ANY))},
-			"push(ANY)",
+			"append(ANY)",
 		},
 		{
-			"fetch",
+			"get",
 			object.MethodLayout{ArgPattern: object.Args(
 				object.Arg(object.HASHABLE),
 				object.OptArg(object.ANY),
 			)},
-			"fetch(HASHABLE, [ANY])",
+			"get(HASHABLE, [ANY])",
 		},
 		{
 			"set",
@@ -613,7 +620,7 @@ func TestIsA(t *testing.T) {
 		{`[1].is_a?("ARRAY")`, true},
 		{`{"a": 1}.is_a?("HASH")`, true},
 		{`def() end.is_a?("FUNCTION")`, true},
-		{`[[1,2]].to_m().is_a?("MATRIX")`, true},
+		{`[[1,2]].to_matrix().is_a?("MATRIX")`, true},
 
 		// A name that is neither is an error, not a false. A typo would
 		// otherwise answer "no" and read like a real result.
@@ -642,15 +649,15 @@ func TestTypeGroupsMethod(t *testing.T) {
 		{`[1].type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
 		{`{"a": 1}.type_groups().to_json()`, `["HASHABLE","STRINGABLE"]`},
 		{`nil.type_groups().to_json()`, `["STRINGABLE"]`},
-		{`[[1,2]].to_m().type_groups().to_json()`, `["STRINGABLE"]`},
+		{`[[1,2]].to_matrix().type_groups().to_json()`, `["STRINGABLE"]`},
 		// A function is CALLABLE and nothing else -- not STRINGABLE, not
 		// HASHABLE, which is the whole reason the element checks in join, sum,
-		// uniq and sort exist.
+		// unique and sort exist.
 		{`def() end.type_groups().to_json()`, `["CALLABLE"]`},
-		{`puts.type_groups().to_json()`, `["CALLABLE"]`},
+		{`print.type_groups().to_json()`, `["CALLABLE"]`},
 		// Nothing else is callable.
-		{`1.type_groups().include?("CALLABLE")`, false},
-		{`"a".type_groups().include?("CALLABLE")`, false},
+		{`1.type_groups().contains?("CALLABLE")`, false},
+		{`"a".type_groups().contains?("CALLABLE")`, false},
 
 		{`"a".type_groups("x")`, "too many arguments: got=1, want=0"},
 	}
@@ -663,7 +670,7 @@ func TestTypeGroupsMethod(t *testing.T) {
 func TestIsAAgreesWithTypeGroups(t *testing.T) {
 	subjects := []string{
 		`"a"`, `1`, `1.5`, `true`, `[1]`, `{"a": 1}`, `nil`,
-		`[[1,2]].to_m()`, `def() end`,
+		`[[1,2]].to_matrix()`, `def() end`,
 	}
 
 	for _, subject := range subjects {
@@ -677,13 +684,13 @@ func TestIsAAgreesWithTypeGroups(t *testing.T) {
 				require.Equal(t, "true", predicate.Inspect(),
 					"is_a?(ANY) should be true for %s", subject)
 				require.Equal(t, "false",
-					testEval(`(`+subject+`).type_groups().include?("ANY")`).Inspect(),
+					testEval(`(`+subject+`).type_groups().contains?("ANY")`).Inspect(),
 					"type_groups() should not list ANY for %s", subject)
 
 				continue
 			}
 
-			listed := testEval(`(` + subject + `).type_groups().include?("` + group + `")`)
+			listed := testEval(`(` + subject + `).type_groups().contains?("` + group + `")`)
 			require.Equal(t, listed.Inspect(), predicate.Inspect(),
 				"is_a?(%q) and type_groups() disagree for %s", group, subject)
 		}
@@ -721,4 +728,22 @@ func TestKnownObjectTypesAreComplete(t *testing.T) {
 			t.Errorf("type group %q is also listed as an object type", group)
 		}
 	}
+}
+
+// TestContains covers the split of the old include?, one name shared by three
+// types that meant two different things. String and Array test membership of
+// an element, so both answer to contains?. Hash tests membership of a key,
+// which contains? never said -- {"a": 1}.include?(1) gave no clue whether 1
+// was being looked for as a key or a value. Hash answers to has_key? instead.
+func TestContains(t *testing.T) {
+	tests := []inputTestCase{
+		{`"hello".contains?("ell")`, true},
+		{`"hello".contains?("z")`, false},
+		{`[1,2,3].contains?(2)`, true},
+		{`[1,2,3].contains?(9)`, false},
+		{`{"a": 1}.has_key?("a")`, true},
+		{`{"a": 1}.has_key?("b")`, false},
+	}
+
+	testInput(t, tests)
 }

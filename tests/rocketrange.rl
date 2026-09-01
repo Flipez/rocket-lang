@@ -1,45 +1,45 @@
 foreach i in 0 -> 5 ^ 1
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 0 => 5 ^ 1
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 5 -> 0 ^ 1
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 5 => 0 ^ 1
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 0 -> 5 ^ 2
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 0 => 5 ^ 2
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in 0 => 5
-  puts(i)
+  print(i)
 end
 
-puts("---")
+print("---")
 
 foreach i in => 5
-  puts(i)
+  print(i)
 end

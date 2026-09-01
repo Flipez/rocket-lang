@@ -1,7 +1,7 @@
 def parseChanges(lines)
   changes = []
   foreach idx, line in lines
-    changes.push(line.strip().to_i())
+    changes.append!(line.trim().to_integer())
   end
   return changes
 end
@@ -20,15 +20,15 @@ def part2(input)
   while (true)
     foreach idx, change in changes
       lastFreq = freqs[-1] + change
-      if (freqs.index(lastFreq) != -1)
+      if (freqs.index_of(lastFreq) != -1)
         return lastFreq
       end
-      freqs.push(lastFreq)
+      freqs.append!(lastFreq)
     end
   end
 end
 
 input = IO.open("day1.txt").lines()
 
-puts(part1(input))
-puts(part2(input))
+print(part1(input))
+print(part2(input))

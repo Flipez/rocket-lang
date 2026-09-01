@@ -9,9 +9,9 @@ description: |
   It is possible for the user to create errors using 'raise(STRING)' which will return an ERROR object with STRING as the message.
 example: |
   def test()
-    puts(nope)
+    print(nope)
   rescue e
-    puts("Got error: '" + e.msg() + "'")
+    print("Got error: '" + e.message() + "'")
   end
 
   test()
@@ -21,18 +21,18 @@ example: |
   if (true)
     nope()
   rescue your_name
-    puts("Got error in if: '" + your_name.msg() + "'")
+    print("Got error in if: '" + your_name.message() + "'")
   end
 
   => "Got error in if: 'identifier not found: nope'"
 
   begin
-    puts(nope)
+    print(nope)
   rescue e
-    puts("rescue")
+    print("rescue")
   end
 
   => "rescue"
 methods:
-  msg:
-    description: "Returns the error message\n\n:::caution\nPlease note that performing `.msg()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::"
+  message:
+    description: "Returns the error message\n\n:::caution\nPlease note that performing `.message()` on a ERROR object does result in a STRING object which then will no longer be treated as an error!\n:::"

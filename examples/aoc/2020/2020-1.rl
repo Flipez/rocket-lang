@@ -3,7 +3,7 @@ import "../util" as util
 def part1(lines)
   expenses = []
   foreach line in lines
-    expenses.push(line.to_i())
+    expenses.append!(line.to_integer())
   end
   foreach i, a in expenses
     foreach b in expenses[i+1:]
@@ -17,7 +17,7 @@ end
 def part2(lines)
   expenses = []
   foreach line in lines
-    expenses.push(line.to_i())
+    expenses.append!(line.to_integer())
   end
   foreach i, a in expenses
     foreach b in expenses[i+1:]
@@ -32,5 +32,5 @@ end
 
 input = IO.open("day1.txt").lines()
 
-puts(part1(input))
-puts(part2(input))
+print(part1(input))
+print(part2(input))

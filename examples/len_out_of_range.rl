@@ -13,12 +13,14 @@ stacks = [
 stacks2 = stacks
 
 foreach instruction in instructions
-  amount = instruction.split("from")[0].split("move")[-1].strip().to_i()
-  from = instruction.split("to")[0].split("from")[-1].strip().to_i()
-  to = instruction.split("to")[1].strip().to_i()
+  amount = instruction.split("from")[0].split("move")[-1].trim().to_integer()
+  from = instruction.split("to")[0].split("from")[-1].trim().to_integer()
+  to = instruction.split("to")[1].trim().to_integer()
 
   foreach i in amount
-    stacks[to - 1].push(stacks[from - 1].pop())
+    item = stacks[from - 1].last()
+    stacks[from - 1].remove_last!()
+    stacks[to - 1].append!(item)
   end
 end
 
@@ -26,21 +28,23 @@ result = ""
 foreach stack in stacks
   result = result + stack[-1]
 end
-puts("Part 1: " + result)
+print("Part 1: " + result)
 
 foreach instruction in instructions
-  amount = instruction.split("from")[0].split("move")[-1].strip().to_i()
-  from = instruction.split("to")[0].split("from")[-1].strip().to_i()
-  to = instruction.split("to")[1].strip().to_i()
+  amount = instruction.split("from")[0].split("move")[-1].trim().to_integer()
+  from = instruction.split("to")[0].split("from")[-1].trim().to_integer()
+  to = instruction.split("to")[1].trim().to_integer()
 
   temp_stack = []
 
   foreach i in amount
-    temp_stack.push(stacks2[from - 1].pop())
+    item = stacks2[from - 1].last()
+    stacks2[from - 1].remove_last!()
+    temp_stack.append!(item)
   end
   temp_stack.reverse!()
   foreach item in temp_stack
-    stacks2[to - 1].push(item)
+    stacks2[to - 1].append!(item)
   end
 
 end
@@ -49,6 +53,6 @@ result = ""
 foreach stack in stacks
   result = result + stack[-1]
 end
-puts("Part 2: " + result)
+print("Part 2: " + result)
 
 nil

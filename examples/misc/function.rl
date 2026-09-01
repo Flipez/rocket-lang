@@ -1,11 +1,11 @@
 def test(a)
-  puts(a)
+  print(a)
 end
 
 test("test")
 
 a = def()
-  puts("test2")
+  print("test2")
 end
 
 a()

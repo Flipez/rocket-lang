@@ -23,12 +23,12 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 func TestBooleanObjectMethods(t *testing.T) {
 	tests := []inputTestCase{
 		// true
-		{"true.to_s()", "true"},
+		{"true.to_string()", "true"},
 		{"true.type()", "BOOLEAN"},
 		{"true.nope()", "test:1:5: undefined method `.nope()` for BOOLEAN"},
 
 		// false
-		{"false.to_s()", "false"},
+		{"false.to_string()", "false"},
 		{"false.type()", "BOOLEAN"},
 		{"false.nope()", "test:1:6: undefined method `.nope()` for BOOLEAN"},
 
@@ -39,11 +39,11 @@ func TestBooleanObjectMethods(t *testing.T) {
 		{"true.to_json()", "true"},
 		{"false.to_json()", "false"},
 
-		{"true.to_i()", 1},
-		{"false.to_i()", 0},
+		{"true.to_integer()", 1},
+		{"false.to_integer()", 0},
 
-		{"true.to_f()", 1.0},
-		{"false.to_f()", 0.0},
+		{"true.to_float()", 1.0},
+		{"false.to_float()", 0.0},
 	}
 
 	testInput(t, tests)

@@ -105,14 +105,13 @@ func init() {
 			time.Sleep(time.Duration(args[0].(*object.Integer).Value) * time.Second)
 			return object.NIL
 		})
-	timeFunctions["unix"] = object.NewBuiltinFunction(
-		"unix",
+	// Time.unix was dropped: it was byte-identical to Time.now, and this
+	// release exists partly to remove one-behaviour-two-spellings duplicates.
+	timeFunctions["now"] = object.NewBuiltinFunction("now",
 		object.MethodLayout{
-			ReturnPattern: object.Args(
-				object.Arg(object.INTEGER_OBJ),
-			),
+			ReturnPattern: object.Args(object.Arg(object.INTEGER_OBJ)),
 		},
-		func(_ object.Environment, args ...object.Object) object.Object {
+		func(_ object.Environment, _ ...object.Object) object.Object {
 			return object.NewInteger(int(time.Now().Unix()))
 		})
 

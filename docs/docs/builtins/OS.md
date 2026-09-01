@@ -18,18 +18,6 @@ Terminates the program with the given exit code.
 ' />
 
 
-### raise(INTEGER, STRING)
-> Returns ``
-
-Terminates the program with the given exit code and prints the error message.
-
-
-<CodeBlockSimple input='OS.raise(1, "broken")
-' output='🔥 RocketLang raised an error: "broken"
-exit status 1
-' />
-
-
 
 ## Properties
 | Name | Value |

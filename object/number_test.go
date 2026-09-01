@@ -1,6 +1,10 @@
 package object_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/flipez/rocket-lang/object"
+)
 
 func TestNumberObjects(t *testing.T) {
 	tests := []inputTestCase{
@@ -238,4 +242,71 @@ func TestNumberObjects(t *testing.T) {
 	}
 
 	testInput(t, tests)
+}
+
+// TestNumberMathMethods covers all thirteen functions absorbed from Math onto
+// both Integer and Float, registered from the numberMath table. Each is
+// pinned on both receiver types -- the table exists because thirteen
+// near-identical blocks is thirteen chances for one of them to call the wrong
+// function, and a wiring mistake like "asin": math.Acos would only show up if
+// every entry, not just six of them, is checked.
+func TestNumberMathMethods(t *testing.T) {
+	tests := []inputTestCase{
+		{`9.sqrt()`, 3.0},
+		{`9.0.sqrt()`, 3.0},
+		{`1.exp()`, 2.718281828459045},
+		{`1.0.exp()`, 2.718281828459045},
+		{`4.log()`, 1.3862943611198906},
+		{`4.0.log()`, 1.3862943611198906},
+		{`8.log2()`, 3.0},
+		{`8.0.log2()`, 3.0},
+		{`100.log10()`, 2.0},
+		{`100.0.log10()`, 2.0},
+		{`1.sin()`, 0.8414709848078965},
+		{`1.0.sin()`, 0.8414709848078965},
+		{`1.cos()`, 0.5403023058681398},
+		{`1.0.cos()`, 0.5403023058681398},
+		{`1.tan()`, 1.557407724654902},
+		{`1.0.tan()`, 1.557407724654902},
+		{`1.asin()`, 1.5707963267948966},
+		{`1.0.asin()`, 1.5707963267948966},
+		{`0.acos()`, 1.5707963267948966},
+		{`0.5.acos()`, 1.0471975511965976},
+		{`1.atan()`, 0.7853981633974483},
+		{`1.0.atan()`, 0.7853981633974483},
+
+		// copysign(NUMERIC) and remainder(NUMERIC) are the two binary entries
+		// in the table; each needs its own case because the unary cases above
+		// cannot exercise the second argument at all.
+		{`3.copysign(0 - 1)`, -3.0},
+		{`3.0.copysign(0.0 - 1.0)`, -3.0},
+		{`3.copysign(1)`, 3.0},
+		{`100.remainder(30)`, 10.0},
+		{`100.0.remainder(30.0)`, 10.0},
+
+		// The ArgPattern restricts the second argument to NUMERIC, so a
+		// non-number is rejected before either function runs.
+		{`3.copysign(nil)`, "wrong argument type on position 1: got=NIL, want=NUMERIC"},
+		{`3.0.copysign("x")`, "wrong argument type on position 1: got=STRING, want=NUMERIC"},
+		{`100.remainder(nil)`, "wrong argument type on position 1: got=NIL, want=NUMERIC"},
+		{`100.0.remainder("x")`, "wrong argument type on position 1: got=STRING, want=NUMERIC"},
+
+		{`5.successor()`, 6},
+		{`5.predecessor()`, 4},
+		{`65.to_character()`, "A"},
+	}
+
+	testInput(t, tests)
+}
+
+// Math keeps constants and randomness only. Everything that operates on a
+// number is a method on the number, so there is one place to look.
+func TestMathKeepsOnlyConstantsAndRandom(t *testing.T) {
+	for _, gone := range []string{"abs", "ceil", "floor", "round", "pow", "sqrt", "max", "min", "rand"} {
+		evaluated := testEval("Math." + gone + "(1)")
+
+		if !object.IsError(evaluated) {
+			t.Errorf("Math.%s should be gone, got %s", gone, evaluated.Inspect())
+		}
+	}
 }

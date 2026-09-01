@@ -8,6 +8,24 @@ methods:
     output: |
       3.14
       3.14
+  acos:
+    description: "Returns the arccosine, in radians, of the number, as a float."
+    input: |
+      1.0.acos()
+    output: |
+      0.0
+  asin:
+    description: "Returns the arcsine, in radians, of the number, as a float."
+    input: |
+      0.0.asin()
+    output: |
+      0.0
+  atan:
+    description: "Returns the arctangent, in radians, of the number, as a float."
+    input: |
+      0.0.atan()
+    output: |
+      0.0
   ceil:
     description: "Returns the smallest float that is not less than the number. An optional digit count says how many decimal places to keep; a negative count rounds to a power of ten. The result stays a `FLOAT` -- in Ruby it would be an `INTEGER`."
     input: |
@@ -18,6 +36,18 @@ methods:
       2.0
       1.57
       560.0
+  copysign:
+    description: "Returns a float with the magnitude of the number and the sign of the argument."
+    input: |
+      3.2.copysign(0 - 1.0)
+    output: |
+      -3.2
+  cos:
+    description: "Returns the cosine, in radians, of the number, as a float."
+    input: |
+      0.0.cos()
+    output: |
+      1.0
   divmod:
     description: "Returns the quotient and the remainder as a two-element array. Truncated toward zero, so it agrees with `Integer#divmod` and with `/`."
     input: |
@@ -26,6 +56,12 @@ methods:
     output: |
       [2.0, 3.0]
       [-2.0, 3.0]
+  exp:
+    description: "Returns e raised to the number, as a float."
+    input: |
+      1.0.exp()
+    output: |
+      2.718281828459045
   finite?:
     description: "Returns `true` when the number is neither infinite nor not-a-number."
     input: |
@@ -48,6 +84,24 @@ methods:
       1.5.infinite?()
     output: |
       nil
+  log:
+    description: "Returns the natural logarithm of the number, as a float."
+    input: |
+      1.0.log()
+    output: |
+      0.0
+  log10:
+    description: "Returns the decimal logarithm of the number, as a float."
+    input: |
+      100.0.log10()
+    output: |
+      2.0
+  log2:
+    description: "Returns the binary logarithm of the number, as a float."
+    input: |
+      8.0.log2()
+    output: |
+      3.0
   nan?:
     description: "Returns `true` when the number is not a number."
     input: |
@@ -70,6 +124,18 @@ methods:
     output: |
       true
       false
+  pow:
+    description: "Returns the number raised to the given power, as a float. Unlike `Integer#pow` there is no modulus argument."
+    input: |
+      2.0.pow(3.0)
+    output: |
+      8.0
+  remainder:
+    description: "Returns the IEEE 754 floating-point remainder of the number divided by the argument, as a float."
+    input: |
+      100.0.remainder(30.0)
+    output: |
+      10.0
   round:
     description: "Returns the number rounded to the nearest value, halves away from zero. Takes the same optional digit count as `ceil`."
     input: |
@@ -80,6 +146,24 @@ methods:
       2.0
       1.57
       560.0
+  sin:
+    description: "Returns the sine, in radians, of the number, as a float."
+    input: |
+      0.0.sin()
+    output: |
+      0.0
+  sqrt:
+    description: "Returns the square root of the number, as a float."
+    input: |
+      16.0.sqrt()
+    output: |
+      4.0
+  tan:
+    description: "Returns the tangent, in radians, of the number, as a float."
+    input: |
+      0.0.tan()
+    output: |
+      0.0
   truncate:
     description: "Returns the number with its fractional part dropped, rounding toward zero. Unlike `floor` this moves a negative number up. Takes the same optional digit count as `ceil`."
     input: |

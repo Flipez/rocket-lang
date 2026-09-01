@@ -16,7 +16,7 @@ func TestFunctionObjectMethods(t *testing.T) {
 func TestFunctionType(t *testing.T) {
 	tests := []inputTestCase{
 		{"def()\n\nend", "def () \n\nend"},
-		{"def(a)\nputs(a)\nend", "def (a) \nputs(a)\nend"},
+		{"def(a)\nprint(a)\nend", "def (a) \nprint(a)\nend"},
 	}
 
 	for _, tt := range tests {

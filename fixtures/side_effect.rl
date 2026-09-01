@@ -1,2 +1,2 @@
-puts("loaded")
+print("loaded")
 export X = 1

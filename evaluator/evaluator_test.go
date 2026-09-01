@@ -205,10 +205,10 @@ func TestErrorHandling(t *testing.T) {
 		{"5 % 0", "division by zero not allowed"},
 		{"5 % 0 ? true : false", "division by zero not allowed"},
 		{"(4 > 5 ? true).nope()", "test:1:15: undefined method `.nope()` for NIL"},
-		{"if (5 % 0)\n puts(true)\nend", "division by zero not allowed"},
+		{"if (5 % 0)\n print(true)\nend", "division by zero not allowed"},
 		{"a = {(5%0): true}", "division by zero not allowed"},
 		{"a = {true: (5%0)}", "division by zero not allowed"},
-		{"def test() \n puts(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
+		{"def test() \n print(true) \nend; a = {test: true}", "unusable as hash key: FUNCTION"},
 		{`import "fixtures/nope"`, "test:1:1: Import Error: no module named 'fixtures/nope' found"},
 		{
 			`import "../fixtures/parser_error"`,
@@ -218,22 +218,22 @@ func TestErrorHandling(t *testing.T) {
 			`import "../fixtures/module" only Nope`,
 			`test:1:1: Import Error: '../fixtures/module' does not export 'Nope'; exported: 'A', 'Sum', 'lower'`,
 		},
-		{"def test() \n puts(true) \nend; test[1]", "index operator not supported: FUNCTION"},
+		{"def test() \n print(true) \nend; test[1]", "index operator not supported: FUNCTION"},
 		{"[1] - [1]", "unknown operator: ARRAY - ARRAY"},
 		{"break(1.nope())", "test:1:8: undefined method `.nope()` for INTEGER"},
 		{"next(1.nope())", "test:1:7: undefined method `.nope()` for INTEGER"},
 		{"nil.nope()", "test:1:4: undefined method `.nope()` for NIL"},
-		{"begin puts(nope) end", "test:1:12: identifier not found: nope"},
-		{"begin puts(nope) rescue e e.nope() end", "test:1:28: undefined method `.nope()` for ERROR"},
-		{"a = begin puts(nope) rescue e e.msg() end; a.nope()", "test:1:45: undefined method `.nope()` for STRING"},
+		{"begin print(nope) end", "test:1:13: identifier not found: nope"},
+		{"begin print(nope) rescue e e.nope() end", "test:1:29: undefined method `.nope()` for ERROR"},
+		{"a = begin print(nope) rescue e e.message() end; a.nope()", "test:1:50: undefined method `.nope()` for STRING"},
 		{`raise("custom error")`, "custom error"},
-		{"foreach i in 'test' -> 3 \nputs(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
-		{"foreach i in 0 -> 'test' \nputs(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
-		{"foreach i in 0 -> 5 ^ 'test' \nputs(i)\nend", "test:1:1: range rocket step has to be an integer, got STRING"},
-		{"[[1, 2]].to_m() + [[1], [2]].to_m()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
-		{"[[1, 2]].to_m() - [[1], [2]].to_m()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
-		{"[[1, 2]].to_m() * [[1, 2]].to_m()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
-		{"[[1, 2]].to_m() % [[1, 2]].to_m()", "unknown operator: MATRIX % MATRIX"},
+		{"foreach i in 'test' -> 3 \nprint(i)\nend", "test:1:1: range rocket start has to be an integer, got STRING"},
+		{"foreach i in 0 -> 'test' \nprint(i)\nend", "test:1:1: unsupported range rocket value, got STRING"},
+		{"foreach i in 0 -> 5 ^ 'test' \nprint(i)\nend", "test:1:1: range rocket step has to be an integer, got STRING"},
+		{"[[1, 2]].to_matrix() + [[1], [2]].to_matrix()", "matrix addition failed: dimension mismatch: cannot add 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_matrix() - [[1], [2]].to_matrix()", "matrix subtraction failed: dimension mismatch: cannot subtract 1x2 and 2x1 matrices"},
+		{"[[1, 2]].to_matrix() * [[1, 2]].to_matrix()", "matrix multiplication failed: incompatible dimensions: cannot multiply 1x2 by 1x2"},
+		{"[[1, 2]].to_matrix() % [[1, 2]].to_matrix()", "unknown operator: MATRIX % MATRIX"},
 	}
 
 	for _, tt := range tests {
@@ -386,10 +386,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{`puts("test")`, nil},
-		{`OS.raise("Error")`, "too few arguments: got=1, want=2"},
-		{`OS.raise("Error", 1)`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
-		{`OS.raise(1, 1)`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
+		{`print("test")`, nil},
 		{`OS.exit()`, "too few arguments: got=0, want=1"},
 		{`OS.exit("Error")`, "wrong argument type on position 1: got=STRING, want=INTEGER"},
 		{`IO.open()`, "too few arguments: got=0, want=1"},
@@ -397,7 +394,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`IO.open("fixtures/module.rl", 1, "0644")`, "wrong argument type on position 2: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "r", 1)`, "wrong argument type on position 3: got=INTEGER, want=STRING"},
 		{`IO.open("fixtures/module.rl", "nope", "0644").read(1)`, "test:1:46: undefined method `.read()` for ERROR"},
-		{"a = Time.unix(); Time.sleep(2); b = Time.unix(); b - a", 2},
+		{"a = Time.now(); Time.sleep(2); b = Time.now(); b - a", 2},
 	}
 
 	for _, tt := range tests {
@@ -608,43 +605,43 @@ func TestMatrixIndexExpressions(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0]",
 			"[1.0, 2.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1]",
 			"[3.0, 4.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0][0]",
 			1.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[0][1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[0][1]",
 			2.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1][0]",
 			3.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[1][1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[1][1]",
 			4.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-1]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-1]",
 			"[3.0, 4.0]",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-1][0]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-1][0]",
 			3.0,
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-2]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-2]",
 			"[1.0, 2.0]",
 		},
 		{
-			"m = [[1, 2, 3], [4, 5, 6]].to_m(); m[0][2]",
+			"m = [[1, 2, 3], [4, 5, 6]].to_matrix(); m[0][2]",
 			3.0,
 		},
 	}
@@ -675,11 +672,11 @@ func TestMatrixIndexOutOfBounds(t *testing.T) {
 		expected string
 	}{
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[2]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[2]",
 			"row index 2 out of bounds [0, 2)",
 		},
 		{
-			"m = [[1, 2], [3, 4]].to_m(); m[-3]",
+			"m = [[1, 2], [3, 4]].to_matrix(); m[-3]",
 			"row index -1 out of bounds [0, 2)",
 		},
 	}
@@ -1318,7 +1315,7 @@ def new_account(owner, balance)
   return {
     "owner":    owner,
     "deposit":  def(n) balance = balance + n return balance end,
-    "describe": def() return owner + ": " + balance.to_s() end
+    "describe": def() return owner + ": " + balance.to_string() end
   }
 end
 `
@@ -1418,16 +1415,16 @@ func TestImportFromVirtualFileSystem(t *testing.T) {
 			files: map[string][]byte{
 				root + "/util.rl": []byte(`export def double(x) return x * 2 end`),
 				root + "/main.rl": []byte(`import "util"
-puts(util.double(21))`),
+print(util.double(21))`),
 			},
 			expected: "42\n",
 		},
 		{
 			name: "a ./ path resolves against the importing file",
 			files: map[string][]byte{
-				root + "/util.rl": []byte(`export def shout(s) return s.upcase() end`),
+				root + "/util.rl": []byte(`export def shout(s) return s.uppercase() end`),
 				root + "/main.rl": []byte(`import "./util" as helper
-puts(helper.shout("hi"))`),
+print(helper.shout("hi"))`),
 			},
 			expected: "HI\n",
 		},
@@ -1437,7 +1434,7 @@ puts(helper.shout("hi"))`),
 				root + "/util.rl": []byte(`export a = 1
 export b = 2`),
 				root + "/main.rl": []byte(`import "util" only a
-puts(util.a)`),
+print(util.a)`),
 			},
 			expected: "1\n",
 		},
@@ -1448,7 +1445,7 @@ puts(util.a)`),
 				root + "/middle.rl": []byte(`import "inner"
 export def reach() return inner.value() end`),
 				root + "/main.rl": []byte(`import "middle"
-puts(middle.reach())`),
+print(middle.reach())`),
 			},
 			expected: "deep\n",
 		},
@@ -1613,12 +1610,12 @@ func TestNonASCIIIndexing(t *testing.T) {
 func TestStringOperationsAgreeOnLength(t *testing.T) {
 	for _, sample := range []string{`"тест"`, `"こんにちは"`, `"café"`, `"plain"`, `"a👍b"`} {
 		size := testEval(sample + ".size()")
-		ascii := testEval(sample + ".ascii().size()")
+		codepoints := testEval(sample + ".codepoints().size()")
 		reversed := testEval(sample + ".reverse().size()")
 		sliced := testEval(sample + "[0:1].size()")
 
-		if size.Inspect() != ascii.Inspect() {
-			t.Errorf("%s: size() is %s but ascii() has %s entries", sample, size.Inspect(), ascii.Inspect())
+		if size.Inspect() != codepoints.Inspect() {
+			t.Errorf("%s: size() is %s but codepoints() has %s entries", sample, size.Inspect(), codepoints.Inspect())
 		}
 		if size.Inspect() != reversed.Inspect() {
 			t.Errorf("%s: size() is %s but reverse() is %s long", sample, size.Inspect(), reversed.Inspect())
@@ -1626,5 +1623,30 @@ func TestStringOperationsAgreeOnLength(t *testing.T) {
 		if sliced.Inspect() != "1" {
 			t.Errorf("%s: a one-character slice is %s characters long", sample, sliced.Inspect())
 		}
+	}
+}
+
+func TestErrorMessage(t *testing.T) {
+	evaluated := testEval(`begin
+  nil.nope()
+rescue e
+  e.message()
+end`)
+
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("expected a string, got %T (%s)", evaluated, evaluated.Inspect())
+	}
+	if !strings.Contains(str.Value, "undefined method") {
+		t.Errorf("unexpected message: %q", str.Value)
+	}
+}
+
+// t was an abbreviation of transpose, which is short already.
+func TestMatrixTIsGone(t *testing.T) {
+	evaluated := testEval(`[[1,2],[3,4]].to_matrix().t()`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("Matrix#t should be gone, got %s", evaluated.Inspect())
 	}
 }

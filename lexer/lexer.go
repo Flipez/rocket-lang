@@ -254,8 +254,8 @@ func (l *Lexer) readDoubleQuoteString() string {
 	// byte, and string(aByte) converts its numeric value to a rune and encodes
 	// that. So each byte of a multi-byte character became a character of its
 	// own -- "тест" arrived as eight characters holding the values of its eight
-	// UTF-8 bytes, which is why size() answered 8 and reverse() and chop() cut
-	// characters in half.
+	// UTF-8 bytes, which is why size() answered 8 and reverse() and remove_last()
+	// cut characters in half.
 	var out []byte
 
 	for {

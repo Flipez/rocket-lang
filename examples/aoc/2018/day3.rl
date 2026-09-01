@@ -14,8 +14,8 @@ def parseClaim(line)
   size = parts[3].split("x")
   return {
     "id": parts[0][1:],
-    "start": [start[0].to_i(), start[1].to_i()],
-    "size": [size[0].to_i(), size[1].to_i()],
+    "start": [start[0].to_integer(), start[1].to_integer()],
+    "size": [size[0].to_integer(), size[1].to_integer()],
   }
 end
 
@@ -32,7 +32,7 @@ def fabricAddClaim(fabric, claim)
     foreach x in claim["size"][0]
       r = fabric[claim["start"][1]+y]
       c = r[claim["start"][0]+x]
-      c.push(claim["id"])
+      c.append!(claim["id"])
     end
   end
 end
@@ -59,7 +59,7 @@ def part2(lines)
   fabric = newFabric(1000)
   foreach line in lines
     claim = parseClaim(line)
-    claims.push(claim)
+    claims.append!(claim)
     fabricAddClaim(fabric, claim)
   end
 
@@ -81,5 +81,5 @@ end
 
 input = IO.open("day3.txt").lines()
 
-puts(part1(input))
-puts(part2(input))
+print(part1(input))
+print(part2(input))

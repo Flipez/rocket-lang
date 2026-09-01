@@ -7,11 +7,11 @@ description: |
   ```js
   h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
 
-  puts(h["a"])     // 1
-  puts(h[2])       // true
-  puts(h[3.5])     // "float"
-  puts(h[true])    // "bool"
-  puts(h[[1, 2]])  // "array"
+  print(h["a"])     // 1
+  print(h[2])       // true
+  print(h[3.5])     // float
+  print(h[true])    // bool
+  print(h[[1, 2]])  // array
   ```
 
   `NIL` and functions are not hashable and are rejected as keys, with
@@ -30,8 +30,8 @@ description: |
   ```js
   h = {"double": def(x) return x * 2 end}
 
-  puts(h.double(21))     // 42
-  puts(h["double"](21))  // the same thing
+  print(h.double(21))     // 42
+  print(h["double"](21))  // the same thing
   ```
 
   That makes a hash of functions read like the object it already is. The functions
@@ -43,17 +43,17 @@ description: |
     return {
       "owner":    owner,
       "deposit":  def(n) balance = balance + n return balance end,
-      "describe": def() return owner + ": " + balance.to_s() end
+      "describe": def() return owner + ": " + balance.to_string() end
     }
   end
 
   a = new_account("robert", 100)
   b = new_account("someone", 0)
 
-  puts(a.deposit(50))   // 150
-  puts(a.describe())    // "robert: 150"
-  puts(b.describe())    // "someone: 0"
-  puts(a.owner)         // "robert" -- plain data, read the same way
+  print(a.deposit(50))   // 150
+  print(a.describe())    // robert: 150
+  print(b.describe())    // someone: 0
+  print(a.owner)         // robert -- plain data, read the same way
   ```
 
   A real hash method always wins, so a hash of data cannot take over `size` or
@@ -62,8 +62,8 @@ description: |
   ```js
   h = {"size": def() return 99 end}
 
-  puts(h.size())      // 1  -- the hash method
-  puts(h["size"]())   // 99 -- the stored function
+  print(h.size())      // 1  -- the hash method
+  print(h["size"]())   // 99 -- the stored function
   ```
 
   A name holding something that cannot be called says so, and a name that is not
@@ -85,35 +85,21 @@ example: |
 
   // reassign of values
   h = {"a": 1, 2: true}
-  puts(h["a"])
-  puts(h[2])
+  print(h["a"])
+  print(h[2])
   h["a"] = 3
   h["b"] = "moo"
-  puts(h["a"])
-  puts(h["b"])
-  puts(h[2])h = {"a": 1, 2: true}
-  puts(h["a"])
-  puts(h[2])
-  h["a"] = 3
-  h["b"] = "moo"
+  print(h["a"])
+  print(h["b"])
+  print(h[2])
 
   // should output
   1
   true
   3
-  "moo"
+  moo
   true
 methods:
-  clear:
-    description: "Removes every entry and returns the hash, so calls can be chained."
-    input: |
-      h = {"a": 1}
-      h.clear()
-      h.size()
-    output: |
-      {"a": 1}
-      {}
-      0
   compact:
     description: "Returns a new hash without the entries whose value is `nil`. The hash itself is unchanged; use `compact!` to remove them in place."
     input: |
@@ -134,18 +120,26 @@ methods:
       {"a": nil}
       0
       0
-  delete:
-    description: "Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss."
+  remove:
+    description: "Returns a new hash without the entry for `key`, leaving the hash itself unchanged. A key that is not there comes back unchanged rather than erroring. Use `remove!` to delete in place."
     input: |
       h = {"a": 1}
-      h.delete("a")
+      h.remove("a")
       h.size()
-      h.delete("a")
     output: |
       {"a": 1}
+      {}
       1
+  remove!:
+    description: "Deletes the entry for `key` in place and returns the hash, so calls can be chained."
+    input: |
+      h = {"a": 1}
+      h.remove!("a")
+      h.size()
+    output: |
+      {"a": 1}
+      {}
       0
-      nil
   empty?:
     description: "Returns `true` when the hash has no entries."
     input: |
@@ -154,29 +148,36 @@ methods:
     output: |
       true
       false
-  fetch:
-    description: "Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required. The key has to be `HASHABLE`; the fallback can be anything."
+  get:
+    description: |
+      Returns the value for `key`, or `nil` when the key is absent. Pass a
+      second argument to get that instead of `nil`. Use `fetch` when a missing
+      key is a mistake rather than an expected case.
     input: |
       h = {"a": 1}
-      h.fetch("a")
-      h.fetch("z", 0)
+      h.get("a")
+      h.get("z")
+      h.get("z", 0)
     output: |
       {"a": 1}
       1
+      nil
       0
-  get:
-    description: "Returns the value stored under the given key, or the given default when there is no such entry. The key has to be `HASHABLE`; the default can be anything."
+  fetch:
+    description: |
+      Returns the value for `key`, and raises when the key is absent. Use
+      `get` when a missing key is an expected case.
     input: |
-      {"a": "1", "b": "2"}.get("a", 10)
-      {"a": "1", "b": "2"}.get("c", 10)
+      h = {"a": 1}
+      h.fetch("a")
     output: |
-      "1"
-      10
-  include?:
+      {"a": 1}
+      1
+  has_key?:
     description: "Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`."
     input: |
-      {"a": 1, 1: "b"}.include?(1)
-      {"a": 1, 1: "b"}.include?("c")
+      {"a": 1, 1: "b"}.has_key?(1)
+      {"a": 1, 1: "b"}.has_key?("c")
     output: |
       true
       false
@@ -240,29 +241,29 @@ methods:
     description: "Calls the callback once per entry with the key and the value, and returns the hash so calls can be chained. The order the entries arrive in is **not** defined and differs between runs, the same caveat `keys` carries -- use it for a side effect per entry, not to build something ordered."
     input: |
       h = {"a": 1}
-      h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+      h.each(def(key, value) print(key + "=" + value.to_string()) end)
     output: |
       {"a": 1}
       a=1
       {"a": 1}
-  select:
-    description: "Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `select!` to filter in place."
+  filter:
+    description: "Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `filter!` to filter in place."
     input: |
       h = {"a": 1}
       h["b"] = 2
-      h.select(def(k, v) v > 1 end).size()
+      h.filter(def(k, v) v > 1 end).size()
       h.size()
     output: |
       {"a": 1}
       2
       1
       2
-  select!:
+  filter!:
     description: "Keeps only the entries the callback said yes to and returns the hash, so calls can be chained."
     input: |
       h = {"a": 1}
       h["b"] = 2
-      h.select!(def(k, v) v > 1 end).size()
+      h.filter!(def(k, v) v > 1 end).size()
       h.size()
     output: |
       {"a": 1}
@@ -270,7 +271,7 @@ methods:
       1
       1
   reject:
-    description: "Returns a new hash of the entries the callback said no to -- the mirror of `select`. Use `reject!` to filter in place."
+    description: "Returns a new hash of the entries the callback said no to -- the mirror of `filter`. Use `reject!` to filter in place."
     input: |
       h = {"a": 1}
       h["b"] = 2
@@ -311,7 +312,7 @@ methods:
     description: "Returns a new hash with each key replaced by what the callback answered for it. A new key still has to be `HASHABLE`, and two keys answering the same collapse into one entry -- which of them survives is not defined. Use `transform_keys!` to replace them in place."
     input: |
       h = {"a": 1}
-      h.transform_keys(def(k) k.upcase() end).get("A", 0)
+      h.transform_keys(def(k) k.uppercase() end).get("A", 0)
     output: |
       {"a": 1}
       1
@@ -319,7 +320,7 @@ methods:
     description: "Replaces each key with what the callback answered and returns the hash, so calls can be chained."
     input: |
       h = {"a": 1}
-      h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+      h.transform_keys!(def(k) k.uppercase() end).get("A", 0)
     output: |
       {"a": 1}
       1

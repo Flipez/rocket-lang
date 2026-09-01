@@ -23,25 +23,31 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "test:1:3: undefined method `.nope()` for HASH"},
 		{`{}.type()`, "HASH"},
-		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.push(key) \nend; b.size()", 2},
+		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.append!(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},
 		{`{"a": "b"}.to_json()`, `{"a":"b"}`},
 		{`{1: "b"}.to_json()`, `{"1":"b"}`},
 		{`{true: "b"}.to_json()`, `{"true":"b"}`},
-		{`{"a": 1, 1: "b"}.include?("a")`, true},
-		{`{"a": 1, 1: "b"}.include?(1)`, true},
-		{`{"a": 1, 1: "b"}.include?("c")`, false},
-		{`{"a": 1, 1: "b"}.include?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
-		{`{"a": 1, 1: "b"}.include?()`, `too few arguments: got=0, want=1`},
+		{`{"a": 1, 1: "b"}.has_key?("a")`, true},
+		{`{"a": 1, 1: "b"}.has_key?(1)`, true},
+		{`{"a": 1, 1: "b"}.has_key?("c")`, false},
+		{`{"a": 1, 1: "b"}.has_key?(nil)`, `wrong argument type on position 1: got=NIL, want=HASHABLE`},
+		{`{"a": 1, 1: "b"}.has_key?()`, `too few arguments: got=0, want=1`},
 		{`{"a": 1, "b": 2}.get("a", 10)`, 1},
 		{`{"a": 1, "b": 2}.get("c", 10)`, 10},
-		// to_s used to be "" because Hash was not Stringable. A single entry,
+		// get takes the default as optional: present with no default answers the
+		// value, absent with no default answers nil, absent with one answers it.
+		// That is the difference from fetch, which raises on the middle case.
+		{`{"a": 1}.get("a")`, 1},
+		{`{"a": 1}.get("z")`, nil},
+		{`{"a": 1}.get("z", 0)`, 0},
+		// to_string used to be "" because Hash was not Stringable. A single entry,
 		// because the order of a bigger hash is not defined.
-		{`{"a": 1}.to_s()`, `{"a": 1}`},
-		{`{"a": 1, "b": 2}.to_i()`, nil},
-		{`{"a": 1, "b": 2}.to_f()`, nil},
+		{`{"a": 1}.to_string()`, `{"a": 1}`},
+		{`{"a": 1, "b": 2}.to_integer()`, nil},
+		{`{"a": 1, "b": 2}.to_float()`, nil},
 	}
 
 	testInput(t, tests)
@@ -108,7 +114,7 @@ func TestHashSet(t *testing.T) {
 
 // TestHashRubyMethods covers the methods added to close the gap with Ruby's
 // Hash. Only the order-independent ones: keys(), values() and anything built on
-// them still come back in map order, so to_a is left out until a hash keeps
+// them still come back in map order, so to_array is left out until a hash keeps
 // insertion order.
 func TestHashRubyMethods(t *testing.T) {
 	tests := []inputTestCase{
@@ -117,21 +123,20 @@ func TestHashRubyMethods(t *testing.T) {
 		{`{}.empty?()`, true},
 		{`{"a": 1}.empty?()`, false},
 
-		// fetch errors on a missing key unless given a fallback. That is the
-		// difference from get(), which always requires one.
+		// fetch always errors on a missing key; it has no fallback argument.
+		// That is the whole difference from get(), which never raises. A
+		// second argument here would just make fetch a second get().
 		{`{"a": 1}.fetch("a")`, 1},
-		{`{"a": 1}.fetch("z", 0)`, 0},
 		{`{"a": 1}.fetch("z")`, `key not found: "z"`},
 		{`{"a": 1}.fetch(nil)`, "wrong argument type on position 1: got=NIL, want=HASHABLE"},
+		{`{"a": 1}.fetch("z", 0)`, "too many arguments: got=2, want=1"},
 
-		// delete reports the value that went, or nil when nothing did.
-		{`h = {"a": 1}; h.delete("a")`, 1},
-		{`h = {"a": 1}; h.delete("a"); h.size()`, 0},
-		{`h = {"a": 1}; h.delete("z")`, nil},
-		{`h = {"a": 1}; h.delete("z"); h.size()`, 1},
-
-		{`h = {"a": 1}; h.clear().size()`, 0},
-		{`h = {"a": 1}; h.clear(); h.size()`, 0},
+		// remove returns a new hash without the key, leaving the receiver
+		// untouched. A key that is not there comes back unchanged rather than
+		// erroring; use remove! to delete in place.
+		{`h = {"a": 1}; h.remove("a").size()`, 0},
+		{`h = {"a": 1}; h.remove("a"); h.size()`, 1},
+		{`h = {"a": 1}; h.remove("z").size()`, 1},
 
 		{`{"a": 1}.merge({"b": 2}).size()`, 2},
 		// The argument wins a clash.
@@ -148,43 +153,59 @@ func TestHashRubyMethods(t *testing.T) {
 	testInput(t, tests)
 }
 
-// TestHashBangPairsAreComplete checks the convention on Hash's two pairs.
+// TestHashBangPairsAreComplete checks the convention on Hash's pairs.
 func TestHashBangPairsAreComplete(t *testing.T) {
 	tests := []inputTestCase{
 		// Pure.
 		{`h = {"a": 1}; h.merge({"b": 2}); h.size()`, 1},
 		{`h = {"a": nil}; h.compact(); h.size()`, 1},
+		{`h = {"a": 1}; h.remove("a"); h.size()`, 1},
 
 		// In place.
 		{`h = {"a": 1}; h.merge!({"b": 2}); h.size()`, 2},
 		{`h = {"a": nil}; h.compact!(); h.size()`, 0},
+		{`h = {"a": 1}; h.remove!("a"); h.size()`, 0},
 
 		// ...and they chain, because each returns the hash.
 		{`{"a": 1}.merge!({"b": nil}).compact!().size()`, 1},
 		{`{"a": 1}.merge!({"b": 2}).type()`, "HASH"},
+		{`{"a": 1, "b": 2}.remove!("a").type()`, "HASH"},
+		{`{"a": 1, "b": 2}.remove!("a").size()`, 1},
 	}
 	testInput(t, tests)
 }
 
+// clear returned an empty hash, which carries no information of its own -- {}
+// already says the same thing. A bang-only clear! would have no pure
+// counterpart, which is exactly what the pair rule forbids, so clear is gone
+// rather than paired; this pins that it stays gone.
+func TestHashClearIsGone(t *testing.T) {
+	evaluated := testEval(`{"a": 1}.clear()`)
+
+	if !object.IsError(evaluated) {
+		t.Errorf("clear should no longer exist, got %s", evaluated.Inspect())
+	}
+}
+
 // TestHashCallbackMethods covers the Hash methods unlocked by the function
 // applier. The order entries arrive in is not defined, so nothing here depends
-// on it -- select and reject answer with a hash, and the counts are what matter.
+// on it -- filter and reject answer with a hash, and the counts are what matter.
 func TestHashCallbackMethods(t *testing.T) {
 	tests := []inputTestCase{
-		// select and reject receive the key and the value.
-		{`h = {"a": 1, "b": 2, "c": 3}; h.select(def(k, v) v > 1 end).size()`, 2},
+		// filter and reject receive the key and the value.
+		{`h = {"a": 1, "b": 2, "c": 3}; h.filter(def(k, v) v > 1 end).size()`, 2},
 		{`h = {"a": 1, "b": 2, "c": 3}; h.reject(def(k, v) v > 1 end).size()`, 1},
-		{`h = {"a": 1}; h.select(def(k, v) k == "a" end).size()`, 1},
-		{`h = {"a": 1, "b": 2}; h.select(def(k, v) v > 1 end); h.size()`, 2},
-		{`h = {"a": 1, "b": 2}; h.select!(def(k, v) v > 1 end); h.size()`, 1},
+		{`h = {"a": 1}; h.filter(def(k, v) k == "a" end).size()`, 1},
+		{`h = {"a": 1, "b": 2}; h.filter(def(k, v) v > 1 end); h.size()`, 2},
+		{`h = {"a": 1, "b": 2}; h.filter!(def(k, v) v > 1 end); h.size()`, 1},
 
 		// transform_values receives the value, transform_keys the key.
 		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end).get("a", 0)`, 10},
 		{`h = {"a": 1}; h.transform_values(def(v) v * 10 end); h.get("a", 0)`, 1},
 		{`h = {"a": 1}; h.transform_values!(def(v) v * 10 end); h.get("a", 0)`, 10},
-		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end).get("A", 0)`, 1},
-		{`h = {"a": 1}; h.transform_keys(def(k) k.upcase() end); h.get("a", 0)`, 1},
-		{`h = {"a": 1}; h.transform_keys!(def(k) k.upcase() end); h.get("A", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.uppercase() end).get("A", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys(def(k) k.uppercase() end); h.get("a", 0)`, 1},
+		{`h = {"a": 1}; h.transform_keys!(def(k) k.uppercase() end); h.get("A", 0)`, 1},
 		// A new key still has to be usable as one.
 		{`h = {"a": 1}; h.transform_keys(def(k) nil end)`, "unusable as hash key: NIL"},
 		{`h = {"a": 1}; h.transform_keys(def(k) next end)`, "a key cannot be nothing: the callback of transform_keys ran next"},
@@ -192,8 +213,8 @@ func TestHashCallbackMethods(t *testing.T) {
 		// each hands back the hash, so it chains, and receives both halves.
 		{`h = {"a": 1}; h.each(def(k, v) end).size()`, 1},
 		{`h = {"a": 1}; h.each(def(k, v) end).type()`, "HASH"},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(k) end); out.to_json()`, `["a"]`},
-		{`out = []; h = {"a": 1}; h.each(def(k, v) out.push(v) end); out.to_json()`, "[1]"},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append!(k) end); out.to_json()`, `["a"]`},
+		{`out = []; h = {"a": 1}; h.each(def(k, v) out.append!(v) end); out.to_json()`, "[1]"},
 		{`h = {"a": 1}; h.each(def(k, v) break end).size()`, 1},
 
 		// Arity is checked against what the method passes.

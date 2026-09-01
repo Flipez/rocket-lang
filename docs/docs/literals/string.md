@@ -9,8 +9,8 @@ A **double-quoted** string processes escape sequences: `\"` for a quote,
 `\n` for a newline, `\t` for a tab, `\r` for a carriage return.
 
 ```js
-puts("test\"string")   // test"string
-puts("a\tb")           // a<tab>b
+print("test\"string")   // test"string
+print("a\tb")           // a<tab>b
 ```
 
 A **single-quoted** string is raw: nothing is escaped and a backslash is an
@@ -18,8 +18,8 @@ ordinary character. This makes it convenient for text containing double
 quotes.
 
 ```js
-puts('test "string"')  // test "string"
-puts('a\tb')           // a\tb, a literal backslash and t
+print('test "string"')  // test "string"
+print('a\tb')           // a\tb, a literal backslash and t
 ```
 
 Because a single-quoted string performs no escaping, it cannot contain a
@@ -37,17 +37,17 @@ is_true = "test" == "test";
 is_false = "test" == "string";
 
 s = "abcdef"
-puts(s[2])
-puts(s[-2])
-puts(s[:2])
-puts(s[:-2])
-puts(s[2:])
-puts(s[-2:])
-puts(s[1:-2])
+print(s[2])
+print(s[-2])
+print(s[:2])
+print(s[:-2])
+print(s[2:])
+print(s[-2:])
+print(s[1:-2])
 
 s[2] = "C"
 s[-2] = "E"
-puts(s)
+print(s)
 
 // should output
 "c"
@@ -69,25 +69,10 @@ puts(s)
 
 ## Literal Specific Methods
 
-### ascii()
-> Returns `ARRAY`
-
-Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use.
-
-
-<CodeBlockSimple input='"".ascii()
-"a".ascii()
-"abc".ascii()
-' output='[]
-[97]
-[97, 98, 99]
-' />
-
-
 ### capitalize()
 > Returns `STRING`
 
-Returns a copy with the first character upcased and every following character downcased, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost.
+Returns a copy with the first character replaced by its uppercase counterpart and every other character replaced by its lowercase counterpart, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost.
 
 
 <CodeBlockSimple input='a = "hello World!"
@@ -102,7 +87,7 @@ a
 ### capitalize!()
 > Returns `STRING`
 
-Upcases the first character and downcases the rest in place, and returns the string, so calls can be chained.
+Replaces the first character with its uppercase counterpart and every other character with its lowercase counterpart, in place, and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "hello World!"
@@ -114,69 +99,31 @@ a
 ' />
 
 
-### chomp([STRING])
-> Returns `STRING`
+### codepoints()
+> Returns `ARRAY`
 
-Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
+Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use.
 
 
-<CodeBlockSimple input='a = "line\n"
-a.chomp()
-a.chomp() == "line"
-"abcdd".chomp("d")
-"a\n\n\n".chomp("")
-' output='"line\n"
-"line"
-true
-"abcd"
-"a"
+<CodeBlockSimple input='"".codepoints()
+"a".codepoints()
+"abc".codepoints()
+' output='[]
+[97]
+[97, 98, 99]
 ' />
 
 
-### chomp!([STRING])
-> Returns `STRING`
+### contains?(STRING)
+> Returns `BOOLEAN`
 
-Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`.
-
-
-<CodeBlockSimple input='a = "line\n"
-a.chomp!()
-a
-' output='"line\n"
-"line"
-"line"
-' />
+Returns `true` when the string contains the given substring.
 
 
-### chop()
-> Returns `STRING`
-
-Returns a copy with the last character removed. A trailing `\r\n` is removed as a unit so a line ending is never left half there. Chopping an empty string gives an empty string rather than an error.
-
-
-<CodeBlockSimple input='a = "abcd"
-a.chop()
-a
-"".chop()
-' output='"abcd"
-"abc"
-"abcd"
-""
-' />
-
-
-### chop!()
-> Returns `STRING`
-
-Removes the last character in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "abcd"
-a.chop!()
-a
-' output='"abcd"
-"abc"
-"abc"
+<CodeBlockSimple input='"test".contains?("es")
+"test".contains?("xy")
+' output='true
+false
 ' />
 
 
@@ -188,36 +135,6 @@ Counts how often a given substring occurs in the string.
 
 <CodeBlockSimple input='"test".count("t")
 ' output='2
-' />
-
-
-### downcase()
-> Returns `STRING`
-
-Returns a copy with all uppercase letters replaced by their lowercase counterparts.
-
-
-<CodeBlockSimple input='a = "TEST"
-a.downcase()
-a
-' output='"TEST"
-"test"
-"TEST"
-' />
-
-
-### downcase!()
-> Returns `STRING`
-
-Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "TEST"
-a.downcase!()
-a
-' output='"TEST"
-"test"
-"test"
 ' />
 
 
@@ -234,29 +151,18 @@ false
 ' />
 
 
-### end_with?(STRING...)
+### ends_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string ends with any of the given strings.
 
 
-<CodeBlockSimple input='"test.rl".end_with?(".rl")
-"test.rl".end_with?(".go")
-"test.rl".end_with?(".go", ".rl")
+<CodeBlockSimple input='"test.rl".ends_with?(".rl")
+"test.rl".ends_with?(".go")
+"test.rl".ends_with?(".go", ".rl")
 ' output='true
 false
 true
-' />
-
-
-### find(STRING)
-> Returns `INTEGER`
-
-Returns the character index of a given string if found. Otherwise returns `-1`
-
-
-<CodeBlockSimple input='"test".find("e")
-' output='1
 ' />
 
 
@@ -271,16 +177,27 @@ Formats according to a format specifier and returns the resulting string
 ' />
 
 
-### include?(STRING)
-> Returns `BOOLEAN`
+### index_of(STRING)
+> Returns `INTEGER`
 
-Returns `true` when the string contains the given substring.
+Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`.
 
 
-<CodeBlockSimple input='"test".include?("es")
-"test".include?("xy")
-' output='true
-false
+<CodeBlockSimple input='"test".index_of("e")
+' output='1
+' />
+
+
+### last_index_of(STRING)
+> Returns `INTEGER`
+
+Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`.
+
+
+<CodeBlockSimple input='"hello".last_index_of("l")
+"hello".last_index_of("z")
+' output='3
+-1
 ' />
 
 
@@ -295,33 +212,65 @@ Splits the string at newline escape sequence and return all chunks in an array. 
 ' />
 
 
-### lstrip()
+### lowercase()
 > Returns `STRING`
 
-Returns a copy with leading whitespace removed. See `rstrip` for the trailing end and `strip` for both.
+Returns a copy with all uppercase letters replaced by their lowercase counterparts.
 
 
-<CodeBlockSimple input='a = "  test  "
-a.lstrip()
+<CodeBlockSimple input='a = "TEST"
+a.lowercase()
 a
-' output='"  test  "
-"test  "
-"  test  "
+' output='"TEST"
+"test"
+"TEST"
 ' />
 
 
-### lstrip!()
+### lowercase!()
 > Returns `STRING`
 
-Removes leading whitespace in place and returns the string, so calls can be chained.
+Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained.
 
 
-<CodeBlockSimple input='a = "  test  "
-a.lstrip!()
+<CodeBlockSimple input='a = "TEST"
+a.lowercase!()
 a
-' output='"  test  "
-"test  "
-"test  "
+' output='"TEST"
+"test"
+"test"
+' />
+
+
+### remove_last()
+> Returns `STRING`
+
+Returns a copy with the last character removed. A trailing `\r\n` is removed as a unit so a line ending is never left half there. Removing the last character of an empty string gives an empty string rather than an error.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.remove_last()
+a
+"".remove_last()
+' output='"abcd"
+"abc"
+"abcd"
+""
+' />
+
+
+### remove_last!()
+> Returns `STRING`
+
+Removes the last character in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "abcd"
+a.remove_last!()
+a
+' output='"abcd"
+"abc"
+"abc"
 ' />
 
 
@@ -385,36 +334,6 @@ a
 ' />
 
 
-### rstrip()
-> Returns `STRING`
-
-Returns a copy with trailing whitespace removed. See `lstrip` for the leading end and `strip` for both.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.rstrip()
-a
-' output='"  test  "
-"  test"
-"  test  "
-' />
-
-
-### rstrip!()
-> Returns `STRING`
-
-Removes trailing whitespace in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.rstrip!()
-a
-' output='"  test  "
-"  test"
-"  test"
-' />
-
-
 ### size()
 > Returns `INTEGER`
 
@@ -439,59 +358,29 @@ Splits the string on a given seperator and returns all the chunks in an array. D
 ' />
 
 
-### start_with?(STRING...)
+### starts_with?(STRING...)
 > Returns `BOOLEAN`
 
 Returns `true` when the string starts with any of the given strings.
 
 
-<CodeBlockSimple input='"test.rl".start_with?("test")
-"test.rl".start_with?("prod")
-"test.rl".start_with?("prod", "test")
+<CodeBlockSimple input='"test.rl".starts_with?("test")
+"test.rl".starts_with?("prod")
+"test.rl".starts_with?("prod", "test")
 ' output='true
 false
 true
 ' />
 
 
-### strip()
+### swap_case()
 > Returns `STRING`
 
-Returns a copy with leading and trailing whitespace removed.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.strip()
-a
-' output='"  test  "
-"test"
-"  test  "
-' />
-
-
-### strip!()
-> Returns `STRING`
-
-Removes leading and trailing whitespace in place and returns the string, so calls can be chained.
-
-
-<CodeBlockSimple input='a = "  test  "
-a.strip!()
-a
-' output='"  test  "
-"test"
-"test"
-' />
-
-
-### swapcase()
-> Returns `STRING`
-
-Returns a copy with every uppercase character downcased and every lowercase character upcased.
+Returns a copy with every uppercase character lowercased and every lowercase character uppercased.
 
 
 <CodeBlockSimple input='a = "Hello World"
-a.swapcase()
+a.swap_case()
 a
 ' output='"Hello World"
 "hELLO wORLD"
@@ -499,14 +388,14 @@ a
 ' />
 
 
-### swapcase!()
+### swap_case!()
 > Returns `STRING`
 
 Swaps the case of every character in place and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "Hello World"
-a.swapcase!()
+a.swap_case!()
 a
 ' output='"Hello World"
 "hELLO wORLD"
@@ -514,14 +403,138 @@ a
 ' />
 
 
-### upcase()
+### trim()
+> Returns `STRING`
+
+Returns a copy with leading and trailing whitespace removed.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim()
+a
+' output='"  test  "
+"test"
+"  test  "
+' />
+
+
+### trim!()
+> Returns `STRING`
+
+Removes leading and trailing whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim!()
+a
+' output='"  test  "
+"test"
+"test"
+' />
+
+
+### trim_end()
+> Returns `STRING`
+
+Returns a copy with trailing whitespace removed. See `trim_start` for the leading end and `trim` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_end()
+a
+' output='"  test  "
+"  test"
+"  test  "
+' />
+
+
+### trim_end!()
+> Returns `STRING`
+
+Removes trailing whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_end!()
+a
+' output='"  test  "
+"  test"
+"  test"
+' />
+
+
+### trim_line_end([STRING])
+> Returns `STRING`
+
+Returns a copy with one trailing line ending removed: `\r\n`, `\n` or `\r`. Given a string it removes one trailing occurrence of that string instead. Given `""` it removes every trailing `\n` and `\r\n`, which is the way to drop blank lines at the end of a file.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.trim_line_end()
+a.trim_line_end() == "line"
+"abcdd".trim_line_end("d")
+"a\n\n\n".trim_line_end("")
+' output='"line\n"
+"line"
+true
+"abcd"
+"a"
+' />
+
+
+### trim_line_end!([STRING])
+> Returns `STRING`
+
+Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `trim_line_end`.
+
+
+<CodeBlockSimple input='a = "line\n"
+a.trim_line_end!()
+a
+' output='"line\n"
+"line"
+"line"
+' />
+
+
+### trim_start()
+> Returns `STRING`
+
+Returns a copy with leading whitespace removed. See `trim_end` for the trailing end and `trim` for both.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_start()
+a
+' output='"  test  "
+"test  "
+"  test  "
+' />
+
+
+### trim_start!()
+> Returns `STRING`
+
+Removes leading whitespace in place and returns the string, so calls can be chained.
+
+
+<CodeBlockSimple input='a = "  test  "
+a.trim_start!()
+a
+' output='"  test  "
+"test  "
+"test  "
+' />
+
+
+### uppercase()
 > Returns `STRING`
 
 Returns a copy with all lowercase letters replaced by their uppercase counterparts.
 
 
 <CodeBlockSimple input='a = "test"
-a.upcase()
+a.uppercase()
 a
 ' output='"test"
 "TEST"
@@ -529,14 +542,14 @@ a
 ' />
 
 
-### upcase!()
+### uppercase!()
 > Returns `STRING`
 
 Replaces lowercase characters with their uppercase counterparts in place and returns the string, so calls can be chained.
 
 
 <CodeBlockSimple input='a = "test"
-a.upcase!()
+a.uppercase!()
 a
 ' output='"test"
 "TEST"
@@ -546,6 +559,47 @@ a
 
 
 ## Generic Literal Methods
+
+### help()
+> Returns `NIL`
+
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+
+
+<CodeBlockSimple input='true.help()
+1.0.help()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	acos()
+	asin()
+	atan()
+	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
+	divmod(FLOAT)
+	exp()
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	log()
+	log10()
+	log2()
+	nan?()
+	negative?()
+	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
+	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
+	truncate([INTEGER])
+	zero?()
+nil
+' />
+
 
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
@@ -572,7 +626,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []
@@ -596,16 +650,16 @@ true
 ' />
 
 
-### to_f()
+### to_float()
 > Returns `FLOAT|NIL`
 
 Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
-<CodeBlockSimple input='1.to_f()
-"1.4".to_f()
-"abc".to_f()
-nil.to_f()
+<CodeBlockSimple input='1.to_float()
+"1.4".to_float()
+"abc".to_float()
+nil.to_float()
 ' output='1.0
 1.4
 nil
@@ -613,21 +667,21 @@ nil
 ' />
 
 
-### to_i()
+### to_integer()
 > Returns `INTEGER|NIL`
 
 Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
-<CodeBlockSimple input='true.to_i()
-false.to_i()
-1234.to_i()
-"4".to_i()
-"0".to_i()
-"0125".to_i()
-"0x2322".to_i()
-"0b1010".to_i()
-"test".to_i()
+<CodeBlockSimple input='true.to_integer()
+false.to_integer()
+1234.to_integer()
+"4".to_integer()
+"0".to_integer()
+"0125".to_integer()
+"0x2322".to_integer()
+"0b1010".to_integer()
+"test".to_integer()
 ' output='1
 0
 1234
@@ -653,18 +707,18 @@ a.to_json()
 ' />
 
 
-### to_s()
+### to_string()
 > Returns `STRING`
 
 Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
-<CodeBlockSimple input='true.to_s()
-1234.to_s()
-"test".to_s()
-1.4.to_s()
-nil.to_s()
-"0b1010".to_i().to_s()
+<CodeBlockSimple input='true.to_string()
+1234.to_string()
+"test".to_string()
+1.4.to_string()
+nil.to_string()
+"0b1010".to_integer().to_string()
 ' output='"true"
 "1234"
 "test"
@@ -688,13 +742,13 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `append(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]
@@ -705,7 +759,9 @@ puts.type_groups()
 ### wat()
 > Returns `NIL`
 
-Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+An alias of `help`, kept as an easter egg. This is the only alias in
+RocketLang; every other method has exactly one name.
+
 
 
 <CodeBlockSimple input='true.wat()
@@ -714,15 +770,29 @@ Prints the type's literal-specific methods with their argument and return types,
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil

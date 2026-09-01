@@ -9,17 +9,17 @@ export def Make(type, size)
   if (size > 0)
     foreach i in size
       if (type == "BOOLEAN")
-        a.push(true)
+        a.append!(true)
       elif (type == "STRING")
-        a.push("")
+        a.append!("")
       elif (type == "INTEGER")
-        a.push(0)
+        a.append!(0)
       elif (type == "FLOAT")
-        a.push(0.0)
+        a.append!(0.0)
       elif (type == "ARRAY")
-        a.push([])
+        a.append!([])
       elif (type == "HASH")
-        a.push({})
+        a.append!({})
       end
     end
   end
@@ -41,9 +41,9 @@ export def Format(a, b)
     if (item.type() == "STRING")
       val = item
     else
-      val = item.to_s()
+      val = item.to_string()
     end
-    a = a.replace("{"+idx.to_s()+"}", val)
+    a = a.replace("{"+idx.to_string()+"}", val)
   end
   return a
 end

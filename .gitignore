@@ -1,2 +1,5 @@
 # Built by wasm/vercel.sh at deploy time, 13MB, never committed.
 wasm/main.wasm
+
+# Subagent-driven-development scratch: ledger, briefs, review packages.
+.superpowers/

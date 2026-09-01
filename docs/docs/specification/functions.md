@@ -28,15 +28,15 @@ Functions can now also be created as named functions:
 
 ```js
 🚀 > def test()
-  puts("test")
+  print("test")
 end
 
 => def ()
-  puts(test)
+  print(test)
 end
 
 🚀 > test()
-"test"
+test
 ```
 
 ## Multiple Return Values
@@ -88,6 +88,6 @@ module rather than a function on screen. Like any other error it can be caught:
 begin
   add(1)
 rescue e
-  puts(e.msg())   // add: too few arguments: got=1, want=2
+  print(e.message())   // add: too few arguments: got=1, want=2
 end
 ```

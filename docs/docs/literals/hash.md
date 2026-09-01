@@ -9,11 +9,11 @@ single hash may mix key types freely: `STRING`, `INTEGER`, `FLOAT`,
 ```js
 h = {"a": 1, 2: true, 3.5: "float", true: "bool", [1, 2]: "array"}
 
-puts(h["a"])     // 1
-puts(h[2])       // true
-puts(h[3.5])     // "float"
-puts(h[true])    // "bool"
-puts(h[[1, 2]])  // "array"
+print(h["a"])     // 1
+print(h[2])       // true
+print(h[3.5])     // float
+print(h[true])    // bool
+print(h[[1, 2]])  // array
 ```
 
 `NIL` and functions are not hashable and are rejected as keys, with
@@ -32,8 +32,8 @@ name can be *called* with one:
 ```js
 h = {"double": def(x) return x * 2 end}
 
-puts(h.double(21))     // 42
-puts(h["double"](21))  // the same thing
+print(h.double(21))     // 42
+print(h["double"](21))  // the same thing
 ```
 
 That makes a hash of functions read like the object it already is. The functions
@@ -45,17 +45,17 @@ def new_account(owner, balance)
   return {
     "owner":    owner,
     "deposit":  def(n) balance = balance + n return balance end,
-    "describe": def() return owner + ": " + balance.to_s() end
+    "describe": def() return owner + ": " + balance.to_string() end
   }
 end
 
 a = new_account("robert", 100)
 b = new_account("someone", 0)
 
-puts(a.deposit(50))   // 150
-puts(a.describe())    // "robert: 150"
-puts(b.describe())    // "someone: 0"
-puts(a.owner)         // "robert" -- plain data, read the same way
+print(a.deposit(50))   // 150
+print(a.describe())    // robert: 150
+print(b.describe())    // someone: 0
+print(a.owner)         // robert -- plain data, read the same way
 ```
 
 A real hash method always wins, so a hash of data cannot take over `size` or
@@ -64,8 +64,8 @@ A real hash method always wins, so a hash of data cannot take over `size` or
 ```js
 h = {"size": def() return 99 end}
 
-puts(h.size())      // 1  -- the hash method
-puts(h["size"]())   // 99 -- the stored function
+print(h.size())      // 1  -- the hash method
+print(h["size"]())   // 99 -- the stored function
 ```
 
 A name holding something that cannot be called says so, and a name that is not
@@ -90,43 +90,24 @@ people = [{"name": "Anna", "age": 24}, {"name": "Bob", "age": 99}];
 
 // reassign of values
 h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
+print(h["a"])
+print(h[2])
 h["a"] = 3
 h["b"] = "moo"
-puts(h["a"])
-puts(h["b"])
-puts(h[2])h = {"a": 1, 2: true}
-puts(h["a"])
-puts(h[2])
-h["a"] = 3
-h["b"] = "moo"
+print(h["a"])
+print(h["b"])
+print(h[2])
 
 // should output
 1
 true
 3
-"moo"
+moo
 true
 
 ```
 
 ## Literal Specific Methods
-
-### clear()
-> Returns `HASH`
-
-Removes every entry and returns the hash, so calls can be chained.
-
-
-<CodeBlockSimple input='h = {"a": 1}
-h.clear()
-h.size()
-' output='{"a": 1}
-{}
-0
-' />
-
 
 ### compact()
 > Returns `HASH|ERROR`
@@ -158,23 +139,6 @@ h.size()
 ' />
 
 
-### delete(HASHABLE)
-> Returns `ANY`
-
-Removes the entry for a key and returns its value, or `nil` when the key was not there, so a removal can be told from a miss.
-
-
-<CodeBlockSimple input='h = {"a": 1}
-h.delete("a")
-h.size()
-h.delete("a")
-' output='{"a": 1}
-1
-0
-nil
-' />
-
-
 ### each(CALLABLE)
 > Returns `HASH|ERROR`
 
@@ -182,7 +146,7 @@ Calls the callback once per entry with the key and the value, and returns the ha
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.each(def(key, value) puts(key + "=" + value.to_s()) end)
+h.each(def(key, value) print(key + "=" + value.to_string()) end)
 ' output='{"a": 1}
 a=1
 {"a": 1}
@@ -202,42 +166,83 @@ false
 ' />
 
 
-### fetch(HASHABLE, [ANY])
+### fetch(HASHABLE)
 > Returns `ANY`
 
-Returns the value for a key. Without a fallback a missing key is an error, which is the difference from `get`, where a fallback is required. The key has to be `HASHABLE`; the fallback can be anything.
+Returns the value for `key`, and raises when the key is absent. Use
+`get` when a missing key is an expected case.
+
 
 
 <CodeBlockSimple input='h = {"a": 1}
 h.fetch("a")
-h.fetch("z", 0)
 ' output='{"a": 1}
 1
+' />
+
+
+### filter(CALLABLE)
+> Returns `HASH|ERROR`
+
+Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `filter!` to filter in place.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.filter(def(k, v) v > 1 end).size()
+h.size()
+' output='{"a": 1}
+2
+1
+2
+' />
+
+
+### filter!(CALLABLE)
+> Returns `HASH|ERROR`
+
+Keeps only the entries the callback said yes to and returns the hash, so calls can be chained.
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h["b"] = 2
+h.filter!(def(k, v) v > 1 end).size()
+h.size()
+' output='{"a": 1}
+2
+1
+1
+' />
+
+
+### get(HASHABLE, [ANY])
+> Returns `ANY`
+
+Returns the value for `key`, or `nil` when the key is absent. Pass a
+second argument to get that instead of `nil`. Use `fetch` when a missing
+key is a mistake rather than an expected case.
+
+
+
+<CodeBlockSimple input='h = {"a": 1}
+h.get("a")
+h.get("z")
+h.get("z", 0)
+' output='{"a": 1}
+1
+nil
 0
 ' />
 
 
-### get(HASHABLE, ANY)
-> Returns `ANY`
-
-Returns the value stored under the given key, or the given default when there is no such entry. The key has to be `HASHABLE`; the default can be anything.
-
-
-<CodeBlockSimple input='{"a": "1", "b": "2"}.get("a", 10)
-{"a": "1", "b": "2"}.get("c", 10)
-' output='"1"
-10
-' />
-
-
-### include?(HASHABLE)
+### has_key?(HASHABLE)
 > Returns `BOOLEAN`
 
 Returns `true` when the hash has an entry under the given key. The argument has to be usable as a key, which is what `HASHABLE` in the signature means: a `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `ARRAY` or `HASH`.
 
 
-<CodeBlockSimple input='{"a": 1, 1: "b"}.include?(1)
-{"a": 1, 1: "b"}.include?("c")
+<CodeBlockSimple input='{"a": 1, 1: "b"}.has_key?(1)
+{"a": 1, 1: "b"}.has_key?("c")
 ' output='true
 false
 ' />
@@ -304,7 +309,7 @@ h.size()
 ### reject(CALLABLE)
 > Returns `HASH|ERROR`
 
-Returns a new hash of the entries the callback said no to -- the mirror of `select`. Use `reject!` to filter in place.
+Returns a new hash of the entries the callback said no to -- the mirror of `filter`. Use `reject!` to filter in place.
 
 
 <CodeBlockSimple input='h = {"a": 1}
@@ -331,37 +336,33 @@ h.reject!(def(k, v) v > 1 end).size()
 ' />
 
 
-### select(CALLABLE)
+### remove(HASHABLE)
 > Returns `HASH|ERROR`
 
-Returns a new hash of the entries the callback said yes to. The callback receives the key and the value. Only `false` and `nil` are no. Use `select!` to filter in place.
+Returns a new hash without the entry for `key`, leaving the hash itself unchanged. A key that is not there comes back unchanged rather than erroring. Use `remove!` to delete in place.
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h["b"] = 2
-h.select(def(k, v) v > 1 end).size()
+h.remove("a")
 h.size()
 ' output='{"a": 1}
-2
+{}
 1
-2
 ' />
 
 
-### select!(CALLABLE)
+### remove!(HASHABLE)
 > Returns `HASH|ERROR`
 
-Keeps only the entries the callback said yes to and returns the hash, so calls can be chained.
+Deletes the entry for `key` in place and returns the hash, so calls can be chained.
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h["b"] = 2
-h.select!(def(k, v) v > 1 end).size()
+h.remove!("a")
 h.size()
 ' output='{"a": 1}
-2
-1
-1
+{}
+0
 ' />
 
 
@@ -387,7 +388,7 @@ Returns a new hash with each key replaced by what the callback answered for it. 
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.transform_keys(def(k) k.upcase() end).get("A", 0)
+h.transform_keys(def(k) k.uppercase() end).get("A", 0)
 ' output='{"a": 1}
 1
 ' />
@@ -400,7 +401,7 @@ Replaces each key with what the callback answered and returns the hash, so calls
 
 
 <CodeBlockSimple input='h = {"a": 1}
-h.transform_keys!(def(k) k.upcase() end).get("A", 0)
+h.transform_keys!(def(k) k.uppercase() end).get("A", 0)
 ' output='{"a": 1}
 1
 ' />
@@ -450,6 +451,47 @@ Returns the values of the hash, in the same unspecified order as `keys`.
 
 ## Generic Literal Methods
 
+### help()
+> Returns `NIL`
+
+Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+
+
+<CodeBlockSimple input='true.help()
+1.0.help()
+' output='BOOLEAN supports the following methods:
+nil
+FLOAT supports the following methods:
+	abs()
+	acos()
+	asin()
+	atan()
+	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
+	divmod(FLOAT)
+	exp()
+	finite?()
+	floor([INTEGER])
+	infinite?()
+	log()
+	log10()
+	log2()
+	nan?()
+	negative?()
+	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
+	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
+	truncate([INTEGER])
+	zero?()
+nil
+' />
+
+
 ### is_a?(STRING)
 > Returns `BOOLEAN|ERROR`
 
@@ -475,7 +517,7 @@ false
 Returns the names of the methods specific to this literal type, not including the generic methods listed on this page. The names are sorted, so the result is the same on every run. A type with no methods of its own returns an empty array.
 
 
-<CodeBlockSimple input='1.0.methods().include?("round")
+<CodeBlockSimple input='1.0.methods().contains?("round")
 true.methods()
 ' output='true
 []
@@ -499,16 +541,16 @@ true
 ' />
 
 
-### to_f()
+### to_float()
 > Returns `FLOAT|NIL`
 
 Converts an object to its float representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0.0`.
 
 
-<CodeBlockSimple input='1.to_f()
-"1.4".to_f()
-"abc".to_f()
-nil.to_f()
+<CodeBlockSimple input='1.to_float()
+"1.4".to_float()
+"abc".to_float()
+nil.to_float()
 ' output='1.0
 1.4
 nil
@@ -516,21 +558,21 @@ nil
 ' />
 
 
-### to_i()
+### to_integer()
 > Returns `INTEGER|NIL`
 
 Converts an object to its integer representation, or `nil` when it cannot. A `nil` result is what distinguishes a failed conversion from a genuine `0`. For strings a `0b`, `0o` or `0x` prefix selects binary, octal or hexadecimal and is matched case insensitively, a leading zero followed only by octal digits is octal, and anything else is decimal. The resulting integer keeps the base it was parsed with, and integers of differing bases cannot be combined directly.
 
 
-<CodeBlockSimple input='true.to_i()
-false.to_i()
-1234.to_i()
-"4".to_i()
-"0".to_i()
-"0125".to_i()
-"0x2322".to_i()
-"0b1010".to_i()
-"test".to_i()
+<CodeBlockSimple input='true.to_integer()
+false.to_integer()
+1234.to_integer()
+"4".to_integer()
+"0".to_integer()
+"0125".to_integer()
+"0x2322".to_integer()
+"0b1010".to_integer()
+"test".to_integer()
 ' output='1
 0
 1234
@@ -556,18 +598,18 @@ a.to_json()
 ' />
 
 
-### to_s()
+### to_string()
 > Returns `STRING`
 
 Converts an object to its string representation, or the empty string when it has none. Takes no arguments; an integer renders in its own base, so use `to_base` first to change it.
 
 
-<CodeBlockSimple input='true.to_s()
-1234.to_s()
-"test".to_s()
-1.4.to_s()
-nil.to_s()
-"0b1010".to_i().to_s()
+<CodeBlockSimple input='true.to_string()
+1234.to_string()
+"test".to_string()
+1.4.to_string()
+nil.to_string()
+"0b1010".to_integer().to_string()
 ' output='"true"
 "1234"
 "test"
@@ -591,13 +633,13 @@ Returns the type of the object.
 ### type_groups()
 > Returns `ARRAY`
 
-Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `push(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
+Returns the type groups the value belongs to, sorted. `ANY` is not listed: every value belongs to it, so it would say nothing while prefixing every answer. It exists for signatures, where `append(ANY)` means the argument accepts anything, and `is_a?("ANY")` still answers `true`. See [Types and type groups](../language/types) for what each group means.
 
 
 <CodeBlockSimple input='1.type_groups()
 nil.type_groups()
 def() end.type_groups()
-puts.type_groups()
+print.type_groups()
 ' output='["COMPARABLE", "HASHABLE", "INTEGERABLE", "NUMERIC", "STRINGABLE"]
 ["STRINGABLE"]
 ["CALLABLE"]
@@ -608,7 +650,9 @@ puts.type_groups()
 ### wat()
 > Returns `NIL`
 
-Prints the type's literal-specific methods with their argument and return types, sorted by name, one per line. It returns `nil` rather than the listing: this exists to be read, and the REPL echoes a returned value through its escaped representation, which would put the whole thing on one line. Use `methods` when the names are wanted as data. A type with no methods of its own prints only the heading.
+An alias of `help`, kept as an easter egg. This is the only alias in
+RocketLang; every other method has exactly one name.
+
 
 
 <CodeBlockSimple input='true.wat()
@@ -617,15 +661,29 @@ Prints the type's literal-specific methods with their argument and return types,
 nil
 FLOAT supports the following methods:
 	abs()
+	acos()
+	asin()
+	atan()
 	ceil([INTEGER])
+	copysign(NUMERIC)
+	cos()
 	divmod(FLOAT)
+	exp()
 	finite?()
 	floor([INTEGER])
 	infinite?()
+	log()
+	log10()
+	log2()
 	nan?()
 	negative?()
 	positive?()
+	pow(NUMERIC)
+	remainder(NUMERIC)
 	round([INTEGER])
+	sin()
+	sqrt()
+	tan()
 	truncate([INTEGER])
 	zero?()
 nil

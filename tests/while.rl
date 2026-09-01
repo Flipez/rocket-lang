@@ -1,6 +1,6 @@
 a = 0
 while (a != 3)
-  puts(a)
+  print(a)
   a = a + 1
 end
 
@@ -8,7 +8,7 @@ end
 def test_one()
   a = 0
   while (a != 3)
-    puts(a)
+    print(a)
     if (a == 1)
       return a
     end
@@ -23,7 +23,7 @@ def test_two()
       i = i + 1
       next
     end
-    puts(i)
+    print(i)
     if (i == 6)
       break
     end
@@ -34,7 +34,7 @@ end
 def test_three()
   a = 0
   while (a != 3)
-    puts(a)
+    print(a)
     a = a % 0
   end
 end

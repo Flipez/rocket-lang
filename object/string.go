@@ -18,6 +18,58 @@ func NewString(s string) *String {
 	return &String{Value: s}
 }
 
+// runeIndex finds needle as a contiguous rune subsequence of haystack and
+// returns its rune index, or -1 if absent. Searching in rune space -- rather
+// than finding a byte offset with strings.Index and converting it afterward
+// -- keeps the answer honest when needle is invalid UTF-8 (for example a raw
+// non-UTF-8 byte read by IO.read_line): a byte offset that matched inside the
+// needle's garbled encoding was not necessarily a rune boundary in haystack,
+// which pointed s[index_of(...)] at the wrong character. An invalid needle
+// decodes to the replacement rune, which cannot equal a validly-decoded rune
+// in haystack, so it is correctly reported as absent instead of misplaced.
+func runeIndex(haystack, needle []rune) int {
+	n := len(needle)
+	if n == 0 {
+		return 0
+	}
+
+	for i := 0; i+n <= len(haystack); i++ {
+		if runeSliceEqual(haystack[i:i+n], needle) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+// runeLastIndex is runeIndex's mirror for last_index_of: same rune-space
+// search, scanning from the end so a repeated needle resolves to its last
+// occurrence.
+func runeLastIndex(haystack, needle []rune) int {
+	n := len(needle)
+	if n == 0 {
+		return len(haystack)
+	}
+
+	for i := len(haystack) - n; i >= 0; i-- {
+		if runeSliceEqual(haystack[i:i+n], needle) {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func runeSliceEqual(a, b []rune) bool {
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func init() {
 	objectMethods[STRING_OBJ] = map[string]ObjectMethod{
 		"count": ObjectMethod{
@@ -35,7 +87,7 @@ func init() {
 				return NewInteger(strings.Count(s.Value, arg))
 			},
 		},
-		"find": ObjectMethod{
+		"index_of": ObjectMethod{
 			Layout: MethodLayout{
 				ArgPattern: Args(
 					Arg(STRING_OBJ),
@@ -47,7 +99,29 @@ func init() {
 			method: func(o Object, args []Object, _ Environment) Object {
 				s := o.(*String)
 				arg := args[0].(*String).Value
-				return NewInteger(strings.Index(s.Value, arg))
+
+				// Every other String method (size, s[i], slicing, reverse)
+				// counts in runes, so this searches in rune space too; see
+				// runeIndex's comment for why that also matters for a
+				// malformed needle.
+				return NewInteger(runeIndex([]rune(s.Value), []rune(arg)))
+			},
+		},
+		"last_index_of": ObjectMethod{
+			Layout: MethodLayout{
+				ArgPattern: Args(
+					Arg(STRING_OBJ),
+				),
+				ReturnPattern: Args(
+					Arg(INTEGER_OBJ),
+				),
+			},
+			method: func(o Object, args []Object, _ Environment) Object {
+				s := o.(*String)
+				arg := args[0].(*String).Value
+
+				// Same rune-space search as index_of; see runeIndex's comment.
+				return NewInteger(runeLastIndex([]rune(s.Value), []rune(arg)))
 			},
 		},
 		"format": ObjectMethod{
@@ -126,7 +200,7 @@ func init() {
 				return NewArray(result)
 			},
 		},
-		"ascii": ObjectMethod{
+		"codepoints": ObjectMethod{
 			Layout: MethodLayout{
 				ReturnPattern: Args(
 					Arg(ARRAY_OBJ),
@@ -135,7 +209,7 @@ func init() {
 			method: func(o Object, _ []Object, _ Environment) Object {
 				s := o.(*String)
 
-				// One entry per rune, so ascii().size() matches size() and
+				// One entry per rune, so codepoints().size() matches size() and
 				// reverse(), which both count runes rather than bytes. Sizing
 				// this by len() instead used to leave the trailing slots of a
 				// multi-byte string nil, and Inspect then dereferenced them.
@@ -155,31 +229,31 @@ func init() {
 	stringPair("reverse", nil, func(value string, _ []Object) string {
 		return reverseString(value)
 	})
-	stringPair("upcase", nil, func(value string, _ []Object) string {
+	stringPair("uppercase", nil, func(value string, _ []Object) string {
 		return strings.ToUpper(value)
 	})
-	stringPair("downcase", nil, func(value string, _ []Object) string {
+	stringPair("lowercase", nil, func(value string, _ []Object) string {
 		return strings.ToLower(value)
 	})
 	stringPair("capitalize", nil, func(value string, _ []Object) string {
 		return capitalizeString(value)
 	})
-	stringPair("swapcase", nil, func(value string, _ []Object) string {
+	stringPair("swap_case", nil, func(value string, _ []Object) string {
 		return swapCaseString(value)
 	})
-	stringPair("strip", nil, func(value string, _ []Object) string {
+	stringPair("trim", nil, func(value string, _ []Object) string {
 		return strings.TrimSpace(value)
 	})
-	stringPair("lstrip", nil, func(value string, _ []Object) string {
+	stringPair("trim_start", nil, func(value string, _ []Object) string {
 		return strings.TrimLeftFunc(value, unicode.IsSpace)
 	})
-	stringPair("rstrip", nil, func(value string, _ []Object) string {
+	stringPair("trim_end", nil, func(value string, _ []Object) string {
 		return strings.TrimRightFunc(value, unicode.IsSpace)
 	})
-	stringPair("chop", nil, func(value string, _ []Object) string {
+	stringPair("remove_last", nil, func(value string, _ []Object) string {
 		return chopString(value)
 	})
-	stringPair("chomp", Args(OptArg(STRING_OBJ)), func(value string, args []Object) string {
+	stringPair("trim_line_end", Args(OptArg(STRING_OBJ)), func(value string, args []Object) string {
 		if len(args) == 0 {
 			return chompLineEnding(value)
 		}
@@ -193,15 +267,15 @@ func init() {
 	stringPredicate("empty?", nil, func(value string, _ []Object) bool {
 		return value == ""
 	})
-	stringPredicate("include?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("contains?", Args(Arg(STRING_OBJ)), func(value string, args []Object) bool {
 		return strings.Contains(value, args[0].(*String).Value)
 	})
-	stringPredicate("start_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("starts_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
 		return anyAffix(args, func(affix string) bool {
 			return strings.HasPrefix(value, affix)
 		})
 	})
-	stringPredicate("end_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
+	stringPredicate("ends_with?", Args(OverloadArg(STRING_OBJ)), func(value string, args []Object) bool {
 		return anyAffix(args, func(affix string) bool {
 			return strings.HasSuffix(value, affix)
 		})
@@ -210,7 +284,7 @@ func init() {
 
 // stringPair registers a method and its in-place counterpart from one
 // transformation. Writing the pair out twice is what let Array#reverse mutate
-// while Array#uniq did not: the two halves drifted because nothing tied them
+// while Array#unique did not: the two halves drifted because nothing tied them
 // together. Here the ! method can only ever do what the plain one does.
 //
 // Both return a STRING. A ! method hands back the receiver so calls chain, which

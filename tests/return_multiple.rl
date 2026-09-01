@@ -3,16 +3,16 @@ def basic()
 end
 
 a, b, c = basic()
-puts(a)
-puts(b)
-puts(c)
+print(a)
+print(b)
+print(c)
 
 def strings()
   return "hello", "world", "!"
 end
 
 x, y, z = strings()
-puts(x + " " + y + z)
+print(x + " " + y + z)
 
 def expressions()
   n = 10
@@ -20,15 +20,15 @@ def expressions()
 end
 
 one, two, three = expressions()
-puts(one)
-puts(two)
-puts(three)
+print(one)
+print(two)
+print(three)
 
 def as_array()
   return 100, 200
 end
 
 arr = as_array()
-puts(arr)
+print(arr)
 
 nil

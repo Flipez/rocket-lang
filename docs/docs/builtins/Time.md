@@ -18,10 +18,21 @@ Take a look at [the source](https://github.com/Flipez/rocket-lang/blob/main/stdl
 
 
 
-<CodeBlockSimple input='Time.format(Time.unix(), "Mon Jan _2 15:04:05 2006")
-Time.format(Time.unix(), "%a %b %e %H:%M:%S %Y")
+<CodeBlockSimple input='Time.format(Time.now(), "Mon Jan _2 15:04:05 2006")
+Time.format(Time.now(), "%a %b %e %H:%M:%S %Y")
 ' output='"Mon Oct 31 00:08:10 2022"
 "Mon Oct 31 00:28:43 2022"
+' />
+
+
+### now()
+> Returns `INTEGER`
+
+Returns the current time as a unix timestamp.
+
+
+<CodeBlockSimple input='Time.now()
+' output='1668788502
 ' />
 
 
@@ -53,17 +64,6 @@ Stops the RocketLang routine for at least the stated duration in seconds
 <CodeBlockSimple input='Time.sleep(2)
 ' />
 
-
-
-### unix()
-> Returns `INTEGER`
-
-Returns the current time as unix timestamp
-
-
-<CodeBlockSimple input='Time.unix()
-' output='1668788502
-' />
 
 
 

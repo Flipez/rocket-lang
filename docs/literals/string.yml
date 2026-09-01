@@ -7,8 +7,8 @@ description: |
   `\n` for a newline, `\t` for a tab, `\r` for a carriage return.
 
   ```js
-  puts("test\"string")   // test"string
-  puts("a\tb")           // a<tab>b
+  print("test\"string")   // test"string
+  print("a\tb")           // a<tab>b
   ```
 
   A **single-quoted** string is raw: nothing is escaped and a backslash is an
@@ -16,8 +16,8 @@ description: |
   quotes.
 
   ```js
-  puts('test "string"')  // test "string"
-  puts('a\tb')           // a\tb, a literal backslash and t
+  print('test "string"')  // test "string"
+  print('a\tb')           // a\tb, a literal backslash and t
   ```
 
   Because a single-quoted string performs no escaping, it cannot contain a
@@ -32,17 +32,17 @@ example: |
   is_false = "test" == "string";
 
   s = "abcdef"
-  puts(s[2])
-  puts(s[-2])
-  puts(s[:2])
-  puts(s[:-2])
-  puts(s[2:])
-  puts(s[-2:])
-  puts(s[1:-2])
+  print(s[2])
+  print(s[-2])
+  print(s[:2])
+  print(s[:-2])
+  print(s[2:])
+  print(s[-2:])
+  print(s[1:-2])
 
   s[2] = "C"
   s[-2] = "E"
-  puts(s)
+  print(s)
 
   // should output
   "c"
@@ -60,18 +60,18 @@ example: |
   // and you can scape a double quote in a double quote string
   "te\"st" == 'te"st'
 methods:
-  ascii:
+  codepoints:
     description: "Returns the character codes of the string, always as an array with one entry per character. A single-character string gives a one-element array and an empty string gives an empty array, so the result never has to be checked for its type before use."
     input: |
-      "".ascii()
-      "a".ascii()
-      "abc".ascii()
+      "".codepoints()
+      "a".codepoints()
+      "abc".codepoints()
     output: |
       []
       [97]
       [97, 98, 99]
   capitalize:
-    description: "Returns a copy with the first character upcased and every following character downcased, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost."
+    description: "Returns a copy with the first character replaced by its uppercase counterpart and every other character replaced by its lowercase counterpart, as Ruby's `capitalize` does. A capital in the middle of the string is therefore lost."
     input: |
       a = "hello World!"
       a.capitalize()
@@ -81,7 +81,7 @@ methods:
       "Hello world!"
       "hello World!"
   capitalize!:
-    description: "Upcases the first character and downcases the rest in place, and returns the string, so calls can be chained."
+    description: "Replaces the first character with its uppercase counterpart and every other character with its lowercase counterpart, in place, and returns the string, so calls can be chained."
     input: |
       a = "hello World!"
       a.capitalize!()
@@ -90,47 +90,47 @@ methods:
       "hello World!"
       "Hello world!"
       "Hello world!"
-  chomp:
+  trim_line_end:
     description: "Returns a copy with one trailing line ending removed: `\\r\\n`, `\\n` or `\\r`. Given a string it removes one trailing occurrence of that string instead. Given `\"\"` it removes every trailing `\\n` and `\\r\\n`, which is the way to drop blank lines at the end of a file."
     input: |
       a = "line\n"
-      a.chomp()
-      a.chomp() == "line"
-      "abcdd".chomp("d")
-      "a\n\n\n".chomp("")
+      a.trim_line_end()
+      a.trim_line_end() == "line"
+      "abcdd".trim_line_end("d")
+      "a\n\n\n".trim_line_end("")
     output: |
       "line\n"
       "line"
       true
       "abcd"
       "a"
-  chomp!:
-    description: "Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `chomp`."
+  trim_line_end!:
+    description: "Removes one trailing line ending in place and returns the string, so calls can be chained. Takes the same optional separator as `trim_line_end`."
     input: |
       a = "line\n"
-      a.chomp!()
+      a.trim_line_end!()
       a
     output: |
       "line\n"
       "line"
       "line"
-  chop:
-    description: "Returns a copy with the last character removed. A trailing `\\r\\n` is removed as a unit so a line ending is never left half there. Chopping an empty string gives an empty string rather than an error."
+  remove_last:
+    description: "Returns a copy with the last character removed. A trailing `\\r\\n` is removed as a unit so a line ending is never left half there. Removing the last character of an empty string gives an empty string rather than an error."
     input: |
       a = "abcd"
-      a.chop()
+      a.remove_last()
       a
-      "".chop()
+      "".remove_last()
     output: |
       "abcd"
       "abc"
       "abcd"
       ""
-  chop!:
+  remove_last!:
     description: "Removes the last character in place and returns the string, so calls can be chained."
     input: |
       a = "abcd"
-      a.chop!()
+      a.remove_last!()
       a
     output: |
       "abcd"
@@ -142,21 +142,21 @@ methods:
       "test".count("t")
     output: |
       2
-  downcase:
+  lowercase:
     description: "Returns a copy with all uppercase letters replaced by their lowercase counterparts."
     input: |
       a = "TEST"
-      a.downcase()
+      a.lowercase()
       a
     output: |
       "TEST"
       "test"
       "TEST"
-  downcase!:
+  lowercase!:
     description: "Replaces uppercase characters with their lowercase counterparts in place and returns the string, so calls can be chained."
     input: |
       a = "TEST"
-      a.downcase!()
+      a.lowercase!()
       a
     output: |
       "TEST"
@@ -170,33 +170,41 @@ methods:
     output: |
       true
       false
-  end_with?:
+  ends_with?:
     description: "Returns `true` when the string ends with any of the given strings."
     input: |
-      "test.rl".end_with?(".rl")
-      "test.rl".end_with?(".go")
-      "test.rl".end_with?(".go", ".rl")
+      "test.rl".ends_with?(".rl")
+      "test.rl".ends_with?(".go")
+      "test.rl".ends_with?(".go", ".rl")
     output: |
       true
       false
       true
-  find:
-    description: "Returns the character index of a given string if found. Otherwise returns `-1`"
+  index_of:
+    description: "Returns the character index of the first occurrence of a given string if found. Otherwise returns `-1`."
     input: |
-      "test".find("e")
+      "test".index_of("e")
     output: |
       1
+  last_index_of:
+    description: "Returns the character index of the last occurrence of a given string if found. Otherwise returns `-1`."
+    input: |
+      "hello".last_index_of("l")
+      "hello".last_index_of("z")
+    output: |
+      3
+      -1
   format:
     description: "Formats according to a format specifier and returns the resulting string"
     input: |
       "%s is %d".format("a", 1)
     output: |
       "a is 1"
-  include?:
+  contains?:
     description: "Returns `true` when the string contains the given substring."
     input: |
-      "test".include?("es")
-      "test".include?("xy")
+      "test".contains?("es")
+      "test".contains?("xy")
     output: |
       true
       false
@@ -206,21 +214,21 @@ methods:
       "a\nb".lines()
     output: |
       ["a", "b"]
-  lstrip:
-    description: "Returns a copy with leading whitespace removed. See `rstrip` for the trailing end and `strip` for both."
+  trim_start:
+    description: "Returns a copy with leading whitespace removed. See `trim_end` for the trailing end and `trim` for both."
     input: |
       a = "  test  "
-      a.lstrip()
+      a.trim_start()
       a
     output: |
       "  test  "
       "test  "
       "  test  "
-  lstrip!:
+  trim_start!:
     description: "Removes leading whitespace in place and returns the string, so calls can be chained."
     input: |
       a = "  test  "
-      a.lstrip!()
+      a.trim_start!()
       a
     output: |
       "  test  "
@@ -266,21 +274,21 @@ methods:
       "stressed"
       "desserts"
       "desserts"
-  rstrip:
-    description: "Returns a copy with trailing whitespace removed. See `lstrip` for the leading end and `strip` for both."
+  trim_end:
+    description: "Returns a copy with trailing whitespace removed. See `trim_start` for the leading end and `trim` for both."
     input: |
       a = "  test  "
-      a.rstrip()
+      a.trim_end()
       a
     output: |
       "  test  "
       "  test"
       "  test  "
-  rstrip!:
+  trim_end!:
     description: "Removes trailing whitespace in place and returns the string, so calls can be chained."
     input: |
       a = "  test  "
-      a.rstrip!()
+      a.trim_end!()
       a
     output: |
       "  test  "
@@ -300,71 +308,71 @@ methods:
     output: |
       ["a", "b"]
       ["a", "b"]
-  start_with?:
+  starts_with?:
     description: "Returns `true` when the string starts with any of the given strings."
     input: |
-      "test.rl".start_with?("test")
-      "test.rl".start_with?("prod")
-      "test.rl".start_with?("prod", "test")
+      "test.rl".starts_with?("test")
+      "test.rl".starts_with?("prod")
+      "test.rl".starts_with?("prod", "test")
     output: |
       true
       false
       true
-  strip:
+  trim:
     description: "Returns a copy with leading and trailing whitespace removed."
     input: |
       a = "  test  "
-      a.strip()
+      a.trim()
       a
     output: |
       "  test  "
       "test"
       "  test  "
-  strip!:
+  trim!:
     description: "Removes leading and trailing whitespace in place and returns the string, so calls can be chained."
     input: |
       a = "  test  "
-      a.strip!()
+      a.trim!()
       a
     output: |
       "  test  "
       "test"
       "test"
-  swapcase:
-    description: "Returns a copy with every uppercase character downcased and every lowercase character upcased."
+  swap_case:
+    description: "Returns a copy with every uppercase character lowercased and every lowercase character uppercased."
     input: |
       a = "Hello World"
-      a.swapcase()
+      a.swap_case()
       a
     output: |
       "Hello World"
       "hELLO wORLD"
       "Hello World"
-  swapcase!:
+  swap_case!:
     description: "Swaps the case of every character in place and returns the string, so calls can be chained."
     input: |
       a = "Hello World"
-      a.swapcase!()
+      a.swap_case!()
       a
     output: |
       "Hello World"
       "hELLO wORLD"
       "hELLO wORLD"
-  upcase:
+  uppercase:
     description: "Returns a copy with all lowercase letters replaced by their uppercase counterparts."
     input: |
       a = "test"
-      a.upcase()
+      a.uppercase()
       a
     output: |
       "test"
       "TEST"
       "test"
-  upcase!:
+  uppercase!:
     description: "Replaces lowercase characters with their uppercase counterparts in place and returns the string, so calls can be chained."
     input: |
       a = "test"
-      a.upcase!()
+      a.uppercase!()
       a
     output: |
       "test"
