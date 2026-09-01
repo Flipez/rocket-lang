@@ -510,9 +510,11 @@ func TestTypeGroups(t *testing.T) {
 		// as a key. fetch has no fallback argument at all; see hash_test.go.
 		{`{"a": 1}.get("z", nil)`, nil},
 
-		// NUMERIC takes INTEGER or FLOAT.
-		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9); m.to_array().to_json()`, "[[9,2]]"},
-		{`m = [[1,2]].to_matrix(); m.set(0, 0, 9.5); m.to_array().to_json()`, "[[9.5,2]]"},
+		// NUMERIC takes INTEGER or FLOAT. set() is pure -- it returns a new
+		// matrix rather than mutating the receiver, so the assertion reads
+		// the return value instead of the original m.
+		{`[[1,2]].to_matrix().set(0, 0, 9).to_array().to_json()`, "[[9,2]]"},
+		{`[[1,2]].to_matrix().set(0, 0, 9.5).to_array().to_json()`, "[[9.5,2]]"},
 		{`[[1,2]].to_matrix().set(0, 0, "x")`, "wrong argument type on position 3: got=STRING, want=NUMERIC"},
 		{`[[1,2]].to_matrix().set(0, 0, nil)`, "wrong argument type on position 3: got=NIL, want=NUMERIC"},
 	}

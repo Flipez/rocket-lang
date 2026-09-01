@@ -556,29 +556,97 @@ func TestMatrixMethodSet(t *testing.T) {
 	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
 	env := NewEnvironment()
 
-	// Valid set with integer
+	// set() is the pure form: it must return a new matrix with the change
+	// applied and must not touch the receiver.
 	result := m.InvokeMethod("set", *env, NewInteger(0), NewInteger(2), NewInteger(99))
-	if result.Type() != MATRIX_OBJ {
-		t.Errorf("set method should return MATRIX, got %s", result.Type())
+	resultMatrix, ok := result.(*Matrix)
+	if !ok {
+		t.Fatalf("set method should return MATRIX, got %T", result)
 	}
-	if m.Data[0][2] != 99.0 {
-		t.Errorf("After set, m[0][2] = %f, want 99.0", m.Data[0][2])
+	if resultMatrix.Data[0][2] != 99.0 {
+		t.Errorf("returned matrix[0][2] = %f, want 99.0", resultMatrix.Data[0][2])
+	}
+	if m.Data[0][2] != 3.0 {
+		t.Errorf("receiver m[0][2] = %f, want unchanged 3.0", m.Data[0][2])
 	}
 
 	// Valid set with float
 	result = m.InvokeMethod("set", *env, NewInteger(1), NewInteger(1), NewFloat(3.14))
-	if result.Type() != MATRIX_OBJ {
-		t.Errorf("set method should return MATRIX, got %s", result.Type())
+	resultMatrix, ok = result.(*Matrix)
+	if !ok {
+		t.Fatalf("set method should return MATRIX, got %T", result)
 	}
-	if m.Data[1][1] != 3.14 {
-		t.Errorf("After set, m[1][1] = %f, want 3.14", m.Data[1][1])
+	if resultMatrix.Data[1][1] != 3.14 {
+		t.Errorf("returned matrix[1][1] = %f, want 3.14", resultMatrix.Data[1][1])
+	}
+	if m.Data[1][1] != 5.0 {
+		t.Errorf("receiver m[1][1] = %f, want unchanged 5.0", m.Data[1][1])
 	}
 
 	// Out of bounds set
 	result = m.InvokeMethod("set", *env, NewInteger(2), NewInteger(0), NewInteger(1))
-	_, ok := result.(*Error)
-	if !ok {
+	_, errOk := result.(*Error)
+	if !errOk {
 		t.Errorf("set method with out of bounds should return Error, got %T", result)
+	}
+}
+
+// TestMatrixMethodSetNoAliasing proves set() deep-copies every row rather
+// than sharing the receiver's underlying [][]float64 rows. Data is a slice
+// of slices, so copying only the outer slice would leave the returned
+// matrix's rows aliased to m's; mutating m afterwards would then also
+// change the "pure" result, even though checking the return value alone
+// would look correct.
+func TestMatrixMethodSetNoAliasing(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	result := m.InvokeMethod("set", *env, NewInteger(0), NewInteger(2), NewInteger(99))
+	copied, ok := result.(*Matrix)
+	if !ok {
+		t.Fatalf("set method should return MATRIX, got %T", result)
+	}
+
+	// Mutate the original matrix's row 0 (the same row set() touched) after
+	// the fact. If rows were shared, this would leak into copied.
+	if err := m.Set(0, 0, -1); err != nil {
+		t.Fatalf("Set(0, 0, -1) unexpected error: %v", err)
+	}
+
+	if copied.Data[0][0] != 1.0 {
+		t.Errorf("copied.Data[0][0] = %f, want 1.0 (must not alias receiver's row)", copied.Data[0][0])
+	}
+	if copied.Data[0][2] != 99.0 {
+		t.Errorf("copied.Data[0][2] = %f, want 99.0", copied.Data[0][2])
+	}
+	if m.Data[0][2] != 3.0 {
+		t.Errorf("m.Data[0][2] = %f, want unchanged 3.0", m.Data[0][2])
+	}
+}
+
+func TestMatrixMethodSetBang(t *testing.T) {
+	m := NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	env := NewEnvironment()
+
+	// set!() is the mutating counterpart: it must change the receiver in
+	// place and return it.
+	result := m.InvokeMethod("set!", *env, NewInteger(0), NewInteger(2), NewInteger(99))
+	resultMatrix, ok := result.(*Matrix)
+	if !ok {
+		t.Fatalf("set! method should return MATRIX, got %T", result)
+	}
+	if resultMatrix != m {
+		t.Errorf("set! should return the receiver, got a different matrix")
+	}
+	if m.Data[0][2] != 99.0 {
+		t.Errorf("After set!, m[0][2] = %f, want 99.0", m.Data[0][2])
+	}
+
+	// Out of bounds set!
+	result = m.InvokeMethod("set!", *env, NewInteger(2), NewInteger(0), NewInteger(1))
+	_, errOk := result.(*Error)
+	if !errOk {
+		t.Errorf("set! method with out of bounds should return Error, got %T", result)
 	}
 }
 

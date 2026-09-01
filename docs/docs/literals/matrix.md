@@ -99,13 +99,40 @@ m.rows()
 
 
 ### set(INTEGER, INTEGER, NUMERIC)
-> Returns `NIL|ERROR`
+> Returns `MATRIX|ERROR`
 
-Sets the element at the specified row and column (0-indexed) and returns the matrix, so calls can be chained.
+Returns a new matrix with the element at the specified row and column (0-indexed) changed. The receiver is left untouched; use set! to mutate in place.
 
 
 <CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
 m.set(0, 2, 99)
+m
+' output='2x3 matrix
+┌               ┐
+│ 1.0  2.0  3.0 │
+│ 4.0  5.0  6.0 │
+└               ┘
+2x3 matrix
+┌                ┐
+│ 1.0  2.0  99.0 │
+│ 4.0  5.0   6.0 │
+└                ┘
+2x3 matrix
+┌               ┐
+│ 1.0  2.0  3.0 │
+│ 4.0  5.0  6.0 │
+└               ┘
+' />
+
+
+### set!(INTEGER, INTEGER, NUMERIC)
+> Returns `MATRIX|ERROR`
+
+Sets the element at the specified row and column (0-indexed), mutating the matrix in place, and returns it so calls can be chained.
+
+
+<CodeBlockSimple input='m = [[1, 2, 3], [4, 5, 6]].to_matrix()
+m.set!(0, 2, 99)
 m
 ' output='2x3 matrix
 ┌               ┐

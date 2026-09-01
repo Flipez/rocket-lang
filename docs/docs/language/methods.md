@@ -129,6 +129,7 @@ The pairs are:
 | `trim_line_end` | `trim_line_end!` | `STRING` |
 | `trim_start` | `trim_start!` | `STRING` |
 | `uppercase` | `uppercase!` | `STRING` |
+| `set` | `set!` | `MATRIX` |
 
 A method that cannot sensibly be done in place has no `!` form. `size()` and
 `split()` return something other than a string, so there is nothing for a
@@ -179,14 +180,14 @@ half-ordered:
 => [1, "x", 2]
 ```
 
-## `MATRIX#set` mutates without a `!`
+## `MATRIX#set` used to mutate without a `!`
 
-`append`, `remove_last` and the rest of `ARRAY` and `HASH` used to change the
-receiver without a `!` — the same gap that let `remove_last` mean the opposite
-of `String#remove_last`. They are paired now like everything else: the plain
-method leaves the receiver alone and returns a new value, the `!` method
-changes the receiver and hands it back. A pop is two calls where mutating
-`remove_last` used to be one:
+`append`, `remove_last`, `MATRIX#set` and the rest of `ARRAY`, `HASH` and
+`MATRIX` used to change the receiver without a `!` — the same gap that let
+`remove_last` mean the opposite of `String#remove_last`. They are paired now
+like everything else: the plain method leaves the receiver alone and returns
+a new value, the `!` method changes the receiver and hands it back. A pop is
+two calls where mutating `remove_last` used to be one:
 
 ```js
 🚀 > a = [1, 2, 3]
@@ -199,18 +200,28 @@ changes the receiver and hands it back. A pop is two calls where mutating
 => 3
 ```
 
-`MATRIX#set` is the one method left that changes its receiver with no `!`. A
-matrix is a fixed grid rather than a growing collection, so there is no new
-matrix worth returning instead of the one already there — only the value at a
-position changes:
+`MATRIX#set` follows the same pair: `set` returns a new matrix with the
+position changed and leaves the receiver alone, `set!` changes the receiver
+in place and hands it back so calls chain:
+
+```js
+🚀 > m = [[1, 2], [3, 4]].to_matrix()
+🚀 > m.set!(0, 0, 9).set!(1, 1, 9).to_array()
+=> [[9.0, 2.0], [3.0, 9.0]]
+🚀 > m.to_array()
+=> [[9.0, 2.0], [3.0, 9.0]]
+```
+
+The pure form chains too, since each call hands back a new matrix for the
+next one to act on — but the receiver is untouched:
 
 ```js
 🚀 > m = [[1, 2], [3, 4]].to_matrix()
 🚀 > m.set(0, 0, 9).set(1, 1, 9).to_array()
 => [[9.0, 2.0], [3.0, 9.0]]
+🚀 > m.to_array()
+=> [[1.0, 2.0], [3.0, 4.0]]
 ```
-
-It returns the receiver, the same as a `!` method would, so calls chain.
 
 ## Ordering
 
