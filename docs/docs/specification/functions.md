@@ -36,7 +36,7 @@ end
 end
 
 🚀 > test()
-"test"
+test
 ```
 
 ## Multiple Return Values

@@ -102,22 +102,22 @@ end
 2
 3
 4
-=> 5
+=> nil
 ```
 
 ## Using a string
 Iterate over a string:
 
 ```js
-🚀 > foreach i in "test" 
+🚀 > foreach i in "test"
   print(i)
 end
 
-"t"
-"e"
-"s"
-"t" 
-=> "test"
+t
+e
+s
+t
+=> nil
 ```
 
 ## Using break and next

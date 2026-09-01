@@ -12,7 +12,7 @@ Prints the string representation of the given object to STDOUT.
 
 ```js
 🚀 > print("test")
-"test"
+test
 
 🚀 > print([1,2,3])
 [1, 2, 3]

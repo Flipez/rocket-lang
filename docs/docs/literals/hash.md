@@ -96,11 +96,7 @@ h["a"] = 3
 h["b"] = "moo"
 print(h["a"])
 print(h["b"])
-print(h[2])h = {"a": 1, 2: true}
-print(h["a"])
 print(h[2])
-h["a"] = 3
-h["b"] = "moo"
 
 // should output
 1
