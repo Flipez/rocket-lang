@@ -15,7 +15,7 @@ print(a[2:])
 print(a[-2:])
 print(a[1:-2])
 
-// should output
+# should output
 [1, 2]
 [1, 2, 3]
 [3, 4, 5]
@@ -191,7 +191,7 @@ Counts how often the given element occurs, which is what `index_of` cannot tell 
 ### each(CALLABLE)
 > Returns `ARRAY|ERROR`
 
-Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `print`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `foreach`. An error from the callback ends the walk and is passed on.
+Calls the given function once for each element, passing the element, and returns the array so a walk can be chained onto. The callback can be a function or a builtin such as `print`, which is what `CALLABLE` in the signature means. `break` inside the callback ends the walk and `next` moves it along, as they do in a `for`. An error from the callback ends the walk and is passed on.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]
@@ -376,7 +376,7 @@ Returns the index of the last matching element, or `-1` when there is none. The 
 ### map(CALLABLE)
 > Returns `ARRAY|ERROR`
 
-Returns a new array holding what the callback answered for each element. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. `break` in the callback ends the walk and `next` means the element contributed nothing, as in a `foreach`. An error from the callback ends the walk and is passed on. A `next` contributes `nil`, so the length is kept. Use `map!` to replace the elements in place.
+Returns a new array holding what the callback answered for each element. The callback can be a function or a builtin, which is what `CALLABLE` in the signature means. `break` in the callback ends the walk and `next` means the element contributed nothing, as in a `for`. An error from the callback ends the walk and is passed on. A `next` contributes `nil`, so the length is kept. Use `map!` to replace the elements in place.
 
 
 <CodeBlockSimple input='a = [1, 2, 3]

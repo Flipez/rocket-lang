@@ -2,7 +2,7 @@ import "../util" as util
 
 def part1(lines)
   valid = 0
-  foreach line in lines
+  for line in lines
     parts = line.split()
 
     char = parts[1][:-1]
@@ -21,7 +21,7 @@ end
 
 def part2(lines)
   valid = 0
-  foreach line in lines
+  for line in lines
     parts = line.split()
 
     char = parts[1][:-1]

@@ -1004,7 +1004,7 @@ func arrayPredicate(name string, verdict func(yes, total int) bool) {
 					return result
 				case StopWalk:
 					// The answer covers what was walked, as break ends a
-					// foreach rather than voiding it.
+					// for rather than voiding it.
 					if verdict(yes, seen) {
 						return TRUE
 					}

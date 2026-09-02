@@ -1,26 +1,26 @@
 ---
-title: "Foreach"
+title: "For"
 menu:
   docs:
     parent: "controls"
 ---
-# Foreach
+# For
 For loops allow to iterate over different sets of data and perform actions based on them.
 
 ```js
-// read a file with numbers in it (file content will always be represented by strings)
-// .lines() splits the lines of the file into an array
+# read a file with numbers in it (file content will always be represented by strings)
+# .lines() splits the lines of the file into an array
 input = open("examples/aoc/2021/day-1/input").lines()
 
-// define temporary array
+# define temporary array
 a = []
 
-foreach i, number in input
-  // read each line into temporary array and cast it into an integer
+for i, number in input
+  # read each line into temporary array and cast it into an integer
   a.append!(number.trim().to_integer())
 end
 
-// assign temporary array to input array
+# assign temporary array to input array
 input = a
 ```
 
@@ -30,7 +30,7 @@ Loops evaluate to `nil`, whether they run to completion or exit early through
 
 ```js
 def iterate(items)
-  foreach item in items
+  for item in items
     print(item)
   end
 end
@@ -39,7 +39,7 @@ a = [1, 2, 3, 4, 5]
 
 b = iterate(a)
 
-// b is nil
+# b is nil
 ```
 
 Build up a value explicitly if you need one out of a loop:
@@ -47,14 +47,14 @@ Build up a value explicitly if you need one out of a loop:
 ```js
 def doubled(items)
   result = []
-  foreach item in items
+  for item in items
     result.append!(item * 2)
   end
   return result
 end
 ```
 
-Until `0.24`, `foreach` returned the value it was iterating, so `b` above was
+Until `0.24`, `foreach` (as `for` was then called) returned the value it was iterating, so `b` above was
 `[1, 2, 3, 4, 5]` — the same array that went in. That did not hold once the
 loop hit a `break`, which produced `nil` instead, and `while` never returned
 anything but `nil`.
@@ -65,10 +65,10 @@ The loop variable is created in the loop's own scope, so it does not exist
 after the loop finishes:
 
 ```js
-foreach j in [1, 2, 3]
+for j in [1, 2, 3]
 end
 
-print(j)  // ERROR: identifier not found: j
+print(j)  # ERROR: identifier not found: j
 ```
 
 If a variable of that name already exists outside the loop, though, the loop
@@ -78,10 +78,10 @@ last value the loop gave it:
 ```js
 i = 100
 
-foreach i in [1, 2, 3]
+for i in [1, 2, 3]
 end
 
-print(i)  // 3, not 100
+print(i)  # 3, not 100
 ```
 
 This follows from how assignment works generally: assigning to a name that
@@ -93,7 +93,7 @@ value.
 Count form zero to a given number (excluding):
 
 ```js
-🚀 > foreach i in 5
+🚀 > for i in 5
   print(i)
 end
 
@@ -109,7 +109,7 @@ end
 Iterate over a string:
 
 ```js
-🚀 > foreach i in "test"
+🚀 > for i in "test"
   print(i)
 end
 
@@ -124,21 +124,21 @@ t
 It is possible to use `next` or `break` inside a loop.
 
 ```js
-foreach i in 5
+for i in 5
   if (i == 2)
     next
   end
   print(i)
 end
 
-foreach i in 5
+for i in 5
   if (i == 2)
     break
   end
   print(i)
 end
 
-// Returns
+# Returns
 0
 1
 3
@@ -153,11 +153,11 @@ nil
 You can use the so called `rocket range` operator to create an individual range with optional stepping:
 
 ```js
-foreach i in 0 -> 5
+for i in 0 -> 5
   print(i)
 end
 
-// outputs
+# outputs
 0
 1
 2
@@ -168,11 +168,11 @@ end
 There is also an inclusive alternative:
 
 ```js
-foreach i in 0 => 5
+for i in 0 => 5
   print(i)
 end
 
-// outputs
+# outputs
 0
 1
 2
@@ -186,11 +186,11 @@ end
 You can specify stepping to change the default of `1`
 
 ```js
-foreach i in 0 -> 5 ^ 2
+for i in 0 -> 5 ^ 2
   print(i)
 end
 
-// outputs
+# outputs
 0
 2
 4
@@ -201,11 +201,11 @@ end
 Ranges do support going from a higher value to a lower one
 
 ```js
-foreach i in 5 -> 0 ^ 2
+for i in 5 -> 0 ^ 2
   print(i)
 end
 
-// outputs
+# outputs
 5
 3
 1

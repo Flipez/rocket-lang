@@ -27,7 +27,7 @@ diff = m2 - m1
 
 print(result)
 
-// should output
+# should output
 2x2 matrix
 ┌            ┐
 │ 19.0  22.0 │

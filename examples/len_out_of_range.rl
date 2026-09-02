@@ -12,12 +12,12 @@ stacks = [
 
 stacks2 = stacks
 
-foreach instruction in instructions
+for instruction in instructions
   amount = instruction.split("from")[0].split("move")[-1].trim().to_integer()
   from = instruction.split("to")[0].split("from")[-1].trim().to_integer()
   to = instruction.split("to")[1].trim().to_integer()
 
-  foreach i in amount
+  for i in amount
     item = stacks[from - 1].last()
     stacks[from - 1].remove_last!()
     stacks[to - 1].append!(item)
@@ -25,32 +25,32 @@ foreach instruction in instructions
 end
 
 result = ""
-foreach stack in stacks
+for stack in stacks
   result = result + stack[-1]
 end
 print("Part 1: " + result)
 
-foreach instruction in instructions
+for instruction in instructions
   amount = instruction.split("from")[0].split("move")[-1].trim().to_integer()
   from = instruction.split("to")[0].split("from")[-1].trim().to_integer()
   to = instruction.split("to")[1].trim().to_integer()
 
   temp_stack = []
 
-  foreach i in amount
+  for i in amount
     item = stacks2[from - 1].last()
     stacks2[from - 1].remove_last!()
     temp_stack.append!(item)
   end
   temp_stack.reverse!()
-  foreach item in temp_stack
+  for item in temp_stack
     stacks2[to - 1].append!(item)
   end
 
 end
 
 result = ""
-foreach stack in stacks
+for stack in stacks
   result = result + stack[-1]
 end
 print("Part 2: " + result)

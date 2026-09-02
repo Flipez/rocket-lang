@@ -11,7 +11,7 @@ Modules are separate RocketLang files. A module makes a value public with
 `export` works in three forms and is only valid at the top level of a file:
 
 ```js
-// fixtures/module.rl
+# fixtures/module.rl
 a = 1
 export A = 5
 export lower = 7
@@ -123,7 +123,7 @@ To build on an imported module, export a function that calls through it
 instead of trying to re-export the module itself:
 
 ```js
-// math.rl
+# math.rl
 import "./stats" as stats
 
 export def sum(a, b) return a + b end
@@ -132,8 +132,8 @@ export def mean(numbers) return stats.mean(numbers) end
 
 ```js
 import "./math"
-math.sum(1, 2)          // 3
-math.mean([1, 2])       // reaches stats through the wrapper function
+math.sum(1, 2)          # 3
+math.mean([1, 2])       # reaches stats through the wrapper function
 ```
 
 ### Where an import may appear
@@ -159,9 +159,9 @@ An import inside a **loop body** does not work. Loops reuse one scope across
 iterations, so the second iteration finds the name already bound:
 
 ```js
-foreach name in ["a", "b"]
-  import "./plugin" as p     // Import Error on the second iteration:
-end                          // cannot bind module as 'p', name already in use
+for name in ["a", "b"]
+  import "./plugin" as p     # Import Error on the second iteration:
+end                          # cannot bind module as 'p', name already in use
 ```
 
 This is not a useful thing to write in any case. A path must be a string
@@ -175,7 +175,7 @@ A path starting with `./` or `../` resolves relative to the file doing the
 importing, so a module can import its neighbours:
 
 ```js
-// examples/aoc/2018/day2.rl
+# examples/aoc/2018/day2.rl
 import "../util" as util
 ```
 
@@ -201,7 +201,7 @@ The [playground](https://play.rocket-lang.org) has tabs. Every tab is a file
 next to the others, so an import between them works exactly as it does on disk:
 
 ```js
-// main.rl
+# main.rl
 import "util"
 import "./greet" as greet
 
@@ -210,7 +210,7 @@ print(greet.hello("robert"))
 ```
 
 ```js
-// util.rl
+# util.rl
 export NAME = "util"
 export def double(x) return x * 2 end
 ```
@@ -231,7 +231,7 @@ its side effects do not run a second time:
 ```js
 import "fixtures/module"
 import "fixtures/module" as sameThing
-// the file was read and evaluated one time
+# the file was read and evaluated one time
 ```
 
 Circular imports are an error rather than a hang. Each hop in the chain is

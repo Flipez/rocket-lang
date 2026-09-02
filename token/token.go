@@ -68,8 +68,8 @@ const (
 
 	PERIOD = "."
 
-	FOREACH = "FOREACH"
-	IN      = "IN"
+	FOR = "FOR"
+	IN  = "IN"
 
 	WHILE = "WHILE"
 
@@ -89,28 +89,28 @@ const (
 )
 
 var keywords = map[string]TokenType{
-	"def":     FUNCTION,
-	"true":    TRUE,
-	"false":   FALSE,
-	"if":      IF,
-	"elif":    ELIF,
-	"end":     END,
-	"else":    ELSE,
-	"return":  RETURN,
-	"break":   BREAK,
-	"next":    NEXT,
-	"foreach": FOREACH,
-	"in":      IN,
-	"while":   WHILE,
-	"export":  EXPORT,
-	"import":  IMPORT,
-	"as":      AS,
-	"only":    ONLY,
-	"nil":     NIL,
-	"and":     AND,
-	"or":      OR,
-	"begin":   BEGIN,
-	"rescue":  RESCUE,
+	"def":    FUNCTION,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"elif":   ELIF,
+	"end":    END,
+	"else":   ELSE,
+	"return": RETURN,
+	"break":  BREAK,
+	"next":   NEXT,
+	"for":    FOR,
+	"in":     IN,
+	"while":  WHILE,
+	"export": EXPORT,
+	"import": IMPORT,
+	"as":     AS,
+	"only":   ONLY,
+	"nil":    NIL,
+	"and":    AND,
+	"or":     OR,
+	"begin":  BEGIN,
+	"rescue": RESCUE,
 }
 
 func LookupIdent(ident string) TokenType {

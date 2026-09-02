@@ -71,7 +71,7 @@ func (l *Lexer) NextToken() token.Token {
 func (l *Lexer) skipIgnored() {
 	l.skipWhitespace()
 
-	for l.ch == '/' && l.peekChar() == '/' {
+	for l.ch == '#' {
 		l.skipComment()
 		l.skipWhitespace()
 	}

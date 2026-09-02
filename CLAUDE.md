@@ -57,7 +57,7 @@ for the full checklist, including the docs versioning step.
 
 `lexer` → `parser` (Pratt, precedence table at the top of `parser/parser.go`) →
 `ast` → `evaluator` → `object`. Each of `ast/`, `parser/` and `evaluator/` has
-roughly one file per node kind (`if.go`, `foreach.go`, `import.go`, …), so a new
+roughly one file per node kind (`if.go`, `for.go`, `import.go`, …), so a new
 piece of syntax means touching the same-named file in each.
 
 Tokens carry `File`, `LineNumber` and `LinePosition`; runtime errors are

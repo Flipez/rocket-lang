@@ -4,7 +4,7 @@ depth = 0
 hor = 0
 aim = 0
 
-foreach i, line in input
+for i, line in input
   command = line.split(" ")[0]
   value = line.trim().split(" ")[1].to_integer()
   if (command == "forward")

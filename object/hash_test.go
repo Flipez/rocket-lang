@@ -23,7 +23,7 @@ func TestHashObjectMethods(t *testing.T) {
 		{`{"a": 2}.keys()`, `["a"]`},
 		{`{}.nope()`, "test:1:3: undefined method `.nope()` for HASH"},
 		{`{}.type()`, "HASH"},
-		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; foreach key, value in a \n b.append!(key) \nend; b.size()", 2},
+		{"a = {\"a\": \"b\", \"b\":\"a\"};b = []; for key, value in a \n b.append!(key) \nend; b.size()", 2},
 		{`{"a": 1, "b": 2}["a"]`, 1},
 		{`{"a": 1, "b": 2}.keys().size()`, 2},
 		{`{"a": 1, "b": 2}.values().size()`, 2},

@@ -22,7 +22,7 @@ example: |
 
   print(result)
 
-  // should output
+  # should output
   2x2 matrix
   ┌            ┐
   │ 19.0  22.0 │

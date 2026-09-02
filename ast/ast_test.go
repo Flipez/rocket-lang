@@ -29,8 +29,8 @@ func TestString(t *testing.T) {
 			`true ? print(true) : print(false)`,
 		},
 		{
-			"foreach i, e in [1, 2, 3] \n  print(i)\nend",
-			"foreach i, e in [1, 2, 3] \n  print(i)\nend",
+			"for i, e in [1, 2, 3] \n  print(i)\nend",
+			"for i, e in [1, 2, 3] \n  print(i)\nend",
 		},
 		{
 			"if (true)\n  return (true)\nelif (true)\n  return (true)\nelse\n  print(false)\nend",

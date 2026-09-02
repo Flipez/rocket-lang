@@ -873,8 +873,8 @@ func TestImportWithIntegerExpressionPathIsAParseError(t *testing.T) {
 	}
 }
 
-func TestParsingForEachExpressionsFailsWithNegativeNumber(t *testing.T) {
-	l := lexer.New("foreach i in -5\n  print(i)\nend", "test")
+func TestParsingForExpressionsFailsWithNegativeNumber(t *testing.T) {
+	l := lexer.New("for i in -5\n  print(i)\nend", "test")
 	p := New(l)
 	p.ParseProgram()
 
@@ -992,7 +992,7 @@ func TestImportParsesAsAStatementInsideBlocks(t *testing.T) {
 		`import "lib"`,
 		`def f() import "lib" end`,
 		`if true import "lib" end`,
-		`foreach i in [1] import "lib" end`,
+		`for i in [1] import "lib" end`,
 	}
 
 	for _, input := range inputs {
@@ -1023,7 +1023,7 @@ print("after")`,
   print(1)`,
 		`while false
   print(1)`,
-		`foreach i in [1]
+		`for i in [1]
   print(i)`,
 		// `else if` with a single `end`: the nested if consumes it, leaving
 		// the enclosing else unterminated.
@@ -1197,8 +1197,8 @@ func TestCurlyBraceBlocksAreRejected(t *testing.T) {
 		expectedError string
 	}{
 		{
-			"foreach",
-			"foreach i in 3 { print(i) }",
+			"for",
+			"for i in 3 { print(i) }",
 			"`{` opens a hash literal, not a block",
 		},
 		{
@@ -1245,7 +1245,7 @@ func TestHashLiteralsStillParse(t *testing.T) {
 		`x = {"a": {"b": 1}}`,
 		"def make()\n  {\"a\": 1}\nend",
 		"def empty()\n  {}\nend",
-		`foreach k, v in {"a": 1}` + "\n  print(k)\nend",
+		`for k, v in {"a": 1}` + "\n  print(k)\nend",
 	}
 
 	for _, input := range tests {

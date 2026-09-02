@@ -69,7 +69,7 @@ Every one of them treats the callback's answer the same way:
 => [1, nil, 3]
 ```
 
-`break` and `next` behave as they do in a `foreach`. Note that `return` inside
+`break` and `next` behave as they do in a `for`. Note that `return` inside
 the callback returns from the *callback*, since it is an ordinary function —
 there is no enclosing method to return from.
 

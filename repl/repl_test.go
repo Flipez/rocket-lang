@@ -101,7 +101,7 @@ func TestLinesThatProduceNoOutput(t *testing.T) {
 	}{
 		{"empty", ""},
 		{"whitespace only", "   \t  "},
-		{"a comment", "// just a comment"},
+		{"a comment", "# just a comment"},
 	}
 
 	for _, tt := range tests {

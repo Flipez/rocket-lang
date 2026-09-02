@@ -18,7 +18,7 @@ Print numbers from 0 to 3:
   a = a + 1
 end
 
-// which prints
+# which prints
 0
 1
 2
@@ -42,7 +42,7 @@ while i < 10
   i = i + 1
 end
 
-// which prints
+# which prints
 3
 4
 5
@@ -55,7 +55,7 @@ Loops evaluate to `nil`, whether they run to completion or exit early through
 
 ```js
 def iterate(items)
-  foreach item in items
+  for item in items
     print(item)
   end
 end
@@ -64,7 +64,7 @@ a = [1, 2, 3, 4, 5]
 
 b = iterate(a)
 
-// b is nil
+# b is nil
 ```
 
 Build up a value explicitly if you need one out of a loop:
@@ -72,14 +72,14 @@ Build up a value explicitly if you need one out of a loop:
 ```js
 def doubled(items)
   result = []
-  foreach item in items
+  for item in items
     result.append!(item * 2)
   end
   return result
 end
 ```
 
-Until `0.24`, `foreach` returned the value it was iterating, so `b` above was
+Until `0.24`, `foreach` (as `for` was then called) returned the value it was iterating, so `b` above was
 `[1, 2, 3, 4, 5]` — the same array that went in. That did not hold once the
 loop hit a `break`, which produced `nil` instead, and `while` never returned
 anything but `nil`.

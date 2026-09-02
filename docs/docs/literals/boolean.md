@@ -6,8 +6,8 @@ A Boolean can represent two values: `true` and `false` and can be used in contro
 
 
 ```js
-true // Is the representation for truthyness
-false // is it for a falsy value
+true # Is the representation for truthyness
+false # is it for a falsy value
 
 a = true;
 b = false;

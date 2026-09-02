@@ -128,13 +128,16 @@ func runProgram(input string, file string) int {
 		return exitOK
 	}
 
-	// The program's final value is printed whatever it is, because that is what
-	// the interpreter does with a value. An error being that value means nothing
-	// handled it -- an error aborts the rest of the program and becomes its
-	// result -- so the process reports failure.
-	fmt.Println(evaluated.Inspect())
-
+	// An ordinary final value is not printed -- a script is not a REPL, and
+	// nothing else in the language prints a value it was not asked to. An
+	// error is different: nothing in the program handled it, an error aborts
+	// the rest of the program and becomes its result, and this is the only
+	// place left to report it. It goes to stderr, matching the parser errors
+	// above, rather than stdout, which is where it used to go as a side
+	// effect of printing every final value.
 	if object.IsError(evaluated) {
+		fmt.Fprintln(os.Stderr, evaluated.Inspect())
+
 		return exitFailure
 	}
 

@@ -1,8 +1,8 @@
 title: "Boolean"
 description: "A Boolean can represent two values: `true` and `false` and can be used in control flows."
 example: |
-  true // Is the representation for truthyness
-  false // is it for a falsy value
+  true # Is the representation for truthyness
+  false # is it for a falsy value
 
   a = true;
   b = false;

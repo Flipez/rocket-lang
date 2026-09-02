@@ -26,8 +26,8 @@ import "core/stats" as stats
 
 scores = [42, 17, 99, 63]
 
-print(list.filter(scores, def(n) return n > 40 end))  // [42, 99, 63]
-print(stats.mean(scores))                             // 55.25
+print(list.filter(scores, def(n) return n > 40 end))  # [42, 99, 63]
+print(stats.mean(scores))                             # 55.25
 ```
 
 [flipez/rocket-lang-core](https://github.com/flipez/rocket-lang-core) is a
@@ -198,7 +198,7 @@ math.rl
 Export what callers should see, and keep the rest private:
 
 ```js
-// strings.rl
+# strings.rl
 export def snake_case(s)
   return s.replace(" ", "_")
 end

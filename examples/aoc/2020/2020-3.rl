@@ -31,7 +31,7 @@ def part2(lines)
     [1, 2]
   ]
   totalTrees = 0
-  foreach slope in slopes
+  for slope in slopes
     trees = countTrees(lines, slope[0], slope[1])
     if (totalTrees == 0)
       totalTrees = trees

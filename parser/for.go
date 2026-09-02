@@ -7,8 +7,8 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-func (p *Parser) parseForEach() ast.Expression {
-	expression := &ast.Foreach{Token: p.curToken}
+func (p *Parser) parseFor() ast.Expression {
+	expression := &ast.For{Token: p.curToken}
 
 	p.nextToken()
 	expression.Ident = p.curToken.Literal
@@ -19,7 +19,7 @@ func (p *Parser) parseForEach() ast.Expression {
 
 		if !p.peekTokenIs(token.IDENT) {
 			p.errors = append(p.errors, fmt.Sprintf(
-				"%d:%d: second argument to foreach must be ident, got %v",
+				"%d:%d: second argument to for must be ident, got %v",
 				p.peekToken.LineNumber,
 				p.peekToken.LinePosition,
 				p.peekToken))
@@ -34,7 +34,7 @@ func (p *Parser) parseForEach() ast.Expression {
 
 	if !p.expectPeek(token.IN) {
 		p.errors = append(p.errors, fmt.Sprintf(
-			"%d:%d: expected `in` after foreach arguments, got %v",
+			"%d:%d: expected `in` after for arguments, got %v",
 			p.peekToken.LineNumber,
 			p.peekToken.LinePosition,
 			p.peekToken))

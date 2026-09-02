@@ -61,8 +61,9 @@ begin
 rescue e
   print("handled")
 end
-// exits 0
+# exits 0
 ```
 
-Diagnostics — a parse error, an unreadable file — go to standard error. The
-program's own output, and the value it ends on, go to standard output.
+Diagnostics — a parse error, an unreadable file, an uncaught error — go to
+standard error. Only the program's own output goes to standard output: a
+script does not print the value it ends on, unlike the REPL, which echoes it.

@@ -6,7 +6,7 @@ import (
 	"github.com/flipez/rocket-lang/token"
 )
 
-type Foreach struct {
+type For struct {
 	Token     token.Token
 	Index     string
 	Ident     string
@@ -17,10 +17,10 @@ type Foreach struct {
 	Inclusive bool
 }
 
-func (fes *Foreach) TokenLiteral() string { return fes.Token.Literal }
-func (fes *Foreach) String() string {
+func (fes *For) TokenLiteral() string { return fes.Token.Literal }
+func (fes *For) String() string {
 	var out bytes.Buffer
-	out.WriteString("foreach ")
+	out.WriteString("for ")
 	out.WriteString(fes.Index)
 	out.WriteString(", ")
 	out.WriteString(fes.Ident)

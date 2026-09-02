@@ -7,7 +7,7 @@ end
 export def Make(type, size)
   a = []
   if (size > 0)
-    foreach i in size
+    for i in size
       if (type == "BOOLEAN")
         a.append!(true)
       elif (type == "STRING")
@@ -27,7 +27,7 @@ export def Make(type, size)
 end
 
 export def Contains(a, i)
-  foreach b in a
+  for b in a
     if (b == i)
       return true
     end
@@ -36,7 +36,7 @@ export def Contains(a, i)
 end
 
 export def Format(a, b)
-  foreach idx, item in b
+  for idx, item in b
     val = ""
     if (item.type() == "STRING")
       val = item
